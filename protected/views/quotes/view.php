@@ -34,6 +34,6 @@ $this->menu=array(
 		'lost_reason_id',
 		'no_bid_reason_id',
 		'ready_to_order',
-		'bto',
+		'type',
 	),
 )); ?>

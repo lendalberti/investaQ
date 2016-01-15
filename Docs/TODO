@@ -3,28 +3,50 @@
 |  Jan. 15, 2016  |
 +-----------------+
 
-	[x] fix perm
+	[x] run script fix perm
 
 	[x] UserIdentity
 		[x] connect to LDAP
 
-	[x] Webuser
 
-	[ ] Debug
-	[ ] Log
+	New Files
+		[x] Webuser
 
-	[ ] Database tables
+		[x] Debug
+		[x] Log
 
-	[x] config/main.php
+		[x] Database tables
 
-	[ ] globals.php
+		[x] config/main.php
 
-	[ ] css/main.css
-	[ ] js/main.js
+		[x] globals.php
 
-	[ ] views/layout/main.php
+		[x] css/main.css
+		[x] js/main.js
 
-	
+		[x] views/layout/main.php
+
+	Stock Quotes
+		[x] index
+		[ ] view
+		[ ] create
+		[ ] update
+		[ ] delete
+
+	Manufacturing Quotes
+		[x] index
+		[ ] view
+		[ ] create
+		[ ] update
+		[ ] delete
+
+	Supplier Request Form Quotes
+		[x] index
+		[ ] view
+		[ ] create
+		[ ] update
+		[ ] delete
+
 
 
 

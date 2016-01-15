@@ -71,7 +71,6 @@ class Status extends CActiveRecord  {
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'btos' => array(self::HAS_MANY, 'Bto', 'status_id'),
 			'btoApprovals' => array(self::HAS_MANY, 'BtoApprovals', 'status_id'),
 			'histories' => array(self::HAS_MANY, 'History', 'status_id'),
 			'quotes' => array(self::HAS_MANY, 'Quotes', 'status_id'),

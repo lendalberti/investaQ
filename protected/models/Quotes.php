@@ -20,7 +20,7 @@
  * @property integer $lost_reason_id
  * @property integer $no_bid_reason_id
  * @property integer $ready_to_order
- * @property integer $bto
+ * @property integer $type
  *
  * The followings are the available model relations:
  * @property Attachments[] $attachments
@@ -35,9 +35,9 @@
 class Quotes extends CActiveRecord  {
 
 
-	const	WAREHOUSE     = 1,  // quote type
-			MANUFACTURING = 2;  // quote type
-
+	const	STOCK                   = 1,  
+			MANUFACTURING           = 2,  
+			SUPPLIER_REQUEST_FORM   = 3;
 
 
 	/**
@@ -66,13 +66,13 @@ class Quotes extends CActiveRecord  {
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('quote_no, status_id, user_id, customer_id, created, expiration_date', 'required'),
-			array('status_id, user_id, customer_id, lost_reason_id, no_bid_reason_id, ready_to_order, bto', 'numerical', 'integerOnly'=>true),
+			array('quote_no, status_id, user_id, customer_id,  created, expiration_date', 'required'),
+			array('status_id, user_id, customer_id, lost_reason_id, no_bid_reason_id, ready_to_order, type', 'numerical', 'integerOnly'=>true),
 			array('quote_no', 'length', 'max'=>45),
 			array('additional_notes, terms_conditions, updated, customer_acknowledgment, risl, manufacturing_lead_time', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, quote_no, status_id, user_id, customer_id, additional_notes, terms_conditions, created, updated, customer_acknowledgment, risl, manufacturing_lead_time, expiration_date, lost_reason_id, no_bid_reason_id, ready_to_order, bto', 'safe', 'on'=>'search'),
+			array('id, quote_no, status_id, user_id, customer_id, additional_notes, terms_conditions, created, updated, customer_acknowledgment, risl, manufacturing_lead_time, expiration_date, lost_reason_id, no_bid_reason_id, ready_to_order, type', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -117,7 +117,7 @@ class Quotes extends CActiveRecord  {
 			'lost_reason_id' => 'Lost Reason',
 			'no_bid_reason_id' => 'No Bid Reason',
 			'ready_to_order' => 'Ready To Order',
-			'bto' => 'Bto',
+			'type' => 'Quote Type',
 		);
 	}
 
@@ -148,7 +148,7 @@ class Quotes extends CActiveRecord  {
 		$criteria->compare('lost_reason_id',$this->lost_reason_id);
 		$criteria->compare('no_bid_reason_id',$this->no_bid_reason_id);
 		$criteria->compare('ready_to_order',$this->ready_to_order);
-		$criteria->compare('bto',$this->bto);
+		$criteria->compare('type',$this->type);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

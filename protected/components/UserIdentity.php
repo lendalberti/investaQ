@@ -29,12 +29,9 @@ class UserIdentity extends CUserIdentity {
 		    $username = 'ldalberti';
 		}
 
-        if ( !$debugON ) {						// if in Debug, then user must be in database already
+        if ( $debugON ) {						// if in Debug, then user must be in database already
             if ( $username == $password ) {
                 $userRecord = Users::model()->findByUsername($username);
-            // if ( !$userRecord ) {
-            //    $userRecord  = $this->ldap_lookup($username, $password);
-            // }
             }
         }
         else {

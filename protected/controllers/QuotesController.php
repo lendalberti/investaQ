@@ -36,7 +36,7 @@ class QuotesController extends Controller
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions'=>array('admin','delete'),
-				'users'=>array('admin'),
+				'users'=>array('ldalberti'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -125,13 +125,44 @@ class QuotesController extends Controller
 	/**
 	 * Lists all models.
 	 */
-	public function actionIndex()
-	{
-		$dataProvider=new CActiveDataProvider('Quotes');
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
+	public function actionIndex() 	{
+
+		pDebug('actionIndex() - _GET=', $_GET);
+		$$quote_type = '';
+
+		if ( isset($_GET['stock']) ) {
+			$quote_type = Quotes::STOCK;
+			$page_title = "Stock Quotes";
+		}
+		else if ( isset($_GET['mfg']) ) {
+			$quote_type = Quotes::MANUFACTURING;
+			$page_title = "Manufacturing Quotes";
+		}
+		else if ( isset($_GET['srf']) ) {
+			$quote_type = Quotes::SUPPLIER_REQUEST_FORM;
+			$page_title = "Supplier Request Form";
+		}
+
+		$criteria = new CDbCriteria();
+		if ( !Yii::app()->user->isAdmin )   $criteria->addCondition("user_id = " . Yii::app()->user->id);
+		$criteria->addCondition("type = $quote_type");
+		$model = Quotes::model()->findAll( $criteria );
+
+		pDebug('actionIndex() - criteria:', $criteria);
+
+		foreach( $model as $m ) {
+			pDebug('actionIndex() - quote:', $m->attributes); 
+		}
+
+		$this->render( 'index', array(
+			'model' => $model,
+			'page_title' => $page_title,
 		));
 	}
+
+
+
+
 
 	/**
 	 * Manages all models.

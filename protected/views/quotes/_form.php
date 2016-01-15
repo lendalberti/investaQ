@@ -100,9 +100,9 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'bto'); ?>
-		<?php echo $form->textField($model,'bto'); ?>
-		<?php echo $form->error($model,'bto'); ?>
+		<?php echo $form->labelEx($model,'type'); ?>
+		<?php echo $form->textField($model,'type'); ?>
+		<?php echo $form->error($model,'type'); ?>
 	</div>
 
 	<div class="row buttons">

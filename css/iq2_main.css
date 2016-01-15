@@ -97,3 +97,66 @@ div#dashboard_div {
 	color: #2C6371; /*#2e3b4e; */
 	font-size: 2em;
 }
+
+#quotes_table {
+	padding-top: 10px;
+	width: 1000px;
+}
+
+#quotes_table > thead > tr > th {
+	background: #5E6E78;
+    color: white;
+    font-variant: small-caps;
+    font-size: .9em;
+    text-align: center;
+}
+
+a {color:#1485cc;text-decoration:underline;}
+
+
+/* --------------------------------------    DataTable     */
+table.dataTable thead th {
+    position: relative;
+    background-image: none !important;
+}
+ 
+table.dataTable thead th.sorting:after,
+table.dataTable thead th.sorting_asc:after,
+table.dataTable thead th.sorting_desc:after {
+    position: absolute;
+    top: 12px;
+    right: 8px;
+    display: block;
+    font-family: FontAwesome;
+}
+
+table.dataTable thead th.sorting:after {
+    content: "\f0dc";
+    color: lightyellow;
+    font-size: 0.8em;
+    padding-top: 0.12em;
+}
+table.dataTable thead th.sorting_asc:after {
+    content: "\f0de";
+    color: lightyellow;
+}
+table.dataTable thead th.sorting_desc:after {
+    content: "\f0dd";
+    color: lightyellow;
+}
+
+#quotes_table_wrapper {
+    width: 900px;
+    height: 500px;
+    overflow-x: scroll;
+}
+
+
+
+
+
+
+
+
+
+

@@ -29,6 +29,11 @@
 
 	<script type="text/javascript" charset="utf8" src="<?php echo Yii::app()->request->baseUrl; ?>/js/iq2_main.js"></script>
 
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+
+	
+
 	<title><?php echo Yii::app()->params['app_title']; ?></title>
 
 </head>

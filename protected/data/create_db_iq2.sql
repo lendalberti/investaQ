@@ -2,9 +2,6 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
-DROP SCHEMA IF EXISTS `iq2` ;
-CREATE SCHEMA IF NOT EXISTS `iq2` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
-USE `iq2` ;
 
 -- -----------------------------------------------------
 -- Table `iq2`.`us_states`
@@ -248,7 +245,7 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`quotes` (
   `lost_reason_id` INT NULL DEFAULT 1 ,
   `no_bid_reason_id` INT NULL DEFAULT 1 ,
   `ready_to_order` INT NULL ,
-  `bto` TINYINT(1) NULL DEFAULT false ,
+  `type` INT NOT NULL DEFAULT false ,
   PRIMARY KEY (`id`) ,
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
   INDEX `fk_quotes_2_idx` (`customer_id` ASC) ,
@@ -749,7 +746,6 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`bto_approvals` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-USE `iq2` ;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
