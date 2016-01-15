@@ -1,0 +1,496 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"font-",
+				"font-weight"
+			],
+			[
+				"font",
+				"font-size"
+			],
+			[
+				"Bto",
+				"BtoApprovals"
+			],
+			[
+				"pa",
+				"parts"
+			],
+			[
+				"text",
+				"text-align"
+			],
+			[
+				"values",
+				"values_list"
+			],
+			[
+				"val",
+				"values_list"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/len/www/investa",
+		"/home/len/www/investa/protected"
+	],
+	"file_history":
+	[
+		"/home/len/www/investa/protected/views/layouts/main.php",
+		"/home/len/www/investa/css/main.css",
+		"/home/len/www/investa/protected/controllers/PriceBookController.php",
+		"/home/len/www/investa/js/new_cust_quote_content.html",
+		"/home/len/.config/sublime-text-3/Packages/Default/Preferences.sublime-settings",
+		"/home/len/www/investa/assets/29c6d129/jquery.autocomplete.js",
+		"/home/len/www/investa/js/quote.js",
+		"/home/len/www/investa/js/util.js",
+		"/home/len/www/investa/js/util_ORIGINAL.js",
+		"/home/len/www/investa/protected/controllers/CustomersController.php",
+		"/home/len/www/investa/protected/controllers/ContactsController.php",
+		"/home/len/www/investa/protected/views/priceBook/search_results.php",
+		"/home/len/www/investa/docs/TODO",
+		"/home/len/www/investa/xx.html",
+		"/home/len/www/investa/protected/controllers/QuotesController.php",
+		"/home/len/www/investa/search_results.php_changes",
+		"/home/len/www/investa/util.js_changes",
+		"/home/len/www/investa/protected/models/Quotes.php",
+		"/home/len/www/investa/protected/views/priceBook/search_results_ORIG.php",
+		"/home/len/www/investa/test/find.php",
+		"/home/len/www/investa/test/mongo_sales_history.php",
+		"/home/len/www/investa/protected/data/scripts/test/get_sales_history.php",
+		"/home/len/www/investa/protected/config/main.php",
+		"/home/len/www/investa/protected/views/quotes/displayPdf_FB.php",
+		"/home/len/www/ccman/protected/data/scripts/test/import_invoices.php",
+		"/home/len/www/investa/protected/views/site/help.php",
+		"/home/len/www/investa/protected/controllers/SiteController.php",
+		"/home/len/www/investa/protected/views/site/intro.php",
+		"/home/len/www/investa/intro.html",
+		"/home/len/www/investa/protected/views/site/login.php",
+		"/home/len/www/investa/protected/views/site/pages/tutorial.php",
+		"/home/len/www/investa/docs/demo_dialog.txt",
+		"/home/len/www/investa/protected/data/scripts/insert_users.sql",
+		"/home/len/www/investa/protected/views/bto/_form.php",
+		"/home/len/www/investa/protected/controllers/BtoController.php",
+		"/home/len/www/investa/protected/views/bto/view.php",
+		"/home/len/www/investa/protected/models/BtoApprovals_ORIG.php",
+		"/home/len/www/investa/protected/data/scripts/insert_status.sql",
+		"/home/len/www/investa/protected/globals.php",
+		"/home/len/www/investa/protected/models/Status.php",
+		"/home/len/www/investa/protected/models/BtoApprovals.php",
+		"/home/len/www/investa/protected/data/scripts/insert_groups.sql",
+		"/home/len/www/investa/protected/views/priceBook/movements.php",
+		"/home/len/www/investa/protected/views/quotes/index.php",
+		"/home/len/www/investa/protected/views/bto/index.php",
+		"/home/len/www/investa/docs/mongo_data",
+		"/home/len/www/investa/protected/models/Customers.php",
+		"/home/len/www/investa/protected/models/Bto.php",
+		"/home/len/www/investa/protected/views/bto/update.php",
+		"/home/len/www/investa/protected/models/BusinessClass.php",
+		"/home/len/www/investa/protected/data/populate_mac_investa_db.sql",
+		"/home/len/www/investa/protected/data/populate_investa_db.sql",
+		"/home/len/www/investa/protected/data/scripts/insert_testing.sql",
+		"/home/len/www/investa/protected/data/scripts/insert_priority.sql",
+		"/home/len/www/investa/protected/views/quotes/_form.php",
+		"/home/len/www/investa/protected/views/quotes/createbto.php",
+		"/home/len/www/investa/protected/views/bto/_search.php",
+		"/home/len/www/investa/protected/views/bto/_view.php",
+		"/home/len/www/investa/protected/views/bto/admin.php",
+		"/home/len/www/investa/protected/data/scripts/insert_business_class.sql",
+		"/home/len/www/investa/protected/data/scripts/insert_process_flow.sql",
+		"/home/len/www/investa/protected/data/scripts/insert_package_types.sql",
+		"/home/len/www/investa/protected/models/Roles.php",
+		"/home/len/www/investa/protected/views/quotes/create.php",
+		"/home/len/www/investa/protected/views/quotes/approve.php",
+		"/home/len/www/investa/protected/views/quotes/view.php",
+		"/home/len/www/investa/protected/views/quotes/noBid.php",
+		"/home/len/www/investa/protected/controllers/CustomerContactsController.php",
+		"/home/len/www/investa/protected/controllers/CustomersController_ORIG.php",
+		"/home/len/www/investa/protected/views/customers/create.php",
+		"/home/len/www/investa/protected/views/customers/_form.php",
+		"/home/len/www/investa/protected/views/quotes/history.php",
+		"/home/len/www/investa/protected/views/contacts/_form.php",
+		"/home/len/www/investa/protected/controllers/AttachmentsController_NCRS.php",
+		"/home/len/www/investa/protected/models/Attachments.php",
+		"/home/len/www/investa/protected/models/Attachments_NCRS.php",
+		"/home/len/www/ncrs/protected/models/Attachments_NCRS.php",
+		"/home/len/www/ccman/protected/views/rmaCases/view.php",
+		"/home/len/www/ccman/protected/data/scripts/OLD_CUSTCARE/custcare/datloader.php",
+		"/home/len/www/ccman/protected/globals.php",
+		"/home/len/www/ccman/protected/components/UserIdentity.php",
+		"/home/len/www/ccman/protected/runtime/application.log.4",
+		"/home/len/www/ncrs/protected/views/reports/_history.php",
+		"/home/len/www/ncrs/protected/controllers/SuggestionsController.php",
+		"/home/len/www/ncrs/protected/views/reports/import.php",
+		"/home/len/www/ncrs/protected/views/reports/my_group.php",
+		"/home/len/www/ncrs/protected/views/reports/my_queue.php",
+		"/home/len/www/ncrs/protected/views/reports/results.php",
+		"/home/len/www/annalyse/protected/views/requests/index.php",
+		"/home/len/www/annalyse/protected/views/requests/view.php",
+		"/home/len/www/annalyse/protected/views/requests/attachment.php",
+		"/home/len/www/investa/js/search_results_ORIG.js",
+		"/home/len/www/investa/js/main.js",
+		"/home/len/www/investa/protected/models/PriceBook.php",
+		"/home/len/www/investa/fix_perm.sh",
+		"/home/len/www/investa/js/search_results.js",
+		"/home/len/www/investa/protected/models/Items.php",
+		"/home/len/www/investa/protected/views/quotes/_items.php",
+		"/home/len/www/investa/protected/controllers/ItemsController.php",
+		"/home/len/www/investa/docs/Project Status",
+		"/home/len/www/investa/protected/data/create_db_investa.sql",
+		"/home/len/www/investa/protected/views/quotes/_items_SAVED.php",
+		"/home/len/www/investa/css/quote.css_OLD",
+		"/home/len/www/investa/js/quote.css",
+		"/home/len/www/investa/protected/views/priceBook/popup.inc",
+		"/home/len/www/investa/protected/views/priceBook/popup.js",
+		"/home/len/www/smartsheet/import_smartsheet.php",
+		"/home/len/www/smartsheet/smartsheet.sh",
+		"/home/len/www/smartsheet/readme",
+		"/home/len/www/smartsheet/import_smartsheet_cronjob",
+		"/home/len/www/smartsheet/out/SPAContractIndex.csv",
+		"/home/len/www/smartsheet/out/MfgOrderTracking.csv",
+		"/home/len/www/smartsheet/import_smartsheet_v3.php",
+		"/home/len/www/smartsheet/arg.php",
+		"/home/len/www/smartsheet/import_smartsheet_v2.php",
+		"/home/len/www/smartsheet/read_smartsheet.php",
+		"/home/len/work/SmartSheet/import_smartsheet.php",
+		"/home/len/work/SmartSheet/readme",
+		"/home/len/work/SmartSheet/ccman_import_invoices.php",
+		"/home/len/work/SmartSheet/getSmartSheet.php",
+		"/home/len/work/SmartSheet/conn.php",
+		"/home/len/work/SmartSheet/HelloGetSheet.php",
+		"/var/www/html/ncrs/protected/views/reports/_update.php",
+		"/home/len/Desktop/junk.sql",
+		"/var/www/html/ncrs/protected/views/reports/find.php",
+		"/var/www/html/ncrs/protected/views/site/index.php",
+		"/var/www/html/ncrs/css/main.css",
+		"/var/www/html/ncrs/docs/NCRs TODO"
+	],
+	"find":
+	{
+		"height": 23.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			"",
+			"*.js",
+			"*.php",
+			"",
+			"*.php",
+			"",
+			"*.php",
+			"",
+			"*.php",
+			"",
+			"*.js",
+			"*.php",
+			"",
+			"*.php",
+			"",
+			"*.php",
+			"*.js",
+			"",
+			"*.php",
+			"",
+			"*.php",
+			"",
+			"*.php",
+			"",
+			"*.php",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"InvestaQ_logo",
+			"img",
+			"Inventory Status &amp; Quotes",
+			"Inventory Status & Quotes",
+			"index.php",
+			"List",
+			"new_cust_quote_content",
+			"selectCustomerQuote",
+			"create_new_quote",
+			"create_new",
+			"customer quote",
+			"select customer quote",
+			"existing",
+			"setupCustomerContact_Select",
+			"  ",
+			"    ",
+			"	",
+			"subheading_NoBidQuote",
+			"myQuotes",
+			"from ajax",
+			"customer_typeahead",
+			"filloutCustomerFields",
+			"new_cust_quote_content",
+			"customer_names",
+			"new_cust_quote_content",
+			"typeahead",
+			"new_cust_quote_content",
+			"create_new_customer",
+			"addToQuote",
+			"filloutCustomerFields",
+			"customer_info_table",
+			"new_cust_quote_content",
+			"customer_name_typeahead",
+			"Customer Info",
+			"Quote Details",
+			"Customer Info",
+			"typeahead",
+			"customer_name_typeahead",
+			"function overMaxAvailable",
+			"function toCurrency",
+			"toCurrency",
+			"addTotals",
+			"updateItems",
+			"getSubTotal",
+			"overMaxAvailable",
+			"$('input[id^=qty_]').focus(function() {}).blur(function() {",
+			"sStart",
+			"input[id",
+			"That's more than what's available; try again",
+			"subheading_NoBidQuote",
+			"Customer Info",
+			"utf",
+			"ansi",
+			"UTF-8",
+			"mouse",
+			"quote.js",
+			"sStart",
+			"quote.js",
+			"overMaxAvailable",
+			"qty_available_selected",
+			"nth-child(odd)",
+			"strip",
+			"odd",
+			";\n",
+			"odd",
+			"viewPartDetails",
+			"spacingDiv",
+			"hiddenTechNotes",
+			"selected_part_number",
+			"rowID",
+			"function viewPartDetails",
+			"'';\n",
+			"/priceBook/",
+			"function viewPartDetails",
+			"selectCustomerBy",
+			"searchFor",
+			"var selectCustomerBy     = 'CustomerName';",
+			"data",
+			"my_quotes",
+			"data",
+			"searchbutton",
+			"LRMG",
+			"searchbutton",
+			"md",
+			"viewPartDetails",
+			"function viewPartDetails",
+			"md",
+			"users",
+			"us_states",
+			"customer_names",
+			"contacts/list",
+			"parts",
+			"$data['parts']",
+			"mongo_data",
+			"md",
+			"quoteData",
+			"data",
+			"<?php",
+			"php",
+			"searchbutton",
+			"var tStart",
+			"var tStart = \"\";",
+			"ncludeScript",
+			"customer_typeahead",
+			"tableStockCodes",
+			"addToQuote",
+			"form_ViewPartDetails",
+			"dialog_ViewPartDetails",
+			"customerQuoteSelect",
+			"form_ViewPartDetails",
+			"dialog_ViewPartDetails",
+			"Quote This Part",
+			"form_ViewPartDetails",
+			"form_AddToQuote",
+			"new_cust_quote_content",
+			"includeScript",
+			"create_customer_quote_div",
+			"/*display: none; */",
+			"includeScript",
+			"form_ViewPartDetails",
+			"dialog_ViewPartDetails",
+			"Quote This Part",
+			"filloutCustomerFields",
+			"customer_typeahead",
+			"includeScript",
+			"form_ViewPartDetails",
+			"dialog_ViewPartDetails",
+			"myQuotesSelect"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"",
+			"<input type='text' name='xx' id='xx' >",
+			"Users",
+			"home",
+			"",
+			" 2, ",
+			"quote_attachment",
+			"price_Custom",
+			"p",
+			"fp",
+			"info",
+			"signoff_date_range",
+			"hide"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 100.0
+	},
+	"output.unsaved_changes":
+	{
+		"height": 112.0
+	},
+	"pinned_build_system": "",
+	"project": "investa_v2.sublime-project",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 263.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

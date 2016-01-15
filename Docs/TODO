@@ -1,0 +1,28 @@
+
++-----------------+
+|  Jan. 15, 2016  |
++-----------------+
+
+	[x] fix perm
+
+	[ ] UserIdentity
+		[ ] connect to LDAP
+
+	[x] Webuser
+
+	[ ] Debug
+	[ ] Log
+
+	[ ] Database tables
+
+	[ ] config/main.php
+
+	[ ] globals.php
+
+	[ ] css/main.css
+	[ ] js/main.js
+
+	
+
+
+
