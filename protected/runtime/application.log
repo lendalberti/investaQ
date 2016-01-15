@@ -13703,3 +13703,497 @@ Users::registerUser() - logged in:[]
 in /var/www/html/iq2/protected/globals.php (291)
 in /var/www/html/iq2/protected/models/Users.php (151)
 in /var/www/html/iq2/protected/components/UserIdentity.php (48)
+2016/01/15 09:53:26 [info] [MyDebug] 
+
+UserIdentity::authenticate() - user record:
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/components/UserIdentity.php (45)
+in /var/www/html/iq2/protected/models/LoginForm.php (52)
+2016/01/15 09:54:12 [info] [MyDebug] 
+
+UserIdentity::authenticate() - user=[sasas], pwd=[rjohnstont]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/components/UserIdentity.php (45)
+in /var/www/html/iq2/protected/models/LoginForm.php (52)
+2016/01/15 09:54:19 [info] [MyDebug] 
+
+UserIdentity::authenticate() - user=[rjohnstont], pwd=[rjohnstont]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/components/UserIdentity.php (45)
+in /var/www/html/iq2/protected/models/LoginForm.php (52)
+2016/01/15 09:54:19 [info] [MyDebug] 
+
+Users::registerUser() - trying to register user=[rjohnstont]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (146)
+in /var/www/html/iq2/protected/components/UserIdentity.php (48)
+2016/01/15 09:54:19 [info] [MyDebug] 
+
+Users::registerUser() - already registered:
+
+Array
+(
+    [id] => 30
+    [role_id] => 2
+    [group_id] => 
+    [username] => rjohnstont
+    [first_name] => Ralph
+    [last_name] => Johnston
+    [email] => rjohnstont@plala.or.jp
+    [title] => Project Manager
+    [phone] => 48-(177)388-3331
+    [fax] => 381-(238)555-3857
+    [sig] => 
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (150)
+in /var/www/html/iq2/protected/components/UserIdentity.php (48)
+2016/01/15 09:54:19 [info] [MyDebug] 
+
+Users::registerUser() - logged in:[]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (151)
+in /var/www/html/iq2/protected/components/UserIdentity.php (48)
+2016/01/15 09:54:58 [info] [MyDebug] 
+
+UserIdentity::authenticate() - user=[rjohnstont], pwd=[asddsdsd]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/components/UserIdentity.php (45)
+in /var/www/html/iq2/protected/models/LoginForm.php (52)
+2016/01/15 09:55:18 [info] [MyDebug] 
+
+UserIdentity::authenticate() - user=[rjohnstont], pwd=[rjohnstont]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/components/UserIdentity.php (45)
+in /var/www/html/iq2/protected/models/LoginForm.php (52)
+2016/01/15 09:55:18 [info] [MyDebug] 
+
+Users::registerUser() - trying to register user=[rjohnstont]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (146)
+in /var/www/html/iq2/protected/components/UserIdentity.php (48)
+2016/01/15 09:55:18 [info] [MyDebug] 
+
+Users::registerUser() - already registered:
+
+Array
+(
+    [id] => 30
+    [role_id] => 2
+    [group_id] => 
+    [username] => rjohnstont
+    [first_name] => Ralph
+    [last_name] => Johnston
+    [email] => rjohnstont@plala.or.jp
+    [title] => Project Manager
+    [phone] => 48-(177)388-3331
+    [fax] => 381-(238)555-3857
+    [sig] => 
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (150)
+in /var/www/html/iq2/protected/components/UserIdentity.php (48)
+2016/01/15 09:55:18 [info] [MyDebug] 
+
+Users::registerUser() - logged in:[]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (151)
+in /var/www/html/iq2/protected/components/UserIdentity.php (48)
+2016/01/15 09:56:48 [info] [MyDebug] 
+
+Users::registerUser() - trying to register user=[rjohnstont]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (146)
+in /var/www/html/iq2/protected/components/UserIdentity.php (46)
+2016/01/15 09:56:48 [info] [MyDebug] 
+
+Users::registerUser() - already registered:
+
+Array
+(
+    [id] => 30
+    [role_id] => 2
+    [group_id] => 
+    [username] => rjohnstont
+    [first_name] => Ralph
+    [last_name] => Johnston
+    [email] => rjohnstont@plala.or.jp
+    [title] => Project Manager
+    [phone] => 48-(177)388-3331
+    [fax] => 381-(238)555-3857
+    [sig] => 
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (150)
+in /var/www/html/iq2/protected/components/UserIdentity.php (46)
+2016/01/15 09:56:48 [info] [MyDebug] 
+
+Users::registerUser() - logged in:[]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (151)
+in /var/www/html/iq2/protected/components/UserIdentity.php (46)
+2016/01/15 09:56:59 [info] [MyDebug] 
+
+UserIdentity::authenticate() - failed login for user=[rjohnstont], pwd=[xxxxx]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/components/UserIdentity.php (59)
+in /var/www/html/iq2/protected/models/LoginForm.php (52)
+2016/01/15 09:57:07 [info] [MyDebug] 
+
+Users::registerUser() - trying to register user=[rjohnstont]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (146)
+in /var/www/html/iq2/protected/components/UserIdentity.php (46)
+2016/01/15 09:57:07 [info] [MyDebug] 
+
+Users::registerUser() - already registered:
+
+Array
+(
+    [id] => 30
+    [role_id] => 2
+    [group_id] => 
+    [username] => rjohnstont
+    [first_name] => Ralph
+    [last_name] => Johnston
+    [email] => rjohnstont@plala.or.jp
+    [title] => Project Manager
+    [phone] => 48-(177)388-3331
+    [fax] => 381-(238)555-3857
+    [sig] => 
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (150)
+in /var/www/html/iq2/protected/components/UserIdentity.php (46)
+2016/01/15 09:57:07 [info] [MyDebug] 
+
+Users::registerUser() - logged in:[]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (151)
+in /var/www/html/iq2/protected/components/UserIdentity.php (46)
+2016/01/15 09:57:20 [info] [MyDebug] 
+
+UserIdentity::authenticate() - failed login for user=[xxxx], pwd=[rjohnstont]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/components/UserIdentity.php (59)
+in /var/www/html/iq2/protected/models/LoginForm.php (52)
+2016/01/15 09:57:24 [info] [MyDebug] 
+
+UserIdentity::authenticate() - failed login for user=[xxxx], pwd=[rjohnstont]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/components/UserIdentity.php (59)
+in /var/www/html/iq2/protected/models/LoginForm.php (52)
+2016/01/15 09:57:25 [info] [MyDebug] 
+
+UserIdentity::authenticate() - failed login for user=[xxxx], pwd=[rjohnstont]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/components/UserIdentity.php (59)
+in /var/www/html/iq2/protected/models/LoginForm.php (52)
+2016/01/15 09:57:28 [info] [MyDebug] 
+
+UserIdentity::authenticate() - failed login for user=[dsdsdsdssdd], pwd=[rjohnstont]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/components/UserIdentity.php (59)
+in /var/www/html/iq2/protected/models/LoginForm.php (52)
+2016/01/15 09:59:20 [info] [MyDebug] 
+
+UserIdentity::authenticate() - failed login for user=[dsdsdsdssdd], pwd=[rjohnstont], from 127.0.0.1
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/components/UserIdentity.php (59)
+in /var/www/html/iq2/protected/models/LoginForm.php (52)
+2016/01/15 09:59:22 [info] [MyDebug] 
+
+UserIdentity::authenticate() - failed login for user=[dsdsdsdssdd], pwd=[rjohnstont], from 127.0.0.1
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/components/UserIdentity.php (59)
+in /var/www/html/iq2/protected/models/LoginForm.php (52)
+2016/01/15 10:00:57 [info] [MyDebug] 
+
+UserIdentity::authenticate() - failed login from 127.0.0.1 ( user=[dsdsdsdssdd], pwd=[rjohnstont] )
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/components/UserIdentity.php (59)
+in /var/www/html/iq2/protected/models/LoginForm.php (52)
+2016/01/15 10:01:21 [info] [MyDebug] 
+
+Users::registerUser() - trying to register user=[jgutierrez13]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (146)
+in /var/www/html/iq2/protected/components/UserIdentity.php (46)
+2016/01/15 10:01:21 [info] [MyDebug] 
+
+Users::registerUser() - already registered:
+
+Array
+(
+    [id] => 40
+    [role_id] => 1
+    [group_id] => 
+    [username] => jgutierrez13
+    [first_name] => Juan
+    [last_name] => Gutierrez
+    [email] => jgutierrez13@hostgator.com
+    [title] => Engineer II
+    [phone] => 255-(267)912-8048
+    [fax] => 380-(978)322-5735
+    [sig] => 
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (150)
+in /var/www/html/iq2/protected/components/UserIdentity.php (46)
+2016/01/15 10:01:21 [info] [MyDebug] 
+
+Users::registerUser() - logged in:[]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (151)
+in /var/www/html/iq2/protected/components/UserIdentity.php (46)
+2016/01/15 10:01:49 [info] [MyDebug] 
+
+Users::registerUser() - trying to register user=[dtucker5]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (146)
+in /var/www/html/iq2/protected/components/UserIdentity.php (46)
+2016/01/15 10:01:49 [info] [MyDebug] 
+
+Users::registerUser() - already registered:
+
+Array
+(
+    [id] => 6
+    [role_id] => 5
+    [group_id] => 4
+    [username] => dtucker5
+    [first_name] => Dennis
+    [last_name] => Tucker
+    [email] => dtucker5@zdnet.com
+    [title] => Safety Technician I
+    [phone] => 62-(580)449-8669
+    [fax] => 84-(615)908-1019
+    [sig] => 
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (150)
+in /var/www/html/iq2/protected/components/UserIdentity.php (46)
+2016/01/15 10:01:49 [info] [MyDebug] 
+
+Users::registerUser() - logged in:[]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (151)
+in /var/www/html/iq2/protected/components/UserIdentity.php (46)
+2016/01/15 10:02:10 [info] [MyDebug] 
+
+UserIdentity::authenticate() - failed login from 127.0.0.1 ( user=[xyz1], pwd=[xyz1] )
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/components/UserIdentity.php (59)
+in /var/www/html/iq2/protected/models/LoginForm.php (52)
+2016/01/15 10:05:48 [info] [MyDebug] 
+
+LDAP record: 
+
+Array
+(
+    [sn] => Array
+        (
+            [count] => 1
+            [0] => D'Alberti
+        )
+
+    [0] => sn
+    [givenname] => Array
+        (
+            [count] => 1
+            [0] => Len
+        )
+
+    [1] => givenname
+    [memberof] => Array
+        (
+            [count] => 29
+            [0] => CN=VPN IT Consultants,CN=Users,DC=rocelec,DC=com
+            [1] => CN=RPT_IT,CN=Users,DC=rocelec,DC=com
+            [2] => CN=Pivotal Users,CN=Users,DC=rocelec,DC=com
+            [3] => CN=SharePoint Admin,CN=Users,DC=rocelec,DC=com
+            [4] => CN=SP_Project_Users,CN=Users,DC=rocelec,DC=com
+            [5] => CN=it,CN=Users,DC=rocelec,DC=com
+            [6] => CN=Group-MIS,CN=Users,DC=rocelec,DC=com
+            [7] => CN=rockstar_users,CN=Users,DC=rocelec,DC=com
+            [8] => CN=All Newburyport Users,CN=Users,DC=rocelec,DC=com
+            [9] => CN=Group-NOIEPROXY,CN=Users,DC=rocelec,DC=com
+            [10] => CN=Group-IT,CN=Users,DC=rocelec,DC=com
+            [11] => CN=group-IS,CN=Users,DC=rocelec,DC=com
+            [12] => CN=VPN US-Users,CN=Users,DC=rocelec,DC=com
+            [13] => CN=VPN IT Users,CN=Users,DC=rocelec,DC=com
+            [14] => CN=Exchange Mailbox Manager Policy Users,CN=Users,DC=rocelec,DC=com
+            [15] => CN=BLASTusers,CN=Users,DC=rocelec,DC=com
+            [16] => CN=JAMSusers,CN=Users,DC=rocelec,DC=com
+            [17] => CN=SYSPRO Core Team,CN=Users,DC=rocelec,DC=com
+            [18] => CN=Domain Computers,CN=Users,DC=rocelec,DC=com
+            [19] => CN=Pre-Windows 2000 Compatible Access,CN=Builtin,DC=rocelec,DC=com
+            [20] => CN=Account Operators,CN=Builtin,DC=rocelec,DC=com
+            [21] => CN=Remote Desktop Users,CN=Builtin,DC=rocelec,DC=com
+            [22] => CN=Domain Controllers,CN=Users,DC=rocelec,DC=com
+            [23] => CN=Replicator,CN=Builtin,DC=rocelec,DC=com
+            [24] => CN=Guests,CN=Builtin,DC=rocelec,DC=com
+            [25] => CN=Group Policy Creator Owners,CN=Users,DC=rocelec,DC=com
+            [26] => CN=Cert Publishers,CN=Users,DC=rocelec,DC=com
+            [27] => CN=Users,CN=Builtin,DC=rocelec,DC=com
+            [28] => CN=Exchange Organization Administrators,OU=Microsoft Exchange Security Groups,DC=rocelec,DC=com
+        )
+
+    [2] => memberof
+    [mail] => Array
+        (
+            [count] => 1
+            [0] => ldalberti@rocelec.com
+        )
+
+    [3] => mail
+    [count] => 4
+    [dn] => CN=D'Alberti\, Len,CN=Users,DC=rocelec,DC=com
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/components/UserIdentity.php (89)
+in /var/www/html/iq2/protected/components/UserIdentity.php (41)
+2016/01/15 10:05:48 [info] [MyDebug] 
+
+Users::registerUser() - trying to register user=[ldalberti]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (146)
+in /var/www/html/iq2/protected/components/UserIdentity.php (46)
+2016/01/15 10:05:48 [info] [MyDebug] 
+
+Users::registerUser() - already registered:
+
+Array
+(
+    [id] => 1
+    [role_id] => 1
+    [group_id] => 
+    [username] => ldalberti
+    [first_name] => Len
+    [last_name] => D'Alberti
+    [email] => ldalberti@rocelec.com
+    [title] => Compensation Analyst
+    [phone] => 7-(970)828-7357
+    [fax] => 20-(802)978-8532
+    [sig] => 
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (150)
+in /var/www/html/iq2/protected/components/UserIdentity.php (46)
+2016/01/15 10:05:48 [info] [MyDebug] 
+
+Users::registerUser() - logged in:[]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (151)
+in /var/www/html/iq2/protected/components/UserIdentity.php (46)
+2016/01/15 10:40:47 [info] [MyDebug] 
+
+Users::registerUser() - trying to register user=[ldalberti]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (146)
+in /var/www/html/iq2/protected/components/UserIdentity.php (46)
+2016/01/15 10:40:47 [info] [MyDebug] 
+
+Users::registerUser() - model attributes=
+
+Array
+(
+    [role_id] => 2
+    [username] => ldalberti
+    [first_name] => Len
+    [last_name] => D'Alberti
+    [email] => ldalberti@rocelec.com
+    [title] => 
+    [phone] => 
+    [fax] => 
+    [sig] => 
+    [id] => 
+    [group_id] => 
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (167)
+in /var/www/html/iq2/protected/components/UserIdentity.php (46)
+2016/01/15 10:40:47 [info] [MyDebug] 
+
+Users::registerUser() - user registered; new id=[1002]
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/models/Users.php (171)
+in /var/www/html/iq2/protected/components/UserIdentity.php (46)

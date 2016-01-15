@@ -29,38 +29,39 @@ class UserIdentity extends CUserIdentity {
 		    $username = 'ldalberti';
 		}
 
-		if ( $debugON ) {						// if in Debug, then user must be in database already
-		 if ( $username == $password ) {
-		    $userRecord = Users::model()->findByUsername($username);
-		    // if ( !$userRecord ) {
-		    //    $userRecord  = $this->ldap_lookup($username, $password);
-		    // }
-		 }
-		}
-		else {
-		 $userRecord  = $this->ldap_lookup($username, $password);
-		}       
+        if ( !$debugON ) {						// if in Debug, then user must be in database already
+            if ( $username == $password ) {
+                $userRecord = Users::model()->findByUsername($username);
+            // if ( !$userRecord ) {
+            //    $userRecord  = $this->ldap_lookup($username, $password);
+            // }
+            }
+        }
+        else {
+            $userRecord  = $this->ldap_lookup($username, $password);
+        }       
 
-		// $userRecord = self::ldap_lookup($username, $password);
-		pDebug("UserIdentity::authenticate() - user record:", $userRecord->attributes);
+        
+        if ( $userRecord ) {
+            $id = Users::model()->registerUser( $userRecord );
+            if ( $id ) {
+                $this->_id       = $id;
+                $this->username  = $username;
+                $this->errorCode = self::ERROR_NONE;
+            }
+            else {
+                $this->errorCode = self::ERROR_USERNAME_INVALID;    // couldn't register user - need different error here
+                pDebug("authenticate() - can't register user=[$username]");
+            }
+        }
+        else {
+            $this->errorCode = self::ERROR_USERNAME_INVALID;    // user not authenticated by ldap
+            pDebug("UserIdentity::authenticate() - failed login from ".$_SERVER['REMOTE_ADDR'] ." ( user=[$username], pwd=[$password] )" );
 
-		if ( $userRecord ) {
-		 $id = Users::model()->registerUser( $userRecord );
-		 if ( $id ) {
-		    $this->_id       = $id;
-		    $this->username  = $username;
-		    $this->errorCode = self::ERROR_NONE;
-		 }
-		 else {
-		    $this->errorCode = self::ERROR_USERNAME_INVALID;    // couldn't register user - need different error here
-		    pDebug("authenticate() - can't register user=[$username]");
-		 }
-		}
-		else {
-		 $this->errorCode = self::ERROR_USERNAME_INVALID;    // user not authenticated by ldap
-		}
-		return $this->errorCode == self::ERROR_NONE;  // returns true or false
-		}
+        }
+
+        return $this->errorCode == self::ERROR_NONE;  // returns true or false
+    }
 
 
 	/**
@@ -106,3 +107,4 @@ class UserIdentity extends CUserIdentity {
    }
 
 }
+  
