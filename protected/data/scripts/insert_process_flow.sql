@@ -1,0 +1,17 @@
+INSERT INTO process_flow(name) VALUES('MTO (Mil Temp Only)');
+INSERT INTO process_flow(name) VALUES('Extended Temp');
+INSERT INTO process_flow(name) VALUES('Commercial');
+INSERT INTO process_flow(name) VALUES('/B');
+INSERT INTO process_flow(name) VALUES('/R');
+INSERT INTO process_flow(name) VALUES('RISL');
+INSERT INTO process_flow(name) VALUES('Industrial SMD');
+INSERT INTO process_flow(name) VALUES('QML');
+INSERT INTO process_flow(name) VALUES('883');
+INSERT INTO process_flow(name) VALUES('Commercial w/BI');
+INSERT INTO process_flow(name) VALUES('Extended Temp w/BI');
+INSERT INTO process_flow(name) VALUES('Industrial w/BI');
+INSERT INTO process_flow(name) VALUES('/S');
+INSERT INTO process_flow(name) VALUES('Class Q');
+INSERT INTO process_flow(name) VALUES('Class V');
+INSERT INTO process_flow(name) VALUES('DIE Quote');
+INSERT INTO process_flow(name) VALUES('LAT & Die Sale');

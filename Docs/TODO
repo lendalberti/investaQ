@@ -5,8 +5,8 @@
 
 	[x] fix perm
 
-	[ ] UserIdentity
-		[ ] connect to LDAP
+	[x] UserIdentity
+		[x] connect to LDAP
 
 	[x] Webuser
 
@@ -15,14 +15,18 @@
 
 	[ ] Database tables
 
-	[ ] config/main.php
+	[x] config/main.php
 
 	[ ] globals.php
 
 	[ ] css/main.css
 	[ ] js/main.js
 
+	[ ] views/layout/main.php
+
 	
+
+
 
 
 

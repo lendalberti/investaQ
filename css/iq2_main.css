@@ -1,0 +1,99 @@
+
+#iq2_title {
+	width: 500px;
+	float: right;
+	text-align: right;
+	margin-top: 20px;
+	color: #a31128;
+	font-size: 28px;
+	font-weight: bold;
+}
+
+/* --------------------------------------    Mani Menu     */
+#mainmenu {
+	background: linear-gradient( lightgray, gray );
+}
+
+#mainmenu ul {
+	padding:6px 20px 5px 20px;
+	margin:0px;
+}
+
+#mainmenu ul li {
+	display: inline;
+	font-weight: normal;
+}
+
+#mainmenu ul li a  {
+	color:#ffffff;
+	background-color:transparent;
+	font-size:12px;
+	font-weight:bold;
+	text-decoration:none;
+	padding:5px 8px;
+}
+
+#mainmenu ul li a:hover, #mainmenu ul li.active a
+{
+	/*color: #6399cd;*/
+	/*background-color:#EFF4FA;*/
+	color: black;
+	background-color: lightyellow;
+	border-radius: 25px;
+
+	text-decoration:none;
+	padding-bottom: 3px;
+}
+
+#mainmenu ul span {
+	float: right;
+	font-weight: bold;
+	color: black;
+	background-color: lightyellow;
+	padding: 1px 5px 1px 5px;
+	border-radius: 5px;
+}
+
+
+/* --------------------------------------    Dashboard     */
+div#dashboard_div {
+	padding: 20px 20px 0px 20px; 
+	float: right; 
+	border: 0px solid orange;
+}
+
+#dashboard_table {
+	border: 1px solid lightblue;
+}
+
+#dashboard_table > caption {
+	text-align: center;
+	font-weight: bold;
+	font-variant: small-caps;
+	border: 1px solid lightblue;
+}
+
+#dashboard_table > tbody > tr > td {
+	font-size: .8em;
+	padding: 2px 4px 1px 2px;
+	color: gray;
+}
+
+#dashboard_table > tbody > tr > td:nth-child(1),
+#dashboard_table > tbody > tr > td:nth-child(3) {
+	text-align: right;
+	font-weight: bold;
+}
+
+#dashboard_table > tbody > tr > td:nth-child(2),
+#dashboard_table > tbody > tr > td:nth-child(4) {
+	text-align: center;
+	font-weight: normal;
+	color:#a31128;
+}
+
+
+.pageTitle {
+	color: #2e3b4e; 
+	font-size: 2em;
+}

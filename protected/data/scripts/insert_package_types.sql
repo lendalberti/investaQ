@@ -1,0 +1,16 @@
+INSERT INTO package_types(name) VALUES('PGA');
+INSERT INTO package_types(name) VALUES('Flat Pack');
+INSERT INTO package_types(name) VALUES('CDIP');
+INSERT INTO package_types(name) VALUES('CQFP');
+INSERT INTO package_types(name) VALUES('SDIC');
+INSERT INTO package_types(name) VALUES('PDIP');
+INSERT INTO package_types(name) VALUES('PLCC');
+INSERT INTO package_types(name) VALUES('LCC');
+INSERT INTO package_types(name) VALUES('Metal Can');
+INSERT INTO package_types(name) VALUES('MQFP');
+INSERT INTO package_types(name) VALUES('PQFP');
+INSERT INTO package_types(name) VALUES('BGA');
+INSERT INTO package_types(name) VALUES('Side Braze Dip');
+INSERT INTO package_types(name) VALUES('Die Only');
+INSERT INTO package_types(name) VALUES('Unknown');
+INSERT INTO package_types(name) VALUES('LLP');

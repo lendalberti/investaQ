@@ -42,7 +42,7 @@ class UserIdentity extends CUserIdentity {
 		}       
 
 		// $userRecord = self::ldap_lookup($username, $password);
-		pDebug("UserIdentity::authenticate() - user record:", $userRecord);
+		pDebug("UserIdentity::authenticate() - user record:", $userRecord->attributes);
 
 		if ( $userRecord ) {
 		 $id = Users::model()->registerUser( $userRecord );
