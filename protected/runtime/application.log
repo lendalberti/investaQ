@@ -11561,3 +11561,692 @@ Array
 in /var/www/html/iq2/protected/globals.php (291)
 in /var/www/html/iq2/protected/controllers/QuotesController.php (154)
 in /var/www/html/iq2/index.php (21)
+2016/01/15 16:49:46 [info] [MyDebug] 
+
+actionIndex() - _GET=
+
+Array
+(
+    [stock] => 
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (130)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:49:46 [info] [MyDebug] 
+
+actionIndex() - criteria:
+
+CDbCriteria Object
+(
+    [select] => *
+    [distinct] => 
+    [condition] => type = 1
+    [params] => Array
+        (
+        )
+
+    [limit] => -1
+    [offset] => -1
+    [order] => 
+    [group] => 
+    [join] => 
+    [having] => 
+    [with] => 
+    [alias] => 
+    [together] => 
+    [index] => 
+    [scopes] => 
+    [_e:CComponent:private] => 
+    [_m:CComponent:private] => 
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (151)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:49:46 [info] [MyDebug] 
+
+actionIndex() - quote:
+
+Array
+(
+    [id] => 20
+    [quote_no] => 20160115-0005
+    [status_id] => 11
+    [user_id] => 993
+    [customer_id] => 206
+    [additional_notes] => these are some more notes
+    [terms_conditions] => terms go here
+    [created] => 2016-01-12 00:00:00
+    [updated] => 2016-01-12 00:00:00
+    [customer_acknowledgment] => customer ack.
+    [risl] => risl stuff
+    [manufacturing_lead_time] => lead time goes here
+    [expiration_date] => 2016-02-05 00:00:00
+    [lost_reason_id] => 1
+    [no_bid_reason_id] => 1
+    [ready_to_order] => 
+    [type] => 1
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (154)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:49:46 [info] [MyDebug] 
+
+actionIndex() - quote:
+
+Array
+(
+    [id] => 21
+    [quote_no] => 20160115-0004
+    [status_id] => 11
+    [user_id] => 992
+    [customer_id] => 205
+    [additional_notes] => these are some more notes
+    [terms_conditions] => terms go here
+    [created] => 2016-01-12 00:00:00
+    [updated] => 2016-01-12 00:00:00
+    [customer_acknowledgment] => customer ack.
+    [risl] => risl stuff
+    [manufacturing_lead_time] => lead time goes here
+    [expiration_date] => 2016-02-05 00:00:00
+    [lost_reason_id] => 1
+    [no_bid_reason_id] => 1
+    [ready_to_order] => 
+    [type] => 1
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (154)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:49:46 [info] [MyDebug] 
+
+actionIndex() - quote:
+
+Array
+(
+    [id] => 24
+    [quote_no] => 20160115-0002
+    [status_id] => 11
+    [user_id] => 990
+    [customer_id] => 202
+    [additional_notes] => these are some more notes
+    [terms_conditions] => terms go here
+    [created] => 2016-01-12 00:00:00
+    [updated] => 2016-01-12 00:00:00
+    [customer_acknowledgment] => customer ack.
+    [risl] => risl stuff
+    [manufacturing_lead_time] => lead time goes here
+    [expiration_date] => 2016-02-05 00:00:00
+    [lost_reason_id] => 1
+    [no_bid_reason_id] => 1
+    [ready_to_order] => 
+    [type] => 1
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (154)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:49:46 [info] [MyDebug] 
+
+actionIndex() - quote:
+
+Array
+(
+    [id] => 25
+    [quote_no] => 20160115-0001
+    [status_id] => 11
+    [user_id] => 989
+    [customer_id] => 201
+    [additional_notes] => these are some more notes
+    [terms_conditions] => terms go here
+    [created] => 2016-01-12 00:00:00
+    [updated] => 2016-01-12 00:00:00
+    [customer_acknowledgment] => customer ack.
+    [risl] => risl stuff
+    [manufacturing_lead_time] => lead time goes here
+    [expiration_date] => 2016-02-05 00:00:00
+    [lost_reason_id] => 1
+    [no_bid_reason_id] => 1
+    [ready_to_order] => 
+    [type] => 1
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (154)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:51:05 [info] [MyDebug] 
+
+actionIndex() - _GET=
+
+Array
+(
+    [stock] => 
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (130)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:51:05 [info] [MyDebug] 
+
+actionIndex() - criteria:
+
+CDbCriteria Object
+(
+    [select] => *
+    [distinct] => 
+    [condition] => type = 1
+    [params] => Array
+        (
+        )
+
+    [limit] => -1
+    [offset] => -1
+    [order] => 
+    [group] => 
+    [join] => 
+    [having] => 
+    [with] => 
+    [alias] => 
+    [together] => 
+    [index] => 
+    [scopes] => 
+    [_e:CComponent:private] => 
+    [_m:CComponent:private] => 
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (151)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:51:05 [info] [MyDebug] 
+
+actionIndex() - quote:
+
+Array
+(
+    [id] => 20
+    [quote_no] => 20160115-0005
+    [status_id] => 11
+    [user_id] => 993
+    [customer_id] => 206
+    [additional_notes] => these are some more notes
+    [terms_conditions] => terms go here
+    [created] => 2016-01-12 00:00:00
+    [updated] => 2016-01-12 00:00:00
+    [customer_acknowledgment] => customer ack.
+    [risl] => risl stuff
+    [manufacturing_lead_time] => lead time goes here
+    [expiration_date] => 2016-02-05 00:00:00
+    [lost_reason_id] => 1
+    [no_bid_reason_id] => 1
+    [ready_to_order] => 
+    [type] => 1
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (154)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:51:05 [info] [MyDebug] 
+
+actionIndex() - quote:
+
+Array
+(
+    [id] => 21
+    [quote_no] => 20160115-0004
+    [status_id] => 11
+    [user_id] => 992
+    [customer_id] => 205
+    [additional_notes] => these are some more notes
+    [terms_conditions] => terms go here
+    [created] => 2016-01-12 00:00:00
+    [updated] => 2016-01-12 00:00:00
+    [customer_acknowledgment] => customer ack.
+    [risl] => risl stuff
+    [manufacturing_lead_time] => lead time goes here
+    [expiration_date] => 2016-02-05 00:00:00
+    [lost_reason_id] => 1
+    [no_bid_reason_id] => 1
+    [ready_to_order] => 
+    [type] => 1
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (154)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:51:05 [info] [MyDebug] 
+
+actionIndex() - quote:
+
+Array
+(
+    [id] => 24
+    [quote_no] => 20160115-0002
+    [status_id] => 11
+    [user_id] => 990
+    [customer_id] => 202
+    [additional_notes] => these are some more notes
+    [terms_conditions] => terms go here
+    [created] => 2016-01-12 00:00:00
+    [updated] => 2016-01-12 00:00:00
+    [customer_acknowledgment] => customer ack.
+    [risl] => risl stuff
+    [manufacturing_lead_time] => lead time goes here
+    [expiration_date] => 2016-02-05 00:00:00
+    [lost_reason_id] => 1
+    [no_bid_reason_id] => 1
+    [ready_to_order] => 
+    [type] => 1
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (154)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:51:05 [info] [MyDebug] 
+
+actionIndex() - quote:
+
+Array
+(
+    [id] => 25
+    [quote_no] => 20160115-0001
+    [status_id] => 11
+    [user_id] => 989
+    [customer_id] => 201
+    [additional_notes] => these are some more notes
+    [terms_conditions] => terms go here
+    [created] => 2016-01-12 00:00:00
+    [updated] => 2016-01-12 00:00:00
+    [customer_acknowledgment] => customer ack.
+    [risl] => risl stuff
+    [manufacturing_lead_time] => lead time goes here
+    [expiration_date] => 2016-02-05 00:00:00
+    [lost_reason_id] => 1
+    [no_bid_reason_id] => 1
+    [ready_to_order] => 
+    [type] => 1
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (154)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:51:12 [info] [MyDebug] 
+
+actionIndex() - _GET=
+
+Array
+(
+    [mfg] => 
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (130)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:51:12 [info] [MyDebug] 
+
+actionIndex() - criteria:
+
+CDbCriteria Object
+(
+    [select] => *
+    [distinct] => 
+    [condition] => type = 2
+    [params] => Array
+        (
+        )
+
+    [limit] => -1
+    [offset] => -1
+    [order] => 
+    [group] => 
+    [join] => 
+    [having] => 
+    [with] => 
+    [alias] => 
+    [together] => 
+    [index] => 
+    [scopes] => 
+    [_e:CComponent:private] => 
+    [_m:CComponent:private] => 
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (151)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:51:12 [info] [MyDebug] 
+
+actionIndex() - quote:
+
+Array
+(
+    [id] => 22
+    [quote_no] => 20160115-0003
+    [status_id] => 11
+    [user_id] => 991
+    [customer_id] => 204
+    [additional_notes] => these are some more notes
+    [terms_conditions] => terms go here
+    [created] => 2016-01-12 00:00:00
+    [updated] => 2016-01-12 00:00:00
+    [customer_acknowledgment] => customer ack.
+    [risl] => risl stuff
+    [manufacturing_lead_time] => lead time goes here
+    [expiration_date] => 2016-02-05 00:00:00
+    [lost_reason_id] => 1
+    [no_bid_reason_id] => 1
+    [ready_to_order] => 
+    [type] => 2
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (154)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:51:12 [info] [MyDebug] 
+
+actionIndex() - quote:
+
+Array
+(
+    [id] => 23
+    [quote_no] => 20160115-0007
+    [status_id] => 11
+    [user_id] => 991
+    [customer_id] => 204
+    [additional_notes] => these are some more notes
+    [terms_conditions] => terms go here
+    [created] => 2016-01-12 00:00:00
+    [updated] => 2016-01-12 00:00:00
+    [customer_acknowledgment] => customer ack.
+    [risl] => risl stuff
+    [manufacturing_lead_time] => lead time goes here
+    [expiration_date] => 2016-02-05 00:00:00
+    [lost_reason_id] => 1
+    [no_bid_reason_id] => 1
+    [ready_to_order] => 
+    [type] => 2
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (154)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:52:30 [info] [MyDebug] 
+
+actionIndex() - _GET=
+
+Array
+(
+    [mfg] => 
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (130)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:52:30 [info] [MyDebug] 
+
+actionIndex() - criteria:
+
+CDbCriteria Object
+(
+    [select] => *
+    [distinct] => 
+    [condition] => type = 2
+    [params] => Array
+        (
+        )
+
+    [limit] => -1
+    [offset] => -1
+    [order] => 
+    [group] => 
+    [join] => 
+    [having] => 
+    [with] => 
+    [alias] => 
+    [together] => 
+    [index] => 
+    [scopes] => 
+    [_e:CComponent:private] => 
+    [_m:CComponent:private] => 
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (151)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:52:30 [info] [MyDebug] 
+
+actionIndex() - quote:
+
+Array
+(
+    [id] => 22
+    [quote_no] => 20160115-0003
+    [status_id] => 11
+    [user_id] => 991
+    [customer_id] => 204
+    [additional_notes] => these are some more notes
+    [terms_conditions] => terms go here
+    [created] => 2016-01-12 00:00:00
+    [updated] => 2016-01-12 00:00:00
+    [customer_acknowledgment] => customer ack.
+    [risl] => risl stuff
+    [manufacturing_lead_time] => lead time goes here
+    [expiration_date] => 2016-02-05 00:00:00
+    [lost_reason_id] => 1
+    [no_bid_reason_id] => 1
+    [ready_to_order] => 
+    [type] => 2
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (154)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:52:30 [info] [MyDebug] 
+
+actionIndex() - quote:
+
+Array
+(
+    [id] => 23
+    [quote_no] => 20160115-0007
+    [status_id] => 11
+    [user_id] => 991
+    [customer_id] => 204
+    [additional_notes] => these are some more notes
+    [terms_conditions] => terms go here
+    [created] => 2016-01-12 00:00:00
+    [updated] => 2016-01-12 00:00:00
+    [customer_acknowledgment] => customer ack.
+    [risl] => risl stuff
+    [manufacturing_lead_time] => lead time goes here
+    [expiration_date] => 2016-02-05 00:00:00
+    [lost_reason_id] => 1
+    [no_bid_reason_id] => 1
+    [ready_to_order] => 
+    [type] => 2
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (154)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:52:41 [info] [MyDebug] 
+
+actionIndex() - _GET=
+
+Array
+(
+    [stock] => 
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (130)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:52:41 [info] [MyDebug] 
+
+actionIndex() - criteria:
+
+CDbCriteria Object
+(
+    [select] => *
+    [distinct] => 
+    [condition] => type = 1
+    [params] => Array
+        (
+        )
+
+    [limit] => -1
+    [offset] => -1
+    [order] => 
+    [group] => 
+    [join] => 
+    [having] => 
+    [with] => 
+    [alias] => 
+    [together] => 
+    [index] => 
+    [scopes] => 
+    [_e:CComponent:private] => 
+    [_m:CComponent:private] => 
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (151)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:52:41 [info] [MyDebug] 
+
+actionIndex() - quote:
+
+Array
+(
+    [id] => 20
+    [quote_no] => 20160115-0005
+    [status_id] => 11
+    [user_id] => 993
+    [customer_id] => 206
+    [additional_notes] => these are some more notes
+    [terms_conditions] => terms go here
+    [created] => 2016-01-12 00:00:00
+    [updated] => 2016-01-12 00:00:00
+    [customer_acknowledgment] => customer ack.
+    [risl] => risl stuff
+    [manufacturing_lead_time] => lead time goes here
+    [expiration_date] => 2016-02-05 00:00:00
+    [lost_reason_id] => 1
+    [no_bid_reason_id] => 1
+    [ready_to_order] => 
+    [type] => 1
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (154)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:52:41 [info] [MyDebug] 
+
+actionIndex() - quote:
+
+Array
+(
+    [id] => 21
+    [quote_no] => 20160115-0004
+    [status_id] => 11
+    [user_id] => 992
+    [customer_id] => 205
+    [additional_notes] => these are some more notes
+    [terms_conditions] => terms go here
+    [created] => 2016-01-12 00:00:00
+    [updated] => 2016-01-12 00:00:00
+    [customer_acknowledgment] => customer ack.
+    [risl] => risl stuff
+    [manufacturing_lead_time] => lead time goes here
+    [expiration_date] => 2016-02-05 00:00:00
+    [lost_reason_id] => 1
+    [no_bid_reason_id] => 1
+    [ready_to_order] => 
+    [type] => 1
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (154)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:52:41 [info] [MyDebug] 
+
+actionIndex() - quote:
+
+Array
+(
+    [id] => 24
+    [quote_no] => 20160115-0002
+    [status_id] => 11
+    [user_id] => 990
+    [customer_id] => 202
+    [additional_notes] => these are some more notes
+    [terms_conditions] => terms go here
+    [created] => 2016-01-12 00:00:00
+    [updated] => 2016-01-12 00:00:00
+    [customer_acknowledgment] => customer ack.
+    [risl] => risl stuff
+    [manufacturing_lead_time] => lead time goes here
+    [expiration_date] => 2016-02-05 00:00:00
+    [lost_reason_id] => 1
+    [no_bid_reason_id] => 1
+    [ready_to_order] => 
+    [type] => 1
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (154)
+in /var/www/html/iq2/index.php (21)
+2016/01/15 16:52:41 [info] [MyDebug] 
+
+actionIndex() - quote:
+
+Array
+(
+    [id] => 25
+    [quote_no] => 20160115-0001
+    [status_id] => 11
+    [user_id] => 989
+    [customer_id] => 201
+    [additional_notes] => these are some more notes
+    [terms_conditions] => terms go here
+    [created] => 2016-01-12 00:00:00
+    [updated] => 2016-01-12 00:00:00
+    [customer_acknowledgment] => customer ack.
+    [risl] => risl stuff
+    [manufacturing_lead_time] => lead time goes here
+    [expiration_date] => 2016-02-05 00:00:00
+    [lost_reason_id] => 1
+    [no_bid_reason_id] => 1
+    [ready_to_order] => 
+    [type] => 1
+)
+
+
+in /var/www/html/iq2/protected/globals.php (291)
+in /var/www/html/iq2/protected/controllers/QuotesController.php (154)
+in /var/www/html/iq2/index.php (21)
