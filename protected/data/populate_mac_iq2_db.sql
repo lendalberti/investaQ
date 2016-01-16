@@ -4,6 +4,7 @@ source /Users/len/www/iq2/protected/data/scripts/insert_countries.sql
 source /Users/len/www/iq2/protected/data/scripts/insert_regions.sql
 
 source /Users/len/www/iq2/protected/data/scripts/insert_actions.sql
+source /Users/len/www/iq2/protected/data/scripts/insert_types.sql
 source /Users/len/www/iq2/protected/data/scripts/insert_classes.sql
 source /Users/len/www/iq2/protected/data/scripts/insert_tiers.sql
 source /Users/len/www/iq2/protected/data/scripts/insert_no_bid_reasons.sql
@@ -23,5 +24,7 @@ source /Users/len/www/iq2/protected/data/scripts/insert_package_types.sql
 source /Users/len/www/iq2/protected/data/scripts/insert_priority.sql 
 source /Users/len/www/iq2/protected/data/scripts/insert_process_flow.sql 
 source /Users/len/www/iq2/protected/data/scripts/insert_die_manufacturers.sql 
-source /Users/len/www/iq2/protected/data/scripts/insert_testing.sql 
+source /Users/len/www/iq2/protected/data/scripts/insert_testing.sql
+ 
+source /Users/len/www/iq2/protected/data/scripts/insert_quotes.sql 
 

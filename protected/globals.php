@@ -1,5 +1,31 @@
 <?php
 
+
+    // ------------------------------------------------
+    function getQuotePartNumbers( $quote_id ) {
+        $part_no = "<ul class='pn'>";
+
+        $sql = "SELECT part_no FROM items WHERE quote_id = $quote_id";
+        $results = Yii::app()->db->createCommand($sql)->queryAll();
+
+        foreach( $results as $m ) {
+            //if ( count($results) == 1 ) return $m['part_no'];
+            $part_no .= '<li>'.$m['part_no'].'</li>';
+        }
+
+        $part_no .= '</ul>';
+        return $part_no;
+    }
+
+
+
+
+
+
+
+
+
+
     // ------------------------------------------------
     function truncateString($string, $num) {
         if (strlen($string) > $num) {

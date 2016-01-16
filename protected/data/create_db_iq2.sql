@@ -2,6 +2,9 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
+DROP SCHEMA IF EXISTS `iq2` ;
+CREATE SCHEMA IF NOT EXISTS `iq2` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
+USE `iq2` ;
 
 -- -----------------------------------------------------
 -- Table `iq2`.`us_states`
@@ -224,6 +227,18 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `iq2`.`types`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `iq2`.`types` ;
+
+CREATE  TABLE IF NOT EXISTS `iq2`.`types` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(45) NOT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `iq2`.`quotes`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `iq2`.`quotes` ;
@@ -231,6 +246,7 @@ DROP TABLE IF EXISTS `iq2`.`quotes` ;
 CREATE  TABLE IF NOT EXISTS `iq2`.`quotes` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `quote_no` VARCHAR(45) NOT NULL ,
+  `type_id` INT NOT NULL DEFAULT false ,
   `status_id` INT NOT NULL ,
   `user_id` INT NOT NULL ,
   `customer_id` INT NOT NULL ,
@@ -245,7 +261,6 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`quotes` (
   `lost_reason_id` INT NULL DEFAULT 1 ,
   `no_bid_reason_id` INT NULL DEFAULT 1 ,
   `ready_to_order` INT NULL ,
-  `type` INT NOT NULL DEFAULT false ,
   PRIMARY KEY (`id`) ,
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
   INDEX `fk_quotes_2_idx` (`customer_id` ASC) ,
@@ -253,6 +268,7 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`quotes` (
   INDEX `fk_quotes_1_idx` (`status_id` ASC) ,
   INDEX `fk_quotes_4_idx` (`lost_reason_id` ASC) ,
   INDEX `fk_quotes_5_idx` (`no_bid_reason_id` ASC) ,
+  INDEX `fk_quotes_6_idx` (`type_id` ASC) ,
   CONSTRAINT `fk_quotes_2`
     FOREIGN KEY (`customer_id` )
     REFERENCES `iq2`.`customers` (`id` )
@@ -276,6 +292,11 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`quotes` (
   CONSTRAINT `fk_quotes_5`
     FOREIGN KEY (`no_bid_reason_id` )
     REFERENCES `iq2`.`no_bid_reasons` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_quotes_6`
+    FOREIGN KEY (`type_id` )
+    REFERENCES `iq2`.`types` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -318,18 +339,6 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`items` (
     REFERENCES `iq2`.`quotes` (`id` )
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `iq2`.`types`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `iq2`.`types` ;
-
-CREATE  TABLE IF NOT EXISTS `iq2`.`types` (
-  `id` INT NOT NULL AUTO_INCREMENT ,
-  `name` VARCHAR(45) NOT NULL ,
-  PRIMARY KEY (`id`) )
 ENGINE = InnoDB;
 
 
@@ -746,18 +755,9 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`bto_approvals` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+USE `iq2` ;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
--- -----------------------------------------------------
--- Data for table `iq2`.`types`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `iq2`;
-INSERT INTO `iq2`.`types` (`id`, `name`) VALUES (1, 'Warehouse');
-INSERT INTO `iq2`.`types` (`id`, `name`) VALUES (2, 'Manufacturing');
-
-COMMIT;

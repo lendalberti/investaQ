@@ -1,5 +1,28 @@
 
 +-----------------+
+|  Jan. 16, 2016  |
++-----------------+
+
+	[ ] search on index page (dataTables) not working
+
+	[ ] define in 'types' table correct values for:
+	        STOCK                   = 1,  
+			MANUFACTURING           = 2,  
+			SUPPLIER_REQUEST_FORM   = 3;
+			(see Quotes.php)
+
+	[ ] Stock Quotes
+		[ ] index - add columns for 'Part No.' and 'Quantity'
+		[ ] view - click on index row, popup?
+		[ ] create - click on icon
+		[ ] edit - from link on popup?
+		[ ] delete - from link on popup?
+
+
+
+
+
++-----------------+
 |  Jan. 15, 2016  |
 +-----------------+
 

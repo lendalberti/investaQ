@@ -144,9 +144,10 @@ table.dataTable thead th.sorting_desc:after {
     color: lightyellow;
 }
 
-
-
-
+#quotes_table > tbody > tr > td:nth-child(4) {
+	font-size: .8em;
+	color: #a31128;
+}
 
 
 

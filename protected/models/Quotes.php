@@ -6,6 +6,7 @@
  * The followings are the available columns in table 'quotes':
  * @property integer $id
  * @property string $quote_no
+ * @property integer $type_id
  * @property integer $status_id
  * @property integer $user_id
  * @property integer $customer_id
@@ -20,24 +21,23 @@
  * @property integer $lost_reason_id
  * @property integer $no_bid_reason_id
  * @property integer $ready_to_order
- * @property integer $type
  *
  * The followings are the available model relations:
  * @property Attachments[] $attachments
  * @property History[] $histories
  * @property Items[] $items
+ * @property Status $status
  * @property Customers $customer
  * @property Users $user
- * @property Status $status
  * @property LostReasons $lostReason
  * @property NoBidReasons $noBidReason
+ * @property Types $type
  */
-class Quotes extends CActiveRecord  {
+class Quotes extends CActiveRecord {
 
-
-	const	STOCK                   = 1,  
-			MANUFACTURING           = 2,  
-			SUPPLIER_REQUEST_FORM   = 3;
+	const   STOCK                   = 1,  
+            MANUFACTURING           = 2,  
+            SUPPLIER_REQUEST_FORM   = 3;
 
 
 	/**
@@ -66,13 +66,13 @@ class Quotes extends CActiveRecord  {
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('quote_no, status_id, user_id, customer_id,  created, expiration_date', 'required'),
-			array('status_id, user_id, customer_id, lost_reason_id, no_bid_reason_id, ready_to_order, type', 'numerical', 'integerOnly'=>true),
+			array('quote_no, status_id, user_id, customer_id, created, expiration_date', 'required'),
+			array('type_id, status_id, user_id, customer_id, lost_reason_id, no_bid_reason_id, ready_to_order', 'numerical', 'integerOnly'=>true),
 			array('quote_no', 'length', 'max'=>45),
 			array('additional_notes, terms_conditions, updated, customer_acknowledgment, risl, manufacturing_lead_time', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, quote_no, status_id, user_id, customer_id, additional_notes, terms_conditions, created, updated, customer_acknowledgment, risl, manufacturing_lead_time, expiration_date, lost_reason_id, no_bid_reason_id, ready_to_order, type', 'safe', 'on'=>'search'),
+			array('id, quote_no, type_id, status_id, user_id, customer_id, additional_notes, terms_conditions, created, updated, customer_acknowledgment, risl, manufacturing_lead_time, expiration_date, lost_reason_id, no_bid_reason_id, ready_to_order', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -87,11 +87,12 @@ class Quotes extends CActiveRecord  {
 			'attachments' => array(self::HAS_MANY, 'Attachments', 'quote_id'),
 			'histories' => array(self::HAS_MANY, 'History', 'quote_id'),
 			'items' => array(self::HAS_MANY, 'Items', 'quote_id'),
+			'status' => array(self::BELONGS_TO, 'Status', 'status_id'),
 			'customer' => array(self::BELONGS_TO, 'Customers', 'customer_id'),
 			'user' => array(self::BELONGS_TO, 'Users', 'user_id'),
-			'status' => array(self::BELONGS_TO, 'Status', 'status_id'),
 			'lostReason' => array(self::BELONGS_TO, 'LostReasons', 'lost_reason_id'),
 			'noBidReason' => array(self::BELONGS_TO, 'NoBidReasons', 'no_bid_reason_id'),
+			'type' => array(self::BELONGS_TO, 'Types', 'type_id'),
 		);
 	}
 
@@ -103,6 +104,7 @@ class Quotes extends CActiveRecord  {
 		return array(
 			'id' => 'ID',
 			'quote_no' => 'Quote No',
+			'type_id' => 'Type',
 			'status_id' => 'Status',
 			'user_id' => 'User',
 			'customer_id' => 'Customer',
@@ -117,7 +119,6 @@ class Quotes extends CActiveRecord  {
 			'lost_reason_id' => 'Lost Reason',
 			'no_bid_reason_id' => 'No Bid Reason',
 			'ready_to_order' => 'Ready To Order',
-			'type' => 'Quote Type',
 		);
 	}
 
@@ -134,6 +135,7 @@ class Quotes extends CActiveRecord  {
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('quote_no',$this->quote_no,true);
+		$criteria->compare('type_id',$this->type_id);
 		$criteria->compare('status_id',$this->status_id);
 		$criteria->compare('user_id',$this->user_id);
 		$criteria->compare('customer_id',$this->customer_id);
@@ -148,7 +150,6 @@ class Quotes extends CActiveRecord  {
 		$criteria->compare('lost_reason_id',$this->lost_reason_id);
 		$criteria->compare('no_bid_reason_id',$this->no_bid_reason_id);
 		$criteria->compare('ready_to_order',$this->ready_to_order);
-		$criteria->compare('type',$this->type);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

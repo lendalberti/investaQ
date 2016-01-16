@@ -145,7 +145,7 @@ class QuotesController extends Controller
 
 		$criteria = new CDbCriteria();
 		if ( !Yii::app()->user->isAdmin )   $criteria->addCondition("user_id = " . Yii::app()->user->id);
-		$criteria->addCondition("type = $quote_type");
+		$criteria->addCondition("type_id = $quote_type");
 		$model = Quotes::model()->findAll( $criteria );
 
 		pDebug('actionIndex() - criteria:', $criteria);
