@@ -1,6 +1,5 @@
 
 #iq2_title {
-	width: 500px;
 	float: right;
 	text-align: right;
 	margin-top: 20px;
@@ -9,7 +8,7 @@
 	font-weight: bold;
 }
 
-/* --------------------------------------    Mani Menu     */
+/* --------------------------------------    Main Menu     */
 #mainmenu {
 	background: linear-gradient( lightgray, gray );
 }
@@ -33,8 +32,7 @@
 	padding:5px 8px;
 }
 
-#mainmenu ul li a:hover, #mainmenu ul li.active a
-{
+#mainmenu ul li a:hover, #mainmenu ul li.active a {
 	/*color: #6399cd;*/
 	/*background-color:#EFF4FA;*/
 	color: black;
@@ -145,9 +143,39 @@ table.dataTable thead th.sorting_desc:after {
 }
 
 #quotes_table > tbody > tr > td:nth-child(4) {
-	font-size: .8em;
 	color: #a31128;
 }
+
+#quotes_table > tbody > tr {
+	font-size: .8em;
+}
+
+#quotes_table > tbody > tr:nth-child(odd) {
+   background: #ECF1EF; 
+}
+
+
+a[id^='quote_delete_']:hover {
+	text-decoration: underline;
+}
+
+#quotes_table > tbody > tr:hover {
+	background-color: #FDFCDC; 
+}
+
+a[id^='view_quote_'] > img:hover,
+a[id^='edit_quote_'] > img:hover,
+a[id^='delete_quote_'] > img:hover {
+	border: 1px solid lightblue;
+}
+
+
+
+
+
+
+
+
 
 
 

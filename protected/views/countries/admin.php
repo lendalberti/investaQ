@@ -1,4 +1,7 @@
 <?php
+/* @var $this CountriesController */
+/* @var $model Countries */
+
 $this->breadcrumbs=array(
 	'Countries'=>array('index'),
 	'Manage',
@@ -15,7 +18,7 @@ $('.search-button').click(function(){
 	return false;
 });
 $('.search-form form').submit(function(){
-	$.fn.yiiGridView.update('countries-grid', {
+	$('#countries-grid').yiiGridView('update', {
 		data: $(this).serialize()
 	});
 	return false;

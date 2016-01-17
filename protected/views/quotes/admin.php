@@ -1,4 +1,7 @@
 <?php
+/* @var $this QuotesController */
+/* @var $model Quotes */
+
 $this->breadcrumbs=array(
 	'Quotes'=>array('index'),
 	'Manage',
@@ -15,7 +18,7 @@ $('.search-button').click(function(){
 	return false;
 });
 $('.search-form form').submit(function(){
-	$.fn.yiiGridView.update('quotes-grid', {
+	$('#quotes-grid').yiiGridView('update', {
 		data: $(this).serialize()
 	});
 	return false;
@@ -44,22 +47,41 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 	'columns'=>array(
 		'id',
 		'quote_no',
+		'quote_type_id',
 		'status_id',
-		'user_id',
+		'owner_id',
 		'customer_id',
-		'additional_notes',
 		/*
+		'created_date',
+		'updated_date',
+		'expiration_date',
+		'level_id',
+		'source_id',
+		'additional_notes',
 		'terms_conditions',
-		'created',
-		'updated',
 		'customer_acknowledgment',
 		'risl',
 		'manufacturing_lead_time',
-		'expiration_date',
 		'lost_reason_id',
 		'no_bid_reason_id',
 		'ready_to_order',
-		'bto',
+		'requested_part_number',
+		'generic_part_number',
+		'quantity1',
+		'quantity2',
+		'quantity3',
+		'die_manufacturer_id',
+		'package_type_id',
+		'lead_count',
+		'process_flow_id',
+		'testing_id',
+		'priority_id',
+		'temp_low',
+		'temp_high',
+		'ncnr',
+		'itar',
+		'have_die',
+		'spa',
 		*/
 		array(
 			'class'=>'CButtonColumn',

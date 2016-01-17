@@ -1,4 +1,7 @@
 <?php
+/* @var $this ContactsController */
+/* @var $model Contacts */
+
 $this->breadcrumbs=array(
 	'Contacts'=>array('index'),
 	'Manage',
@@ -15,7 +18,7 @@ $('.search-button').click(function(){
 	return false;
 });
 $('.search-form form').submit(function(){
-	$.fn.yiiGridView.update('contacts-grid', {
+	$('#contacts-grid').yiiGridView('update', {
 		data: $(this).serialize()
 	});
 	return false;

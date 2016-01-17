@@ -1,3 +1,9 @@
+<?php
+/* @var $this UsersController */
+/* @var $model Users */
+/* @var $form CActiveForm */
+?>
+
 <div class="wide form">
 
 <?php $form=$this->beginWidget('CActiveForm', array(
@@ -8,11 +14,6 @@
 	<div class="row">
 		<?php echo $form->label($model,'id'); ?>
 		<?php echo $form->textField($model,'id'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->label($model,'role_id'); ?>
-		<?php echo $form->textField($model,'role_id'); ?>
 	</div>
 
 	<div class="row">

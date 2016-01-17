@@ -1,4 +1,7 @@
 <?php
+/* @var $this ContactsController */
+/* @var $model Contacts */
+
 $this->breadcrumbs=array(
 	'Contacts'=>array('index'),
 	$model->title,

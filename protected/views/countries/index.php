@@ -1,4 +1,7 @@
 <?php
+/* @var $this CountriesController */
+/* @var $dataProvider CActiveDataProvider */
+
 $this->breadcrumbs=array(
 	'Countries',
 );

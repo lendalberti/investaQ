@@ -1,4 +1,7 @@
 <?php
+/* @var $this CustomersController */
+/* @var $model Customers */
+
 $this->breadcrumbs=array(
 	'Customers'=>array('index'),
 	$model->name,
@@ -24,11 +27,11 @@ $this->menu=array(
 		'address2',
 		'city',
 		'state_id',
-		'zip',
 		'country_id',
-		'class_id',
+		'zip',
 		'region_id',
-		'territories',
+		'customer_type_id',
+		'territory_id',
 		'vertical_market',
 		'parent_id',
 		'company_link',

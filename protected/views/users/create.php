@@ -1,4 +1,7 @@
 <?php
+/* @var $this UsersController */
+/* @var $model Users */
+
 $this->breadcrumbs=array(
 	'Users'=>array('index'),
 	'Create',

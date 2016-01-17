@@ -8,7 +8,7 @@
  * @property string $name
  *
  * The followings are the available model relations:
- * @property Users[] $users
+ * @property UserRoles[] $userRoles
  */
 class Roles extends CActiveRecord  {
 
@@ -17,7 +17,6 @@ class Roles extends CActiveRecord  {
 			MGR          = 3,
 			APPROVER     = 4,
 			BTO_APPROVER = 5;
-
 
 
 	/**
@@ -61,7 +60,7 @@ class Roles extends CActiveRecord  {
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'users' => array(self::HAS_MANY, 'Users', 'role_id'),
+			'userRoles' => array(self::HAS_MANY, 'UserRoles', 'role_id'),
 		);
 	}
 

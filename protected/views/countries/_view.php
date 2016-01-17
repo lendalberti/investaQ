@@ -1,3 +1,8 @@
+<?php
+/* @var $this CountriesController */
+/* @var $data Countries */
+?>
+
 <div class="view">
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('id')); ?>:</b>

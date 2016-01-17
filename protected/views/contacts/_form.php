@@ -1,3 +1,9 @@
+<?php
+/* @var $this ContactsController */
+/* @var $model Contacts */
+/* @var $form CActiveForm */
+?>
+
 <div class="form">
 
 <?php $form=$this->beginWidget('CActiveForm', array(

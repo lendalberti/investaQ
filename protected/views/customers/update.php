@@ -1,4 +1,7 @@
 <?php
+/* @var $this CustomersController */
+/* @var $model Customers */
+
 $this->breadcrumbs=array(
 	'Customers'=>array('index'),
 	$model->name=>array('view','id'=>$model->id),

@@ -3,27 +3,16 @@
 
     // ------------------------------------------------
     function getQuotePartNumbers( $quote_id ) {
-        $part_no = "<ul class='pn'>";
+        $part_no = ''; 
 
-        $sql = "SELECT part_no FROM items WHERE quote_id = $quote_id";
+        $sql = "SELECT part_no FROM stock_items WHERE quote_id = $quote_id";
         $results = Yii::app()->db->createCommand($sql)->queryAll();
 
         foreach( $results as $m ) {
-            //if ( count($results) == 1 ) return $m['part_no'];
-            $part_no .= '<li>'.$m['part_no'].'</li>';
+            $part_no .= $m['part_no'].'<br />';
         }
-
-        $part_no .= '</ul>';
         return $part_no;
     }
-
-
-
-
-
-
-
-
 
 
     // ------------------------------------------------
@@ -165,7 +154,7 @@
     // -----------------------------------------------------------
     function getMyQuoteCount( $status_id ) {
         $user_id = Yii::app()->user->id;
-        return Quotes::model()->count( "status_id=$status_id AND user_id=$user_id" );
+        return Quotes::model()->count( "status_id=$status_id AND owner_id=$user_id" );
     }
 
 

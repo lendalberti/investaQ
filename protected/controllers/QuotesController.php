@@ -15,6 +15,7 @@ class QuotesController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
+			'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
 
@@ -27,16 +28,13 @@ class QuotesController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
-				'users'=>array('*'),
+				'actions'=>array('index','view','create','update'),
+				'expression' => '$user->isLoggedIn'
 			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
-				'users'=>array('@'),
-			),
+		
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions'=>array('admin','delete'),
-				'users'=>array('ldalberti'),
+				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -109,24 +107,22 @@ class QuotesController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		if(Yii::app()->request->isPostRequest)
-		{
-			// we only allow deletion via POST request
-			$this->loadModel($id)->delete();
+		$this->loadModel($id)->delete();
 
-			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-			if(!isset($_GET['ajax']))
-				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-		}
-		else
-			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
+		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+		if(!isset($_GET['ajax']))
+			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
 	}
 
 	/**
 	 * Lists all models.
 	 */
-	public function actionIndex() 	{
-
+	public function actionIndex()
+	{
+		// $dataProvider=new CActiveDataProvider('Quotes');
+		// $this->render('index',array(
+		// 	'dataProvider'=>$dataProvider,
+		// ));
 		pDebug('actionIndex() - _GET=', $_GET);
 		$$quote_type = '';
 
@@ -144,8 +140,8 @@ class QuotesController extends Controller
 		}
 
 		$criteria = new CDbCriteria();
-		if ( !Yii::app()->user->isAdmin )   $criteria->addCondition("user_id = " . Yii::app()->user->id);
-		$criteria->addCondition("type_id = $quote_type");
+		if ( !Yii::app()->user->isAdmin )   $criteria->addCondition("owner_id = " . Yii::app()->user->id);
+		$criteria->addCondition("quote_type_id = $quote_type");
 		$model = Quotes::model()->findAll( $criteria );
 
 		pDebug('actionIndex() - criteria:', $criteria);
@@ -159,10 +155,6 @@ class QuotesController extends Controller
 			'page_title' => $page_title,
 		));
 	}
-
-
-
-
 
 	/**
 	 * Manages all models.
@@ -182,7 +174,9 @@ class QuotesController extends Controller
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
-	 * @param integer the ID of the model to be loaded
+	 * @param integer $id the ID of the model to be loaded
+	 * @return Quotes the loaded model
+	 * @throws CHttpException
 	 */
 	public function loadModel($id)
 	{
@@ -194,7 +188,7 @@ class QuotesController extends Controller
 
 	/**
 	 * Performs the AJAX validation.
-	 * @param CModel the model to be validated
+	 * @param Quotes $model the model to be validated
 	 */
 	protected function performAjaxValidation($model)
 	{

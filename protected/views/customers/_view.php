@@ -1,3 +1,8 @@
+<?php
+/* @var $this CustomersController */
+/* @var $data Customers */
+?>
+
 <div class="view">
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('id')); ?>:</b>
@@ -24,25 +29,25 @@
 	<?php echo CHtml::encode($data->state_id); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('zip')); ?>:</b>
-	<?php echo CHtml::encode($data->zip); ?>
-	<br />
-
-	<?php /*
 	<b><?php echo CHtml::encode($data->getAttributeLabel('country_id')); ?>:</b>
 	<?php echo CHtml::encode($data->country_id); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('class_id')); ?>:</b>
-	<?php echo CHtml::encode($data->class_id); ?>
+	<?php /*
+	<b><?php echo CHtml::encode($data->getAttributeLabel('zip')); ?>:</b>
+	<?php echo CHtml::encode($data->zip); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('region_id')); ?>:</b>
 	<?php echo CHtml::encode($data->region_id); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('territories')); ?>:</b>
-	<?php echo CHtml::encode($data->territories); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('customer_type_id')); ?>:</b>
+	<?php echo CHtml::encode($data->customer_type_id); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('territory_id')); ?>:</b>
+	<?php echo CHtml::encode($data->territory_id); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('vertical_market')); ?>:</b>

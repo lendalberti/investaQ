@@ -1,4 +1,7 @@
 <?php
+/* @var $this UsersController */
+/* @var $model Users */
+
 $this->breadcrumbs=array(
 	'Users'=>array('index'),
 	$model->title,
@@ -19,7 +22,6 @@ $this->menu=array(
 	'data'=>$model,
 	'attributes'=>array(
 		'id',
-		'role_id',
 		'group_id',
 		'username',
 		'first_name',

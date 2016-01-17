@@ -1,4 +1,7 @@
 <?php
+/* @var $this QuotesController */
+/* @var $model Quotes */
+
 $this->breadcrumbs=array(
 	'Quotes'=>array('index'),
 	'Create',

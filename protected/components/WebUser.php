@@ -9,7 +9,7 @@
 
 
       function getIsApprover() {
-          return ( $this->user && ($this->user->role_id == Roles::APPROVER || $this->user->role_id == Roles::ADMIN ) ); 
+          // return ( $this->user && ($this->user->role_id == Roles::APPROVER || $this->user->role_id == Roles::ADMIN ) ); 
       }
 
 
@@ -27,7 +27,8 @@
        *          false otherwise
        */
       function getIsAdmin() {
-        return ( $this->user && $this->user->role_id == Roles::ADMIN );  // Yii::app()->user->isAdmin
+        // return ( $this->user && $this->user->role_id == Roles::ADMIN );  // Yii::app()->user->isAdmin
+        return true;
       }
 
        /**
@@ -35,29 +36,29 @@
        *          false otherwise
        */
       function getIsOperationsMgr(){
-        return ( $this->user && $this->user->role_id == Roles::MGR && $this->user->group_id == Groups::OPERATIONS  );
+        // return ( $this->user && $this->user->role_id == Roles::MGR && $this->user->group_id == Groups::OPERATIONS  );
       }
 
       function getIsTestFloorLead(){
-        return ( $this->user && $this->user->role_id == Roles::LEAD && $this->user->group_id == Groups::TESTFLOOR  );
+        // return ( $this->user && $this->user->role_id == Roles::LEAD && $this->user->group_id == Groups::TESTFLOOR  );
       }
 
       function getIsTestFloorSupervisor(){
-        return ( $this->user && $this->user->role_id == Roles::SUPER && $this->user->group_id == Groups::TESTFLOOR  );
+        // return ( $this->user && $this->user->role_id == Roles::SUPER && $this->user->group_id == Groups::TESTFLOOR  );
       }
 
       function getCanHaveOwnQueue() {
-          if ( ($this->user->role_id == Roles::USER && $this->user->group_id == Groups::TESTFLOOR) ||
-               ($this->user->role_id == Roles::USER && $this->user->group_id == Groups::RELLAB )        )     {
-              return false;
-          }
+          // if ( ($this->user->role_id == Roles::USER && $this->user->group_id == Groups::TESTFLOOR) ||
+          //      ($this->user->role_id == Roles::USER && $this->user->group_id == Groups::RELLAB )        )     {
+          //     return false;
+          // }
           return true;
       }
 
       function getIsNotManagement() {
-         if ( $this->user && $this->user->role_id == Roles::MGR ) {
-            return false;
-         }
+         // if ( $this->user && $this->user->role_id == Roles::MGR ) {
+         //    return false;
+         // }
          return true;
       }
 
@@ -66,9 +67,9 @@
       }
 
       function getCanEvaluate() {
-         if ( $this->user && $this->user->role_id == Roles::USER && $this->user->group_id == Groups::TESTFLOOR ) {
-            return false;
-         }
+         // if ( $this->user && $this->user->role_id == Roles::USER && $this->user->group_id == Groups::TESTFLOOR ) {
+         //    return false;
+         // }
          return true;
       }
 
@@ -82,19 +83,19 @@
       }
 
       function getIsTestEngMgr() {
-        return ( $this->user && $this->user->group_id == Groups::TEST_ENG && $this->user->role_id == Roles::MGR);
+        // return ( $this->user && $this->user->group_id == Groups::TEST_ENG && $this->user->role_id == Roles::MGR);
       }
 
       function getIsEngineeringMgr() {
-         return ( $this->user &&    $this->user->role_id == Roles::MGR
-                              && ( $this->user->group_id == Groups::ASSY_ENG  ||
-                                   $this->user->group_id == Groups::TEST_ENG  ||
-                                   $this->user->group_id == Groups::TECH_ENG )
-               );
+         // return ( $this->user &&    $this->user->role_id == Roles::MGR
+         //                      && ( $this->user->group_id == Groups::ASSY_ENG  ||
+         //                           $this->user->group_id == Groups::TEST_ENG  ||
+         //                           $this->user->group_id == Groups::TECH_ENG )
+         //       );
       }
 
       function getIsProductionControlMgr(){
-        return ( $this->user && $this->user->role_id == Roles::MGR && $this->user->group_id == Groups::PROD);
+        // return ( $this->user && $this->user->role_id == Roles::MGR && $this->user->group_id == Groups::PROD);
       }
 
 
@@ -194,10 +195,10 @@
         * @return   user's role as int
         */
         public function getRoleId() {
-            if ( $this->user ) {
-                $role = Roles::model()->findByPk( $this->user->role_id );
-                return $role->id;
-            }
+            // if ( $this->user ) {
+            //     $role = Roles::model()->findByPk( $this->user->role_id );
+            //     return $role->id;
+            // }
         }
 
         /**

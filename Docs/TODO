@@ -1,9 +1,13 @@
 
 +-----------------+
 |  Jan. 16, 2016  |
+|  Jan. 17, 2016  |
 +-----------------+
 
-	[ ] search on index page (dataTables) not working
+	[x] search on index page (dataTables) not working
+
+	[ ] fix My Quotes Board
+
 
 	[ ] define in 'types' table correct values for:
 	        STOCK                   = 1,  
@@ -12,11 +16,67 @@
 			(see Quotes.php)
 
 	[ ] Stock Quotes
-		[ ] index - add columns for 'Part No.' and 'Quantity'
-		[ ] view - click on index row, popup?
+		[x] index - add column for 'Part No.' 
+		
 		[ ] create - click on icon
-		[ ] edit - from link on popup?
-		[ ] delete - from link on popup?
+			[ ] select customer
+			[ ] create new customer
+			[ ] select contact
+			[ ] create new contact
+
+		[ ] view - click on icon
+		[ ] edit - click on icon
+		[ ] delete - click on icon
+
+
+	# ------------------------------- 
+	# ------------------------------- database
+	# ------------------------------- 
+	
+	[x] New table 'territories' 
+		[x] create new model
+		[x] link to customers
+		[x] insert_territories.sql
+			
+		
+	[ ] New table 'levels'	
+		[x] create new model
+		[x] link to 'Quotes'
+			- level_id
+		[x] insert_levels.sql
+			- 'Inquiry', 'Proposal'
+		[x] remove 'Inquiry' and 'Proposal' from Status
+
+	[x] New table 'sources'
+		[x] create new model
+		[x] link to 'Quotes'
+			- source_id
+		[x] insert_sources.sql
+			- email, phone, fax, other
+
+	[x] rename 'items' to 'stock_items'
+		
+
+	[x] rename 'classes' table to 'customer_types'
+	[x] use customer_type_id in customers
+	[x] create new 'customer_types' model
+
+	[x] rename 'types' table to 'quote_types'
+	[x] use quote_type_id in quotes
+	[x] create new 'quote_types' model
+
+	[x] Add 'bto' to quotes
+	[x] rename 'groups' to 'bto_groups'
+
+	[ ] get better list of 'priority' classifications (Nick)
+
+	[ ] rethink schema design for 'bto' and 'approvals'
+
+	[ ] 'manufacturer' and 'die manufacturer' - same?
+
+	[ ] get 'territories' values from Nick	
+
+
 
 
 
