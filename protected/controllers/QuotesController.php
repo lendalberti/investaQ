@@ -57,7 +57,7 @@ class QuotesController extends Controller
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-	public function actionCreate()
+	public function actionCreate_ORIG() 
 	{
 		$model=new Quotes;
 
@@ -75,6 +75,27 @@ class QuotesController extends Controller
 			'model'=>$model,
 		));
 	}
+
+
+	public function actionCreate() {
+		$quote_type = '';
+		$model = new Quotes;
+
+		if ( isset($_GET['t']) ) {
+			$quote_type = $_GET['t'];
+		}
+
+		pDebug("quote_type = $quote_type");
+		$this->render('create',array(
+			'model'=>$model,
+			'quote_type' => $quote_type,
+		));
+
+	}
+
+
+
+
 
 	/**
 	 * Updates a particular model.
@@ -117,26 +138,29 @@ class QuotesController extends Controller
 	/**
 	 * Lists all models.
 	 */
-	public function actionIndex()
-	{
-		// $dataProvider=new CActiveDataProvider('Quotes');
-		// $this->render('index',array(
-		// 	'dataProvider'=>$dataProvider,
-		// ));
+	public function actionIndex() 	{
 		pDebug('actionIndex() - _GET=', $_GET);
-		$$quote_type = '';
+
+		$quote_type = '';
+		$navigation_links = '';
 
 		if ( isset($_GET['stock']) ) {
 			$quote_type = Quotes::STOCK;
-			$page_title = "Stock Quotes";
+			$page_title = "My Quotes";
+			$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/mfg'> Manufacturing Quotes </a></span>";
+			$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/srf'> Supplier Request Form </a></span>";
 		}
 		else if ( isset($_GET['mfg']) ) {
 			$quote_type = Quotes::MANUFACTURING;
 			$page_title = "Manufacturing Quotes";
+			$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/stock'> Stock Quotes </a></span>";
+			$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/srf'> Supplier Request Form </a></span>";
 		}
 		else if ( isset($_GET['srf']) ) {
 			$quote_type = Quotes::SUPPLIER_REQUEST_FORM;
 			$page_title = "Supplier Request Form";
+			$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/stock'> Stock Quotes </a></span>";
+			$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/mfg'> Manufacturing Quotes </a></span>";
 		}
 
 		$criteria = new CDbCriteria();
@@ -144,15 +168,10 @@ class QuotesController extends Controller
 		$criteria->addCondition("quote_type_id = $quote_type");
 		$model = Quotes::model()->findAll( $criteria );
 
-		pDebug('actionIndex() - criteria:', $criteria);
-
-		foreach( $model as $m ) {
-			pDebug('actionIndex() - quote:', $m->attributes); 
-		}
-
 		$this->render( 'index', array(
 			'model' => $model,
 			'page_title' => $page_title,
+			'navigation_links' => $navigation_links,
 		));
 	}
 

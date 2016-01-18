@@ -8,9 +8,9 @@
       private $_user;
 
 
-      function getIsApprover() {
-          // return ( $this->user && ($this->user->role_id == Roles::APPROVER || $this->user->role_id == Roles::ADMIN ) ); 
-      }
+        function getIsApprover() {
+            return ( $this->user &&  ( in_array(Roles::APPROVER, $this->roles) || in_array(Roles::ADMIN, $this->roles) ) );
+        }
 
 
        /**
@@ -27,50 +27,15 @@
        *          false otherwise
        */
       function getIsAdmin() {
-        // return ( $this->user && $this->user->role_id == Roles::ADMIN );  // Yii::app()->user->isAdmin
-        return true;
-      }
-
-       /**
-       * @return  true if user has Manager role;
-       *          false otherwise
-       */
-      function getIsOperationsMgr(){
-        // return ( $this->user && $this->user->role_id == Roles::MGR && $this->user->group_id == Groups::OPERATIONS  );
-      }
-
-      function getIsTestFloorLead(){
-        // return ( $this->user && $this->user->role_id == Roles::LEAD && $this->user->group_id == Groups::TESTFLOOR  );
-      }
-
-      function getIsTestFloorSupervisor(){
-        // return ( $this->user && $this->user->role_id == Roles::SUPER && $this->user->group_id == Groups::TESTFLOOR  );
-      }
-
-      function getCanHaveOwnQueue() {
-          // if ( ($this->user->role_id == Roles::USER && $this->user->group_id == Groups::TESTFLOOR) ||
-          //      ($this->user->role_id == Roles::USER && $this->user->group_id == Groups::RELLAB )        )     {
-          //     return false;
-          // }
-          return true;
+        return ( $this->user && in_array(Roles::ADMIN, $this->roles) );
       }
 
       function getIsNotManagement() {
-         // if ( $this->user && $this->user->role_id == Roles::MGR ) {
-         //    return false;
-         // }
-         return true;
+         return !self::getIsManagement();  
       }
 
       function getIsManagement() {
-        return !self::getIsNotManagement();
-      }
-
-      function getCanEvaluate() {
-         // if ( $this->user && $this->user->role_id == Roles::USER && $this->user->group_id == Groups::TESTFLOOR ) {
-         //    return false;
-         // }
-         return true;
+            return ( $this->user && in_array(Roles::MGR, $this->roles) );
       }
 
 
@@ -81,23 +46,6 @@
       function getIsTestEng() {
         return ( $this->user && $this->user->group_id == Groups::TEST_ENG);
       }
-
-      function getIsTestEngMgr() {
-        // return ( $this->user && $this->user->group_id == Groups::TEST_ENG && $this->user->role_id == Roles::MGR);
-      }
-
-      function getIsEngineeringMgr() {
-         // return ( $this->user &&    $this->user->role_id == Roles::MGR
-         //                      && ( $this->user->group_id == Groups::ASSY_ENG  ||
-         //                           $this->user->group_id == Groups::TEST_ENG  ||
-         //                           $this->user->group_id == Groups::TECH_ENG )
-         //       );
-      }
-
-      function getIsProductionControlMgr(){
-        // return ( $this->user && $this->user->role_id == Roles::MGR && $this->user->group_id == Groups::PROD);
-      }
-
 
 
       /**
@@ -192,14 +140,20 @@
         }
 
         /**
-        * @return   user's role as int
+        * @return   user's roles as an array of int (to support multiple roles)
         */
-        public function getRoleId() {
-            // if ( $this->user ) {
-            //     $role = Roles::model()->findByPk( $this->user->role_id );
-            //     return $role->id;
-            // }
+        public function getRoles() {
+            // userRoles
+            if ( $this->user ) {
+                $roles = Roles::model()->getListByUser($this->id);
+                pDebug("my roles: ", $roles);
+                return $roles;
+            }
+            return null;
         }
+
+
+
 
         /**
         * @return   user's group id

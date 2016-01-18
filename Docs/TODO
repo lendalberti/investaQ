@@ -76,6 +76,9 @@
 
 	[ ] get 'territories' values from Nick	
 
+	[ ] insert_user_roles.sql
+		- multiple roles per user
+
 
 
 

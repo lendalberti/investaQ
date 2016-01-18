@@ -1,5 +1,7 @@
 $(document).ready(function() {
 
+    var base_url = $('#base_url').val();
+
 
     // -----------------------------------------------
     // ---------- set up UI Dialogs ------------------
@@ -13,15 +15,26 @@ $(document).ready(function() {
         close: function() { }
     });
 
+    function getThisID( that ) {
+        return /\d+$/.exec( $(that).attr('id') );
+    }
+
 
     // ---------------------------------------------------- Create Quote
     $('#add_quote').on('click', function() {
-        alert('adding a new quote...');
+        var quoteType = /\w+$/.exec(window.location);
+        window.location = base_url + '/index.php/quotes/create?t=' + quoteType;
     });
 
 
     // ---------------------------------------------------- View Quote
     $('[id^=view_quote_]').on('click', function() {
+        var quoteID = getThisID( $(this) ); 
+
+        alert('viewing quote id: ' + quoteID);
+        return false;
+
+
         var quoteNo = $(this).closest('td').next('td').html();
         console.log('Viewing quote number = ' + quoteNo);
 
@@ -32,16 +45,32 @@ $(document).ready(function() {
 
     // ---------------------------------------------------- Edit Quote
     $('[id^=edit_quote_]').on('click', function() {
-        var quoteNo = $(this).closest('td').next('td').html();
-        console.log('Editing quote number = ' + quoteNo);
-
+        var quoteID = getThisID( $(this) ); 
+        window.location = base_url + '/index.php/quotes/update?id='+quoteID;
     });
 
     // ---------------------------------------------------- Delete Quote
     $('[id^=delete_quote_]').on('click', function() {
-        var quoteNo = $(this).closest('td').next('td').html();
-        console.log('Deleting quote number = ' + quoteNo);
+        var quoteID = getThisID( $(this) ); 
+        if ( confirm("Are you sure you want to delete this quote?") ) {
+            var URL = base_url + '/index.php/quotes/delete?id='+quoteID;
 
+            $.ajax({
+                url: URL,
+                type: 'DELETE',
+                success: function(result) {
+                    alert('Quote deleted.');
+                }
+            });
+
+
+
+
+        }
+        return false;
+       
+
+        
     });
 
         

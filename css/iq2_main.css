@@ -163,14 +163,25 @@ a[id^='quote_delete_']:hover {
 	background-color: #FDFCDC; 
 }
 
+a[id^='view_quote_'] > img,
+a[id^='edit_quote_'] > img,
+a[id^='delete_quote_'] > img {
+	border: 1px dotted white;
+}
+
 a[id^='view_quote_'] > img:hover,
 a[id^='edit_quote_'] > img:hover,
 a[id^='delete_quote_'] > img:hover {
-	border: 1px solid lightblue;
+	border: 1px solid gray;
 }
 
+#quotes_table > tbody > tr > td {
+	text-align: center;
+}
 
-
+#add_quote > img {
+	padding-left: 30px;
+}
 
 
 

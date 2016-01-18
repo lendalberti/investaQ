@@ -93,4 +93,33 @@ class Roles extends CActiveRecord  {
 			'criteria'=>$criteria,
 		));
 	}
+
+
+	public function getListByUser( $user_id ) {
+		$roles = array();
+		$sql = "SELECT role_id FROM user_roles WHERE user_id = $user_id";
+		$command = Yii::app()->db->createCommand($sql);
+		$results = $command->queryAll();
+
+		foreach( $results as $r ) {
+			$roles[] = $r['role_id'];
+		}
+		pDebug("Roles::getListByUser() - roles=", $roles);
+		return $roles;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
