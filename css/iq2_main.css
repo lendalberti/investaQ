@@ -163,15 +163,15 @@ a[id^='quote_delete_']:hover {
 	background-color: #FDFCDC; 
 }
 
-a[id^='view_quote_'] > img,
-a[id^='edit_quote_'] > img,
-a[id^='delete_quote_'] > img {
+span[id^='view_quote_'] > img,
+span[id^='edit_quote_'] > img,
+span[id^='delete_quote_'] > img {
 	border: 1px dotted white;
 }
 
-a[id^='view_quote_'] > img:hover,
-a[id^='edit_quote_'] > img:hover,
-a[id^='delete_quote_'] > img:hover {
+span[id^='view_quote_'] > img:hover,
+span[id^='edit_quote_'] > img:hover,
+span[id^='delete_quote_'] > img:hover {
 	border: 1px solid gray;
 }
 
@@ -181,7 +181,66 @@ a[id^='delete_quote_'] > img:hover {
 
 #add_quote > img {
 	padding-left: 30px;
+	cursor: pointer;
 }
+
+span.required {
+	color: red;
+}
+
+#quote_customer,
+#quote_contact {
+	border: 1px solid lightgray;
+}
+
+#quote_parts > caption,
+#quote_table > caption,
+#quote_customer > caption,
+#quote_contact > caption {
+ 	font-size: 1.1em;
+ 	font-weight: bold;
+ 	text-align: center;
+ 	
+}
+
+
+#quote_customer > tbody > tr > td:nth-child(odd) ,
+#quote_contact > tbody > tr > td:nth-child(odd) {
+ 	text-align: right;
+	font-weight: bold;
+	font-size: .8em;
+}
+
+#quote_customer > tbody > tr > td,
+#quote_contact > tbody > tr > td {
+	padding: 2px 3px 0px 0px;
+}
+
+div.form_parts {
+	width: 910px;
+}
+
+#results_table > thead > tr > th  { 
+	background: #5E6E78;
+  	color: white;
+  	font-variant: small-caps;
+  	font-size: .9em;
+  	text-align: center;
+}
+
+#pre_quote_table > tbody > tr > td:nth-child(2) {
+	vertical-align: top;
+}
+
+#quote_contact_container,
+#quote_customer_container {
+	height: 480px;
+	overflow-y: scroll;
+	border: 0px solid lightgray;
+}
+
+
+
 
 
 

@@ -9,7 +9,7 @@
 	[ ] fix My Quotes Board
 
 
-	[ ] define in 'types' table correct values for:
+	[x] define in 'types' table correct values for:
 	        STOCK                   = 1,  
 			MANUFACTURING           = 2,  
 			SUPPLIER_REQUEST_FORM   = 3;
@@ -76,7 +76,7 @@
 
 	[ ] get 'territories' values from Nick	
 
-	[ ] insert_user_roles.sql
+	[x] insert_user_roles.sql
 		- multiple roles per user
 
 

@@ -11,14 +11,16 @@
 	'enableAjaxValidation'=>false,
 )); ?>
 
-
-<h1>Create Stock Quote</h1>
-
-
-
-	<p class="note">Fields with <span class="required">*</span> are required.</p>
+	<h2>Quote Form</h2>
 
 	<?php echo $form->errorSummary($model); ?>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'quote_type_id'); ?>
+		<select><option>Stock</option><option>Manufacturing</option><option>Supplier Request Form</option></select>
+		<!-- // < ?php echo $form->textField($model,'quote_no',array('size'=>45,'maxlength'=>45)); ?> -->
+		<?php echo $form->error($model,'quote_type_id'); ?>
+	</div> 
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'quote_no'); ?>

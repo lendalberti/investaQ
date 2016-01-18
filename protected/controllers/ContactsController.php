@@ -28,13 +28,10 @@ class ContactsController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
-				'users'=>array('*'),
+				'actions'=>array('index','view', 'find', 'create', 'update'),
+				'expression' => '$user->isLoggedIn',
 			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
-				'users'=>array('@'),
-			),
+			
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions'=>array('admin','delete'),
 				'users'=>array('admin'),
@@ -44,6 +41,22 @@ class ContactsController extends Controller
 			),
 		);
 	}
+
+
+	public function actionFind($id)  {
+		pDebug("actionFind() - id=[$id]");
+
+		$contact = Contacts::model()->findByPk($id);
+
+		$c = $contact->attributes;
+		pDebug('actionFind() - Contact: ', $c );
+		echo json_encode($c);
+	}
+
+
+
+
+
 
 	/**
 	 * Displays a particular model.

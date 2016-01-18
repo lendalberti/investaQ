@@ -65,7 +65,7 @@
 				$menuItems = array();
 				$menuItems[] = array('label'=>'Home', 'url'=>array('/site/index') );
 
-				$menuItems[] = array('label'=>'My Quotes', 'url'=>array('/quotes/index/stock') ); 
+				$menuItems[] = array('label'=>'My Quotes', 'url'=>array('/quotes/index') ); 
 				$menuItems[] = array('label'=>'Movements ', 'url'=>array('/PriceBook/movements') );
 				$menuItems[] = array('label'=>'Customers ', 'url'=>array('/Customers') );
 				$menuItems[] = array('label'=>'Contacts ', 'url'=>array('/Contacts') );

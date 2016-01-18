@@ -1,6 +1,6 @@
 <div>
 	<span style="padding-top: 10px;display:inline-block; vertical-align:top" class='pageTitle'><?php echo $page_title;  ?></span>
-	<a id='add_quote' href='#'><img src='<?php echo Yii::app()->baseUrl; ?>/images/add1.png' width='48' height='48' title='Start a New Quote'></a>
+	<span id='add_quote' href='#'><img src='<?php echo Yii::app()->baseUrl; ?>/images/add1.png' width='48' height='48' title='Add a New Quote'></span>
 
 	<input type='hidden' id='base_url' value='<?php echo Yii::app()->baseUrl; ?>'>
 
@@ -26,16 +26,16 @@
 						<!-- <th>Location</th> -->
 					</tr>
 				</thead>
-				
+
 				<tbody>	
 
 				<?php 
 					foreach( $model as $m ) { 
 						echo '<tr>';
 						echo '<td>';
-						echo '<a title="View this quote" id="view_quote_'.     $m->id  .'" href="#"><img src="' .Yii::app()->baseUrl. '/images/view_glyph.png" height="24" width="24"></a>';
-						echo '<a title="Edit this quote" id="edit_quote_'.     $m->id  .'" href="#"><img src="' .Yii::app()->baseUrl. '/images/edit_glyph.png" height="24" width="24"></a>'; 
-						echo '<a title="Delete this quote" id="delete_quote_'. $m->id  .'" href="#"><img src="' .Yii::app()->baseUrl. '/images/delete_glyph.png" height="24" width="24"></a>';
+						echo '<span title="View this quote" id="view_quote_'.     $m->id  .'" ><img src="' .Yii::app()->baseUrl. '/images/view_glyph.png"   height="24" width="24"></span>';
+						echo '<span title="Edit this quote" id="edit_quote_'.     $m->id  .'" ><img src="' .Yii::app()->baseUrl. '/images/edit_glyph.png"   height="24" width="24"></span>'; 
+						echo '<span title="Delete this quote" id="delete_quote_'. $m->id  .'" ><img src="' .Yii::app()->baseUrl. '/images/delete_glyph.png" height="24" width="24"></span>';
 						echo '</td>'; 
 						echo '<td>' . $m->quote_no . '</td>'; 
 						echo '<td>' . $m->quoteType->name . '</td>'; 
@@ -53,8 +53,7 @@
 		
 				</tbody>
 
-				<tfoot>
-				</tfoot>
+				
 
 	</table>
 </div>

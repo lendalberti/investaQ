@@ -78,19 +78,41 @@ class QuotesController extends Controller
 
 
 	public function actionCreate() {
-		$quote_type = '';
-		$model = new Quotes;
+		pDebug("Quotes::actionCreate()");
 
-		if ( isset($_GET['t']) ) {
-			$quote_type = $_GET['t'];
+		if ( isset( $_POST['Quotes'] ) ) {
+			pDebug("Quotes::actionCreate() - _POST=", $_POST);
+
+			// save...
+
+
+
+
+
+
+
+
+
+
+
+
 		}
+		else {
+			$data['customers'] = Customers::model()->findAll( array('order' => 'name') );
+			$data['contacts'] = Contacts::model()->findAll( array('order' => 'first_name') );
 
-		pDebug("quote_type = $quote_type");
-		$this->render('create',array(
-			'model'=>$model,
-			'quote_type' => $quote_type,
-		));
+			$data['us_states']      = UsStates::model()->findAll( array('order' => 'long_name') );
+			$data['countries']   = Countries::model()->findAll( array('order' => 'long_name') );
+			$data['regions']     = Regions::model()->findAll( array('order' => 'name') );
 
+			$data['types']       = CustomerTypes::model()->findAll( array('order' => 'name') );
+			$data['territories'] = Territories::model()->findAll( array('order' => 'name') );
+
+			$this->render('create',array(
+				'data'=>$data,
+			));
+		}
+		
 	}
 
 
@@ -143,10 +165,10 @@ class QuotesController extends Controller
 
 		$quote_type = '';
 		$navigation_links = '';
+		$page_title = "My Quotes";
 
 		if ( isset($_GET['stock']) ) {
 			$quote_type = Quotes::STOCK;
-			$page_title = "My Quotes";
 			$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/mfg'> Manufacturing Quotes </a></span>";
 			$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/srf'> Supplier Request Form </a></span>";
 		}
@@ -162,10 +184,16 @@ class QuotesController extends Controller
 			$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/stock'> Stock Quotes </a></span>";
 			$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/mfg'> Manufacturing Quotes </a></span>";
 		}
-
+		
 		$criteria = new CDbCriteria();
-		if ( !Yii::app()->user->isAdmin )   $criteria->addCondition("owner_id = " . Yii::app()->user->id);
-		$criteria->addCondition("quote_type_id = $quote_type");
+		if ( !Yii::app()->user->isAdmin ) {
+			 $criteria->addCondition("owner_id = " . Yii::app()->user->id);
+		} 
+
+		if ( $quote_type ) {
+			$criteria->addCondition("quote_type_id = $quote_type");
+		}
+
 		$model = Quotes::model()->findAll( $criteria );
 
 		$this->render( 'index', array(
