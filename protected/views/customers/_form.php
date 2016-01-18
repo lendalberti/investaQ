@@ -1,3 +1,9 @@
+<?php
+/* @var $this CustomersController */
+/* @var $model Customers */
+/* @var $form CActiveForm */
+?>
+
 <div class="form">
 
 <?php $form=$this->beginWidget('CActiveForm', array(
@@ -40,21 +46,15 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'zip'); ?>
-		<?php echo $form->textField($model,'zip',array('size'=>45,'maxlength'=>45)); ?>
-		<?php echo $form->error($model,'zip'); ?>
-	</div>
-
-	<div class="row">
 		<?php echo $form->labelEx($model,'country_id'); ?>
 		<?php echo $form->textField($model,'country_id'); ?>
 		<?php echo $form->error($model,'country_id'); ?>
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'class_id'); ?>
-		<?php echo $form->textField($model,'class_id'); ?>
-		<?php echo $form->error($model,'class_id'); ?>
+		<?php echo $form->labelEx($model,'zip'); ?>
+		<?php echo $form->textField($model,'zip',array('size'=>45,'maxlength'=>45)); ?>
+		<?php echo $form->error($model,'zip'); ?>
 	</div>
 
 	<div class="row">
@@ -64,9 +64,15 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'territories'); ?>
-		<?php echo $form->textField($model,'territories',array('size'=>45,'maxlength'=>45)); ?>
-		<?php echo $form->error($model,'territories'); ?>
+		<?php echo $form->labelEx($model,'customer_type_id'); ?>
+		<?php echo $form->textField($model,'customer_type_id'); ?>
+		<?php echo $form->error($model,'customer_type_id'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'territory_id'); ?>
+		<?php echo $form->textField($model,'territory_id'); ?>
+		<?php echo $form->error($model,'territory_id'); ?>
 	</div>
 
 	<div class="row">

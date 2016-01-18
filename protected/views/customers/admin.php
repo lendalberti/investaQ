@@ -1,4 +1,7 @@
 <?php
+/* @var $this CustomersController */
+/* @var $model Customers */
+
 $this->breadcrumbs=array(
 	'Customers'=>array('index'),
 	'Manage',
@@ -15,7 +18,7 @@ $('.search-button').click(function(){
 	return false;
 });
 $('.search-form form').submit(function(){
-	$.fn.yiiGridView.update('customers-grid', {
+	$('#customers-grid').yiiGridView('update', {
 		data: $(this).serialize()
 	});
 	return false;
@@ -49,11 +52,11 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		'city',
 		'state_id',
 		/*
-		'zip',
 		'country_id',
-		'class_id',
+		'zip',
 		'region_id',
-		'territories',
+		'customer_type_id',
+		'territory_id',
 		'vertical_market',
 		'parent_id',
 		'company_link',

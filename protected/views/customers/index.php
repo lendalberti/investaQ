@@ -1,4 +1,7 @@
 <?php
+/* @var $this CustomersController */
+/* @var $dataProvider CActiveDataProvider */
+
 $this->breadcrumbs=array(
 	'Customers',
 );

@@ -15,6 +15,7 @@ class QuotesController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
+			'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
 
@@ -27,16 +28,13 @@ class QuotesController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
-				'users'=>array('*'),
+				'actions'=>array('index','view','create','update'),
+				'expression' => '$user->isLoggedIn'
 			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
-				'users'=>array('@'),
-			),
+		
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions'=>array('admin','delete'),
-				'users'=>array('ldalberti'),
+				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -59,7 +57,7 @@ class QuotesController extends Controller
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-	public function actionCreate()
+	public function actionCreate_ORIG() 
 	{
 		$model=new Quotes;
 
@@ -77,6 +75,27 @@ class QuotesController extends Controller
 			'model'=>$model,
 		));
 	}
+
+
+	public function actionCreate() {
+		$quote_type = '';
+		$model = new Quotes;
+
+		if ( isset($_GET['t']) ) {
+			$quote_type = $_GET['t'];
+		}
+
+		pDebug("quote_type = $quote_type");
+		$this->render('create',array(
+			'model'=>$model,
+			'quote_type' => $quote_type,
+		));
+
+	}
+
+
+
+
 
 	/**
 	 * Updates a particular model.
@@ -109,60 +128,52 @@ class QuotesController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		if(Yii::app()->request->isPostRequest)
-		{
-			// we only allow deletion via POST request
-			$this->loadModel($id)->delete();
+		$this->loadModel($id)->delete();
 
-			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-			if(!isset($_GET['ajax']))
-				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-		}
-		else
-			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
+		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+		if(!isset($_GET['ajax']))
+			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
 	}
 
 	/**
 	 * Lists all models.
 	 */
 	public function actionIndex() 	{
-
 		pDebug('actionIndex() - _GET=', $_GET);
-		$$quote_type = '';
+
+		$quote_type = '';
+		$navigation_links = '';
 
 		if ( isset($_GET['stock']) ) {
 			$quote_type = Quotes::STOCK;
-			$page_title = "Stock Quotes";
+			$page_title = "My Quotes";
+			$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/mfg'> Manufacturing Quotes </a></span>";
+			$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/srf'> Supplier Request Form </a></span>";
 		}
 		else if ( isset($_GET['mfg']) ) {
 			$quote_type = Quotes::MANUFACTURING;
 			$page_title = "Manufacturing Quotes";
+			$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/stock'> Stock Quotes </a></span>";
+			$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/srf'> Supplier Request Form </a></span>";
 		}
 		else if ( isset($_GET['srf']) ) {
 			$quote_type = Quotes::SUPPLIER_REQUEST_FORM;
 			$page_title = "Supplier Request Form";
+			$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/stock'> Stock Quotes </a></span>";
+			$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/mfg'> Manufacturing Quotes </a></span>";
 		}
 
 		$criteria = new CDbCriteria();
-		if ( !Yii::app()->user->isAdmin )   $criteria->addCondition("user_id = " . Yii::app()->user->id);
-		$criteria->addCondition("type = $quote_type");
+		if ( !Yii::app()->user->isAdmin )   $criteria->addCondition("owner_id = " . Yii::app()->user->id);
+		$criteria->addCondition("quote_type_id = $quote_type");
 		$model = Quotes::model()->findAll( $criteria );
-
-		pDebug('actionIndex() - criteria:', $criteria);
-
-		foreach( $model as $m ) {
-			pDebug('actionIndex() - quote:', $m->attributes); 
-		}
 
 		$this->render( 'index', array(
 			'model' => $model,
 			'page_title' => $page_title,
+			'navigation_links' => $navigation_links,
 		));
 	}
-
-
-
-
 
 	/**
 	 * Manages all models.
@@ -182,7 +193,9 @@ class QuotesController extends Controller
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
-	 * @param integer the ID of the model to be loaded
+	 * @param integer $id the ID of the model to be loaded
+	 * @return Quotes the loaded model
+	 * @throws CHttpException
 	 */
 	public function loadModel($id)
 	{
@@ -194,7 +207,7 @@ class QuotesController extends Controller
 
 	/**
 	 * Performs the AJAX validation.
-	 * @param CModel the model to be validated
+	 * @param Quotes $model the model to be validated
 	 */
 	protected function performAjaxValidation($model)
 	{

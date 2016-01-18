@@ -64,6 +64,14 @@
 			if ( Yii::app()->user->isLoggedIn ) {
 				$menuItems = array();
 				$menuItems[] = array('label'=>'Home', 'url'=>array('/site/index') );
+
+				$menuItems[] = array('label'=>'My Quotes', 'url'=>array('/quotes/index/stock') ); 
+				$menuItems[] = array('label'=>'Movements ', 'url'=>array('/PriceBook/movements') );
+				$menuItems[] = array('label'=>'Customers ', 'url'=>array('/Customers') );
+				$menuItems[] = array('label'=>'Contacts ', 'url'=>array('/Contacts') );
+				$menuItems[] = array('label'=>'My Profile', 'url'=>array('/quotes/index/stock') ); 
+				$menuItems[] = array('label'=>'Help',        'url'=>array('/site/help') );
+
 				
 				// if ( Yii::app()->user->isAdmin || Yii::app()->user->isApprover ) { 
 				// 	$menuItems[] = array('label'=>'Approval Queue', 'url'=>array('/quotes/approve') );

@@ -1,4 +1,7 @@
 <?php
+/* @var $this UsersController */
+/* @var $model Users */
+
 $this->breadcrumbs=array(
 	'Users'=>array('index'),
 	'Manage',
@@ -15,7 +18,7 @@ $('.search-button').click(function(){
 	return false;
 });
 $('.search-form form').submit(function(){
-	$.fn.yiiGridView.update('users-grid', {
+	$('#users-grid').yiiGridView('update', {
 		data: $(this).serialize()
 	});
 	return false;
@@ -43,13 +46,12 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 	'filter'=>$model,
 	'columns'=>array(
 		'id',
-		'role_id',
 		'group_id',
 		'username',
 		'first_name',
 		'last_name',
-		/*
 		'email',
+		/*
 		'title',
 		'phone',
 		'fax',

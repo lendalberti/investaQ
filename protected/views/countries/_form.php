@@ -1,3 +1,9 @@
+<?php
+/* @var $this CountriesController */
+/* @var $model Countries */
+/* @var $form CActiveForm */
+?>
+
 <div class="form">
 
 <?php $form=$this->beginWidget('CActiveForm', array(

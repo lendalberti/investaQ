@@ -1,3 +1,9 @@
+<?php
+/* @var $this CustomersController */
+/* @var $model Customers */
+/* @var $form CActiveForm */
+?>
+
 <div class="wide form">
 
 <?php $form=$this->beginWidget('CActiveForm', array(
@@ -36,18 +42,13 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->label($model,'zip'); ?>
-		<?php echo $form->textField($model,'zip',array('size'=>45,'maxlength'=>45)); ?>
-	</div>
-
-	<div class="row">
 		<?php echo $form->label($model,'country_id'); ?>
 		<?php echo $form->textField($model,'country_id'); ?>
 	</div>
 
 	<div class="row">
-		<?php echo $form->label($model,'class_id'); ?>
-		<?php echo $form->textField($model,'class_id'); ?>
+		<?php echo $form->label($model,'zip'); ?>
+		<?php echo $form->textField($model,'zip',array('size'=>45,'maxlength'=>45)); ?>
 	</div>
 
 	<div class="row">
@@ -56,8 +57,13 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->label($model,'territories'); ?>
-		<?php echo $form->textField($model,'territories',array('size'=>45,'maxlength'=>45)); ?>
+		<?php echo $form->label($model,'customer_type_id'); ?>
+		<?php echo $form->textField($model,'customer_type_id'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'territory_id'); ?>
+		<?php echo $form->textField($model,'territory_id'); ?>
 	</div>
 
 	<div class="row">

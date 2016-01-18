@@ -22,7 +22,6 @@
  * @property UsStates $state
  * @property Countries $country
  * @property CustomerContacts[] $customerContacts
- * @property History[] $histories
  */
 class Contacts extends CActiveRecord
 {
@@ -72,7 +71,6 @@ class Contacts extends CActiveRecord
 			'state' => array(self::BELONGS_TO, 'UsStates', 'state_id'),
 			'country' => array(self::BELONGS_TO, 'Countries', 'country_id'),
 			'customerContacts' => array(self::HAS_MANY, 'CustomerContacts', 'contact_id'),
-			'histories' => array(self::HAS_MANY, 'History', 'contact_id'),
 		);
 	}
 

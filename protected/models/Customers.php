@@ -10,11 +10,11 @@
  * @property string $address2
  * @property string $city
  * @property integer $state_id
- * @property string $zip
  * @property integer $country_id
- * @property integer $class_id
+ * @property string $zip
  * @property integer $region_id
- * @property string $territories
+ * @property integer $customer_type_id
+ * @property integer $territory_id
  * @property string $vertical_market
  * @property integer $parent_id
  * @property string $company_link
@@ -27,18 +27,17 @@
  * @property integer $outside_salesperson_id
  *
  * The followings are the available model relations:
- * @property Bto[] $btos
  * @property CustomerContacts[] $customerContacts
  * @property UsStates $state
  * @property Countries $country
- * @property Classes $class
+ * @property CustomerTypes $customerType
  * @property Regions $region
  * @property Tiers $tier
  * @property Customers $parent
  * @property Customers[] $customers
  * @property Users $insideSalesperson
  * @property Users $outsideSalesperson
- * @property History[] $histories
+ * @property Territories $territory
  * @property Quotes[] $quotes
  */
 class Customers extends CActiveRecord
@@ -69,12 +68,12 @@ class Customers extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, address1, city, country_id', 'required'),
-			array('state_id, country_id, class_id, region_id, parent_id, xmas_list, candy_list, strategic, tier_id, inside_salesperson_id, outside_salesperson_id', 'numerical', 'integerOnly'=>true),
-			array('name, address1, address2, city, zip, territories, vertical_market, company_link, syspro_account_code', 'length', 'max'=>45),
+			array('name, address1, city, country_id, region_id, customer_type_id, territory_id', 'required'),
+			array('state_id, country_id, region_id, customer_type_id, territory_id, parent_id, xmas_list, candy_list, strategic, tier_id, inside_salesperson_id, outside_salesperson_id', 'numerical', 'integerOnly'=>true),
+			array('name, address1, address2, city, zip, vertical_market, company_link, syspro_account_code', 'length', 'max'=>45),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, address1, address2, city, state_id, zip, country_id, class_id, region_id, territories, vertical_market, parent_id, company_link, syspro_account_code, xmas_list, candy_list, strategic, tier_id, inside_salesperson_id, outside_salesperson_id', 'safe', 'on'=>'search'),
+			array('id, name, address1, address2, city, state_id, country_id, zip, region_id, customer_type_id, territory_id, vertical_market, parent_id, company_link, syspro_account_code, xmas_list, candy_list, strategic, tier_id, inside_salesperson_id, outside_salesperson_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -86,18 +85,17 @@ class Customers extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'btos' => array(self::HAS_MANY, 'Bto', 'customer_id'),
 			'customerContacts' => array(self::HAS_MANY, 'CustomerContacts', 'customer_id'),
 			'state' => array(self::BELONGS_TO, 'UsStates', 'state_id'),
 			'country' => array(self::BELONGS_TO, 'Countries', 'country_id'),
-			'class' => array(self::BELONGS_TO, 'Classes', 'class_id'),
+			'customerType' => array(self::BELONGS_TO, 'CustomerTypes', 'customer_type_id'),
 			'region' => array(self::BELONGS_TO, 'Regions', 'region_id'),
 			'tier' => array(self::BELONGS_TO, 'Tiers', 'tier_id'),
 			'parent' => array(self::BELONGS_TO, 'Customers', 'parent_id'),
 			'customers' => array(self::HAS_MANY, 'Customers', 'parent_id'),
 			'insideSalesperson' => array(self::BELONGS_TO, 'Users', 'inside_salesperson_id'),
 			'outsideSalesperson' => array(self::BELONGS_TO, 'Users', 'outside_salesperson_id'),
-			'histories' => array(self::HAS_MANY, 'History', 'customer_id'),
+			'territory' => array(self::BELONGS_TO, 'Territories', 'territory_id'),
 			'quotes' => array(self::HAS_MANY, 'Quotes', 'customer_id'),
 		);
 	}
@@ -114,11 +112,11 @@ class Customers extends CActiveRecord
 			'address2' => 'Address2',
 			'city' => 'City',
 			'state_id' => 'State',
-			'zip' => 'Zip',
 			'country_id' => 'Country',
-			'class_id' => 'Class',
+			'zip' => 'Zip',
 			'region_id' => 'Region',
-			'territories' => 'Territories',
+			'customer_type_id' => 'Customer Type',
+			'territory_id' => 'Territory',
 			'vertical_market' => 'Vertical Market',
 			'parent_id' => 'Parent',
 			'company_link' => 'Company Link',
@@ -136,7 +134,8 @@ class Customers extends CActiveRecord
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search() 	{
+	public function search()
+	{
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
 
@@ -148,11 +147,11 @@ class Customers extends CActiveRecord
 		$criteria->compare('address2',$this->address2,true);
 		$criteria->compare('city',$this->city,true);
 		$criteria->compare('state_id',$this->state_id);
-		$criteria->compare('zip',$this->zip,true);
 		$criteria->compare('country_id',$this->country_id);
-		$criteria->compare('class_id',$this->class_id);
+		$criteria->compare('zip',$this->zip,true);
 		$criteria->compare('region_id',$this->region_id);
-		$criteria->compare('territories',$this->territories,true);
+		$criteria->compare('customer_type_id',$this->customer_type_id);
+		$criteria->compare('territory_id',$this->territory_id);
 		$criteria->compare('vertical_market',$this->vertical_market,true);
 		$criteria->compare('parent_id',$this->parent_id);
 		$criteria->compare('company_link',$this->company_link,true);

@@ -5,7 +5,6 @@
  *
  * The followings are the available columns in table 'users':
  * @property integer $id
- * @property integer $role_id
  * @property integer $group_id
  * @property string $username
  * @property string $first_name
@@ -18,13 +17,11 @@
  *
  * The followings are the available model relations:
  * @property Attachments[] $attachments
- * @property Bto[] $btos
  * @property BtoApprovals[] $btoApprovals
  * @property Customers[] $customers
  * @property Customers[] $customers1
- * @property History[] $histories
  * @property Quotes[] $quotes
- * @property Roles $role
+ * @property UserRoles[] $userRoles
  */
 class Users extends CActiveRecord
 {
@@ -54,13 +51,12 @@ class Users extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('role_id', 'required'),
-			array('role_id, group_id', 'numerical', 'integerOnly'=>true),
+			array('group_id', 'numerical', 'integerOnly'=>true),
 			array('username, first_name, last_name, email, title, phone, fax', 'length', 'max'=>45),
 			array('sig', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, role_id, group_id, username, first_name, last_name, email, title, phone, fax, sig', 'safe', 'on'=>'search'),
+			array('id, group_id, username, first_name, last_name, email, title, phone, fax, sig', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -73,13 +69,11 @@ class Users extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'attachments' => array(self::HAS_MANY, 'Attachments', 'uploaded_by'),
-			'btos' => array(self::HAS_MANY, 'Bto', 'owner_id'),
 			'btoApprovals' => array(self::HAS_MANY, 'BtoApprovals', 'user_id'),
 			'customers' => array(self::HAS_MANY, 'Customers', 'inside_salesperson_id'),
 			'customers1' => array(self::HAS_MANY, 'Customers', 'outside_salesperson_id'),
-			'histories' => array(self::HAS_MANY, 'History', 'salesperson_id'),
-			'quotes' => array(self::HAS_MANY, 'Quotes', 'user_id'),
-			'role' => array(self::BELONGS_TO, 'Roles', 'role_id'),
+			'quotes' => array(self::HAS_MANY, 'Quotes', 'owner_id'),
+			'userRoles' => array(self::HAS_MANY, 'UserRoles', 'user_id'),
 		);
 	}
 
@@ -90,7 +84,6 @@ class Users extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'role_id' => 'Role',
 			'group_id' => 'Group',
 			'username' => 'Username',
 			'first_name' => 'First Name',
@@ -115,7 +108,6 @@ class Users extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('role_id',$this->role_id);
 		$criteria->compare('group_id',$this->group_id);
 		$criteria->compare('username',$this->username,true);
 		$criteria->compare('first_name',$this->first_name,true);
@@ -131,7 +123,7 @@ class Users extends CActiveRecord
 		));
 	}
 
-
+	
 	// =============================================================================================
 	// =============================================================================================
 	// =============================================================================================
@@ -153,7 +145,7 @@ class Users extends CActiveRecord
 			}
 
 			$model             = new Users;
-			$model->role_id    = Roles::USER;
+			//$model->role_id    = Roles::USER;
 			$model->username   = $u['username'];
 			$model->first_name = $u['first_name'];
 			$model->last_name  = $u['last_name'];
@@ -162,7 +154,7 @@ class Users extends CActiveRecord
 			$model->phone      = $u['phone'];
 			$model->fax        = $u['fax'];
 			$model->sig        = $u['sig'];
-			$model->role_id    = Roles::USER;
+			//$model->role_id    = Roles::USER;
 
 			pDebug("Users::registerUser() - model attributes=", $model->attributes );
 
@@ -185,11 +177,11 @@ class Users extends CActiveRecord
 
 
 		public function getAdminsEmail() {
-			return Users::model()->findAllBySql( 'SELECT email FROM users WHERE role_id = ' . Roles::ADMIN . ' AND id > 1 ' );
+			//return Users::model()->findAllBySql( 'SELECT email FROM users WHERE role_id = ' . Roles::ADMIN . ' AND id > 1 ' );
 		}
 
 		public function getAdminsFullname() {
-			return Users::model()->findAllBySql( 'SELECT id, CONCAT(first_name, " ", last_name) AS fullname FROM users WHERE role_id = ' . Roles::ADMIN . ' AND id > 1 ' );
+			//return Users::model()->findAllBySql( 'SELECT id, CONCAT(first_name, " ", last_name) AS fullname FROM users WHERE role_id = ' . Roles::ADMIN . ' AND id > 1 ' );
 		}
 
 
@@ -203,10 +195,10 @@ class Users extends CActiveRecord
 		public function getApproverEmails() {
 			$email_list = [];
 
-			$users = Users::model()->findAllBySql( 'SELECT email FROM users WHERE role_id  = ' . Roles::APPROVER );
-			foreach( $users as $u ) {
-				$email_list[] = $u->email;
-			}
+			// $users = Users::model()->findAllBySql( 'SELECT email FROM users WHERE role_id  = ' . Roles::APPROVER );
+			// foreach( $users as $u ) {
+			// 	$email_list[] = $u->email;
+			// }
 
 			pDebug("getApproverEmails() - email_list=", $email_list);
 			return $email_list;
@@ -214,53 +206,17 @@ class Users extends CActiveRecord
 
 
 		public function getBtoApprovers() {
-			$sql = "select * from users where role_id = " . Roles::BTO_APPROVER;
-			$users = Users::model()->findAllBySql($sql);
+			// $sql = "select * from users where role_id = " . Roles::BTO_APPROVER;
+			// $users = Users::model()->findAllBySql($sql);
 			
-			foreach( $users as $u ) {
-				pDebug("user attributes=", $u->attributes);
-				$userList[$u->id] = $u->fullname . ' (' . $u->group->name . ')';
-			}
+			// foreach( $users as $u ) {
+			// 	pDebug("user attributes=", $u->attributes);
+			// 	$userList[$u->id] = $u->fullname . ' (' . $u->group->name . ')';
+			// }
 
-			pDebug("userList=", $userList);
-			return $userList;
+			// pDebug("userList=", $userList);
+			// return $userList;
 
 		}         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

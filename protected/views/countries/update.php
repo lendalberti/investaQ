@@ -1,4 +1,7 @@
 <?php
+/* @var $this CountriesController */
+/* @var $model Countries */
+
 $this->breadcrumbs=array(
 	'Countries'=>array('index'),
 	$model->id=>array('view','id'=>$model->id),

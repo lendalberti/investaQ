@@ -1,5 +1,20 @@
 <?php
 
+
+    // ------------------------------------------------
+    function getQuotePartNumbers( $quote_id ) {
+        $part_no = ''; 
+
+        $sql = "SELECT part_no FROM stock_items WHERE quote_id = $quote_id";
+        $results = Yii::app()->db->createCommand($sql)->queryAll();
+
+        foreach( $results as $m ) {
+            $part_no .= $m['part_no'].'<br />';
+        }
+        return $part_no;
+    }
+
+
     // ------------------------------------------------
     function truncateString($string, $num) {
         if (strlen($string) > $num) {
@@ -139,7 +154,7 @@
     // -----------------------------------------------------------
     function getMyQuoteCount( $status_id ) {
         $user_id = Yii::app()->user->id;
-        return Quotes::model()->count( "status_id=$status_id AND user_id=$user_id" );
+        return Quotes::model()->count( "status_id=$status_id AND owner_id=$user_id" );
     }
 
 

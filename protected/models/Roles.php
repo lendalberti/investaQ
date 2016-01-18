@@ -8,7 +8,7 @@
  * @property string $name
  *
  * The followings are the available model relations:
- * @property Users[] $users
+ * @property UserRoles[] $userRoles
  */
 class Roles extends CActiveRecord  {
 
@@ -17,7 +17,6 @@ class Roles extends CActiveRecord  {
 			MGR          = 3,
 			APPROVER     = 4,
 			BTO_APPROVER = 5;
-
 
 
 	/**
@@ -61,7 +60,7 @@ class Roles extends CActiveRecord  {
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'users' => array(self::HAS_MANY, 'Users', 'role_id'),
+			'userRoles' => array(self::HAS_MANY, 'UserRoles', 'role_id'),
 		);
 	}
 
@@ -94,4 +93,33 @@ class Roles extends CActiveRecord  {
 			'criteria'=>$criteria,
 		));
 	}
+
+
+	public function getListByUser( $user_id ) {
+		$roles = array();
+		$sql = "SELECT role_id FROM user_roles WHERE user_id = $user_id";
+		$command = Yii::app()->db->createCommand($sql);
+		$results = $command->queryAll();
+
+		foreach( $results as $r ) {
+			$roles[] = $r['role_id'];
+		}
+		pDebug("Roles::getListByUser() - roles=", $roles);
+		return $roles;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

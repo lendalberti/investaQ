@@ -8,12 +8,9 @@
  * @property string $name
  *
  * The followings are the available model relations:
- * @property Bto[] $btos
- * @property BtoApprovals[] $btoApprovals
- * @property History[] $histories
  * @property Quotes[] $quotes
  */
-class Status extends CActiveRecord  {
+class Status extends CActiveRecord {
 
 	const 	DRAFT              = 1,  // custom pricing needs approval
 			WAITING_APPROVAL   = 2, 
@@ -27,8 +24,7 @@ class Status extends CActiveRecord  {
 			PENDING            = 10,
 			INQUIRY            = 11,  // inquired only
 			PROPOSAL           = 12;
-
-
+			
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -71,8 +67,6 @@ class Status extends CActiveRecord  {
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'btoApprovals' => array(self::HAS_MANY, 'BtoApprovals', 'status_id'),
-			'histories' => array(self::HAS_MANY, 'History', 'status_id'),
 			'quotes' => array(self::HAS_MANY, 'Quotes', 'status_id'),
 		);
 	}
