@@ -2,6 +2,7 @@
 <p class="note">Fields with <span class="required">*</span> are required.</p>
 
 <?php echo $this->renderPartial( '_form', array('data'=>$data) ); ?> 
+<!-- < ?php echo $this->renderPartial( '_test_form', array('data'=>$data) ); ?>  -->
 
 
 <!-- 

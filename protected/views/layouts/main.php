@@ -29,7 +29,7 @@
 
 	<script type="text/javascript" charset="utf8" src="<?php echo Yii::app()->request->baseUrl; ?>/js/iq2_main.js"></script>
 
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
 
 
 	
@@ -106,21 +106,7 @@
 
 	</div>  <!--  mainmenu -->
 
-	<?php
-
-		if ( Yii::app()->user->isLoggedIn ) { ?>
-			<div id='dashboard_div'>
-				<table id='dashboard_table' style='border: 1px solid lightblue;'><caption>My Quotes Board</caption>
-					<tr>	<td>Pending</td>       <td><?php echo getMyQuoteCount(Status::WAITING_APPROVAL); ?></td>          <td>Ready</td>   	   <td><?php echo getMyQuoteCount(Status::READY); ?></td>   </tr>  
-					<tr>	<td>Order Placed</td>  <td><?php echo getMyQuoteCount(Status::ORDER_PLACED); ?></td>              <td>Draft</td>       <td><?php echo getMyQuoteCount(Status::DRAFT); ?></td>   </tr>  
-					<tr>	<td>Submitted</td>     <td><?php echo getMyQuoteCount(Status::SUBMITTED_CUSTOMER); ?></td>        <td>Won</td>         <td><?php echo getMyQuoteCount(Status::WON); ?></td>     </tr> 
-					<tr>	<td>BTO Pending</td>   <td><?php echo getMyQuoteCount(Status::SUBMITTED_CUSTOMER); ?></td>        <td>Lost</td>        <td><?php echo getMyQuoteCount(Status::LOST); ?></td>    </tr>
-					<tr>	<td>BTO Ready</td>   <td><?php echo getMyQuoteCount(Status::SUBMITTED_CUSTOMER); ?></td>          <td>NoBid</td>       <td><?php echo getMyQuoteCount(Status::NO_BID); ?></td>  </tr>
-				</table>
-			</div>
-		<?php } ?>
-
-
+	
 	<?php echo $content; ?>
 
 	<div class="clear"></div>

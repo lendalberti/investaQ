@@ -56,7 +56,7 @@
 /* --------------------------------------    Dashboard     */
 div#dashboard_div {
 	padding: 20px 20px 0px 20px; 
-	float: right; 
+	float: left; 
 	border: 0px solid orange;
 }
 
@@ -188,37 +188,101 @@ span.required {
 	color: red;
 }
 
-#quote_customer,
+#quote_customer {
+	border: 1px solid lightgray;
+	padding-bottom: 37px;
+}
 #quote_contact {
 	border: 1px solid lightgray;
 }
 
+
+#pre_quote_table > tbody > tr > td {
+	vertical-align: top;
+}
+
+
+
+
+#quote_details > caption,
 #quote_parts > caption,
 #quote_table > caption,
 #quote_customer > caption,
 #quote_contact > caption {
- 	font-size: 1.1em;
+ 	font-size: .9em;
  	font-weight: bold;
  	text-align: center;
- 	
+ 	background-color: white;
 }
 
+.quote_section_heading {
+	background-color: #EBECE4;
+	font-size: 1.2em;
+ 	font-weight: bold;
+ 	/*text-align: center;*/
+ 	padding-top: 5px;
+ 	padding-bottom: 5px;
+}
+
+#quote_details {
+	border: 0px solid green;
+}
+
+#quote_details > tbody > tr > td > table {
+	border: 0px solid red;
+}
+
+#quote_details > tbody > tr > td > table > tbody > tr > td:nth-child(odd) {
+	text-align: right;
+	font-weight: bold;
+	font-size: .8em;
+}
+
+span[id^=showHide_] {
+	padding-right: 5px; 
+	padding-left: 5px; 
+	font-size: .8em;
+	color: gray;
+}
+
+span[id^=showHide_]:hover {
+	cursor: pointer;
+}
+
+
+
+div#form_cutomer_contact {
+	border: 0px solid orange;
+	height: 420px;
+}
+
+div#form_details,
+div#form_parts_lookup {
+	display: none;
+}
 
 #quote_customer > tbody > tr > td:nth-child(odd) ,
 #quote_contact > tbody > tr > td:nth-child(odd) {
  	text-align: right;
 	font-weight: bold;
 	font-size: .8em;
+	padding-left: 5px;
 }
+
+#quote_details > tbody > tr:nth-child(3) {
+	border: 2px solid lightblue;
+}
+
 
 #quote_customer > tbody > tr > td,
 #quote_contact > tbody > tr > td {
 	padding: 2px 3px 0px 0px;
 }
 
-div.form_parts {
-	width: 910px;
+div.form {
+	padding-bottom: 5px;
 }
+
 
 #results_table > thead > tr > th  { 
 	background: #5E6E78;
@@ -228,9 +292,6 @@ div.form_parts {
   	text-align: center;
 }
 
-#pre_quote_table > tbody > tr > td:nth-child(2) {
-	vertical-align: top;
-}
 
 #quote_contact_container,
 #quote_customer_container {
@@ -239,7 +300,10 @@ div.form_parts {
 	border: 0px solid lightgray;
 }
 
-
+#button_continue {
+	font-size: 1.2em; 
+	cursor: pointer;
+}
 
 
 

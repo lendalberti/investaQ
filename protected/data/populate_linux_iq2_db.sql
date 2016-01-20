@@ -34,4 +34,3 @@ source /home/len/www/iq2/protected/data/scripts/insert_testing.sql
 
 source /home/len/www/iq2/protected/data/scripts/insert_sources.sql 
 source /home/len/www/iq2/protected/data/scripts/insert_quotes.sql 
-

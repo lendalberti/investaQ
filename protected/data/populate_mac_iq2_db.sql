@@ -17,6 +17,7 @@ source /Users/len/www/iq2/protected/data/scripts/insert_levels.sql
 
 source /Users/len/www/iq2/protected/data/scripts/insert_roles.sql 
 source /Users/len/www/iq2/protected/data/scripts/insert_users.sql
+source /Users/len/www/iq2/protected/data/scripts/insert_user_roles.sql 
 source /Users/len/www/iq2/protected/data/scripts/insert_tiers.sql
 
 
@@ -33,4 +34,3 @@ source /Users/len/www/iq2/protected/data/scripts/insert_testing.sql
 
 source /Users/len/www/iq2/protected/data/scripts/insert_sources.sql 
 source /Users/len/www/iq2/protected/data/scripts/insert_quotes.sql 
-

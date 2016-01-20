@@ -34,7 +34,7 @@ class QuotesController extends Controller
 		
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions'=>array('admin','delete'),
-				'users'=>array('admin'),
+				'expression' => '$user->isAdmin'
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -78,17 +78,42 @@ class QuotesController extends Controller
 
 
 	public function actionCreate() {
-		pDebug("Quotes::actionCreate()");
-
-		if ( isset( $_POST['Quotes'] ) ) {
-			pDebug("Quotes::actionCreate() - _POST=", $_POST);
-
-			// save...
+		pDebug("Quotes::actionCreate() - _POST values from serialzed form values:", $_POST);
+		
 
 
 
 
 
+		if ( isset($_POST['customer_id']) || isset($_POST['contact_id']) ) {
+			// pDebug("Quotes::actionCreate() - _POST=", $_POST);
+
+			// $model = new Quotes;
+
+			// $model->customer_id = isset($_POST['customer_id']) ? $_POST['customer_id'] : 
+
+
+			/* 
+				initial save:
+
+					- required fields:
+							┏━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━┳━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┓
+						    ┃ Field                   ┃ Type        ┃ Null ┃ Key ┃ Default           ┃ Extra          ┃
+							┡━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━╇━━━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━┩
+							| quote_no                │ varchar(45) │ NO   │ UNI │ NULL              │                │
+							│ quote_type_id           │ int(11)     │ NO   │ MUL │ NULL              │                │
+							│ status_id               │ int(11)     │ NO   │ MUL │ NULL              │                │
+							│ owner_id                │ int(11)     │ NO   │ MUL │ NULL              │                │
+							│ customer_id             │ int(11)     │ NO   │ MUL │ NULL              │                │
+							│ created_date            │ timestamp   │ NO   │     │ CURRENT_TIMESTAMP │                │
+							│ updated_date            │ datetime    │ NO   │     │ NULL              │                │
+							│ expiration_date         │ datetime    │ NO   │     │ NULL              │                │
+							│ level_id                │ int(11)     │ NO   │ MUL │ NULL              │                │
+							│ source_id               │ int(11)     │ NO   │ MUL │ NULL              │                │
+
+			*/
+
+			//$quote_no = $this->getQuoteNumber();
 
 
 
@@ -148,9 +173,14 @@ class QuotesController extends Controller
 	 * If deletion is successful, the browser will be redirected to the 'admin' page.
 	 * @param integer $id the ID of the model to be deleted
 	 */
-	public function actionDelete($id)
-	{
-		$this->loadModel($id)->delete();
+	public function actionDelete($id) 	{
+		if ( $this->loadModel($id)->delete() ) {
+			pDebug("Quotes:actionDelete() - quote id $id deleted...");
+		}
+		else {
+			pDebug("Quotes:actionDelete() - ERROR: can't delete quote id $id; error=", $model->errors  );
+		}
+
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if(!isset($_GET['ajax']))
@@ -245,4 +275,14 @@ class QuotesController extends Controller
 			Yii::app()->end();
 		}
 	}
+
+	// --------------------------------------------------------
+	private function getQuoteNumber() {
+		$id = Yii::app()->db->createCommand()->select('max(id) as max')->from('quotes')->queryScalar() + 1;
+		$id = $id ? $id : 1;
+		return Date('Ymd-') . sprintf("%04d", $id);
+	}
+
+
+
 }
