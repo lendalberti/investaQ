@@ -1,6 +1,7 @@
-$(document).ready(function() {
-    var myURL = getAbsolutePath();    // quotes: Path = [ http://localhost/iq2/index.php/quotes/ ]
 
+$(document).ready(function() {
+
+    var myURL = getAbsolutePath();
 
     function getAbsolutePath() {
         var loc = window.location;
@@ -13,25 +14,49 @@ $(document).ready(function() {
 
 
 
-    //$('#formCustomer').submit(function( e ) {
-    $('form').submit(function( e ) {
+    $('#formCustomer').submit(function( e ) {
         e.preventDefault();
         var url = myURL + 'create';
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: $(this).serialize(), // serializes the form's elements.
-            success: function(response)  {
-               continueQuote();
-               alert(response); 
-            }
-        });
 
+        if ( formValidated() ) {
+        	$.ajax({
+	            type: "POST",
+	            url: url,
+	            data: $(this).serialize(), // serializes the form's elements.
+	            success: function(quoteNo)  {
+	            	alert('Ajax response - ' + quoteNo);
+	                continueQuote(quoteNo);
+	            }
+	        });
+        }
+        else {
+        	alert("Missing required field(s)...");
+        }
         
         return false;
     });
 
 
+
+    function continueQuote( quote_no ) {
+    	$('#form_details').show();
+        $('#form_parts_lookup').show();
+        $('#showHide_form_cutomer_contact').show();
+        $('.quote_section_heading').show();
+
+		$('#button_continue').hide();
+		disableCustomerForm();
+		disableContactForm();  
+
+		$('#createNewCustomer').hide();
+		$('#createNewContact').hide();
+		$('#customer_select').hide();
+		$('#contact_select').hide();
+		$('span.select_existing').hide();
+
+		//$('#header_QuoteNo').html('Quote No. '+quote_no);
+		$('#header_PageTitle').html('Quote No. '+quote_no);
+    }
 
 
 
@@ -52,11 +77,11 @@ $(document).ready(function() {
 
         if ( $(this).html() == '+') {
             $(this).html('−'); 
-            $(formID).show();
+            $(formID).show(250);
         }
         else {
             $(this).html('+');
-            $(formID).hide();
+            $(formID).hide(250);
         }
     });
    
@@ -106,17 +131,6 @@ $(document).ready(function() {
 		});
 	}
 
-
-
-    //  set up UI Dialogs 
-    var dialog_ViewQuoteDetails = $( "#form_ViewQuoteDetails" ).dialog({
-        autoOpen: false,
-        height: 820,
-        width: 700,
-        modal: true,
-        resizable: false,
-        close: function() { }
-    });
 
 
     function getThisID( that ) {
@@ -188,11 +202,9 @@ $(document).ready(function() {
     });
 
 
-   
-    function continueQuote() {
-        //$('#button_continue').on('click', function() {
-
-	    if ( $('#Customer_name').val() &&
+    // ----------------------------------------------------------------
+    function formValidated() {
+    	if (  	$('#Customer_name').val() &&
 			    $('#Customer_address1').val() &&
 			    $('#Customer_city').val() &&
 			    $('#Customer_country_id').val() > 0 &&
@@ -203,69 +215,71 @@ $(document).ready(function() {
 	    		$('#Contact_last_name').val()   &&
 	    		$('#Contact_email').val()   &&
 	    		$('#Contact_title').val()   &&
-	    		$('#Contact_phone1').val()  )   {
-
-	    	if ( $('#customer_select').val() > 0 ) { // existing customer...
-	    		//alert('EXISTING: customer id=' + $('#Customer_id').val() + ' and contact id=' + $('#Contact_id').val() );
-
-
-
-
-                // data = fields from "form_cutomer_contact"
-                var formData = $('#cust_form').serialize();
-                console.dir("formData=" + formData);
-
-                // $.ajax({
-                //       url: myURL + 'create',
-                //       type: 'POST',
-                //       data: formData,  // {customer_id:$('#Customer_id').val(), contact_id:$('#Contact_id').val()  },  
-                //       success: function(data, textStatus, jqXHR) {
-                //             // console.log("AJAX quote submitted for approval: Success!");
-                //             // window.location.replace( URL + "index");
-                //       },
-                //       error: function (jqXHR, textStatus, errorThrown)  {
-                //             // console.log("AJAX quote submitted for approval: Fail");
-                //             // alert("Sorry - could NOT submit this quote for approval; see Admin.");
-                //       } 
-                // });
-                
-
-
-
-
-	    	}
-	    	else {                                    // NEW customer
-	    		alert('NEW: customer (need to make ajax call first to record this quote)' );
-
-	    	}
-
-            $('#form_details').show();
-            $('#form_parts_lookup').show();
-            $('#showHide_form_cutomer_contact').show();
-            $('.quote_section_heading').show();
-
-			$(this).hide();
-			disableCustomerForm();
-			disableContactForm();  
-
-			$('#createNewCustomer').hide();
-			$('#createNewContact').hide();
-			$('#customer_select').hide();
-			$('#contact_select').hide();
-			$('span.select_existing').hide();
-	    }
-	    else {
-	    	alert('Missing required Customer and/or Contact fields...');
-	    }
-
-        // create quote record with just customer & contact information...
-
-
-
-
+	    		$('#Contact_phone1').val()  &&
+	    		$('#Quote_quote_type_id').val()  > 0   &&
+	    		$('#Quote_source_id').val()  > 0  &&
+	    		$('#Quote_level_id').val()  )   {
+    		return true;
+    	}
     	return false;
-        // });
     }
+
+
+
+
+
+    // ----------------------------------------------------------------
+   //  function continueQuote_OLD() {
+   //      //$('#button_continue').on('click', function() {
+
+	  //   	if ( $('#customer_select').val() > 0 ) { // existing customer...
+	  //   		//alert('EXISTING: customer id=' + $('#Customer_id').val() + ' and contact id=' + $('#Contact_id').val() );
+
+   //              // data = fields from "form_cutomer_contact"
+   //              var formData = $('#cust_form').serialize();
+   //              console.dir("formData=" + formData);
+
+   //              // $.ajax({
+   //              //       url: myURL + 'create',
+   //              //       type: 'POST',
+   //              //       data: formData,  // {customer_id:$('#Customer_id').val(), contact_id:$('#Contact_id').val()  },  
+   //              //       success: function(data, textStatus, jqXHR) {
+   //              //             // console.log("AJAX quote submitted for approval: Success!");
+   //              //             // window.location.replace( URL + "index");
+   //              //       },
+   //              //       error: function (jqXHR, textStatus, errorThrown)  {
+   //              //             // console.log("AJAX quote submitted for approval: Fail");
+   //              //             // alert("Sorry - could NOT submit this quote for approval; see Admin.");
+   //              //       } 
+   //              // });
+                
+	  //   	}
+	  //   	else {                                    // NEW customer
+	  //   		alert('NEW: customer (need to make ajax call first to record this quote)' );
+
+	  //   	}
+
+   //          $('#form_details').show();
+   //          $('#form_parts_lookup').show();
+   //          $('#showHide_form_cutomer_contact').show();
+   //          $('.quote_section_heading').show();
+
+			// $('#button_continue').hide();
+			// disableCustomerForm();
+			// disableContactForm();  
+
+			// $('#createNewCustomer').hide();
+			// $('#createNewContact').hide();
+			// $('#customer_select').hide();
+			// $('#contact_select').hide();
+			// $('span.select_existing').hide();
+	  //   }
+
+   //      // create quote record with just customer & contact information...
+
+   //  	return false;
+   //      // });
+   //  }
 
 
 
@@ -319,50 +333,8 @@ $(document).ready(function() {
     });
 
 
-
-    // set up DataTable
-    var quotes_table  = $('#quotes_table').DataTable({"iDisplayLength": 10 }); 
-    var results_table = $('#results_table').DataTable({"iDisplayLength": 10 }); 
-
-        
-
-            // dialog_ViewPartDetails.dialog('option', 'title', 'Inventory Part Lookup Details'); 
-            // setupOnQuoteHistoryClick();
-
-            // var q = JSON.parse('<?php echo $data["my_quotes"] ? $data["my_quotes"] : ""; ?>');
-
-            // var buttons = { 
-            //   "Cancel": function() { 
-            //      dialog_ViewPartDetails.dialog( "close" );  
-            //      return false; 
-            //   },
-            //   "Quote This Part": function() {
-            //     if ( $('#myQuotesSelect').val() == '0' ) {
-            //         alert("Select a customer quote first");
-            //     }
-            //     else {
-            //         addToQuote(p,$('#myQuotesSelect option:selected').text());
-            //     }
-                
-            //     return false;
-            //   },
-            // }
-
-            // dialog_ViewPartDetails.dialog("option", "buttons", buttons);
-            // dialog_ViewPartDetails.dialog( "open" );
-            // return false; 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 });
+
+
+
+

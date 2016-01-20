@@ -79,52 +79,43 @@ class QuotesController extends Controller
 
 	public function actionCreate() {
 		pDebug("Quotes::actionCreate() - _POST values from serialzed form values:", $_POST);
-		
 
+		if ( isset($_POST['Customer']) && isset($_POST['Contact']) && isset($_POST['Quote'])   ) {
+			$customer_id = $_POST['Customer']['id'];
+			$contact_id  = $_POST['Contact']['id'];
 
+			$modelQuotes = new Quotes;
+			$modelQuotes->attributes = $_POST['Quote'];
+			$modelQuotes->quote_no        = $this->getQuoteNumber();
+			$modelQuotes->quote_type_id   = $_POST['Quote']['quote_type_id'];
+			$modelQuotes->status_id       = Status::DRAFT;
+			$modelQuotes->owner_id        = Yii::app()->user->id;
+			$modelQuotes->customer_id     = $customer_id;
+			$modelQuotes->created_date    = Date('Y-m-d 00:00:00');
+			$modelQuotes->updated_date    = Date('Y-m-d 00:00:00');
+			$modelQuotes->expiration_date = $this->getQuoteExpirationDate();
+			$modelQuotes->level_id        = $_POST['Quote']['level_id'];
+			$modelQuotes->source_id       = $_POST['Quote']['source_id'];
 
-
-
-		if ( isset($_POST['customer_id']) || isset($_POST['contact_id']) ) {
-			// pDebug("Quotes::actionCreate() - _POST=", $_POST);
-
-			// $model = new Quotes;
-
-			// $model->customer_id = isset($_POST['customer_id']) ? $_POST['customer_id'] : 
-
-
-			/* 
-				initial save:
-
-					- required fields:
-							┏━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━┳━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┓
-						    ┃ Field                   ┃ Type        ┃ Null ┃ Key ┃ Default           ┃ Extra          ┃
-							┡━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━╇━━━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━┩
-							| quote_no                │ varchar(45) │ NO   │ UNI │ NULL              │                │
-							│ quote_type_id           │ int(11)     │ NO   │ MUL │ NULL              │                │
-							│ status_id               │ int(11)     │ NO   │ MUL │ NULL              │                │
-							│ owner_id                │ int(11)     │ NO   │ MUL │ NULL              │                │
-							│ customer_id             │ int(11)     │ NO   │ MUL │ NULL              │                │
-							│ created_date            │ timestamp   │ NO   │     │ CURRENT_TIMESTAMP │                │
-							│ updated_date            │ datetime    │ NO   │     │ NULL              │                │
-							│ expiration_date         │ datetime    │ NO   │     │ NULL              │                │
-							│ level_id                │ int(11)     │ NO   │ MUL │ NULL              │                │
-							│ source_id               │ int(11)     │ NO   │ MUL │ NULL              │                │
-
-			*/
-
-			//$quote_no = $this->getQuoteNumber();
-
-
-
-
-
-
-
+			pDebug("Quotes::actionCreate() - saving Quote with the following attributes", $modelQuotes->attributes );
+			if ( $modelQuotes->save() ) {
+				pDebug("Quotes::actionCreate() - Quote No. " . $modelQuotes->quote_no . " saved.");
+				Customers::model()->addContact($customer_id,$contact_id);
+				echo $modelQuotes->quote_no;
+			}
+			else {
+				pDebug("actionCreate() - Error: ", $modelQuotes->errors);
+				echo 'n/a';
+			}
 		}
 		else {
 			$data['customers'] = Customers::model()->findAll( array('order' => 'name') );
+			foreach ( $data['customers'] as $c ) {
+				$tmp[] = $c->name;
+			}
+			$data['[parent'] = array_unique($tmp);
 			$data['contacts'] = Contacts::model()->findAll( array('order' => 'first_name') );
+			$data['salespersons'] = Users::model()->findAll( array('order' => 'first_name') );
 
 			$data['us_states']      = UsStates::model()->findAll( array('order' => 'long_name') );
 			$data['countries']   = Countries::model()->findAll( array('order' => 'long_name') );
@@ -132,6 +123,10 @@ class QuotesController extends Controller
 
 			$data['types']       = CustomerTypes::model()->findAll( array('order' => 'name') );
 			$data['territories'] = Territories::model()->findAll( array('order' => 'name') );
+
+			$data['quote_types'] = QuoteTypes::model()->findAll( array('order' => 'name') );
+			$data['sources']     = Sources::model()->findAll( array('order' => 'name') );
+			$data['levels']      = Levels::model()->findAll( array('order' => 'name') );
 
 			$this->render('create',array(
 				'data'=>$data,
@@ -282,6 +277,14 @@ class QuotesController extends Controller
 		$id = $id ? $id : 1;
 		return Date('Ymd-') . sprintf("%04d", $id);
 	}
+
+
+	// -----------------------------------------------------------
+    function getQuoteExpirationDate() {
+        // quote expiration 30 days from today
+        $exp = "+30 days";
+        return Date( 'Y-m-d 00:00:00', strtotime($exp) );
+    }
 
 
 

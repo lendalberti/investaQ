@@ -172,6 +172,13 @@ class Customers extends CActiveRecord
 	public function getLocation()  {
 	    return $this->address1.', '.$this->address2 .', '.$this->city .', '.$this->zip .', '.$this->country->name ;
 	}
+ 
 
+	public function addContact($customer_id,$contact_id) {
+		$sql = "INSERT INTO customer_contacts (customer_id, contact_id) VALUES($customer_id,$contact_id) ON DUPLICATE KEY UPDATE customer_id = $customer_id, contact_id = $contact_id ";
+		pDebug("Customers::addContact() - sql=[$sql]");
+		$command = Yii::app()->db->createCommand($sql);
+		$command->execute();
+	}
 
 }

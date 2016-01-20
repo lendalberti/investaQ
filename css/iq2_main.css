@@ -189,19 +189,22 @@ span.required {
 }
 
 #quote_customer {
-	border: 1px solid lightgray;
-	padding-bottom: 37px;
+	border: 0px solid lightgray;
+	/*padding-bottom: 37px;*/
 }
 #quote_contact {
-	border: 1px solid lightgray;
+	border-left: 1px solid lightgray;
 }
 
 
 #pre_quote_table > tbody > tr > td {
 	vertical-align: top;
+	
 }
 
-
+#pre_quote_table  {
+	margin-bottom: 0;
+}
 
 
 #quote_details > caption,
@@ -219,9 +222,9 @@ span.required {
 	background-color: #EBECE4;
 	font-size: 1.2em;
  	font-weight: bold;
- 	/*text-align: center;*/
  	padding-top: 5px;
  	padding-bottom: 5px;
+ 	margin-top: 10px;
 }
 
 #quote_details {
@@ -233,9 +236,11 @@ span.required {
 }
 
 #quote_details > tbody > tr > td > table > tbody > tr > td:nth-child(odd) {
+	border: 0px solid lightblue;
 	text-align: right;
 	font-weight: bold;
 	font-size: .8em;
+	width: 100px;
 }
 
 span[id^=showHide_] {
@@ -253,7 +258,7 @@ span[id^=showHide_]:hover {
 
 div#form_cutomer_contact {
 	border: 0px solid orange;
-	height: 420px;
+	/*height: 420px;*/
 }
 
 div#form_details,
@@ -296,20 +301,38 @@ div.form {
 #quote_contact_container,
 #quote_customer_container {
 	height: 480px;
-	overflow-y: scroll;
+	/*overflow-y: scroll;*/
 	border: 0px solid lightgray;
 }
 
 #button_continue {
-	font-size: 1.2em; 
+	font-size: 1.4em; 
 	cursor: pointer;
 }
 
+#footer {
+	margin-top: 100px;
+}
 
+#form_cutomer_contact > div > table   {
+	border-top: 1px solid lightgray;
+	border-bottom: 1px solid lightgray;
+}
 
+#form_cutomer_contact > div > table > tbody > tr > td:nth-child(odd) {
+	text-align: right;
+	font-weight: bold;
+	font-size: .9em;
+	padding-left: 5px;
+	color: #555555;
+}
 
-
-
+#form_cutomer_contact > div > table > tbody > tr > td:nth-child(5) > span {
+	color: blue;
+	font-size: 1.1em;
+	font-family: Courier;
+	color: #a31128;
+}
 
 
 
