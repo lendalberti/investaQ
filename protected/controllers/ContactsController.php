@@ -28,7 +28,7 @@ class ContactsController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view', 'find', 'create', 'update'),
+				'actions'=>array('index','view', 'find', 'create', 'update', 'findbycust'),
 				'expression' => '$user->isLoggedIn',
 			),
 			
@@ -44,14 +44,35 @@ class ContactsController extends Controller
 
 
 	public function actionFind($id)  {
-		pDebug("actionFind() - id=[$id]");
+		pDebug("Contacts::actionFind() - looking for contact id=[$id]");
 
 		$contact = Contacts::model()->findByPk($id);
 
 		$c = $contact->attributes;
-		pDebug('actionFind() - Contact: ', $c );
+		pDebug('Contacts::actionFind() - found contact: ', $c );
 		echo json_encode($c);
 	}
+
+
+
+	public function actionFindbycust($id) {
+		pDebug("Contacts::actionFindbycust() - looking for contacts of customer id=[$id]");
+
+		// $sql = "SELECT contact_id,  FROM customer_contacts WHERE customer_id = $id";
+		$sql = "SELECT co.id AS 'contact_id', concat(co.first_name,' ',co.last_name) AS 'contact_name' FROM customer_contacts cc join contacts co ON cc.contact_id = co.id WHERE cc.customer_id = $id";
+
+		$command = Yii::app()->db->createCommand($sql);
+		$results = $command->queryAll();
+		pDebug("Contacts::actionFindbycust() - results:", $results);
+
+		foreach( $results as $r ) {
+			$contacts[] = array( $r['contact_id'] => $r['contact_name'] );
+		}
+
+		pDebug("Contacts::actionFindbycust() - contacts found:", $contacts);
+		echo json_encode($contacts);
+	}
+
 
 
 

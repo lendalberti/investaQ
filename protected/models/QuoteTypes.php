@@ -10,8 +10,13 @@
  * The followings are the available model relations:
  * @property Quotes[] $quotes
  */
-class QuoteTypes extends CActiveRecord
-{
+class QuoteTypes extends CActiveRecord {
+
+	const   STOCK                   = 1,  
+            MANUFACTURING           = 2,  
+            SUPPLIER_REQUEST_FORM   = 3;
+
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.

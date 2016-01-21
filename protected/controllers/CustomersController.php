@@ -42,12 +42,12 @@ class CustomersController extends Controller
 	}
 
 	public function actionFind($id)  {
-		pDebug("actionFind() - id=[$id]");
+		pDebug("Customers::actionFind() - looking for customer id=[$id]");
 
 		$customer = Customers::model()->findByPk($id);
 
 		$c = $customer->attributes;
-		pDebug('actionFind() - Customer: ', $c );
+		pDebug('Customers: actionFind() - found customer: ', $c );
 		echo json_encode($c);
 	}
 

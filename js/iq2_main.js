@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
 
-    var myURL = getAbsolutePath();
+    var myURL = getAbsolutePath();      //alert('myURL=['+myURL+']');
 
     function getAbsolutePath() {
         var loc = window.location;
@@ -13,9 +13,41 @@ $(document).ready(function() {
 	disableContactForm();
 
 
+	// set up quote details form based on quote type
+	$('#Quote_quote_type_id').on('change', function() {
+		var quoteTypeID = $(this).val();
+		console.log('quoteTypeID='+quoteTypeID);
+
+		if ( quoteTypeID == 1 ) {
+			$('#form_stock_details').show();
+			$('#form_mfg_details').hide();
+			$('#form_srf_details').hide();
+		}
+		else if ( quoteTypeID == 2 ) {
+			$('#form_stock_details').hide();
+			$('#form_mfg_details').show();
+			$('#form_srf_details').hide();
+		}
+		else if ( quoteTypeID == 3 ) {
+			$('#form_stock_details').hide();
+			$('#form_mfg_details').hide();
+			$('#form_srf_details').show();
+		}
+
+
+
+
+	});
+
+
+
 
     $('#formCustomer').submit(function( e ) {
         e.preventDefault();
+
+        // makeSelectReadOnly('Quote_quote_type_id');
+        //makeFormSelectsReadOnly();
+
         var url = myURL + 'create';
 
         if ( formValidated() ) {
@@ -24,8 +56,16 @@ $(document).ready(function() {
 	            url: url,
 	            data: $(this).serialize(), // serializes the form's elements.
 	            success: function(quoteNo)  {
-	            	alert('Ajax response - ' + quoteNo);
-	                continueQuote(quoteNo);
+	            	//alert('Ajax response - ' + quoteNo);
+	            	if ( quoteNo ) {
+	            		// makeFormSelectsReadOnly();
+	            		continueQuote(quoteNo);
+	            		// $('#showHide_form_customer_contact').trigger('click');
+	            	}
+	            	else {
+	            		alert("Unable to continue quote process...\nCan't retrieve Quote No. - see Admin");
+	            	}
+	                
 	            }
 	        });
         }
@@ -38,15 +78,68 @@ $(document).ready(function() {
 
 
 
+	function makeSelectReadOnly(s) {
+		var selectValue = $('#'+s+' option:selected').text();
+    	console.log('selectValue='+selectValue);
+
+    	$('#'+s).replaceWith( "<span class='select_replacement'>"+selectValue+"</span>" );
+	}
+
+   
+    function makeFormSelectsReadOnly() {
+    	// get selected value, hide select, display text
+
+    	$.each( $('select[id^=Customer_]'), function() {
+    		var re = /^Customer_(.+)$/;
+    		var selectName = $(this).attr('id').replace(re, '$1');
+    		console.log('selectName='+selectName);
+    		console.log('selected text: ' + this.selectedOptions[0].text );
+
+    		var selectText = this.selectedOptions[0].text;
+    		console.log('selected text: ' + selectText);
+    		$(this).replaceWith( "<span class='select_replacement'>"+selectText+"</span>" );
+
+
+    	});
+
+/*
+			var re = /(\w+)\s(\w+)/;
+			var str = 'John Smith';
+			var newstr = str.replace(re, '$2, $1');
+			console.log(newstr);  // Smith, John
+*/
+
+
+  //   	$( "[id^=Customer_] option:selected" ).each(function( index ) {
+  //   		var selectValue =  $( this ).text();
+		//   	console.log( "selectValue: " + selectValue );
+
+		//   	$(this).replaceWith( "<span class='select_replacement'>"+selectValue+"</span>" );
+		// });
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     function continueQuote( quote_no ) {
     	$('#form_details').show();
         $('#form_parts_lookup').show();
-        $('#showHide_form_cutomer_contact').show();
+        $('#showHide_form_customer_contact').show();
         $('.quote_section_heading').show();
 
 		$('#button_continue').hide();
 		disableCustomerForm();
 		disableContactForm();  
+		//makeFormSelectsReadOnly();
 
 		$('#createNewCustomer').hide();
 		$('#createNewContact').hide();
@@ -71,8 +164,6 @@ $(document).ready(function() {
         var formName = tmp[1];
         var formID = '#'+formName;
 
-
-
         console.log('formID='+formID);
 
         if ( $(this).html() == '+') {
@@ -87,47 +178,66 @@ $(document).ready(function() {
    
 
 	$('#createNewCustomer').on('click',function() {
+		// clear out all Customer_xxx fields
 	    $("[id^=Customer_]").each(function() {
 	    	$(this).val('');
-	    	$('#customer_select').val('');
-		  	enableCustomerForm(); 
 		});
+	  	enableCustomerForm(); 
+	  	// assume we need to create a new contact when creating a new customer... 
+	  	$('#createNewContact').trigger('click');
+	  	$('#contact_select').hide();
+	  	$('#createNewContact').hide();
+
 	});
 
 	$('#createNewContact').on('click',function() {
+		// clear out all Contact_xxx fields
 	    $("[id^=Contact_]").each(function() {
 	    	$(this).val('');
-	    	$('#contact_select').val('');
-		  	enableContactForm(); 
 		});
+		enableContactForm(); 
 	});
 
+
+	// -------------------------------- enable/disable Customer form
 	function disableCustomerForm() {
 		$("[id^=Customer_]").each(function() {
-	  		// $(this).prop('disabled', 'disabled'); 
             $(this).prop('readonly', true);
-		});
+            $(this).css('background-color', '#F0F0F0');  // TODO: hide dropdown and show just text
 
+            if ( $(this).is('select') ) { 
+            	console.log*
+            }
+            else {
+
+            }
+           
+		});
 	}
 	function enableCustomerForm() {
 		$("[id^=Customer_]").each(function() {
-	  		//$(this).prop('disabled', false);
             $(this).prop('readonly', false);
+             if ( !$(this).is('select') ) {
+             	$(this).css('background-color', 'white');  // TODO: hide text and show dropdown 
+             }
 		});
 	}
-
-
+	
+	// -------------------------------- enable/disable Contact form
 	function disableContactForm() {
 		$("[id^=Contact_]").each(function() {
-	  		// $(this).prop('disabled', 'disabled');
             $(this).prop('readonly', true);
+            $(this).css('background-color', '#F0F0F0'); // TODO: hide dropdown and show just text
 		});
 
 	}
 	function enableContactForm() {
 		$("[id^=Contact_]").each(function() {
-	  		// $(this).prop('disabled', false);
             $(this).prop('readonly', false);
+           
+            if ( !$(this).is('select') ) {
+            	$(this).css('background-color', 'white');  // TODO: hide text and show dropdown 
+            }
 		});
 	}
 
@@ -139,39 +249,88 @@ $(document).ready(function() {
 
 
 
-    // fill out customer form everytime customer is selected
+    // prefill out customer form everytime customer is selected
     $('#customer_select').on('change', function() {
-    	var custID = $(this).val();
-    	var url = myURL + '../customers/find?id=' + custID;
-		$.ajax({
-		    url: url,
-		    type: 'GET',
-		    success: function(result) {
-		        var r = JSON.parse(result);
-		        $.each( r, function(k,v) {
-		        	$('#Customer_'+k).val(v);
-		        	disableCustomerForm();  
-		        });
-		    }
-		});
+    	if ( this.selectedIndex > 0 ) {
+    		$('#contact_select').show();
+		  	$('#createNewContact').show();
+
+		  	$("[id^=Contact_]").each(function() {
+		    	$(this).val('');
+			});
+		  	disableContactForm();
+
+    		var custID = $(this).val();
+    		var find_cust_url     = myURL + '../customers/find?id=' + custID;
+    		var find_contacts_url = myURL + '../contacts/findbycust?id=' + custID;
+    		this.selectedIndex = 0;
+
+			$.ajax({
+			    url: find_cust_url,
+			    type: 'GET',
+			    success: function(result) {
+				    var r = JSON.parse(result);
+			        $.each( r, function(k,v) {
+			        	$('#Customer_'+k).val(v);
+			        	console.log('Disabling customer form fields...');
+			        	disableCustomerForm();  
+			        });
+			        // prefill Contact dropdown with contacts for this customer ONLY
+				    $.ajax({
+					    url: find_contacts_url,
+					    type: 'GET',
+					    success: function(result) {
+					        console.log("result="+result);
+					        var r = JSON.parse(result);
+
+					        $('#contact_select').empty();
+					        $('#contact_select').append( $('<option></option>' ).val(0).html('Select contact'));
+					        $.each( r, function(kk,rr) {
+					        	$.each( rr, function(k,v) {
+					        		console.log("k=["+k+"], v=["+v+"]");
+					        		$('#contact_select').append( $('<option></option>' ).val(k).html(v));
+					        	})
+					        	
+					        });
+					    }
+					});
+
+
+			    }
+			});
+    	}
+    	
     });
 
 
   	// fill out contact form everytime contact is selected
     $('#contact_select').on('change', function() {
-    	var contactID = $(this).val();
-    	var url = myURL + '../contacts/find?id=' + contactID;
-		$.ajax({
-		    url: url,
-		    type: 'GET',
-		    success: function(result) {
-		        var r = JSON.parse(result);
-		        $.each( r, function(k,v) {
-		        	$('#Contact_'+k).val(v);
-		        	disableContactForm();  
-		        });
-		    }
-		});
+    	if ( this.selectedIndex > 0 ) {
+	    	var contactID = $(this).val();
+	    	var url = myURL + '../contacts/find?id=' + contactID;
+	    	this.selectedIndex = 0;
+
+			$.ajax({
+			    url: url,
+			    type: 'GET',
+			    success: function(result) {
+			        var r = JSON.parse(result);
+			        $.each( r, function(k,v) {
+			        	$('#Contact_'+k).val(v);
+			        	disableContactForm();  
+
+			        	// prefill Customer dropdown with contacts for this contact ONLY
+
+
+
+
+
+
+
+			        });
+			    }
+			});
+		}
     });
 
 
@@ -261,7 +420,7 @@ $(document).ready(function() {
 
    //          $('#form_details').show();
    //          $('#form_parts_lookup').show();
-   //          $('#showHide_form_cutomer_contact').show();
+   //          $('#showHide_form_customer_contact').show();
    //          $('.quote_section_heading').show();
 
 			// $('#button_continue').hide();

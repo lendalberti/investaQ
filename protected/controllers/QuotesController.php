@@ -83,20 +83,48 @@ class QuotesController extends Controller
 		if ( isset($_POST['Customer']) && isset($_POST['Contact']) && isset($_POST['Quote'])   ) {
 			$customer_id = $_POST['Customer']['id'];
 			$contact_id  = $_POST['Contact']['id'];
+			$quote_type  = $_POST['Quote']['quote_type_id'];;
 
-			$modelQuotes = new Quotes;
-			$modelQuotes->attributes = $_POST['Quote'];
+			if (!$customer_id ) {
+				// create new customer, get id
+				$modelCustomers = new Customers;
+				$modelCustomers->attributes      = $_POST['Customer'];
+				if ( $modelCustomers->save() ) {
+					$customer_id = $modelCustomers->id; 
+					pDebug("Quotes::actionCreate() - created new customer with the following attributes:", $modelCustomers->attributes );
+				}
+				else {
+					pDebug("Quotes::actionCreate() - ERROR: couldn't create new customer with the following attributes:", $modelCustomers->attributes );
+					echo ''; return;
+				}
+			}
+
+			if (!$contact_id ) {
+				// create new contact, get id
+				$modelContacts = new Contacts;
+				$modelContacts->attributes      = $_POST['Contact'];
+				if ( $modelContacts->save() ) {
+					$contact_id = $modelContacts->id; 
+					pDebug("Quotes::actionCreate() - created new contact with the following attributes:", $modelContacts->attributes );
+				}
+				else {
+					pDebug("Quotes::actionCreate() - ERROR: couldn't create new contact with the following attributes:", $modelContacts->attributes );
+					echo ''; return;
+				}
+			}
+
+			$modelQuotes                  = new Quotes;
+			pDebug("Quotes::actionCreate() - empty new modelQuotes:", $modelQuotes->attributes );
+
+			$modelQuotes->attributes      = $_POST['Quote'];
+			$modelQuotes->customer_id     = $customer_id;
 			$modelQuotes->quote_no        = $this->getQuoteNumber();
-			$modelQuotes->quote_type_id   = $_POST['Quote']['quote_type_id'];
 			$modelQuotes->status_id       = Status::DRAFT;
 			$modelQuotes->owner_id        = Yii::app()->user->id;
-			$modelQuotes->customer_id     = $customer_id;
 			$modelQuotes->created_date    = Date('Y-m-d 00:00:00');
 			$modelQuotes->updated_date    = Date('Y-m-d 00:00:00');
 			$modelQuotes->expiration_date = $this->getQuoteExpirationDate();
-			$modelQuotes->level_id        = $_POST['Quote']['level_id'];
-			$modelQuotes->source_id       = $_POST['Quote']['source_id'];
-
+			
 			pDebug("Quotes::actionCreate() - saving Quote with the following attributes", $modelQuotes->attributes );
 			if ( $modelQuotes->save() ) {
 				pDebug("Quotes::actionCreate() - Quote No. " . $modelQuotes->quote_no . " saved.");
@@ -104,8 +132,8 @@ class QuotesController extends Controller
 				echo $modelQuotes->quote_no;
 			}
 			else {
-				pDebug("actionCreate() - Error: ", $modelQuotes->errors);
-				echo 'n/a';
+				pDebug("actionCreate() - Error on modelQuotes->save(): ", $modelQuotes->errors);
+				echo '';
 			}
 		}
 		else {

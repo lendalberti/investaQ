@@ -61,10 +61,6 @@
  */
 class Quotes extends CActiveRecord  {
 
-	const   STOCK                   = 1,  
-            MANUFACTURING           = 2,  
-            SUPPLIER_REQUEST_FORM   = 3;
-
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -140,7 +136,7 @@ class Quotes extends CActiveRecord  {
 			'quote_type_id' => 'Quote Type',
 			'status_id' => 'Status',
 			'owner_id' => 'Owner',
-			'customer_id' => 'Customer',
+			'customer_id' => 'Customer ID',
 			'created_date' => 'Created Date',
 			'updated_date' => 'Updated Date',
 			'expiration_date' => 'Expiration Date',

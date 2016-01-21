@@ -1,4 +1,45 @@
 
++-----------------+
+|  Jan. 21, 2016  |
++-----------------+
+
+
+	[ ] add typeahead customer/contact name lookup on 'quotes/create' page
+
+	[x] add background color to 'readonly' values on forms
+
+	[ ] highlight missing form fields
+
+	[ ] create 'pError()'' function similar to 'pDebug()'
+
+	[x] filll out contact_dropdown based on customer
+
+	EITHER
+		[ ] when selecting existing customer on 'quotes/create' page, substitute <span>text</span> for dropdowns 
+				- 8 in Customer section
+				- 2 in Contact section
+		[ ]  when clicking on "New", substitute dropdowns back, no labels but 'placeholders' instead
+	OR
+		[ ] on "existing" customer/contact: use form w/no dropdowns, just text, different font, etc.
+		[ ] on "New": use different form w/dropdowns, no labels but 'placeholders' instead
+
+
+   [ ] relocate "Quote Level: Inquiry" on form?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

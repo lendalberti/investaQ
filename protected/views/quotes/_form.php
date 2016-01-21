@@ -1,5 +1,3 @@
-<script type="text/javascript" charset="utf8" src="<?php echo Yii::app()->request->baseUrl; ?>/js/iq2_quote.js"></script>
-
 
 <?php $this->layout = '//layouts/column1'; ?>
 
@@ -13,10 +11,10 @@
 
 	<div class="form">
 		<div class='quote_section_heading'>
-			<span id='showHide_form_cutomer_contact' style='display: none;'>&minus;</span><span style='padding-left: 350px;'>Customer &amp; Contacts</span>
+			<span id='showHide_form_customer_contact' style='display: none;'>&minus;</span><span style='padding-left: 350px;'>Customer &amp; Contacts</span>
 		</div>
 
-		<div id='form_cutomer_contact'>
+		<div id='form_customer_contact'>
 				<table id='pre_quote_table'>
 					<tr>
 						<td>
@@ -24,24 +22,25 @@
 								<table id='quote_customer'>
 									<caption>Customer</caption>
 										<tr>  
-											<td style='padding-bottom: 20px; text-align: center;' colspan='4'><span class='select_existing'>Select existing customer</span>  
+											<td style='padding-bottom: 20px; text-align: center;' colspan='4'><!-- <span class='select_existing'>Select existing customer</span>  --> 
 												<select id='customer_select'>
 
 														<?php
-															echo "<option value='0'></option>";
+															echo "<option value='0'>Select customer</option>";
 															foreach( $data['customers'] as $c ) {
-																echo "<option value='".$c->id."'>".$c->name. ', ' . $c->address1 ."</option>";
+																echo "<option value='".$c->id."'>".$c->name. ', ' . $c->address1 . ', '. $c->city . ', '. $c->country->short_name ."</option>";
 															}
 														?>
 
-												</select><span style='padding-left: 10px'><a href='#' id='createNewCustomer' >New</a></span>
+												<!-- </select><span style='padding-left: 10px'><a href='#' id='createNewCustomer' >New</a></span> -->
+												</select><span id='createNewCustomer' style='padding-left: 10px'>New</span>
 											 </td> 
 										</tr>
 
 										<!--   ###############################################################################################                   -->
 
 										<tr>  
-											<td><span class='required'> * </span>Name </td><td> <input type='text' id='Customer_name' name='Customer[name]'></td> 
+											<td><span class='required'> * </span>Name </td><td> <input type='text' id='Customer_name' name='Customer[name]' placeholder=' Customer Name'></td> 
 										    <td>Vertical Market</td><td> <input type='text' id='Customer_vertical_market' name='Customer[vertical_market]'></td>
 										</tr>
 
@@ -162,17 +161,18 @@
 								<table id='quote_contact'>
 								<caption>Contact</caption>
 
-									<tr>  <td style='text-align: center;' colspan='2'><span class='select_existing'>Select existing contact </span>
+									<tr>  <td style='padding-bottom: 20px; text-align: center;' colspan='2'><!-- <span class='select_existing'>Select existing contact </span> -->
 											<select id='contact_select'>
 
 													<?php
-														echo "<option value='0'></option>";
+														echo "<option value='0'>Select contact</option>";
 														foreach( $data['contacts'] as $c ) {
 															echo "<option value='".$c->id."'>".$c->first_name. ' ' . $c->last_name ."</option>";
 														}
 													?>
 
-											</select><span style='padding-left: 10px'><a href='#' id='createNewContact' >New</a></span>
+											<!-- </select><span style='padding-left: 10px'><a href='#' id='createNewContact' >New</a></span> -->
+											</select><span id='createNewContact' style='padding-left: 10px'>New</span>
 										 </td> 
 									</tr>
 
@@ -215,7 +215,7 @@
 					</tr>
 				</table>
 				
-				<div style='margin-bottom: 50px;'>
+				<div>
 					<table>
 						<tr>
 							<td><span class='required'> * </span>Quote Type </td><!--   quote_type_id -->
@@ -244,13 +244,92 @@
 					</table>
 				</div>
 
+				<div class="form"> 
+					<!-- <div class='quote_section_heading'> -->
+						<!-- <span id='showHide_form_details'>&minus;</span><span style='padding-left: 350px;'>Terms & Conditions, Comments, et al.</span> -->
+					<!-- </div> -->
+					<div id='form_stock_details' style='display: none;'>
+						<h3>Stock Quote Details</h3>
+						<table id='quote_details'>
+							<tr>
+								<td>
+									<table>
+										<tr>
+											<td>Terms &amp; Conditions</td>        <td><textarea name='Quote[terms_conditions]' rows="4" cols="30"></textarea></td>
+											<td>Manufacturing Lead Times</td>  <td><textarea name='Quote[manufacturing_lead_time]'rows="4" cols="30"></textarea></td>
+										</tr>
+										<tr>	
+											<td>RISL</td>                       <td><textarea name='Quote[risl]' rows="4" cols="30"></textarea></td>
+											<td>Customer Acknowledgment</td>    <td><textarea name='Quote[customer_acknowledgment]' rows="4" cols="30"></textarea></td>
+										</tr>
+										<tr>
+											<td>Notes/Comments</td>             <td colspan="3"><textarea name='Quote[additional_notes]' rows="4" cols="86"></textarea></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+
+						</table>
+					</div>
+
+					<div id='form_mfg_details' style='display: none;'>
+						<h3>Manufacturing Quote Details</h3>
+						<table id='quote_details'>
+							<tr>
+								<td>
+									<table>
+										<!-- <tr>
+											<td>Terms & Conditions</td>        <td><textarea name='Quote[terms_conditions]' rows="4" cols="30"></textarea></td>
+											<td>Manufacturing Lead Times</td>  <td><textarea name='Quote[mfg_lead_times]'rows="4" cols="30"></textarea></td>
+										</tr>
+										<tr>	
+											<td>RISL</td>                       <td><textarea name='Quote[risl]' rows="4" cols="30"></textarea></td>
+											<td>Customer Acknowledgment</td>    <td><textarea name='Quote[cust_ack]' rows="4" cols="30"></textarea></td>
+										</tr>
+										<tr>
+											<td>Notes/Comments</td>             <td colspan="3"><textarea name='Quote[comments]' rows="4" cols="86"></textarea></td>
+										</tr> -->
+									</table>
+								</td>
+							</tr>
+
+						</table>
+					</div>
+
+					<div id='form_srf_details' style='display: none;'>
+						<h3>Supplier Request Form</h3>
+						<table id='quote_details'>
+							<tr>
+								<td>
+									<table>
+										<!-- <tr>
+											<td>Terms & Conditions</td>        <td><textarea name='Quote[terms_conditions]' rows="4" cols="30"></textarea></td>
+											<td>Manufacturing Lead Times</td>  <td><textarea name='Quote[mfg_lead_times]'rows="4" cols="30"></textarea></td>
+										</tr>
+										<tr>	
+											<td>RISL</td>                       <td><textarea name='Quote[risl]' rows="4" cols="30"></textarea></td>
+											<td>Customer Acknowledgment</td>    <td><textarea name='Quote[cust_ack]' rows="4" cols="30"></textarea></td>
+										</tr>
+										<tr>
+											<td>Notes/Comments</td>             <td colspan="3"><textarea name='Quote[comments]' rows="4" cols="86"></textarea></td>
+										</tr> -->
+									</table>
+								</td>
+							</tr>
+
+						</table>
+					</div>
+
+				</div>
+
+
 
 
 				<input type='submit' id='button_continue' value='Continue'>
 		</div>
 	</div>
 
-	<div class="form"> 
+	<!-- <div class="form"> 
 		<div class='quote_section_heading' style='display: none;'>
 			<span id='showHide_form_details'>&minus;</span><span style='padding-left: 350px;'>Terms & Conditions, Comments, et al.</span>
 		</div>
@@ -277,7 +356,7 @@
 			</table>
 		</div>
 	</div>
-
+ -->
 	<div class="form">
 		<div class='quote_section_heading' style='display: none;'>
 			<span id='showHide_form_parts_lookup'>&minus;</span><span style='padding-left: 350px;'>Inventory Parts Lookup</span>
