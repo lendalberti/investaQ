@@ -33,4 +33,3 @@ source /Users/len/www/iq2/protected/data/scripts/insert_die_manufacturers.sql
 source /Users/len/www/iq2/protected/data/scripts/insert_testing.sql
 
 source /Users/len/www/iq2/protected/data/scripts/insert_sources.sql 
-source /Users/len/www/iq2/protected/data/scripts/insert_quotes.sql 

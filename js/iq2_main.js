@@ -204,22 +204,17 @@ $(document).ready(function() {
 		$("[id^=Customer_]").each(function() {
             $(this).prop('readonly', true);
             $(this).css('background-color', '#F0F0F0');  // TODO: hide dropdown and show just text
-
-            if ( $(this).is('select') ) { 
-            	console.log*
-            }
-            else {
-
-            }
-           
 		});
 	}
 	function enableCustomerForm() {
 		$("[id^=Customer_]").each(function() {
-            $(this).prop('readonly', false);
-             if ( !$(this).is('select') ) {
+            if ( $(this).is('select') ) {
+             	$(this).prop('disabled', false);
+            }
+            else {
+            	$(this).prop('readonly', false);
              	$(this).css('background-color', 'white');  // TODO: hide text and show dropdown 
-             }
+            }
 		});
 	}
 	
@@ -233,10 +228,12 @@ $(document).ready(function() {
 	}
 	function enableContactForm() {
 		$("[id^=Contact_]").each(function() {
-            $(this).prop('readonly', false);
-           
-            if ( !$(this).is('select') ) {
-            	$(this).css('background-color', 'white');  // TODO: hide text and show dropdown 
+            if ( $(this).is('select') ) {
+             	$(this).prop('disabled', false);
+            }
+            else {
+            	$(this).prop('readonly', false);
+             	$(this).css('background-color', 'white');  // TODO: hide text and show dropdown 
             }
 		});
 	}
@@ -272,26 +269,34 @@ $(document).ready(function() {
 				    var r = JSON.parse(result);
 			        $.each( r, function(k,v) {
 			        	$('#Customer_'+k).val(v);
+
+			        	if ( $('#Customer_'+k).is('select') ) {
+			        		var selectedVal = $('#Customer_'+k+' option:selected').val();
+			        		$('#Customer_'+k).prop('disabled', 'disabled');
+			        		$('#Customer_'+k).append("<input type='hidden' id='Customer_"+k+"' name='Customer["+k+"]' value='"+selectedVal+"' >");
+			        	}
+
 			        	console.log('Disabling customer form fields...');
-			        	disableCustomerForm();  
+			        	$(this).prop('readonly', true);
+        				$(this).css('background-color', '#F0F0F0');  
 			        });
 			        // prefill Contact dropdown with contacts for this customer ONLY
 				    $.ajax({
 					    url: find_contacts_url,
 					    type: 'GET',
 					    success: function(result) {
-					        console.log("result="+result);
 					        var r = JSON.parse(result);
 
 					        $('#contact_select').empty();
 					        $('#contact_select').append( $('<option></option>' ).val(0).html('Select contact'));
-					        $.each( r, function(kk,rr) {
-					        	$.each( rr, function(k,v) {
-					        		console.log("k=["+k+"], v=["+v+"]");
-					        		$('#contact_select').append( $('<option></option>' ).val(k).html(v));
-					        	})
-					        	
-					        });
+					        if ( r ) {
+						        $.each( r, function(kk,rr) {
+						        	$.each( rr, function(k,v) {
+						        		$('#contact_select').append( $('<option></option>' ).val(k).html(v));
+						        	})
+						        	
+						        });
+						    }
 					    }
 					});
 

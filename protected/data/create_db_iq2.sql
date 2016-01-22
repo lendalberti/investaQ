@@ -339,7 +339,7 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`quotes` (
   `created_date` TIMESTAMP NOT NULL DEFAULT NOW() ,
   `updated_date` DATETIME NOT NULL ,
   `expiration_date` DATETIME NOT NULL ,
-  `level_id` INT NOT NULL ,
+  `level_id` INT NOT NULL DEFAULT 1 ,
   `source_id` INT NOT NULL ,
   `additional_notes` TEXT NULL ,
   `terms_conditions` TEXT NULL ,
