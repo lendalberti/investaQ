@@ -333,14 +333,32 @@ div.form {
 	color: #a31128;
 }
 
+#resetCustomers,
+#resetContacts {
+	color: #a31128;
+	text-decoration: underline;
+}
+
 #createNewCustomer,
 #createNewContact {
+	text-decoration: underline;
 	color: #2C6371;
 }
 
+#enableAutoSelect {
+	padding-left: 30px;
+	color: #a31128;
+	font-weight: normal;
+	font-size: .8em;
+}
+
+#refresh_contacts:hover,
+#refresh_customers:hover,
+#resetCustomers:hover,
+#resetContacts:hover,
+#enableAutoSelect:hover,
 #createNewCustomer:hover,
 #createNewContact:hover {
-	text-decoration: underline;
 	cursor: pointer;
 }
 
@@ -349,17 +367,23 @@ span.select_replacement {
 	font-family: Courier;
 }
 
+#reset_form {
+	color: #a31128;
+	font-weight: bold;
+	font-variant: small-caps;
+	padding: 10px;
+	text-decoration: underline;
+}
+
+#reset_form:hover {
+	cursor: pointer;
+}
 
 
-
-
-
-
-
-
-
-
-
+#quote_level {
+	color: #a31128;
+	font-weight: bold;
+}
 
 
 

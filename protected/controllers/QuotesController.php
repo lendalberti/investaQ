@@ -42,16 +42,41 @@ class QuotesController extends Controller
 		);
 	}
 
-	/**
-	 * Displays a particular model.
-	 * @param integer $id the ID of the model to be displayed
-	 */
-	public function actionView($id)
-	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
-		));
+	
+	// --- 
+	public function actionView($id) {
+
+		$model = $this->loadModel($id);
+		pDebug('QuotesController::actionView() - quote attributes:', $model->attributes);
+		
+		if ( $model->quote_type_id == QuoteTypes::STOCK ) {
+			// display only Stock Quote relevant fields
+			echo 'displaying Stock quote...';
+		}
+		else if ( $model->quote_type_id == QuoteTypes::MANUFACTURING ) {
+			// display only Manufacturing Quote relevant fields
+			echo 'displaying Manufacturing quote...';
+		}
+		else if ( $model->quote_type_id == QuoteTypes::SUPPLIER_REQUEST_FORM ) {
+			// display only SRF relevant fields
+			echo 'displaying SRF...';
+		}
+		else {
+			pDebug('QuotesController::actionView() - quote type ['.$model->quote_type_id.'] invalid');
+			echo 'invalid quote type...';
+		}
+
+
+
 	}
+
+
+
+
+
+
+
+
 
 	/**
 	 * Creates a new model.
@@ -81,6 +106,8 @@ class QuotesController extends Controller
 		pDebug("Quotes::actionCreate() - _POST values from serialzed form values:", $_POST);
 
 		if ( isset($_POST['Customer']) && isset($_POST['Contact']) && isset($_POST['Quote'])   ) {
+
+
 			$customer_id = $_POST['Customer']['id'];
 			$contact_id  = $_POST['Contact']['id'];
 			$quote_type  = $_POST['Quote']['quote_type_id'];;
@@ -313,6 +340,207 @@ class QuotesController extends Controller
         $exp = "+30 days";
         return Date( 'Y-m-d 00:00:00', strtotime($exp) );
     }
+
+
+
+
+    	//-------------------------------------------------------
+	public function actionPdf($id) {
+		pDebug('actionPdf() - creating PDF file for quote no. ' . $id);
+
+		$data          = array();
+		$modelQuote    = $this->loadModel($id);
+		$modelCustomer = Customers::model()->findByPk($modelQuote->customer_id);  
+		$modelItems    = Items::model()->findAll( array( 'condition' => "quote_id=$id") );   
+		$contact       = getContactInfoByCustomerID($modelQuote->customer_id); 
+
+		// start filling $data for pdf
+		$data['terms_conditions']        = $modelQuote->terms_conditions;
+		$data['expiration_date']         = $modelQuote->expiration_date;
+		$data['additional_notes']        = $modelQuote->additional_notes;
+		$data['customer_acknowledgment'] = $modelQuote->customer_acknowledgment;
+		$data['risl']                    = $modelQuote->risl;
+		$data['terms']                   = $tc->content;
+		$data['manufacturing_lead_time'] = $modelQuote->manufacturing_lead_time;
+		$data['quote_no']                = $modelQuote->quote_no;
+		$data['status_id']             = $modelQuote->status_id;
+
+		$st                              = UsStates::model()->findByPk($modelCustomer->state_id);
+		$co                              = Countries::model()->findByPk($modelCustomer->country_id); 
+		$data['customer']['name']        = $modelCustomer->name;
+		$data['customer']['address1']    = $modelCustomer->address1;
+		$data['customer']['address2']    = $modelCustomer->address2;
+		$data['customer']['city']        = $modelCustomer->city;
+		$data['customer']['state']       = $st->short_name;
+		$data['customer']['zip']         = $modelCustomer->zip;
+		$data['customer']['country']     = $co->long_name;
+		$data['customer']['quote_id']    = $id;
+
+		$data['customer']['contact']['name']   = $contact['fullname']; 
+		$data['customer']['contact']['email']  = $contact['email'];
+		$data['customer']['contact']['phone1'] = $contact['phone1']; 
+		$data['customer']['contact']['phone2'] = $contact['phone2'];
+	
+		$u = Users::model()->findByPk($modelQuote->user_id);
+
+		$data['profile']['name']  = $u->fullname;
+		$data['profile']['title'] = $u->title;
+		$data['profile']['phone'] = $u->phone;
+		$data['profile']['fax']   = $u->fax;
+		$data['profile']['email'] = $u->email;
+		$data['profile']['sig']   = $u->sig;
+		
+		foreach( $modelItems as $i => $m ) {
+			$data['items'][] = array(	'part_no'       => $m->part_no, 
+										'manufacturer'  => $m->manufacturer, 
+										'line_note'     => $m->line_note,
+										'date_code'     => $m->date_code,
+
+										'1_24'      => array( $m->qty_1_24,      $m->price_1_24 ),
+										'25_99'     => array( $m->qty_25_99,     $m->price_25_99 ),
+										'100_499'   => array( $m->qty_100_499,   $m->price_100_499 ),
+										'500_999'   => array( $m->qty_500_999,   $m->price_500_999 ),
+										'1000_Plus' => array( $m->qty_1000_Plus, $m->price_1000_Plus ),
+										'Base'      => array( $m->qty_Base,      $m->price_Base ),
+										'Custom'    => array( $m->qty_Custom,    $m->price_Custom )
+									);
+		}
+
+		//pDebug('Quotes::actionPdf() - data:', $data);
+		$this->createPDF($data);
+		
+	}
+
+
+
+
+
+
+	public function createPDF($d) {
+		//pDebug('createPDF() - data:', $d);
+	    $pdf = new PDF();
+	    
+	    // define colors
+	    $pdf->definePallette();
+
+	    // set up page, margin
+	    $pdf->AliasNbPages();
+	    $pdf->SetLeftMargin(20);
+	    $pdf->AddPage( 'Portrait', 'Letter');
+	    $pdf->SetAutoPageBreak(true,35); 
+	    $pdf->SetTopMargin(50);
+
+	    // User Profile
+	    $u = array();
+	    $u['name']   = $d['profile']['name'];
+	    $u['title']  = $d['profile']['title'];
+	    $u['phone']  = $d['profile']['phone'];
+	    $u['fax']    = $d['profile']['fax'];
+	    $u['email']  = $d['profile']['email'];
+	    $u['sig']    = $d['profile']['sig'];
+	    $pdf->userProfile = $u; 
+	    pDebug("createPDF() user profile: ", $pdf->userProfile);
+
+	    // Page Heading
+	    $pdf->displayPageHeading();
+
+	    // --------------------------------------------- Add Watermark
+	    if ( $d['status_id'] == Status::DRAFT || $d['status_id'] == Status::WAITING_APPROVAL ) {
+	    	$pdf->addWatermark();
+	    } 
+	    	
+
+
+	    // Company & Contact Info
+	    $c = array();
+	    $c['quote_no']          = $d['quote_no'];
+	    $c['name']              = $d['customer']['name'];
+	    $c['address1']          = $d['customer']['address1'];
+	    $c['address2']          = $d['customer']['address2'];
+	    $c['city']              = $d['customer']['city'];
+	    $c['state']             = $d['customer']['state'];
+	    $c['zip']               = $d['customer']['zip'];
+	    $c['country']           = $d['customer']['country'];
+	    $c['contact']['name']   = $d['customer']['contact']['name'];
+	    $c['contact']['email']  = $d['customer']['contact']['email'];
+	    $c['contact']['phone1'] = $d['customer']['contact']['phone1'];
+	    $c['contact']['phone2'] = $d['customer']['contact']['phone2'];
+	    $pdf->displayCompanyInfo($c);
+
+	    // Introduction letter
+	    $name       = explode(' ', $c['contact']['name']); 
+	    $first_name = $name[0];
+	    $cre = $d['created'];
+	    $exp = $d['expiration_date'];
+
+	    $letter_intro = <<<EOT
+Dear $first_name,
+    Thank you for the opportunity to provide you with this quotation. Outlined below are Rochester Electronics' acknowledgement, NCNR, if applicable, and order processing instructions; please feel free to contact us at any time if you have questions regarding this quote. We are pleased to offer the following:
+EOT;
+
+	    $letter_conclusion = <<<EOT
+Again, thank you for this opportunity; we look forward to receiving your order.
+
+Regards,
+
+EOT;
+
+	    $pdf->displayLetterIntro($letter_intro);
+
+	    // $row = array();
+	    $line_num = 1;
+	    $items = array();
+	    $items[] = array( 'Line', 'Part No.','Mfr.','Line Note','Date Code','Quantity','Price','Total');
+	    $grand_total = 0;
+
+	    foreach( $d['items'] as $i => $arr ) {
+	    	$row = array();
+	    	$row[] = $line_num;		 				
+	    	foreach( $arr as $k => $v ) {
+	    		if ( !is_array($v) ) {
+	    			$row[] = $v; 					   
+	    		}
+	    		else {
+    				if ( $v[0] ) {
+    					$row[] = $v[0];
+    					setlocale(LC_MONETARY, 'en_US.UTF-8');
+    					$row[] = money_format('%.2n', $v[1]);
+    					$row[] = money_format('%.2n', ($v[0]*$v[1]) );
+    					$grand_total += ($v[0]*$v[1]);
+
+    					$items[] = $row;
+    					$row = array();
+    					$line_num++;
+    				}
+	    		}
+	    	}
+
+	    }
+	    // $items[] = array( '','','','','','','Order Total', money_format('%.2n', $grand_total) ) ;   no need to totaling...
+
+	    $pdf->displayQuoteDetails($items);
+
+	    $notes = array();
+	    $notes[] = array('Quote Expiration' => $d['expiration_date']);
+
+	    if ($d['additional_notes']) $notes[] = array('Additional Notes' => $d['additional_notes'] );   
+	    if ($d['terms']) $notes[] = array('Terms & Conditions' => $d['terms'] );   
+	    if ($d['customer_acknowledgment']) $notes[] = array('Customer Acknowledgment' => $d['customer_acknowledgment'] );   
+	    if ($d['risl']) $notes[] = array('RISL' => $d['risl'] );   
+	    if ($d['manufacturing_lead_time']) $notes[] = array('Manufacturing Lead Time' => $d['manufacturing_lead_time'] );   
+
+	    $pdf->displayNotes($notes);
+	    $pdf->displayLetterConclusion($letter_conclusion);
+	    $pdf->displayProfile();
+
+		// --------------------------------------------- Add Watermark
+    	if ( $d['status_id'] == Status::DRAFT || $d['status_id'] == Status::WAITING_APPROVAL ) {
+    		$pdf->addWatermark();
+    	}
+
+	    $pdf->Output("MyQuote_" . $d['quote_no'] . ".pdf", "D");
+	}
+
 
 
 

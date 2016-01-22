@@ -28,7 +28,7 @@ class CustomersController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view', 'find', 'create', 'update'),
+				'actions'=>array('index','view', 'find', 'findbycontact', 'create', 'update'),
 				'expression' => '$user->isLoggedIn',
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -41,6 +41,8 @@ class CustomersController extends Controller
 		);
 	}
 
+
+
 	public function actionFind($id)  {
 		pDebug("Customers::actionFind() - looking for customer id=[$id]");
 
@@ -51,6 +53,25 @@ class CustomersController extends Controller
 		echo json_encode($c);
 	}
 
+
+
+	public function actionFindbycontact($id) {
+		pDebug("Customers::actionFindbycontact() - looking for customers of contact id=[$id]");
+
+		$sql  = "SELECT cu.id AS 'customer_id', CONCAT(cu.name, ',', cu.address1, ',', cu.city, ',', cn.short_name) AS 'customer_info' ";
+		$sql .= " FROM  customer_contacts cc join customers cu on cu.id = cc.customer_id join countries cn on cu.country_id = cn.id where cc.contact_id = $id";
+
+		$command = Yii::app()->db->createCommand($sql);
+		$results = $command->queryAll();
+		pDebug("Customers::actionFindbycontact() - results:", $results);
+
+		foreach( $results as $r ) {
+			$customers[] = array( $r['customer_id'] => $r['customer_info'] );
+		}
+
+		pDebug("Customers::actionFindbycontact() - customers found:", $customers);
+		echo json_encode($customers);
+	}
 
 
 

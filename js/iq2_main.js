@@ -2,15 +2,103 @@
 $(document).ready(function() {
 
     var myURL = getAbsolutePath();      //alert('myURL=['+myURL+']');
-
+    
     function getAbsolutePath() {
         var loc = window.location;
         var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf('/') + 1);
         return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
     }
 
+    function autoSelectIsEnabled() {
+    	return true;  // TODO: $('#autoSelect').prop("checked") == true ? true : false;	
+    } 
+
 	disableCustomerForm();
 	disableContactForm();
+
+
+	  //  set up UI Dialogs 
+    var dialog_ViewQuoteDetails = $( "#form_ViewQuoteDetails" ).dialog({
+        autoOpen: false,
+        height: 820,
+        width: 700,
+        modal: true,
+        resizable: false,
+        close: function() { }
+    });
+
+
+    $('#reset_form').on('click', function() {
+    	location.reload();
+    });
+
+
+
+    function restoreCustomerList() {
+
+    }
+
+
+    function saveCustomerList() {
+
+    	// clone customer dropdowns
+	    // save to 'lastDiv' 
+
+
+	    var from = $('#customer_select');
+	    var to = from.clone().prop('id', 'customer_select_ORIG');
+	    $('#lastDiv').after(to);
+
+
+	    // --------------------------------------------------------------------------- original
+		//		    var $div = $('div[id^="klon"]:last');
+						
+						// Read the Number from that DIV's ID (i.e: 3 from "klon3")
+						// And increment that number by 1
+		//		    var num = parseInt( $div.prop("id").match(/\d+/g), 10 ) +1;
+		//		    if (isNaN(num) ) {
+		//		      num = 0;
+		//		    }
+						
+						// Clone it and assign the new ID (i.e: from num 4 to ID "klon4")
+		//				var $klon = $div.clone().prop('id', 'klon'+num );
+						
+						// Finally insert $klon wherever you want
+				    //$div.after( $klon.text('klon'+num) );
+		//		    $div.after( $klon );
+	    // --------------------------------------------------------------------------- original
+    }
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	// set up quote details form based on quote type
@@ -120,7 +208,15 @@ $(document).ready(function() {
     }
 
 
+    function resetCustomers() {
 
+
+
+
+
+
+
+    }
 
 
 
@@ -138,8 +234,10 @@ $(document).ready(function() {
 
 		$('#button_continue').hide();
 		disableCustomerForm();
-		disableContactForm();  
-		//makeFormSelectsReadOnly();
+		disableContactForm();
+
+		$('#enableAutoSelect').hide();
+		$('#reset_form').hide();
 
 		$('#createNewCustomer').hide();
 		$('#createNewContact').hide();
@@ -183,10 +281,12 @@ $(document).ready(function() {
 	    	$(this).val('');
 		});
 	  	enableCustomerForm(); 
-	  	// assume we need to create a new contact when creating a new customer... 
-	  	$('#createNewContact').trigger('click');
-	  	$('#contact_select').hide();
-	  	$('#createNewContact').hide();
+	  	// assume we need to create a new contact when creating a new customer when autoSelectIsEnabled... 
+	  	if ( autoSelectIsEnabled() ) {
+	  		$('#createNewContact').trigger('click');
+	  		$('#contact_select').hide();
+	  		$('#createNewContact').hide();
+	  	}
 
 	});
 
@@ -249,12 +349,15 @@ $(document).ready(function() {
     // prefill out customer form everytime customer is selected
     $('#customer_select').on('change', function() {
     	if ( this.selectedIndex > 0 ) {
-    		$('#contact_select').show();
+			$('#contact_select').show();
 		  	$('#createNewContact').show();
 
-		  	$("[id^=Contact_]").each(function() {
-		    	$(this).val('');
-			});
+		  	if ( autoSelectIsEnabled() ) {
+		  		$("[id^=Contact_]").each(function() {
+		    		$(this).val('');
+				});
+		  	}
+
 		  	disableContactForm();
 
     		var custID = $(this).val();
@@ -276,31 +379,34 @@ $(document).ready(function() {
 			        		$('#Customer_'+k).append("<input type='hidden' id='Customer_"+k+"' name='Customer["+k+"]' value='"+selectedVal+"' >");
 			        	}
 
-			        	console.log('Disabling customer form fields...');
-			        	$(this).prop('readonly', true);
-        				$(this).css('background-color', '#F0F0F0');  
+			        	//console.log('Disabling customer form field: '+k);
+			        	$('#Customer_'+k).prop('readonly', true);
+        				$('#Customer_'+k).css('background-color', '#F0F0F0');  
 			        });
-			        // prefill Contact dropdown with contacts for this customer ONLY
-				    $.ajax({
-					    url: find_contacts_url,
-					    type: 'GET',
-					    success: function(result) {
-					        var r = JSON.parse(result);
+			        // prefill Contact dropdown with contacts for this customer ONLY if AutoSelect_Enabled
+				    if ( autoSelectIsEnabled() ) {
+				    	$.ajax({
+						    url: find_contacts_url,
+						    type: 'GET',
+						    success: function(result) {
+						        var r = JSON.parse(result);
 
-					        $('#contact_select').empty();
-					        $('#contact_select').append( $('<option></option>' ).val(0).html('Select contact'));
-					        if ( r ) {
-						        $.each( r, function(kk,rr) {
-						        	$.each( rr, function(k,v) {
-						        		$('#contact_select').append( $('<option></option>' ).val(k).html(v));
-						        	})
-						        	
-						        });
+						        $('#contact_select').empty();
+						        $('#contact_select').append( $('<option></option>' ).val(0).html('Select contact'));
+						        if ( r ) {
+							        $.each( r, function(kk,rr) {
+							        	$.each( rr, function(k,v) {
+							        		$('#contact_select').append( $('<option></option>' ).val(k).html(v));
+							        	})
+							        });
+							        if ( r.length == 1 ) {   // if only 1 contact, prefill form fields...
+							        	$("#contact_select").prop("selectedIndex", 1);
+						        		$("#contact_select").trigger('change');
+							        }
+							    }
 						    }
-					    }
-					});
-
-
+						});
+				    }
 			    }
 			});
     	}
@@ -312,58 +418,62 @@ $(document).ready(function() {
     $('#contact_select').on('change', function() {
     	if ( this.selectedIndex > 0 ) {
 	    	var contactID = $(this).val();
-	    	var url = myURL + '../contacts/find?id=' + contactID;
+	    	// var url = myURL + '../contacts/find?id=' + contactID;
+	    	
+	    	var find_contact_url  = myURL + '../contacts/find?id=' + contactID;
+    		var find_cust_url     = myURL + '../customers/findbycontact?id=' + contactID;
+
 	    	this.selectedIndex = 0;
 
 			$.ajax({
-			    url: url,
+			    url: find_contact_url,
 			    type: 'GET',
 			    success: function(result) {
 			        var r = JSON.parse(result);
 			        $.each( r, function(k,v) {
 			        	$('#Contact_'+k).val(v);
-			        	disableContactForm();  
 
-			        	// prefill Customer dropdown with contacts for this contact ONLY
+			        	if ( $('#Contact_'+k).is('select') ) {
+			        		var selectedVal = $('#Contact_'+k+' option:selected').val();
+			        		$('#Contact_'+k).prop('disabled', 'disabled');
+			        		$('#Contact_'+k).append("<input type='hidden' id='Contact_"+k+"' name='Contact["+k+"]' value='"+selectedVal+"' >");
+			        	}
 
-
-
-
-
-
-
+			        	//console.log('Disabling Contact form field: '+k);
+			        	$('#Contact_'+k).prop('readonly', true);
+        				$('#Contact_'+k).css('background-color', '#F0F0F0');  
 			        });
+			        // prefill Customer dropdown with customers for this Contact ONLY if AutoSelect_Enabled
+			        if ( autoSelectIsEnabled() ) {
+					    $.ajax({
+						    url: find_cust_url,
+						    type: 'GET',
+						    success: function(result) {
+						        var r = JSON.parse(result);
+
+						       // saveCustomerList();  // clone it
+
+						        $('#customer_select').empty();
+						        $('#customer_select').append( $('<option></option>' ).val(0).html('Select customer'));
+						        if ( r ) {
+							        $.each( r, function(kk,rr) {
+							        	$.each( rr, function(k,v) {
+							        		$('#customer_select').append( $('<option></option>' ).val(k).html(v));
+							        	})
+							        });
+							    }
+							    if ( r.length == 1 ) {   // if only 1 contact, prefill form fields...
+							        $("#customer_select").prop("selectedIndex", 1);
+						        	$("#customer_select").trigger('change');
+							    }
+						    }
+						});
+					}
 			    }
 			});
 		}
     });
 
-
-
-
-
-
-    $('#button_continue_NEW').on('click', function( event ) {
-       alert( "form submitted: " +  $( this ).serialize() );
-        event.preventDefault();
-
-         // var url = myURL + 'create' ; // the script where you handle the form input.
-         // console.log('submit create to: ' + url);
-         // console.log( "form serializeArray: " +  $( this ).serializeArray() );
-         return false;
-
-        $.ajax({
-               type: "POST",
-               url: url,
-               data: $("#idForm").serialize(), // serializes the form's elements.
-               success: function(data)
-               {
-                   alert(data); // show response from the php script.
-               }
-             });
-
-        e.preventDefault(); // avoid to execute the actual submit of the form.
-    });
 
 
     // ----------------------------------------------------------------
@@ -392,61 +502,6 @@ $(document).ready(function() {
 
 
 
-    // ----------------------------------------------------------------
-   //  function continueQuote_OLD() {
-   //      //$('#button_continue').on('click', function() {
-
-	  //   	if ( $('#customer_select').val() > 0 ) { // existing customer...
-	  //   		//alert('EXISTING: customer id=' + $('#Customer_id').val() + ' and contact id=' + $('#Contact_id').val() );
-
-   //              // data = fields from "form_cutomer_contact"
-   //              var formData = $('#cust_form').serialize();
-   //              console.dir("formData=" + formData);
-
-   //              // $.ajax({
-   //              //       url: myURL + 'create',
-   //              //       type: 'POST',
-   //              //       data: formData,  // {customer_id:$('#Customer_id').val(), contact_id:$('#Contact_id').val()  },  
-   //              //       success: function(data, textStatus, jqXHR) {
-   //              //             // console.log("AJAX quote submitted for approval: Success!");
-   //              //             // window.location.replace( URL + "index");
-   //              //       },
-   //              //       error: function (jqXHR, textStatus, errorThrown)  {
-   //              //             // console.log("AJAX quote submitted for approval: Fail");
-   //              //             // alert("Sorry - could NOT submit this quote for approval; see Admin.");
-   //              //       } 
-   //              // });
-                
-	  //   	}
-	  //   	else {                                    // NEW customer
-	  //   		alert('NEW: customer (need to make ajax call first to record this quote)' );
-
-	  //   	}
-
-   //          $('#form_details').show();
-   //          $('#form_parts_lookup').show();
-   //          $('#showHide_form_customer_contact').show();
-   //          $('.quote_section_heading').show();
-
-			// $('#button_continue').hide();
-			// disableCustomerForm();
-			// disableContactForm();  
-
-			// $('#createNewCustomer').hide();
-			// $('#createNewContact').hide();
-			// $('#customer_select').hide();
-			// $('#contact_select').hide();
-			// $('span.select_existing').hide();
-	  //   }
-
-   //      // create quote record with just customer & contact information...
-
-   //  	return false;
-   //      // });
-   //  }
-
-
-
     // ---------------------------------------------------- Create Quote
     $('#add_quote').on('click', function() {
         window.location = myURL + 'create';
@@ -456,13 +511,21 @@ $(document).ready(function() {
     // ---------------------------------------------------- View Quote
     $('[id^=view_quote_]').on('click', function() {
         var quoteID = getThisID( $(this) ); 
-
-        alert('viewing quote id: ' + quoteID);
-        return false;
-
-
         var quoteNo = $(this).closest('td').next('td').html();
+
         console.log('Viewing quote number = ' + quoteNo);
+        console.log('url='+myURL + '../quotes/view?id=' + quoteID);
+
+		$.ajax({
+		    url:  myURL + '../quotes/view?id=' + quoteID,
+		    type: 'GET',
+		    success: function(result) {
+		    	$('#form_ViewQuoteDetails').html(result);
+		    },
+            error: function (jqXHR, textStatus, errorThrown)  {
+                $('#form_ViewQuoteDetails').html("Can't view quote details; error=" + errorThrown);
+            }
+        });
 
         dialog_ViewQuoteDetails.dialog('option', 'title', 'Quote No. ' + quoteNo); 
         dialog_ViewQuoteDetails.dialog( "open" );

@@ -1,5 +1,31 @@
 
 +-----------------+
+|  Jan. 22, 2016  |
++-----------------+
+
+	[x] Create Stock Quote form
+
+	[ ] Create Manufacturing Quote form
+
+	[ ] Create SRF form
+
+	[ ] view quote 
+		- standalone PDF or html with PDF option in popup?
+
+	[ ] edit quote
+
+	[ ] move 'Quote Type' to AFTER "Inventory Parts Lookup"
+		- won't know if it's stock/mfg until then
+		- need to save it before then
+			- check table: is quote_type required?
+
+
+
+
+
+
+
++-----------------+
 |  Jan. 21, 2016  |
 +-----------------+
 
@@ -10,7 +36,7 @@
 
 	[ ] highlight missing form fields
 
-	[ ] create 'pError()'' function similar to 'pDebug()'
+	[ ] create 'pError()' function similar to 'pDebug()'
 
 	[x] filll out contact_dropdown based on customer
 

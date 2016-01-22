@@ -11,7 +11,12 @@
 
 	<div class="form">
 		<div class='quote_section_heading'>
-			<span id='showHide_form_customer_contact' style='display: none;'>&minus;</span><span style='padding-left: 350px;'>Customer &amp; Contacts</span>
+			<span id='showHide_form_customer_contact' style='display: none;'>&minus;</span>
+
+			<span style='padding-left: 350px;'>Customer &amp; Contacts</span>
+
+			<!-- <span id='enableAutoSelect'><input type="checkbox" name="autoSelect" id='autoSelect' checked='checked'>&nbsp;Enable AutoSelect</span>  -->
+
 		</div>
 
 		<div id='form_customer_contact'>
@@ -23,6 +28,7 @@
 									<caption>Customer</caption>
 										<tr>  
 											<td style='padding-bottom: 20px; text-align: center;' colspan='4'><!-- <span class='select_existing'>Select existing customer</span>  --> 
+												<span id='refresh_customers' style='font-size: 1.8em; color: gray; padding: 10px;'>↻</span>
 												<select id='customer_select'>
 
 														<?php
@@ -33,7 +39,7 @@
 														?>
 
 												<!-- </select><span style='padding-left: 10px'><a href='#' id='createNewCustomer' >New</a></span> -->
-												</select><span id='createNewCustomer' style='padding-left: 10px'>New</span>
+												</select><span id='createNewCustomer' style='padding-left: 10px'>New</span><!-- <span id='resetCustomers' style='padding-left: 10px'>Reset</span> -->
 											 </td> 
 										</tr>
 
@@ -162,6 +168,7 @@
 								<caption>Contact</caption>
 
 									<tr>  <td style='padding-bottom: 20px; text-align: center;' colspan='2'><!-- <span class='select_existing'>Select existing contact </span> -->
+											<span id='refresh_contacts' style='font-size: 1.8em; color: gray; padding: 10px;'>↻</span>
 											<select id='contact_select'>
 
 													<?php
@@ -172,7 +179,7 @@
 													?>
 
 											<!-- </select><span style='padding-left: 10px'><a href='#' id='createNewContact' >New</a></span> -->
-											</select><span id='createNewContact' style='padding-left: 10px'>New</span>
+											</select><span id='createNewContact' style='padding-left: 10px'>New</span><!-- <span id='resetContacts' style='padding-left: 10px'>Reset</span> -->
 										 </td> 
 									</tr>
 
@@ -218,17 +225,23 @@
 				<div>
 					<table>
 						<tr>
-							<td><span class='required'> * </span>Quote Type </td><!--   quote_type_id -->
+
+							<!-- <td><span class='required'> * </span>Quote Type </td>
 							<td> <select name='Quote[quote_type_id]' id='Quote_quote_type_id'>
-												<?php
+												< ?php
 													echo "<option value='0'></option>";
 													foreach( $data['quote_types'] as $c ) {
 														echo "<option value='".$c->id."'>".$c->name."</option>";
 													}
 												?>
 								 </select><span style='padding-left: 10px'></span> 
-							</td>
-							<td><span class='required'> * </span>Contact Source </td><!--   source  -->
+							</td> -->
+
+
+							<td>
+
+
+								<span class='required'> * </span>Contact Source </td><!--   source  -->
 							<td> <select name='Quote[source_id]' id='Quote_source_id'>
 															<?php
 																echo "<option value='0'></option>";
@@ -236,18 +249,19 @@
 																	echo "<option value='".$c->id."'>".$c->name."</option>";
 																}
 															?>
-								 </select><span style='padding-left: 10px'></span> 
+								 </select>
+								 <span style='padding-left: 50px; font-weight: bold;'>Quote Level: <span id='quote_level'>Inquiry</span><input type='hidden' name='Quote[level_id]' id='Quote_level_id' value='1'></span>
+
+								 <span style='padding-left: 10px'></span> 
 							</td>
-							<td>Quote Level: <span>Inquiry</span></td><!--    level  -->
-							<td><input type='hidden' name='Quote[level_id]' id='Quote_level_id' value='1'></td>    <!-- Inquiry on create bu default  -->
+							<!-- <td>Quote Level: <span>Inquiry</span></td>
+							<td><input type='hidden' name='Quote[level_id]' id='Quote_level_id' value='1'></td>  -->
 						</tr>
 					</table>
 				</div>
 
+
 				<div class="form"> 
-					<!-- <div class='quote_section_heading'> -->
-						<!-- <span id='showHide_form_details'>&minus;</span><span style='padding-left: 350px;'>Terms & Conditions, Comments, et al.</span> -->
-					<!-- </div> -->
 					<div id='form_stock_details' style='display: none;'>
 						<h3>Stock Quote Details</h3>
 						<table id='quote_details'>
@@ -325,7 +339,7 @@
 
 
 
-				<input type='submit' id='button_continue' value='Continue'>
+				<input type='submit' id='button_continue' value='Continue'><span id='reset_form'>Reset Form</span>
 		</div>
 	</div>
 
@@ -578,7 +592,7 @@
 
 </form>
 
-
+<div id='lastDiv' style='display: none;'></div>
 
 
 

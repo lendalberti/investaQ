@@ -1,14 +1,14 @@
 
 
     //  set up UI Dialogs 
-    var dialog_ViewQuoteDetails = $( "#form_ViewQuoteDetails" ).dialog({
-        autoOpen: false,
-        height: 820,
-        width: 700,
-        modal: true,
-        resizable: false,
-        close: function() { }
-    });
+    // var dialog_ViewQuoteDetails = $( "#form_ViewQuoteDetails" ).dialog({
+    //     autoOpen: false,
+    //     height: 820,
+    //     width: 700,
+    //     modal: true,
+    //     resizable: false,
+    //     close: function() { }
+    // });
 
 
 
