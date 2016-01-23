@@ -146,7 +146,7 @@
             // userRoles
             if ( $this->user ) {
                 $roles = Roles::model()->getListByUser($this->id);
-                pDebug("my roles: ", $roles);
+                //pDebug("my roles: ", $roles);
                 return $roles;
             }
             return null;

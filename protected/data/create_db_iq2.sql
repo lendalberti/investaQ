@@ -336,6 +336,7 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`quotes` (
   `status_id` INT NOT NULL ,
   `owner_id` INT NOT NULL ,
   `customer_id` INT NOT NULL ,
+  `contact_id` INT NOT NULL ,
   `created_date` TIMESTAMP NOT NULL DEFAULT NOW() ,
   `updated_date` DATETIME NOT NULL ,
   `expiration_date` DATETIME NOT NULL ,

@@ -28,7 +28,7 @@ class ContactsController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view', 'find', 'create', 'update', 'findbycust'),
+				'actions'=>array('index','view', 'find', 'create', 'update', 'findbycust', 'list'),
 				'expression' => '$user->isLoggedIn',
 			),
 			
@@ -42,6 +42,24 @@ class ContactsController extends Controller
 		);
 	}
 
+	public function actionList()  {
+		pDebug("Contacts::actionList() - getting list of all Contacts");
+		$tmp = Contacts::model()->findAll( array('order' => 'first_name') );
+
+		foreach( $tmp as $c ) {
+			$contacts[] = array( 'id' => $c->id, 'name' => $c->first_name." ".$c->last_name);
+		}
+
+		pDebug("Contacts::actionList() -  contacts list:", $contacts);
+		echo json_encode($contacts);
+	}
+
+
+
+
+
+
+
 
 	public function actionFind($id)  {
 		pDebug("Contacts::actionFind() - looking for contact id=[$id]");
@@ -52,6 +70,19 @@ class ContactsController extends Controller
 		pDebug('Contacts::actionFind() - found contact: ', $c );
 		echo json_encode($c);
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

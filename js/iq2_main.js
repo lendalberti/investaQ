@@ -1,7 +1,142 @@
 
 $(document).ready(function() {
 
-    var myURL = getAbsolutePath();      //alert('myURL=['+myURL+']');
+    var myURL           = getAbsolutePath();      //alert('myURL=['+myURL+']');
+    var customerPrefill = true;
+    var contactPrefill  = true;
+    var searchURL       = myURL + 'search';
+
+
+    $(function() {
+        $( "#search_typeahead" ).autocomplete({
+            source: searchURL,
+            minLength: 4,  
+            select: function(event,ui) {
+                var selectID = ui.item.value;
+
+                $('#search_typeahead').val('');  
+
+                // if ui.item.label contains (\d+) then selectID is a customer id, else it's a contact id
+                //console.log("match? " + ui.item.label.match(/\(\d+\)/) );
+
+                if ( ui.item.label.match(/\(\d+\)/) == null ) { 
+                    // contact id
+                    $.ajax({
+                        type: 'GET',
+                        url: '../contacts/find?id='+selectID,
+                        success: function (ret) {
+                            fillOutContactFields(ret);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown)  {
+                            console.log('Error in searching for contact id: '+selectID+', msg= '+errorThrown);
+                        } 
+                    });
+                }
+                else {
+                    // customer id
+                     $.ajax({
+                        type: 'GET',
+                        url: '../customers/find?id='+selectID,
+                        success: function (ret) {
+                            fillOutCustomerFields(ret);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown)  {
+                            console.log('Error in searching for customer id: '+selectID+', msg= '+errorThrown);
+                        } 
+                    });
+                }
+
+
+            }
+        });
+    });
+
+
+    // --------------------------------------------------------
+    function fillOutCustomerFields(data) {
+        //$('#customer_info_table').show();
+
+        var o = JSON.parse(data);
+        $.each( o, function( k, v ) {
+            console.log("Customer: k=["+k+"], v=["+v+"]");
+            $('#'+k).html( v );
+            $('#'+k).val( v );
+        });
+
+       // $('#customer_info_div').show();
+    }  
+
+
+    // --------------------------------------------------------
+    function fillOutContactFields(data) {
+        //$('#customer_info_table').show();
+
+        var o = JSON.parse(data);
+        $.each( o, function( k, v ) {
+            console.log("Contact: k=["+k+"], v=["+v+"]");
+            $('#'+k).html( v );
+            $('#'+k).val( v );
+        });
+
+        //$('#contact_info_div').show();
+    }  
+
+
+
+
+
+
+/*
+    from http://www.simonbattersby.com/blog/jquery-ui-autocomplete-with-a-remote-database-and-php/
+
+
+
+I spent some time last night struggling with jQuery UI Autocomplete. I was trying to use a remote data source, and was calling a php script to interrogate the database, no ajax. During the course of getting it to work properly, I discovered a couple of things that aren’t very clear in the documentation.
+
+The basic javascript, lifted straight from the jQuery UI demo is:
+
+        $("#autocomplete").autocomplete({
+            source: "search.php",
+            minLength: 2,       //search after two characters
+            select: function(event,ui) {
+                //do something
+            }
+        });
+
+Fine so far. There was one major thing that fooled me. If, instead of using a php script, you use a local source, something like:
+
+        source: [{"value":"Some Name","id":1},{"value":"Some Othername","id":2}]
+
+then this local data is queried each time a character is entered in the required field. I assumed, therefore, 
+that all I had to replicate in my search.php script, was a query to return all the values from my database. 
+Wrong! I need to pass a search term to my php script in order to return only the correct subset of data. I further 
+discovered that jQuery UI Autocomplete passes this data as a GET entitled ‘term’ (didn’t see this anywhere in the examples). 
+So, armed with this knowledge, my php script looks like this:
+
+        //connect to your database
+
+        $term = trim(strip_tags($_GET['term']));             //retrieve the search term that autocomplete sends
+
+        $qstring = "SELECT description as value,id FROM test WHERE description LIKE '%".$term."%'";
+        $result = mysql_query($qstring);//query the database for entries containing the term
+
+        while ($row = mysql_fetch_array($result,MYSQL_ASSOC))//loop through the retrieved values
+        {
+                $row['value']=htmlentities(stripslashes($row['value']));
+                $row['id']=(int)$row['id'];
+                $row_set[] = $row;//build an array
+        }
+        echo json_encode($row_set);//format the array into json data
+
+
+Hope this explanation is useful. No demo this time, because it doesn’t seem very interesting. You can have a look 
+at an integration of jQuery UI Autocomplete with a vertical slider here and see a demo here.
+
+
+*/
+
+
+
     
     function getAbsolutePath() {
         var loc = window.location;
@@ -9,9 +144,6 @@ $(document).ready(function() {
         return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
     }
 
-    function autoSelectIsEnabled() {
-    	return true;  // TODO: $('#autoSelect').prop("checked") == true ? true : false;	
-    } 
 
 	disableCustomerForm();
 	disableContactForm();
@@ -31,72 +163,6 @@ $(document).ready(function() {
     $('#reset_form').on('click', function() {
     	location.reload();
     });
-
-
-
-    function restoreCustomerList() {
-
-    }
-
-
-    function saveCustomerList() {
-
-    	// clone customer dropdowns
-	    // save to 'lastDiv' 
-
-
-	    var from = $('#customer_select');
-	    var to = from.clone().prop('id', 'customer_select_ORIG');
-	    $('#lastDiv').after(to);
-
-
-	    // --------------------------------------------------------------------------- original
-		//		    var $div = $('div[id^="klon"]:last');
-						
-						// Read the Number from that DIV's ID (i.e: 3 from "klon3")
-						// And increment that number by 1
-		//		    var num = parseInt( $div.prop("id").match(/\d+/g), 10 ) +1;
-		//		    if (isNaN(num) ) {
-		//		      num = 0;
-		//		    }
-						
-						// Clone it and assign the new ID (i.e: from num 4 to ID "klon4")
-		//				var $klon = $div.clone().prop('id', 'klon'+num );
-						
-						// Finally insert $klon wherever you want
-				    //$div.after( $klon.text('klon'+num) );
-		//		    $div.after( $klon );
-	    // --------------------------------------------------------------------------- original
-    }
-   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -208,23 +274,6 @@ $(document).ready(function() {
     }
 
 
-    function resetCustomers() {
-
-
-
-
-
-
-
-    }
-
-
-
-
-
-
-
-
 
     function continueQuote( quote_no ) {
     	$('#form_details').show();
@@ -236,16 +285,23 @@ $(document).ready(function() {
 		disableCustomerForm();
 		disableContactForm();
 
-		$('#enableAutoSelect').hide();
 		$('#reset_form').hide();
 
 		$('#createNewCustomer').hide();
 		$('#createNewContact').hide();
 		$('#customer_select').hide();
+
+        var src = $('#Quote_source_id').val();
+        $('#Quote_source_id').prop('disabled', 'disabled');
+        $('#Quote_source_id').append("<input type='hidden' id='Quote_source_id' name='Quote[source_id]' value='"+src+"' >");
+
+
 		$('#contact_select').hide();
+        $('#refresh_contacts').hide();
+        $('#refresh_customers').hide();
+
 		$('span.select_existing').hide();
 
-		//$('#header_QuoteNo').html('Quote No. '+quote_no);
 		$('#header_PageTitle').html('Quote No. '+quote_no);
     }
 
@@ -281,12 +337,12 @@ $(document).ready(function() {
 	    	$(this).val('');
 		});
 	  	enableCustomerForm(); 
-	  	// assume we need to create a new contact when creating a new customer when autoSelectIsEnabled... 
-	  	if ( autoSelectIsEnabled() ) {
-	  		$('#createNewContact').trigger('click');
-	  		$('#contact_select').hide();
-	  		$('#createNewContact').hide();
-	  	}
+	  	// assume we need to create a new contact when creating a new customer... 
+  		$('#createNewContact').trigger('click');
+  		$('#contact_select').hide();
+  		$('#createNewContact').hide();
+
+        $('#refresh_contacts').hide();
 
 	});
 
@@ -346,17 +402,50 @@ $(document).ready(function() {
 
 
 
+    $('#refresh_customers').on('click', function() {
+        $.ajax({
+            url: myURL + '../customers/list',
+            type: 'GET',
+            success: function(result) {
+                var r = JSON.parse(result);
+                $('#customer_select').empty();
+                $.each( r, function(k,v) {
+                    $('#customer_select').append( $('<option></option>' ).val(v.id).html(v.name+', '+v.address1+', '+v.city+', '+v.country));
+                });
+            }
+        });
+    })
+
+    $('#refresh_contacts').on('click', function() {
+        $.ajax({
+            url: myURL + '../contacts/list',
+            type: 'GET',
+            success: function(result) {
+                var r = JSON.parse(result);
+                $('#contact_select').empty();
+                $.each( r, function(k,v) {
+                    $('#contact_select').append( $('<option></option>' ).val(v.id).html(v.name));
+                });
+            }
+        });
+    })
+
+
+
+
+
     // prefill out customer form everytime customer is selected
     $('#customer_select').on('change', function() {
     	if ( this.selectedIndex > 0 ) {
-			$('#contact_select').show();
+            $('#contact_select').show();
+            $('#refresh_contacts').show();
 		  	$('#createNewContact').show();
 
-		  	if ( autoSelectIsEnabled() ) {
-		  		$("[id^=Contact_]").each(function() {
-		    		$(this).val('');
-				});
-		  	}
+	  
+	  		$("[id^=Contact_]").each(function() {
+	    		$(this).val('');
+			});
+		  
 
 		  	disableContactForm();
 
@@ -383,30 +472,37 @@ $(document).ready(function() {
 			        	$('#Customer_'+k).prop('readonly', true);
         				$('#Customer_'+k).css('background-color', '#F0F0F0');  
 			        });
-			        // prefill Contact dropdown with contacts for this customer ONLY if AutoSelect_Enabled
-				    if ( autoSelectIsEnabled() ) {
-				    	$.ajax({
-						    url: find_contacts_url,
-						    type: 'GET',
-						    success: function(result) {
-						        var r = JSON.parse(result);
+			        // prefill Contact dropdown with contacts for this customer
+                    if ( contactPrefill ) {
+    			    	$.ajax({
+    					    url: find_contacts_url,
+    					    type: 'GET',
+    					    success: function(result) {
+    					        var r = JSON.parse(result);
 
-						        $('#contact_select').empty();
-						        $('#contact_select').append( $('<option></option>' ).val(0).html('Select contact'));
-						        if ( r ) {
-							        $.each( r, function(kk,rr) {
-							        	$.each( rr, function(k,v) {
-							        		$('#contact_select').append( $('<option></option>' ).val(k).html(v));
-							        	})
-							        });
-							        if ( r.length == 1 ) {   // if only 1 contact, prefill form fields...
-							        	$("#contact_select").prop("selectedIndex", 1);
-						        		$("#contact_select").trigger('change');
-							        }
-							    }
-						    }
-						});
-				    }
+    					        $('#contact_select').empty();
+    					        $('#contact_select').append( $('<option></option>' ).val(0).html('Select contact'));
+    					        if ( r ) {
+                                    console.log('# of contacts found: ' + r.length);
+
+    						        $.each( r, function(kk,rr) {
+    						        	$.each( rr, function(k,v) {
+    						        		$('#contact_select').append( $('<option></option>' ).val(k).html(v));
+    						        	})
+    						        });
+
+    						        if ( r.length == 1 ) {   // if only 1 contact, prefill form fields...
+    						        	customerPrefill = false;
+                                        $("#contact_select").prop("selectedIndex", 1);
+    					        		$("#contact_select").trigger('change');
+    						        }
+    						    }
+                                else {
+                                    console.log('No contacts found...');
+                                }
+    					    }
+    					});
+                    }
 			    }
 			});
     	}
@@ -429,9 +525,10 @@ $(document).ready(function() {
 			    url: find_contact_url,
 			    type: 'GET',
 			    success: function(result) {
-			        var r = JSON.parse(result);
+			        var r = JSON.parse(result);      console.log('result from finding contact='+result);
 			        $.each( r, function(k,v) {
 			        	$('#Contact_'+k).val(v);
+                        console.log("k=["+k+"], v=["+v+"]");
 
 			        	if ( $('#Contact_'+k).is('select') ) {
 			        		var selectedVal = $('#Contact_'+k+' option:selected').val();
@@ -439,36 +536,46 @@ $(document).ready(function() {
 			        		$('#Contact_'+k).append("<input type='hidden' id='Contact_"+k+"' name='Contact["+k+"]' value='"+selectedVal+"' >");
 			        	}
 
-			        	//console.log('Disabling Contact form field: '+k);
+			        	console.log('Disabling Contact form field: '+k);
 			        	$('#Contact_'+k).prop('readonly', true);
         				$('#Contact_'+k).css('background-color', '#F0F0F0');  
 			        });
-			        // prefill Customer dropdown with customers for this Contact ONLY if AutoSelect_Enabled
-			        if ( autoSelectIsEnabled() ) {
+			        // prefill Customer dropdown with customers for this Contact
+                    if ( customerPrefill ) {
 					    $.ajax({
 						    url: find_cust_url,
 						    type: 'GET',
 						    success: function(result) {
 						        var r = JSON.parse(result);
 
-						       // saveCustomerList();  // clone it
-
 						        $('#customer_select').empty();
 						        $('#customer_select').append( $('<option></option>' ).val(0).html('Select customer'));
 						        if ( r ) {
+                                    console.log('# of customers found: ' + r.length);
+
 							        $.each( r, function(kk,rr) {
 							        	$.each( rr, function(k,v) {
 							        		$('#customer_select').append( $('<option></option>' ).val(k).html(v));
 							        	})
 							        });
-							    }
-							    if ( r.length == 1 ) {   // if only 1 contact, prefill form fields...
-							        $("#customer_select").prop("selectedIndex", 1);
-						        	$("#customer_select").trigger('change');
-							    }
+    							    
+                                    if ( r.length == 1 ) {   // if only 1 contact, prefill form fields...
+                                        contactPrefill = false;
+                                        $("#customer_select").prop("selectedIndex", 1);
+                                       	$("#customer_select").trigger('change');
+                                    }
+                                }
+                                else {
+                                    console.log('No customers found...');
+                                    alert('No customers found...');
+                                }
 						    }
 						});
-					}
+                    }
+                    else {
+                        console.log('No customer prefill');
+                        alert('No customer prefill');
+                    }
 			    }
 			});
 		}

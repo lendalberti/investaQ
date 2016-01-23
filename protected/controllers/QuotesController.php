@@ -28,7 +28,7 @@ class QuotesController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view','create','update'),
+				'actions'=>array('index','view','create','update', 'search'),
 				'expression' => '$user->isLoggedIn'
 			),
 		
@@ -41,6 +41,40 @@ class QuotesController extends Controller
 			),
 		);
 	}
+
+
+	// ------------------------------------- AutoCompletion Search...
+    public function actionSearch()     {        
+        $term = isset( $_GET['term'] ) ? trim(strip_tags($_GET['term'])) : null; if ( !$term ) return null;
+        
+        // search customer fields: [ name, address1, syspro_account_code ]
+		$tmp = Customers::model()->findAll( array('condition' => "name LIKE '%$term%' OR address1 LIKE '%$term%' OR syspro_account_code LIKE '%$term%' ") );
+		foreach( $tmp as $c ) {
+			$results[] = array( 'label' => $c->name . " (" . $c->syspro_account_code . "), " . $c->address1, 'value' => $c->id );
+		}
+
+		// search contact fields: [ first_name, last_name, email, title, phone1, phone2 ] 
+		$tmp = Contacts::model()->findAll( array('condition' => "first_name LIKE '%$term%' OR last_name LIKE '%$term%' OR email LIKE '%$term%' OR title LIKE '%$term%' OR title LIKE '%$term%' OR phone1 LIKE '%$term%'  OR phone1 LIKE '%$term%' "));
+		foreach( $tmp as $c ) {
+			$results[] = array( 'label' => $c->first_name . " " . $c->last_name, 'value' => $c->id );
+		}
+
+		$data['results'] = json_encode($results);
+		echo json_encode($results);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	
 	// --- 
@@ -61,9 +95,8 @@ class QuotesController extends Controller
 			// display only SRF relevant fields
 			echo 'displaying SRF...';
 		}
-		else {
-			pDebug('QuotesController::actionView() - quote type ['.$model->quote_type_id.'] invalid');
-			echo 'invalid quote type...';
+		else if ( $model->quote_type_id == QuoteTypes::TBD ) {
+			echo 'quote type tbd...';
 		}
 
 
@@ -107,10 +140,9 @@ class QuotesController extends Controller
 
 		if ( isset($_POST['Customer']) && isset($_POST['Contact']) && isset($_POST['Quote'])   ) {
 
-
 			$customer_id = $_POST['Customer']['id'];
 			$contact_id  = $_POST['Contact']['id'];
-			$quote_type  = $_POST['Quote']['quote_type_id'];;
+			$quote_type  = $_POST['Quote']['quote_type_id'];
 
 			if (!$customer_id ) {
 				// create new customer, get id

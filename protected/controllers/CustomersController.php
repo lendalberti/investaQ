@@ -28,7 +28,7 @@ class CustomersController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view', 'find', 'findbycontact', 'create', 'update'),
+				'actions'=>array('index','view', 'find', 'findbycontact', 'create', 'update', 'list'),
 				'expression' => '$user->isLoggedIn',
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -43,6 +43,24 @@ class CustomersController extends Controller
 
 
 
+	public function actionList()  {
+		pDebug("Customers::actionList() - getting list of all customers");
+		$tmp = Customers::model()->findAll( array('order' => 'name') );
+
+		foreach( $tmp as $c ) {
+			$customers[] = array( 'id' => $c->id, 'name' => $c->name, 'address1' => $c->address1, 'city' => $c->city, 'country' => $c->country->short_name );
+		}
+
+		pDebug("Customers::actionList() -  customer list:", $customers);
+		echo json_encode($customers);
+	}
+
+
+
+
+
+
+
 	public function actionFind($id)  {
 		pDebug("Customers::actionFind() - looking for customer id=[$id]");
 
@@ -52,6 +70,19 @@ class CustomersController extends Controller
 		pDebug('Customers: actionFind() - found customer: ', $c );
 		echo json_encode($c);
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
