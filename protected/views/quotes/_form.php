@@ -36,84 +36,28 @@
 					<input type='text' name='Search[typeahead]' id='search_typeahead' size='40' placeholder='Search for...'/> 
 				</span>
 
-				<span style='padding-left: 50px;'>Select <span id'search_for_text'>customer</span>
-					<select name='CC[select]' id='CC_select'>
-						<?php
-							echo "<option value='0'></option>";
-							foreach( $results as $c ) {
-								echo "<option value='".$c->id."'>".$c->name."</option>";
-							}
-						?>
-					</select>
-				</span>
-
-
-
-
-
-
-
-
-
 				
 
 			</div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-				<table id='pre_quote_table' style='display: none; border: 2px solid red;'>
+				<table id='pre_quote_table' style='border: 0px solid red;'>
 					<tr>
 						<td>
 							<div id='quote_customer_container'>
-								<table id='quote_customer' style='border: 1px solid cyan;'>
-									<caption>Customer</caption>
-										<tr>  
-											<td style='padding-bottom: 20px; text-align: center;' colspan='4'>
-												<span id='refresh_customers' style='font-size: 1.8em; color: gray; padding: 10px;'>↻</span>
-												<select id='customer_select'>
-
-														<?php
-															echo "<option value='0'>Select customer</option>";
-															foreach( $data['customers'] as $c ) {
-																echo "<option value='".$c->id."'>".$c->name. ', ' . $c->address1 . ', '. $c->city . ', '. $c->country->short_name ."</option>";
-															}
-														?>
-
-												</select><span id='createNewCustomer' style='padding-left: 10px'>New</span>
-											 </td> 
-										</tr>
-
-										<!--   ###############################################################################################                   -->
-										<tr>
-											<td style='padding-bottom: 20px; text-align: center;' colspan='4'>
-													<span class='required'> * </span>Contact Source   <select name='Quote[source_id]' id='Quote_source_id'>
-																					<?php
-																						echo "<option value='0'></option>";
-																						foreach( $data['sources'] as $c ) {
-																							echo "<option value='".$c->id."'>".$c->name."</option>";
-																						}
-																					?>
-																				</select><span style='padding-left: 10px'></span>  </td>
-										</tr>
-										<!--   ###############################################################################################                   -->
+								<table id='quote_customer' style='border: 0px solid cyan;'>
+									<caption><span id='customer_span_text'>Customer</span>
+											<span id='customer_span_select' style='display: none; padding-left: 50px;'>Select customer &nbsp;
+												<select name='CC[select]' id='CC_select'>
+													<?php
+														echo "<option value='0'></option>";
+														foreach( $results as $c ) {
+															echo "<option value='".$c->id."'>".$c->name."</option>";
+														}
+													?>
+												</select>
+											</span>
+									</caption>
+										
 
 										<tr>  
 											<td><span class='required'> * </span>Name </td><td> <input type='text' id='Customer_name' name='Customer[name]' placeholder=' Customer Name'></td> 
@@ -144,6 +88,13 @@
 										</tr>
 										<!-- -->
 										<tr>
+
+
+
+
+
+
+
 											<td>US State  </td><td> <select name='Customer[state_id]' id='Customer_state_id'>
 																					<?php
 																						echo "<option value='0'></option>";
@@ -151,7 +102,19 @@
 																							echo "<option value='".$c->id."'>".$c->long_name."</option>";
 																						}
 																					?>
-																				</select><span style='padding-left: 10px'></span>  </td>
+																				</select><!-- <span id='Customer_state_id_label' style='display: none;'></span> -->
+																				<span style='padding-left: 10px'></span>  </td>
+
+
+
+
+
+
+
+
+
+
+
 											<td>Xmas List? </td><td> <input type='text' id='Customer_xmas_list' name='Customer[xmas_list]'></td>
 										</tr>
 										<!-- -->
@@ -227,26 +190,21 @@
 							</div>
 						</td>
 
-
 						<td>
 							<div id='quote_contact_container'>
-								<table id='quote_contact' style='border: 1px solid orange;'>
-									<caption>Contact</caption>
-
-									<tr>  <td style='padding-bottom: 20px; text-align: center;' colspan='2'>
-											<span id='refresh_contacts' style='font-size: 1.8em; color: gray; padding: 10px;'>↻</span>
-											<select id='contact_select'>
-
+								<table id='quote_contact' style='border: 0px solid orange;'>
+									<caption><span id='contact_span_text'>Contact</span> 
+										<span id='contact_span_select' style='display: none; padding-left: 50px;'>Select contact &nbsp;
+												<select name='CC[select]' id='CC_select'>
 													<?php
-														echo "<option value='0'>Select contact</option>";
-														foreach( $data['contacts'] as $c ) {
-															echo "<option value='".$c->id."'>".$c->first_name. ' ' . $c->last_name ."</option>";
+														echo "<option value='0'></option>";
+														foreach( $results as $c ) {
+															echo "<option value='".$c->id."'>".$c->name."</option>";
 														}
 													?>
-
-											</select><span id='createNewContact' style='padding-left: 10px'>New</span>
-										 </td> 
-									</tr>
+												</select>
+										</span>
+									</caption>
 
 									<tr>  <td><span class='required'> * </span>First Name</td>     <td><input type='text' id='Contact_first_name' name='Contact[first_name]'></td> </tr>
 									<tr>  <td><span class='required'> * </span>Last Name</td>      <td><input type='text' id='Contact_last_name'  name='Contact[last_name]'></td> </tr>
@@ -254,10 +212,10 @@
 
 									<tr>  <td><span class='required'> * </span>Email</td>          <td><input type='text' id='Contact_email'  name='Contact[email]'></td> </tr>
 									<tr>  <td><span class='required'> * </span>Phone1</td>          <td><input type='text' id='Contact_phone1' name='Contact[phone1]'></td> </tr>
-									<tr>  <td>Phone2</td>          <td><input type='text' id='Contact_phone2' name='Contact[phone2]'></td> </tr>
+									<!-- <tr>  <td>Phone2</td>          <td><input type='text' id='Contact_phone2' name='Contact[phone2]'></td> </tr> -->
 
 									<tr>  <td>Address1</td>          <td><input type='text' id='Contact_address1' name='Contact[address1]'></td> </tr>
-									<tr>  <td>Address2</td>          <td><input type='text' id='Contact_address2' name='Contact[address2]'></td> </tr>
+									<!-- <tr>  <td>Address2</td>          <td><input type='text' id='Contact_address2' name='Contact[address2]'></td> </tr> -->
 
 									<tr>  <td>City</td>          <td><input type='text' id='Contact_city' name='Contact[city]'></td> </tr>
 									<tr><td>US State  </td><td> <select name='Contact[state_id]' id='Contact_state_id'>
@@ -312,7 +270,7 @@
 				
 			<?php
 				if ( $data['item'] != 'Search for part...' && $data['item'] != '' ) { 
-					echo "<h2>Search results for ".$data['search_by'].": <span style=' border: 1px solid black; padding: 3px 8px 3px 8px; font-size:.8em; color: black; background: lightyellow'> ". 
+					echo "<h2>Search results for ".$data['search_by'].": <span style=' border: 0px solid black; padding: 3px 8px 3px 8px; font-size:.8em; color: black; background: lightyellow'> ". 
 						urldecode($data['item']) . " </span><span id='nobid'><span class='nobid_text'>Part not found; click <span id='nobid_link'>here</span> to NoBid.</span></span></h2>";
 				}
 

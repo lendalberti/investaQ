@@ -203,7 +203,7 @@ span.required {
 }
 
 #pre_quote_table  {
-	margin-bottom: 0;
+	/*margin-bottom: 0;*/
 }
 
 
@@ -216,6 +216,7 @@ span.required {
  	font-weight: bold;
  	text-align: center;
  	background-color: white;
+ 	padding: 10px;
 }
 
 .quote_section_heading {
@@ -300,7 +301,7 @@ div.form {
 
 #quote_contact_container,
 #quote_customer_container {
-	height: 480px;
+	/*height: 480px;*/
 	/*overflow-y: scroll;*/
 	border: 0px solid lightgray;
 }
@@ -385,7 +386,12 @@ span.select_replacement {
 	font-weight: bold;
 }
 
-
+span[id^="Customer_"] {
+	background-color: #f0f0f0;
+	border: 1px solid lightgray;
+    padding-left: 5px;
+    padding-right: 5px;
+}
 
 
 

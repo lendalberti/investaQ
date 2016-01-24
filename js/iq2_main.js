@@ -6,25 +6,85 @@ $(document).ready(function() {
     var contactPrefill  = true;
     var searchURL       = myURL + 'search';
 
+	resetCustomerForm();
+	resetContactForm();
+	disableCustomerForm();
+	disableContactForm();
+
+    
+    function getAbsolutePath() {
+        var loc = window.location;
+        var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf('/') + 1);
+        return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
+    }
+
+
+
+
+	  //  set up UI Dialogs 
+    var dialog_ViewQuoteDetails = $( "#form_ViewQuoteDetails" ).dialog({
+        autoOpen: false,
+        height: 820,
+        width: 700,
+        modal: true,
+        resizable: false,
+        close: function() { }
+    });
+
+
+    $('#reset_form').on('click', function() {
+    	location.reload();
+    });
+
+
+
+	function resetCustomerForm() {
+		$('[id^=Customer_]').val('');
+        $('span[id^=Customer_]').remove();
+        $('select[id^=Customer_]').each( function() {
+			$(this).show();
+			$(this).prop('disabled', 'disabled');
+		});
+
+	}
+
+
+
+	function resetContactForm() {
+		$('[id^=Contact_]').val('');
+        $('span[id^=Contact_]').remove();
+        $('select[id^=Contact_]').each( function() {
+			$(this).show();
+			$(this).prop('disabled', 'disabled');
+		});
+	}
+
+
+
+
 
     $(function() {
         $( "#search_typeahead" ).autocomplete({
             source: searchURL,
-            minLength: 4,  
+            minLength: 4, 
+            close: function() {
+            	$('#search_typeahead').val("");  
+            },
             select: function(event,ui) {
                 var selectID = ui.item.value;
-
-                $('#search_typeahead').val('');  
-
+                
                 // if ui.item.label contains (\d+) then selectID is a customer id, else it's a contact id
                 //console.log("match? " + ui.item.label.match(/\(\d+\)/) );
 
-                if ( ui.item.label.match(/\(\d+\)/) == null ) { 
-                    // contact id
+                if ( ui.item.label.match(/\(\d+\)/) == null ) {   // contact id
                     $.ajax({
                         type: 'GET',
                         url: '../contacts/find?id='+selectID,
                         success: function (ret) {
+                    		$('#customer_span_text').hide();
+                    		$('#customer_span_select').show();
+                    		$('#contact_span_text').show();
+							$('#contact_span_select').hide();
                             fillOutContactFields(ret);
                         },
                         error: function (jqXHR, textStatus, errorThrown)  {
@@ -32,12 +92,15 @@ $(document).ready(function() {
                         } 
                     });
                 }
-                else {
-                    // customer id
-                     $.ajax({
+                else {					// customer id
+                    $.ajax({
                         type: 'GET',
                         url: '../customers/find?id='+selectID,
                         success: function (ret) {
+                        	$('#contact_span_text').hide();
+                    		$('#contact_span_select').show();
+                    		$('#customer_span_text').show();
+							$('#customer_span_select').hide();
                             fillOutCustomerFields(ret);
                         },
                         error: function (jqXHR, textStatus, errorThrown)  {
@@ -52,33 +115,137 @@ $(document).ready(function() {
     });
 
 
+	// just a temp event for testing
+	$('#contact_span_select').on('click', function() {
+		alert('clicked on cc...');
+		showCustomerLabels(false);
+
+		// clear all customer fields
+        $('[id^=Customer_]').val('');
+
+
+	});
+
+
+	// function clearCustomerForm() {
+
+	// 	console.log('clearCustomerForm()');
+	// 	showCustomerLabels(false);
+
+ //        $('[id^=Customer_]').val('');
+ //        $('span[id^=Customer_]').remove();
+	// }
+
+	// function clearContactForm() {
+
+	// 	console.log('clearContactForm()');
+	// 	showContactLabels(false);
+
+ //        $('[id^=Contact_]').val('');
+ //        $('span[id^=Contact_]').remove();
+	// }
+
+
+
+	function showCustomerLabels(flag) {
+		console.log('showCustomerLabels('+flag+')');
+		if (flag == true) {
+			// hide selects, display labels
+			$('select[id^=Customer_]').each( function() {
+				$(this).hide();
+			});
+			$('span[id^=Customer_]').each( function() {
+				$(this).show();
+			});
+		}
+		else {
+			// hide labels, display selects
+			$('select[id^=Customer_]').each( function() {
+				$(this).show();
+			});
+			$('span[id^=Customer_]').each( function() {
+				$(this).hide();
+			});
+		}
+	}
+
+	function showContactLabels(flag) {
+		console.log('showContactLabels('+flag+')');
+		if (flag == true) {
+			// hide selects, display labels
+			$('select[id^=Contact_]').each( function() {
+				$(this).hide();
+			});
+			$('span[id^=Contact_]').each( function() {
+				$(this).show();
+			});
+		}
+		else {
+			// hide labels, display selects
+			$('select[id^=Contact_]').each( function() {
+				$(this).show();
+			});
+			$('span[id^=Contact_]').each( function() {
+				$(this).hide();
+			});
+		}
+	}
+
+
     // --------------------------------------------------------
     function fillOutCustomerFields(data) {
-        //$('#customer_info_table').show();
+    	console.log('fillOutCustomerFields()');
+    	// clearCustomerForm();
+
+    	resetContactForm();
+    	resetCustomerForm();
 
         var o = JSON.parse(data);
         $.each( o, function( k, v ) {
-            console.log("Customer: k=["+k+"], v=["+v+"]");
-            $('#'+k).html( v );
-            $('#'+k).val( v );
+            if ( $('#Customer_'+k).is('select') ) {
+            	var selectedLabel = $('#Customer_'+k+' > option[value='+v+']').html();
+            	$("<span style='font-size: .8em;' display='none;' id='Customer_"+k+"_label'>"+selectedLabel+"</span>").insertAfter('#Customer_'+k);
+        	}
+        	else {
+        		$('#Customer_'+k).html( v );
+            	$('#Customer_'+k).val( v );
+        	}
         });
 
-       // $('#customer_info_div').show();
+    	showCustomerLabels(true);
+    	showContactLabels(false);
     }  
 
 
     // --------------------------------------------------------
     function fillOutContactFields(data) {
-        //$('#customer_info_table').show();
+    	console.log('fillOutContactFields()');
+    	// clearContactForm();
+
+    	resetContactForm();
+    	resetCustomerForm();
 
         var o = JSON.parse(data);
         $.each( o, function( k, v ) {
-            console.log("Contact: k=["+k+"], v=["+v+"]");
-            $('#'+k).html( v );
-            $('#'+k).val( v );
+            //console.log("Contact: k=["+k+"], v=["+v+"]");
+
+            if ( $('#Contact_'+k).is('select') ) {
+            	var selectedLabel = $('#Contact_'+k+' > option[value='+v+']').html();
+            	$("<span style='font-size: .8em;' display='none;' id='Contact_"+k+"_label'>"+selectedLabel+"</span>").insertAfter('#Contact_'+k);
+
+        		// var selectedVal = $('#Contact_'+k+' option:selected').val();
+        		// $('#Contact_'+k).prop('disabled', 'disabled');
+        		// $('#Contact_'+k).append("<input type='hidden' id='Contact_"+k+"' name='Contact["+k+"]' value='"+selectedVal+"' >");
+        	}
+        	else {
+        		$('#Contact_'+k).html( v );
+            	$('#Contact_'+k).val( v );
+        	}
+
         });
 
-        //$('#contact_info_div').show();
+    	showContactLabels(true);
+    	showCustomerLabels(false);
     }  
 
 
@@ -136,33 +303,6 @@ at an integration of jQuery UI Autocomplete with a vertical slider here and see 
 */
 
 
-
-    
-    function getAbsolutePath() {
-        var loc = window.location;
-        var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf('/') + 1);
-        return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
-    }
-
-
-	disableCustomerForm();
-	disableContactForm();
-
-
-	  //  set up UI Dialogs 
-    var dialog_ViewQuoteDetails = $( "#form_ViewQuoteDetails" ).dialog({
-        autoOpen: false,
-        height: 820,
-        width: 700,
-        modal: true,
-        resizable: false,
-        close: function() { }
-    });
-
-
-    $('#reset_form').on('click', function() {
-    	location.reload();
-    });
 
 
 
@@ -336,7 +476,9 @@ at an integration of jQuery UI Autocomplete with a vertical slider here and see 
 	    $("[id^=Customer_]").each(function() {
 	    	$(this).val('');
 		});
+	  	
 	  	enableCustomerForm(); 
+
 	  	// assume we need to create a new contact when creating a new customer... 
   		$('#createNewContact').trigger('click');
   		$('#contact_select').hide();
