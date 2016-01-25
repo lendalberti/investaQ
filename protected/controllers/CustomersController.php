@@ -67,16 +67,16 @@ class CustomersController extends Controller
 		$c = Customers::model()->findByPk($id);
 		$ca = $c->attributes;
 
-		$ca['state_id_text']               = $c->state->long_name;
-		$ca['country_id_text']             = $c->country->long_name;
-		$ca['region_id_text']              = $c->region->name;
-		$ca['territory_id_text']           = $c->territory->name;
-		$ca['customer_type_id_text']       = $c->customerType->name;
-		$ca['parent_id_text']              = $c->parent->name;
-		$ca['tier_id_text']                = $c->tier->name;
-		$ca['inside_salesperson_id_text']  = $c->insideSalesperson->fullname;
-		$ca['outside_salesperson_id_text'] = $c->outsideSalesperson->fullname;
-		ksort($ca); 
+		$ca['state_id']               = $c->state->long_name;
+		$ca['country_id']             = $c->country->long_name;
+		$ca['region_id']              = $c->region->name;
+		$ca['territory_id']           = $c->territory->name;
+		$ca['customer_type_id']       = $c->customerType->name;
+		$ca['parent_id']              = $c->parent->name;
+		$ca['tier_id']                = $c->tier->name;
+		$ca['inside_salesperson_id']  = $c->insideSalesperson->fullname;
+		$ca['outside_salesperson_id'] = $c->outsideSalesperson->fullname;
+		//ksort($ca); 
 
 		pDebug('Customers: actionFind() - found customer attributes: ',$ca );
 		echo json_encode($ca);
@@ -85,7 +85,8 @@ class CustomersController extends Controller
 
 	public function actionFindbycontact($id) {
 		pDebug("Customers::actionFindbycontact() - looking for customers of contact id=[$id]");
-
+		$customers = array();
+		
 		$sql  = "SELECT cu.id AS 'customer_id', CONCAT(cu.name, ',', cu.address1, ',', cu.city, ',', cn.short_name) AS 'customer_info' ";
 		$sql .= " FROM  customer_contacts cc join customers cu on cu.id = cc.customer_id join countries cn on cu.country_id = cn.id where cc.contact_id = $id";
 		$command = Yii::app()->db->createCommand($sql);

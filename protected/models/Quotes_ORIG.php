@@ -10,7 +10,6 @@
  * @property integer $status_id
  * @property integer $owner_id
  * @property integer $customer_id
- * @property integer $contact_id
  * @property string $created_date
  * @property string $updated_date
  * @property string $expiration_date
@@ -45,23 +44,24 @@
  * The followings are the available model relations:
  * @property Attachments[] $attachments
  * @property BtoApprovals[] $btoApprovals
+ * @property Status $status
+ * @property PackageTypes $packageType
+ * @property ProcessFlow $processFlow
+ * @property Testing $testing
+ * @property Priority $priority
  * @property Customers $customer
  * @property Users $owner
- * @property Status $status
  * @property LostReasons $lostReason
  * @property NoBidReasons $noBidReason
  * @property QuoteTypes $quoteType
  * @property Levels $level
  * @property Sources $source
  * @property DieManufacturers $dieManufacturer
- * @property PackageTypes $packageType
- * @property ProcessFlow $processFlow
- * @property Testing $testing
- * @property Priority $priority
  * @property StockItems[] $stockItems
  */
-class Quotes extends CActiveRecord
-{
+class Quotes extends CActiveRecord  {
+
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -88,13 +88,13 @@ class Quotes extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('quote_no, quote_type_id, status_id, owner_id, customer_id, contact_id, created_date, updated_date, expiration_date, source_id', 'required'),
-			array('quote_type_id, status_id, owner_id, customer_id, contact_id, level_id, source_id, lost_reason_id, no_bid_reason_id, ready_to_order, quantity1, quantity2, quantity3, die_manufacturer_id, package_type_id, lead_count, process_flow_id, testing_id, priority_id, ncnr, itar, have_die, spa', 'numerical', 'integerOnly'=>true),
+			array('quote_no, quote_type_id, status_id, owner_id, customer_id, created_date, updated_date, expiration_date, level_id, source_id', 'required'),
+			array('quote_type_id, status_id, owner_id, customer_id, level_id, source_id, lost_reason_id, no_bid_reason_id, ready_to_order, quantity1, quantity2, quantity3, die_manufacturer_id, package_type_id, lead_count, process_flow_id, testing_id, priority_id, ncnr, itar, have_die, spa', 'numerical', 'integerOnly'=>true),
 			array('quote_no, requested_part_number, generic_part_number, temp_low, temp_high', 'length', 'max'=>45),
 			array('additional_notes, terms_conditions, customer_acknowledgment, risl, manufacturing_lead_time', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, quote_no, quote_type_id, status_id, owner_id, customer_id, contact_id, created_date, updated_date, expiration_date, level_id, source_id, additional_notes, terms_conditions, customer_acknowledgment, risl, manufacturing_lead_time, lost_reason_id, no_bid_reason_id, ready_to_order, requested_part_number, generic_part_number, quantity1, quantity2, quantity3, die_manufacturer_id, package_type_id, lead_count, process_flow_id, testing_id, priority_id, temp_low, temp_high, ncnr, itar, have_die, spa', 'safe', 'on'=>'search'),
+			array('id, quote_no, quote_type_id, status_id, owner_id, customer_id, created_date, updated_date, expiration_date, level_id, source_id, additional_notes, terms_conditions, customer_acknowledgment, risl, manufacturing_lead_time, lost_reason_id, no_bid_reason_id, ready_to_order, requested_part_number, generic_part_number, quantity1, quantity2, quantity3, die_manufacturer_id, package_type_id, lead_count, process_flow_id, testing_id, priority_id, temp_low, temp_high, ncnr, itar, have_die, spa', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -108,20 +108,19 @@ class Quotes extends CActiveRecord
 		return array(
 			'attachments' => array(self::HAS_MANY, 'Attachments', 'quote_id'),
 			'btoApprovals' => array(self::HAS_MANY, 'BtoApprovals', 'quote_id'),
-			'customer' => array(self::BELONGS_TO, 'Customers', 'customer_id'),
-			'contact' => array(self::BELONGS_TO, 'Users', 'contact_id'),
-			'owner' => array(self::BELONGS_TO, 'Users', 'owner_id'),
 			'status' => array(self::BELONGS_TO, 'Status', 'status_id'),
+			'packageType' => array(self::BELONGS_TO, 'PackageTypes', 'package_type_id'),
+			'processFlow' => array(self::BELONGS_TO, 'ProcessFlow', 'process_flow_id'),
+			'testing' => array(self::BELONGS_TO, 'Testing', 'testing_id'),
+			'priority' => array(self::BELONGS_TO, 'Priority', 'priority_id'),
+			'customer' => array(self::BELONGS_TO, 'Customers', 'customer_id'),
+			'owner' => array(self::BELONGS_TO, 'Users', 'owner_id'),
 			'lostReason' => array(self::BELONGS_TO, 'LostReasons', 'lost_reason_id'),
 			'noBidReason' => array(self::BELONGS_TO, 'NoBidReasons', 'no_bid_reason_id'),
 			'quoteType' => array(self::BELONGS_TO, 'QuoteTypes', 'quote_type_id'),
 			'level' => array(self::BELONGS_TO, 'Levels', 'level_id'),
 			'source' => array(self::BELONGS_TO, 'Sources', 'source_id'),
 			'dieManufacturer' => array(self::BELONGS_TO, 'DieManufacturers', 'die_manufacturer_id'),
-			'packageType' => array(self::BELONGS_TO, 'PackageTypes', 'package_type_id'),
-			'processFlow' => array(self::BELONGS_TO, 'ProcessFlow', 'process_flow_id'),
-			'testing' => array(self::BELONGS_TO, 'Testing', 'testing_id'),
-			'priority' => array(self::BELONGS_TO, 'Priority', 'priority_id'),
 			'stockItems' => array(self::HAS_MANY, 'StockItems', 'quote_id'),
 		);
 	}
@@ -137,8 +136,7 @@ class Quotes extends CActiveRecord
 			'quote_type_id' => 'Quote Type',
 			'status_id' => 'Status',
 			'owner_id' => 'Owner',
-			'customer_id' => 'Customer',
-			'contact_id' => 'Contact',
+			'customer_id' => 'Customer ID',
 			'created_date' => 'Created Date',
 			'updated_date' => 'Updated Date',
 			'expiration_date' => 'Expiration Date',
@@ -189,7 +187,6 @@ class Quotes extends CActiveRecord
 		$criteria->compare('status_id',$this->status_id);
 		$criteria->compare('owner_id',$this->owner_id);
 		$criteria->compare('customer_id',$this->customer_id);
-		$criteria->compare('contact_id',$this->contact_id);
 		$criteria->compare('created_date',$this->created_date,true);
 		$criteria->compare('updated_date',$this->updated_date,true);
 		$criteria->compare('expiration_date',$this->expiration_date,true);

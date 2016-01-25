@@ -18,7 +18,8 @@
 
 
 	<script type="text/javascript" charset="utf8" src="<?php echo Yii::app()->request->baseUrl; ?>/js/iq2_main.js"></script>
-	<script type="text/javascript" charset="utf8" src="<?php echo Yii::app()->request->baseUrl; ?>/js/iq2_quote.js"></script>
+	<script type='text/javascript' charset="utf8" src="<?php echo Yii::app()->request->baseUrl; ?>/js/accounting.min.js"></script>   
+	<!-- <script type="text/javascript" charset="utf8" src="< ?php echo Yii::app()->request->baseUrl; ?>/js/iq2_quote.js"></script> -->
 
 
 	<!-- blueprint CSS framework -->

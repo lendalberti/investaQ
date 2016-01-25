@@ -9,7 +9,7 @@
 </div>
 
 
-<div style='width:906px; margin-top: 70px;'>
+<div style='width:906px; margin-top: 30px;'>
 	<table id='quotes_table'>
 				<thead>
 					<tr>
@@ -21,9 +21,9 @@
 
 						<th>Part No.</th>
 
-						<th>Sales Person</th>
+						<!-- <th>Sales Person</th> -->
 						<th>Customer Name</th>
-						<!-- <th>Location</th> -->
+						<th>Location</th>
 					</tr>
 				</thead>
 
@@ -44,9 +44,9 @@
 
 						echo '<td>' . getQuotePartNumbers($m->id) . '</td>';   
 
-						echo '<td>' . $m->owner->fullname . '</td>'; 
+						// echo '<td>' . $m->owner->fullname . '</td>'; 
 						echo '<td>' . $m->customer->name . '</td>'; 
-						// echo '<td>' . $m->customer->address1.', '. $m->customer->city . ', '. $m->customer->country->short_name .'</td>'; 
+						echo '<td>' . $m->customer->address1.', '. $m->customer->city . ', '. $m->customer->country->short_name .'</td>'; 
 						echo '</tr>';
 					}
 				?>

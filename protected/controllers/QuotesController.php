@@ -42,7 +42,7 @@ class QuotesController extends Controller
 		);
 	}
 
-
+	
 	// ------------------------------------- AutoCompletion Search...
     public function actionSearch()     {        
         $term = isset( $_GET['term'] ) ? trim(strip_tags($_GET['term'])) : null; if ( !$term ) return null;
@@ -59,45 +59,39 @@ class QuotesController extends Controller
 			$results[] = array( 'label' => $c->first_name . " " . $c->last_name, 'value' => $c->id );
 		}
 
+		array_multisort($results);
 		$data['results'] = json_encode($results);
 		echo json_encode($results);
     }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 	
 	// --- 
 	public function actionView($id) {
-
 		$model = $this->loadModel($id);
 		pDebug('QuotesController::actionView() - quote attributes:', $model->attributes);
 		
-		if ( $model->quote_type_id == QuoteTypes::STOCK ) {
-			// display only Stock Quote relevant fields
-			echo 'displaying Stock quote...';
-		}
-		else if ( $model->quote_type_id == QuoteTypes::MANUFACTURING ) {
-			// display only Manufacturing Quote relevant fields
-			echo 'displaying Manufacturing quote...';
-		}
-		else if ( $model->quote_type_id == QuoteTypes::SUPPLIER_REQUEST_FORM ) {
-			// display only SRF relevant fields
-			echo 'displaying SRF...';
-		}
-		else if ( $model->quote_type_id == QuoteTypes::TBD ) {
-			echo 'quote type tbd...';
-		}
+		$this->render('view',array(
+			'model'=>$model,
+		));
+
+		
+		// if ( $model->quote_type_id == QuoteTypes::STOCK ) {
+		// 	// display only Stock Quote relevant fields
+		// 	echo 'displaying Stock quote...';
+		// }
+		// else if ( $model->quote_type_id == QuoteTypes::MANUFACTURING ) {
+		// 	// display only Manufacturing Quote relevant fields
+		// 	echo 'displaying Manufacturing quote...';
+		// }
+		// else if ( $model->quote_type_id == QuoteTypes::SUPPLIER_REQUEST_FORM ) {
+		// 	// display only SRF relevant fields
+		// 	echo 'displaying SRF...';
+		// }
+		// else if ( $model->quote_type_id == QuoteTypes::TBD ) {
+		// 	echo 'quote type tbd...';
+		// }
 
 
 
@@ -177,12 +171,15 @@ class QuotesController extends Controller
 
 			$modelQuotes->attributes      = $_POST['Quote'];
 			$modelQuotes->customer_id     = $customer_id;
+			$modelQuotes->contact_id      = $contact_id;
 			$modelQuotes->quote_no        = $this->getQuoteNumber();
 			$modelQuotes->status_id       = Status::DRAFT;
 			$modelQuotes->owner_id        = Yii::app()->user->id;
 			$modelQuotes->created_date    = Date('Y-m-d 00:00:00');
 			$modelQuotes->updated_date    = Date('Y-m-d 00:00:00');
 			$modelQuotes->expiration_date = $this->getQuoteExpirationDate();
+
+			$modelQuotes->quote_type_id   = QuoteTypes::TBD;
 			
 			pDebug("Quotes::actionCreate() - saving Quote with the following attributes", $modelQuotes->attributes );
 			if ( $modelQuotes->save() ) {

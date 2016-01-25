@@ -81,20 +81,17 @@ class ContactsController extends Controller
 		$c = Contacts::model()->findByPk($id);
 		$ca = $c->attributes;
 
-		$ca['state_id_text']    = $c->state->long_name;
-		$ca['country_id_text']  = $c->country->long_name;
+		$ca['state_id']    = $c->state->long_name;
+		$ca['country_id']  = $c->country->long_name;
 
 		pDebug('Contacts::actionFind() - found contact attributes: ', $ca );
 		echo json_encode($ca);
 	}
 
 
-
-
-
-
 	public function actionFindbycust($id) {
 		pDebug("Contacts::actionFindbycust() - looking for contacts of customer id=[$id]");
+		$contacts = array();
 
 		$sql = "SELECT co.id AS 'contact_id', concat(co.first_name,' ',co.last_name) AS 'contact_name' FROM customer_contacts cc join contacts co ON cc.contact_id = co.id WHERE cc.customer_id = $id";
 		$command = Yii::app()->db->createCommand($sql);
