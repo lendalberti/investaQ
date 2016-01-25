@@ -61,7 +61,7 @@ class ContactsController extends Controller
 
 
 
-	public function actionFind($id)  {
+	public function actionFind_ORIG($id)  {
 		pDebug("Contacts::actionFind() - looking for contact id=[$id]");
 
 		$contact = Contacts::model()->findByPk($id);
@@ -75,11 +75,18 @@ class ContactsController extends Controller
 
 
 
+	public function actionFind($id)  {
+		pDebug("Contacts::actionFind() - looking for contact id=[$id]");
 
+		$c = Contacts::model()->findByPk($id);
+		$ca = $c->attributes;
 
+		$ca['state_id_text']    = $c->state->long_name;
+		$ca['country_id_text']  = $c->country->long_name;
 
-
-
+		pDebug('Contacts::actionFind() - found contact attributes: ', $ca );
+		echo json_encode($ca);
+	}
 
 
 
@@ -89,15 +96,12 @@ class ContactsController extends Controller
 	public function actionFindbycust($id) {
 		pDebug("Contacts::actionFindbycust() - looking for contacts of customer id=[$id]");
 
-		// $sql = "SELECT contact_id,  FROM customer_contacts WHERE customer_id = $id";
 		$sql = "SELECT co.id AS 'contact_id', concat(co.first_name,' ',co.last_name) AS 'contact_name' FROM customer_contacts cc join contacts co ON cc.contact_id = co.id WHERE cc.customer_id = $id";
-
 		$command = Yii::app()->db->createCommand($sql);
 		$results = $command->queryAll();
-		pDebug("Contacts::actionFindbycust() - results:", $results);
 
 		foreach( $results as $r ) {
-			$contacts[] = array( $r['contact_id'] => $r['contact_name'] );
+			$contacts[] = array( 'id' => $r['contact_id'], 'label' => $r['contact_name'] );
 		}
 
 		pDebug("Contacts::actionFindbycust() - contacts found:", $contacts);

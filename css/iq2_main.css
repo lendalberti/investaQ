@@ -203,7 +203,7 @@ span.required {
 }
 
 #pre_quote_table  {
-	/*margin-bottom: 0;*/
+	 border: 1px solid lightgray;
 }
 
 
@@ -259,7 +259,6 @@ span[id^=showHide_]:hover {
 
 div#form_customer_contact {
 	border: 0px solid orange;
-	/*height: 420px;*/
 }
 
 div#form_details,
@@ -298,13 +297,18 @@ div.form {
   	text-align: center;
 }
 
-
-#quote_contact_container,
-#quote_customer_container {
+#div_ViewCustomer {
+	border: 1px solid green;
+}
+#div_ViewContact {
+	border: 1px solid red;
+}
+/*#quote_contact_container,
+#quote_customer_container {*/
 	/*height: 480px;*/
 	/*overflow-y: scroll;*/
-	border: 0px solid lightgray;
-}
+	/*border: 1px solid lightgray;
+}*/
 
 #button_continue {
 	font-size: 1.4em; 

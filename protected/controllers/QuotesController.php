@@ -196,24 +196,24 @@ class QuotesController extends Controller
 			}
 		}
 		else {
-			$data['customers'] = Customers::model()->findAll( array('order' => 'name') );
-			foreach ( $data['customers'] as $c ) {
-				$tmp[] = $c->name;
-			}
-			$data['[parent'] = array_unique($tmp);
-			$data['contacts'] = Contacts::model()->findAll( array('order' => 'first_name') );
-			$data['salespersons'] = Users::model()->findAll( array('order' => 'first_name') );
+			// $data['customers'] = Customers::model()->findAll( array('order' => 'name') );
+			// foreach ( $data['customers'] as $c ) {
+			// 	$tmp[] = $c->name;
+			// }
+			// $data['[parent'] = array_unique($tmp);
+			// $data['contacts'] = Contacts::model()->findAll( array('order' => 'first_name') );
+			// $data['salespersons'] = Users::model()->findAll( array('order' => 'first_name') );
 
-			$data['us_states']      = UsStates::model()->findAll( array('order' => 'long_name') );
-			$data['countries']   = Countries::model()->findAll( array('order' => 'long_name') );
-			$data['regions']     = Regions::model()->findAll( array('order' => 'name') );
+			// $data['us_states']      = UsStates::model()->findAll( array('order' => 'long_name') );
+			// $data['countries']   = Countries::model()->findAll( array('order' => 'long_name') );
+			// $data['regions']     = Regions::model()->findAll( array('order' => 'name') );
 
-			$data['types']       = CustomerTypes::model()->findAll( array('order' => 'name') );
-			$data['territories'] = Territories::model()->findAll( array('order' => 'name') );
+			// $data['types']       = CustomerTypes::model()->findAll( array('order' => 'name') );
+			// $data['territories'] = Territories::model()->findAll( array('order' => 'name') );
 
-			$data['quote_types'] = QuoteTypes::model()->findAll( array('order' => 'name') );
+			// $data['quote_types'] = QuoteTypes::model()->findAll( array('order' => 'name') );
 			$data['sources']     = Sources::model()->findAll( array('order' => 'name') );
-			$data['levels']      = Levels::model()->findAll( array('order' => 'name') );
+			// $data['levels']      = Levels::model()->findAll( array('order' => 'name') );
 
 			$this->render('create',array(
 				'data'=>$data,
