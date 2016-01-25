@@ -117,7 +117,7 @@ $(document).ready(function() {
                                 type: 'GET',
                                 url: '../contacts/findbycust?id='+selectID,
                                 success: function (res) {
-                                    fillContactSelect(res);
+                                    fillContactSelect(res); 
                                     // displayCustomer(ret);
                                 }
                             });
@@ -135,23 +135,38 @@ $(document).ready(function() {
 
 
     function fillCustomerSelect(data) {
-        console.log('select data: '+data);
+        console.log('Customer select options: '+data);
         var o = JSON.parse(data); 
 
         $.each( o, function(k,v) {
             $('#Customer_select').append( $('<option></option>' ).val(v.id).html(v.label) );
             console.log("id=["+ v.id + "], label=[" + v.label + "]");
         });
+
+        $('#customer_span_text').hide();
+        $('#customer_span_select').show();
+       
+        $('#contact_heading').hide();
+        $('#customer_heading').show();
     }
+
+
+
  
    function fillContactSelect(data) {
-        console.log('select data: '+data);
+        console.log('Contact select options: '+data);
         var o = JSON.parse(data); 
 
         $.each( o, function(k,v) {
             $('#Contact_select').append( $('<option></option>' ).val(v.id).html(v.label) );
             console.log("id=["+ v.id + "], label=[" + v.label + "]");
         });
+
+        $('#contact_span_text').hide();
+        $('#contact_span_select').show();
+
+        $('#customer_heading').hide();
+        $('#contact_heading').show();
     }
 
 

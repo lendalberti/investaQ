@@ -99,27 +99,13 @@ div.my_container > div > table > tbody > tr > td:nth-child(odd) {
 		<div id='customer_heading'
 			<span id='customer_span_text'> Customer </span> 
 			<span id='customer_span_select' style='display: none;'> Select customer &nbsp;
-				<select name='Customer[select]' id='Customer_select'>
-					<?php
-						echo "<option value='0'></option>";
-						foreach( $results as $c ) {
-							echo "<option value='".$c->id."'>".$c->name."</option>";
-						}
-					?>
-				</select>
+				<select name='Customer[select]' id='Customer_select'></select>
 			</span>
 		</div>
 		<div id='contact_heading'>
 			<span id='contact_span_text'> Contact </span> 
 			<span id='contact_span_select' style='display: none;' >Select contact &nbsp;
-					<select name='Contact[select]' id='Contact_select'>
-						<?php
-							echo "<option value='0'></option>";
-							foreach( $results as $c ) {
-								echo "<option value='".$c->id."'>".$c->name."</option>";
-							}
-						?>
-					</select>
+				<select name='Contact[select]' id='Contact_select'></select>
 			</span>
 		</div>
 	</div>
