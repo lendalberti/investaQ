@@ -8,7 +8,7 @@
 	font-weight: bold;
 }
 
-/* --------------------------------------    Main Menu     */
+/* --------------------------------------    Main Menu     */   
 #mainmenu {
 	background: linear-gradient( lightgray, gray );
 }
@@ -288,6 +288,10 @@ div.form {
 	padding-bottom: 5px;
 }
 
+
+#results_table > tbody > tr:nth-child(odd)  {
+   background: #E6E6E6;
+}
 
 #results_table > thead > tr > th  { 
 	background: #5E6E78;

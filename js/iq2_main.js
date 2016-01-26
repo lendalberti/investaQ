@@ -15,14 +15,16 @@ $(document).ready(function() {
     });
 
     // set up DataTable
-    var table_1 = $('#quotes_table').DataTable({"iDisplayLength": 10 }); 
-	var table_2 = $('#results_table').DataTable({"iDisplayLength": 10 });
+    var QuotesTable  = $('#quotes_table').DataTable({"iDisplayLength": 10 }); 
+	var ResultsTable = $('#results_table').DataTable({"iDisplayLength": 10 });
 
-    // ---------------------------------------------------- click "Continue"
-    $('#quoteForm').submit(function( e ) {
+	//---------------------------------------------------------------------------------------------------------------------
+    //-------- Event Handlers  --------------------------------------------------------------------------------------------    
+    //---------------------------------------------------------------------------------------------------------------------
+    $('#quoteForm').submit(function( e ) {  //  click "Continue"
     	e.preventDefault();
     	if ( formValidated() ) { 		
-    		console.log('formValidated() = TRUE');
+    		// console.log('formValidated() = TRUE');
 
     		var postData = $(this).serialize();
     		$.ajax({
@@ -30,7 +32,7 @@ $(document).ready(function() {
 		            url: myURL + 'create',
 		            data: postData,
 		            success: function(quoteNo)  {
-		            	console.log('quoteNo=['+quoteNo+']');
+		            	// console.log('quoteNo=['+quoteNo+']');
 		            	continueQuote(quoteNo);
 		            }
 	        });
@@ -40,8 +42,7 @@ $(document).ready(function() {
     	}
 	});
 
-    // ---------------------------------------------------- Select from available customers
-    $('#Customer_select').on('change', function () {
+    $('#Customer_select').on('change', function () { //  Select from available customers
         var custID = $(this).val();
         $.ajax({
             type: 'GET',
@@ -51,9 +52,8 @@ $(document).ready(function() {
             }
         });
     });
-
-    // ---------------------------------------------------- Select from available contact
-    $('#Contact_select').on('change', function () {
+   
+    $('#Contact_select').on('change', function () { //  Select from available contact
         var contactID = $(this).val();
         $.ajax({
             type: 'GET',
@@ -64,13 +64,36 @@ $(document).ready(function() {
         });
     });
 
-    // ----------------------------------------------------  View quote
-    $('[id^=view_quote_]').on('click', function() {
+    $('[id^=view_quote_]').on('click', function() { //   View quote  
     	var quoteID = getThisID( $(this) ); 
     	window.location = myURL + 'view?id='+quoteID;
     })
 
- 	$('input').keypress(function(event) {   // 'Enter' key acts like Go button
+    $('[id^=edit_quote_]').on('click', function() { //   Edit quote  
+    })
+
+    $('[id^=delete_quote_]').on('click', function() { //   Delete quote  
+    })
+    
+    $('#quotes_table').on('click', function() {  //  re-attach event handler 
+    	// have to attach click event handler; after paging, 
+    	// dataTables reloads the tableBody and all attached event handlers
+
+    	// do this for view_quote_xx, edit_quote_xx, delete_quote_xx
+
+		$('[id^=view_quote_]').on('click', function() {
+	    	var quoteID = getThisID( $(this) ); 
+	    	window.location = myURL + 'view?id='+quoteID;
+	    })
+
+	    $('[id^=edit_quote_]').on('click', function() {
+	    })
+
+	    $('[id^=delete_quote_]').on('click', function() {
+	    })
+    });
+
+ 	$('input').keypress(function(event) {   // make 'Enter' key act like Find button
        if (event.which == 13) {
            event.preventDefault();
            $('#parts_Searchbutton').trigger('click');
@@ -87,240 +110,39 @@ $(document).ready(function() {
 	                type: 'GET',
 	                url: '../parts/search?item=' + searchFor.trim().toUpperCase() + '&by=' + searchBy,
 	                success: function (results) {
-	                	// parts = JSON.parse(results);
-	                	// console.log( 'Total quantity for part: ' + parts.parts[0].total_qty_for_part );
 	                	displayPartLookupResults(results);
 	                }
             });
   		}
   	})
 
-   
+   	$('#section_CustomerContact > div.quote_section_heading > span.open_close').on('click', function() {  // toggle Customer section
+		if ( $(this).html() == '+') {
+			$(this).html('−'); 
+		}
+		else {
+			$(this).html('+');
+		}
+		$('#section_CustomerContact > div.my_container').toggle();
+   	})
 
+	$('#section_PartsLookup > div.quote_section_heading > span.open_close').on('click', function() {  // toggle Part Lookup section
+		if ( $(this).html() == '+') {
+			$(this).html('−'); 
+		}
+		else {
+			$(this).html('+');
+		}
+   		$('#section_PartsLookup > div.my_container').toggle();
+   	})
 
+  
 
 
 
     //---------------------------------------------------------------------------------------------------------------------
     //-------- Functions --------------------------------------------------------------------------------------------------    
     //---------------------------------------------------------------------------------------------------------------------
-
-    function displayPartLookupResults(res) {
-    	var a          = JSON.parse(res);
-    	var partsCount = a.parts.length; 
-    	var rows       = '';
-
-
-    	$.each( a.parts, function(index,value) {
-    		console.log( index,value );
-    	});
-
-    	for( var i=0; i<partsCount; i++ ) {
-    		// console.log( "************** part_number: "        + a.parts[i].part_number + ", index="+i);
-
-    		// console.log( "manufacturer: "       + a.parts[i].manufacturer );
-    		// console.log( "supplier: "           + a.parts[i].supplier );
-    		// console.log( "total_qty_for_part: " + a.parts[i].total_qty_for_part );
-
-    		// console.log( "over_1000: " + a.parts[i].prices.over_1000 );
-    		// console.log( "p1_24: "     + a.parts[i].prices.p1_24 );
-    		// console.log( "p25_99: "    + a.parts[i].prices.p25_99 );
-
-    		// console.log( "p100_499: "  + a.parts[i].prices.p100_499 );
-    		// console.log( "p500_999: "  + a.parts[i].prices.p500_999 );
-
-    		// console.log( "distributor_price: "  + a.parts[i].distributor_price );
-
-    		rows += "<tr>";
-    		rows += "<td>"+a.parts[i].part_number+"</td>";
-    		rows += "<td>"+a.parts[i].manufacturer+"</td>";
-    		rows += "<td>"+a.parts[i].supplier+"</td>";
-    		rows += "<td>"+a.parts[i].total_qty_for_part +"</td>";
-
-    		rows += "<td>"+accounting.formatMoney(a.parts[i].prices.over_1000)+"</td>";
-    		rows += "<td>"+accounting.formatMoney(a.parts[i].prices.p1_24) +"</td>";
-    		rows += "<td>"+accounting.formatMoney(a.parts[i].prices.p25_99) +"</td>";
-    		rows += "<td>"+accounting.formatMoney(a.parts[i].prices.p100_499) +"</td>";
-    		rows += "<td>"+accounting.formatMoney(a.parts[i].prices.p500_999) +"</td>";
-    		rows += "<td>"+accounting.formatMoney(a.parts[i].distributor_price) +"</td>";
-    		rows += "</tr>";
-    	}
-
-    	$('#results_table tr:last').after(rows);
-
-
-
-	/* 
-			< ? php 
-					setlocale(LC_MONETARY, 'en_US.UTF-8');    // accounting.formatMoney(12345678)
-					$i = 0;
-					foreach( $data['parts'] as $p ) {   
-						echo "<tr id='res_$i'>";
-						echo "<td>". trim($p->part_number)   . "</td>";
-						echo "<td>". trim($p->manufacturer)  . "</td>";
-						echo "<td>". $p->supplier            . "</td>";
-						echo "<td>". number_format($p->total_qty_for_part)  . "</td>";
-
-						echo "<td>". money_format("%6.2n", trim($p->prices->p1_24)) . "</td>";
-						echo "<td>". money_format("%6.2n", trim($p->prices->p25_99)) . "</td>";
-						echo "<td>". money_format("%6.2n", trim($p->prices->p100_499)) . "</td>";
-						echo "<td>". money_format("%6.2n", trim($p->prices->p500_999)) . "</td>";
-						echo "<td>". money_format("%6.2n", trim($p->prices->over_1000)) . "</td>";
-						echo "<td>". money_format("%6.2n", trim($p->distributor_price)) . "</td>"; 
-						echo "</tr>";
-
-						$i++;
-					}
-					
-				?>
-					 -->
-
-*/
-
-
-
-
-/*
-
-part_number
-manufacturer
-supplier
-total_qty_for_part
-
-prices.over_1000: 11.39
-p1_24: 14.02
-p25_99: 13.01
-p100_499: 12.48
-p500_999: 11.99
-distributor_price
-
-*/
-
-    	// console.log( "part_number: "+a.parts[0].part_number );
-    	// console.log( "distributor_price: "+a.parts[0].distributor_price );
-    	// console.log( "price for 500-999: "+a.parts[0].prices.p500_999 ); 
-
-    	// $.each( a, function( index, value ) {
-    	// 	console.log('displayPartLookupResults() -  index=' + index + ", value=" + value );
-    	// 	console.log('...');
-    	// });
-
-
-
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-    function continueQuote( quote_no ) {
-    	$('#header_PageTitle').html('Quote No. '+quote_no);
-    	$('#heading_container').hide();
-    	$('#selection_container').hide();
-    	$('#div_ContinueReset').hide();
-    	$('#section_PartsLookup').show();
-
-
-
-
-
-
-
-
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    function formValidated() {
-    	return true;
-
-
-
-
-
-
-
-
-
-    	if ( $('#Customer_id').val() && $('#Contact_id').val() && $('#Quote_source_id').val()  > 0  ) {
-    		return true;
-    	}
-    	return false;
-    }
-
-    function getAbsolutePath() {
-        var loc = window.location;
-        var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf('/') + 1);
-        return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
-    }
-
-    function display_Customer(data) {
- 		var o = JSON.parse(data);    
-        $.each( o, function( k, v ) {
-        	 console.log("Customer_: k=["+k+"], v=["+v+"]");
-           	$('#Customer_'+k).html( v );
-            $('#Customer_'+k).val( v );
-        });
-    }
-
-    function display_Contact(data) {
-    	var o = JSON.parse(data);    
-        $.each( o, function( k, v ) {
-        	 console.log("Contact_: k=["+k+"], v=["+v+"]");
-           	$('#Contact_'+k).html( v );
-            $('#Contact_'+k).val( v );
-        });
-    }
-
-    function display_CustomerSelect( data ) {	// ok
-    	$('#Customer_select').empty();
-    	$('#Customer_select').append( $('<option></option>' ).val(0).html('') );;
-
-    	var o = JSON.parse(data); 
-    	$.each( o, function(k,v) {
-            $('#Customer_select').append( $('<option></option>' ).val(v.id).html(v.label) );
-            console.log("display_CustomerSelect() - id=["+ v.id + "], label=[" + v.label + "]");
-        });
-
-    	$('#heading_container').show();
-    	$('#span_SelectCustomer').show();
-    	$('#span_SelectContact').hide();  
-    }
-
- 	function display_ContactSelect( data ) {	// ok
- 		$('#Contact_select').empty();
- 		$('#Contact_select').append( $('<option></option>' ).val(0).html('') );
-
- 		var o = JSON.parse(data); 
-    	$.each( o, function(k,v) {
-            $('#Contact_select').append( $('<option></option>' ).val(v.id).html(v.label) );
-            console.log("display_ContactSelect() - id=["+ v.id + "], label=[" + v.label + "]");
-        });
-
-    	$('#heading_container').show();
-    	$('#span_SelectCustomer').hide();
-    	$('#span_SelectContact').show(); 
-    }
-
     $(function() {  // Search for either Customer or Contact using typeahead, autocompletion 
         $( "#search_typeahead" ).autocomplete({
             source: searchURL,
@@ -378,6 +200,107 @@ distributor_price
             }
         });
     });
+
+    function displayPartLookupResults(res) {
+    	var a          = JSON.parse(res);
+    	var partsCount = a.parts.length; 
+
+    	if ( partsCount == 0 ) {
+    		alert('Part not found; \n\nWant to create a Manufacturing Quote?');
+    	}
+
+  		ResultsTable.destroy();
+
+    	$('#results_table tbody').empty();
+    	var rows       = '';
+    	for( var i=0; i<partsCount; i++ ) {
+    		rows += "<tr>";
+    		rows += "<td>"+ ( a.parts[i].part_number ? a.parts[i].part_number : 'n/a' )+"</td>";
+    		rows += "<td>"+ ( a.parts[i].manufacturer ? a.parts[i].manufacturer : 'n/a' )+"</td>";
+    		rows += "<td>"+ ( a.parts[i].supplier ? a.parts[i].supplier : 'n/a' )+"</td>";
+	   		rows += "<td>"+ ( a.parts[i].se_data.Lifecycle ? a.parts[i].se_data.Lifecycle : 'n/a' )+"</td>";
+    		rows += "<td>"+ ( a.parts[i].drawing ? a.parts[i].drawing : 'n/a' )+"</td>";
+    		rows += "<td>"+ ( a.parts[i].carrier_type ? a.parts[i].carrier_type : 'n/a' )+"</td>";
+    		rows += "<td>"+ ( a.parts[i].mpq ? a.parts[i].mpq : 'n/a' )+"</td>";
+    		rows += "<td>"+ ( a.parts[i].total_qty_for_part ? a.parts[i].total_qty_for_part : 'n/a' )+"</td>";
+    		rows += "</tr>";
+    	}
+
+    	$('#results_table thead').after('<tbody>'+rows+'</tbody>');
+    	ResultsTable = $('#results_table').DataTable({"iDisplayLength": 10 });
+    }
+
+    function continueQuote( quote_no ) {
+    	$('#header_PageTitle').html('Quote No. '+quote_no);
+    	$('#heading_container').hide();
+    	$('#selection_container').hide();
+    	$('#div_ContinueReset').hide();
+    	$('#section_PartsLookup').show();
+
+		$('#section_CustomerContact > div.quote_section_heading > span.open_close').show()
+		$('#section_PartsLookup > div.quote_section_heading > span.open_close').show()
+    }
+
+    function formValidated() {
+    	if ( $('#Customer_id').val() && $('#Contact_id').val() && $('#Quote_source_id').val()  > 0  ) {
+    		return true;
+    	}
+    	return false;
+    }
+
+    function getAbsolutePath() {
+        var loc = window.location;
+        var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf('/') + 1);
+        return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
+    }
+
+    function display_Customer(data) {
+ 		var o = JSON.parse(data);    
+        $.each( o, function( k, v ) {
+        	 // console.log("Customer_: k=["+k+"], v=["+v+"]");
+           	$('#Customer_'+k).html( v );
+            $('#Customer_'+k).val( v );
+        });
+    }
+
+    function display_Contact(data) {
+    	var o = JSON.parse(data);    
+        $.each( o, function( k, v ) {
+        	 // console.log("Contact_: k=["+k+"], v=["+v+"]");
+           	$('#Contact_'+k).html( v );
+            $('#Contact_'+k).val( v );
+        });
+    }
+
+    function display_CustomerSelect( data ) {	// ok
+    	$('#Customer_select').empty();
+    	$('#Customer_select').append( $('<option></option>' ).val(0).html('') );;
+
+    	var o = JSON.parse(data); 
+    	$.each( o, function(k,v) {
+            $('#Customer_select').append( $('<option></option>' ).val(v.id).html(v.label) );
+            // console.log("display_CustomerSelect() - id=["+ v.id + "], label=[" + v.label + "]");
+        });
+
+    	$('#heading_container').show();
+    	$('#span_SelectCustomer').show();
+    	$('#span_SelectContact').hide();  
+    }
+
+ 	function display_ContactSelect( data ) {	// ok
+ 		$('#Contact_select').empty();
+ 		$('#Contact_select').append( $('<option></option>' ).val(0).html('') );
+
+ 		var o = JSON.parse(data); 
+    	$.each( o, function(k,v) {
+            $('#Contact_select').append( $('<option></option>' ).val(v.id).html(v.label) );
+            // console.log("display_ContactSelect() - id=["+ v.id + "], label=[" + v.label + "]");
+        });
+
+    	$('#heading_container').show();
+    	$('#span_SelectCustomer').hide();
+    	$('#span_SelectContact').show(); 
+    }
 
 	function getThisID( that ) {
         return /\d+$/.exec( $(that).attr('id') );

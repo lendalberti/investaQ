@@ -16,7 +16,6 @@
  * @property string $expiration_date
  * @property integer $level_id
  * @property integer $source_id
- * @property integer $lead_quality_id
  * @property string $additional_notes
  * @property string $terms_conditions
  * @property string $customer_acknowledgment
@@ -59,7 +58,6 @@
  * @property ProcessFlow $processFlow
  * @property Testing $testing
  * @property Priority $priority
- * @property LeadQuality $leadQuality
  * @property StockItems[] $stockItems
  */
 class Quotes extends CActiveRecord
@@ -91,12 +89,12 @@ class Quotes extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('quote_no, quote_type_id, status_id, owner_id, customer_id, contact_id, created_date, updated_date, expiration_date, source_id', 'required'),
-			array('quote_type_id, status_id, owner_id, customer_id, contact_id, level_id, source_id, lead_quality_id, lost_reason_id, no_bid_reason_id, ready_to_order, quantity1, quantity2, quantity3, die_manufacturer_id, package_type_id, lead_count, process_flow_id, testing_id, priority_id, ncnr, itar, have_die, spa', 'numerical', 'integerOnly'=>true),
+			array('quote_type_id, status_id, owner_id, customer_id, contact_id, level_id, source_id, lost_reason_id, no_bid_reason_id, ready_to_order, quantity1, quantity2, quantity3, die_manufacturer_id, package_type_id, lead_count, process_flow_id, testing_id, priority_id, ncnr, itar, have_die, spa', 'numerical', 'integerOnly'=>true),
 			array('quote_no, requested_part_number, generic_part_number, temp_low, temp_high', 'length', 'max'=>45),
 			array('additional_notes, terms_conditions, customer_acknowledgment, risl, manufacturing_lead_time', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, quote_no, quote_type_id, status_id, owner_id, customer_id, contact_id, created_date, updated_date, expiration_date, level_id, source_id, lead_quality_id, additional_notes, terms_conditions, customer_acknowledgment, risl, manufacturing_lead_time, lost_reason_id, no_bid_reason_id, ready_to_order, requested_part_number, generic_part_number, quantity1, quantity2, quantity3, die_manufacturer_id, package_type_id, lead_count, process_flow_id, testing_id, priority_id, temp_low, temp_high, ncnr, itar, have_die, spa', 'safe', 'on'=>'search'),
+			array('id, quote_no, quote_type_id, status_id, owner_id, customer_id, contact_id, created_date, updated_date, expiration_date, level_id, source_id, additional_notes, terms_conditions, customer_acknowledgment, risl, manufacturing_lead_time, lost_reason_id, no_bid_reason_id, ready_to_order, requested_part_number, generic_part_number, quantity1, quantity2, quantity3, die_manufacturer_id, package_type_id, lead_count, process_flow_id, testing_id, priority_id, temp_low, temp_high, ncnr, itar, have_die, spa', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -111,6 +109,7 @@ class Quotes extends CActiveRecord
 			'attachments' => array(self::HAS_MANY, 'Attachments', 'quote_id'),
 			'btoApprovals' => array(self::HAS_MANY, 'BtoApprovals', 'quote_id'),
 			'customer' => array(self::BELONGS_TO, 'Customers', 'customer_id'),
+			'contact' => array(self::BELONGS_TO, 'Users', 'contact_id'),
 			'owner' => array(self::BELONGS_TO, 'Users', 'owner_id'),
 			'status' => array(self::BELONGS_TO, 'Status', 'status_id'),
 			'lostReason' => array(self::BELONGS_TO, 'LostReasons', 'lost_reason_id'),
@@ -123,7 +122,6 @@ class Quotes extends CActiveRecord
 			'processFlow' => array(self::BELONGS_TO, 'ProcessFlow', 'process_flow_id'),
 			'testing' => array(self::BELONGS_TO, 'Testing', 'testing_id'),
 			'priority' => array(self::BELONGS_TO, 'Priority', 'priority_id'),
-			'leadQuality' => array(self::BELONGS_TO, 'LeadQuality', 'lead_quality_id'),
 			'stockItems' => array(self::HAS_MANY, 'StockItems', 'quote_id'),
 		);
 	}
@@ -146,7 +144,6 @@ class Quotes extends CActiveRecord
 			'expiration_date' => 'Expiration Date',
 			'level_id' => 'Level',
 			'source_id' => 'Source',
-			'lead_quality_id' => 'Lead Quality',
 			'additional_notes' => 'Additional Notes',
 			'terms_conditions' => 'Terms Conditions',
 			'customer_acknowledgment' => 'Customer Acknowledgment',
@@ -198,7 +195,6 @@ class Quotes extends CActiveRecord
 		$criteria->compare('expiration_date',$this->expiration_date,true);
 		$criteria->compare('level_id',$this->level_id);
 		$criteria->compare('source_id',$this->source_id);
-		$criteria->compare('lead_quality_id',$this->lead_quality_id);
 		$criteria->compare('additional_notes',$this->additional_notes,true);
 		$criteria->compare('terms_conditions',$this->terms_conditions,true);
 		$criteria->compare('customer_acknowledgment',$this->customer_acknowledgment,true);

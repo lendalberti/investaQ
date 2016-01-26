@@ -325,6 +325,18 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `iq2`.`lead_quality`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `iq2`.`lead_quality` ;
+
+CREATE  TABLE IF NOT EXISTS `iq2`.`lead_quality` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(45) NOT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `iq2`.`quotes`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `iq2`.`quotes` ;
@@ -342,6 +354,7 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`quotes` (
   `expiration_date` DATETIME NOT NULL ,
   `level_id` INT NOT NULL DEFAULT 1 ,
   `source_id` INT NOT NULL ,
+  `lead_quality_id` INT NULL ,
   `additional_notes` TEXT NULL ,
   `terms_conditions` TEXT NULL ,
   `customer_acknowledgment` TEXT NULL ,
@@ -383,6 +396,7 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`quotes` (
   INDEX `fk_quotes_11_idx` (`process_flow_id` ASC) ,
   INDEX `fk_quotes_12_idx` (`testing_id` ASC) ,
   INDEX `fk_quotes_13_idx` (`priority_id` ASC) ,
+  INDEX `fk_quotes_14_idx` (`lead_quality_id` ASC) ,
   CONSTRAINT `fk_quotes_2`
     FOREIGN KEY (`customer_id` )
     REFERENCES `iq2`.`customers` (`id` )
@@ -446,6 +460,11 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`quotes` (
   CONSTRAINT `fk_quotes_13`
     FOREIGN KEY (`priority_id` )
     REFERENCES `iq2`.`priority` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_quotes_14`
+    FOREIGN KEY (`lead_quality_id` )
+    REFERENCES `iq2`.`lead_quality` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -551,6 +570,7 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`customer_contacts` (
   INDEX `fk_customer_contact_2_idx` (`contact_id` ASC) ,
   PRIMARY KEY (`id`) ,
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
+  UNIQUE INDEX `customer_contact_UNIQUE` (`customer_id` ASC, `contact_id` ASC) ,
   CONSTRAINT `fk_customer_contact_1`
     FOREIGN KEY (`customer_id` )
     REFERENCES `iq2`.`customers` (`id` )

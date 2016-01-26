@@ -41,6 +41,8 @@ class PartsController extends Controller {
 			$url        = 'http://mongoa/parts/*/500/?q='.$item;	  // mongoa for my local use
 
 			$tmp        = file_get_contents($url);
+			pDebug('PartsController::actionSearch() - mongo data: ', $tmp);
+
 			echo $tmp;
 
 			// $mongo_data = json_decode($tmp);  // from json to array
