@@ -125,4 +125,11 @@ class Contacts extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+	
+
+	public function getFullname()  {
+	    return $this->first_name.' '.$this->last_name;
+	}
+
 }

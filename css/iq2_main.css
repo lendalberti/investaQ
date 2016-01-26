@@ -288,7 +288,7 @@ div.form {
 	padding-bottom: 5px;
 }
 
-
+/*  row striping */
 #results_table > tbody > tr:nth-child(odd)  {
    background: #E6E6E6;
 }

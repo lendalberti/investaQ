@@ -111,6 +111,7 @@ class Quotes extends CActiveRecord
 			'attachments' => array(self::HAS_MANY, 'Attachments', 'quote_id'),
 			'btoApprovals' => array(self::HAS_MANY, 'BtoApprovals', 'quote_id'),
 			'customer' => array(self::BELONGS_TO, 'Customers', 'customer_id'),
+			'contact' => array(self::BELONGS_TO, 'Contacts', 'contact_id'),
 			'owner' => array(self::BELONGS_TO, 'Users', 'owner_id'),
 			'status' => array(self::BELONGS_TO, 'Status', 'status_id'),
 			'lostReason' => array(self::BELONGS_TO, 'LostReasons', 'lost_reason_id'),
