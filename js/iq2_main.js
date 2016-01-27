@@ -17,8 +17,6 @@ $(document).ready(function() {
 		close: function() { }
 	});
 
-             
-
     $('#reset_form').on('click', function() {
         location.reload();
     });
@@ -45,7 +43,7 @@ $(document).ready(function() {
 		            url: myURL + 'create',
 		            data: postData,
 		            success: function(quoteNo)  {
-		            	// console.log('quoteNo=['+quoteNo+']');
+		            	console.log('quoteNo=['+quoteNo+']');
 		            	continueQuote(quoteNo);
 		            }
 	        });
@@ -216,6 +214,20 @@ $(document).ready(function() {
 
 
 	function OLD_displayDialog_ViewPartDetails(p) {
+
+
+        // ******************************************************************************
+        // ******************************************************************************
+        // *********                                                             ********
+        // *********      Use this as template to be followed on the server      ********
+        // *********      side in PartsController::formatDialog()                ********
+        // *********      and return the formatted data in ajax call in          ********
+        // *********      openQuoteDialog()                                      ********
+        // *********                                                             ********
+        // ******************************************************************************
+        // ******************************************************************************
+
+
 		var hiddenTechNotes = '';
 		var spacingDiv      = "<div style='height: 20px; border: 0px solid lightblue;'></div>";
 		var techNotes       = 'n/a';
@@ -368,7 +380,7 @@ $(document).ready(function() {
 
 		dialog_ViewPartDetails.dialog("option", "buttons", buttons);
 		dialog_ViewPartDetails.dialog( "open" );
-	}
+	} // end_of_function OLD_displayDialog_ViewPartDetails
 
 
 
@@ -391,23 +403,19 @@ $(document).ready(function() {
 			  	// else {
 			  	// 	addToQuote(p,$('#myQuotesSelect option:selected').text());
 			  	// }
+                 dialog_PartPricing.dialog( "close" );  
 				return false;
 			},
 		}
 
 		dialog_PartPricing.dialog("option", "buttons", buttons);
 		dialog_PartPricing.dialog( "open" );
-
 	}
-
-
 
 
 	function displayPartDetails(that) {
 		var tmp = /^rowID_(.+)$/.exec( that[0].id);
 		var partNo = tmp[1];
-		alert('displaying Part Details for pn='+partNo );
-
 		$.ajax({
                 type: 'GET',
                 url: '../parts/search?item=' + partNo.trim().toUpperCase() + '&dialog=1',
