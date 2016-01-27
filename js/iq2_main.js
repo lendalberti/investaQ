@@ -134,18 +134,20 @@ $(document).ready(function() {
 		else {
 			$(this).html('+');
 		}
-		$('#section_CustomerContact > div.my_container').toggle();
+		$('#section_CustomerContact > div.my_container').fadeToggle(250);   // toggle();
    	})
 
-	$('#section_PartsLookup > div.quote_section_heading > span.open_close').on('click', function() {  // toggle Part Lookup section
-		if ( $(this).html() == '+') {
-			$(this).html('−'); 
-		}
-		else {
-			$(this).html('+');
-		}
-   		$('#section_PartsLookup > div.my_container').toggle();
-   	})
+    // not sure we need this...
+    //
+	// $('#section_PartsLookup > div.quote_section_heading > span.open_close').on('click', function() {  // toggle Part Lookup section
+	// 	if ( $(this).html() == '+') {
+	// 		$(this).html('−'); 
+	// 	}
+	// 	else {
+	// 		$(this).html('+');
+	// 	}
+    //   		$('#section_PartsLookup > div.my_container').fadeToggle(500);  // toggle();  // .fadeToggle(1000);
+    //   	})
 
   
 

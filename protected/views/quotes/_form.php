@@ -108,6 +108,7 @@ span.open_close:hover {
 
 #results_table > tbody > tr:hover {
 	background-color: lightyellow;
+	cursor: pointer;
 }
 
 #results_table > tbody > tr > td {
@@ -205,7 +206,7 @@ span.open_close:hover {
 	<div id='section_PartsLookup'>
 
 		<div class='quote_section_heading'>
-			<span class='open_close'>&minus;</span>
+			<!-- <span class='open_close'>&minus;</span> -->
 			<span style='padding-left: 350px;'>Inventory Parts Lookup</span>
 		</div>
 
