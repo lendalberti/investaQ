@@ -61,17 +61,25 @@ class PartsController extends Controller {
 
 
 	private function formatDialog( $data) {
-		$html = "this is a test... Part Details:<br />";
+		$html = "this is a test... Part Details:<br /> <span style='color: red;'>------------- </span><br />";
 
 		$m = json_decode($data);
+		$i = $m->parts[0];
 
-		$html .= $m->parts[0]->part_number . ", ";
-		$html .= $m->parts[0]->manufacturer . ", ";
-		$html .= $m->parts[0]->mpq . ", ";
-		$html .= $m->parts[0]->drawing . ", ";
-		$html .= $m->parts[0]->se_data->Lifecycle;
+		$html .= $i->part_number . ", ";
+		$html .= $i->manufacturer . ", ";
+		$html .= $i->manufacturer . ", ";
+		$html .= $i->drawing . ", ";
+		$html .= $i->se_data->Lifecycle . "<br /> <span style='color: red;'>------------- </span><br />";
 		
 
+		/*
+			parts[] - just one item, but may have multiple stock_codes, date_codes, se_data, etc
+
+			- use function OLD_displayDialog_ViewPartDetails(p) in iq2_main.js
+			  as a template for formatting this data into html
+
+		*/
 
 		pDebug('PartsController::formatDialog() - formatted mongo data=', $html );
 		return $html;
