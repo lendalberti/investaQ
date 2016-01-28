@@ -1,7 +1,20 @@
 
-+-----------------+
-|  Jan. 26, 2016  |
-+-----------------+
++---------------------+
+|  Wed Jan. 27, 2016  |
++---------------------+
+
+	[ ] add comments to pricing form
+
+
+
+
+
+
+
+
++---------------------+
+|  Tue Jan. 26, 2016  |
++---------------------+
 
 	[x] get sample mongo records from var_dump() and save into text file
 		so we can read it in in case network goes down

@@ -222,7 +222,7 @@ span.open_close:hover {
 						            </select>     
 				            
 				            	<input id="parts_Searchfield" class="parts_Searchfield" type="text"  />  
-						   	    <input id="parts_Searchbutton" class="parts_Searchbutton" type="button" value="Find" /><span>Test part: AD5555CRUZ</span>
+						   	    <input id="parts_Searchbutton" class="parts_Searchbutton" type="button" value="Find" /><span> Test part no. AD5555CRUZ</span>
 					   	    </td>
 				   	    </tr>
 				</table>

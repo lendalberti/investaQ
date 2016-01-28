@@ -28,7 +28,7 @@ class QuotesController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view','create','update', 'search'),
+				'actions'=>array('index','view','create','update', 'search', 'partsUpdate'),
 				'expression' => '$user->isLoggedIn'
 			),
 		
@@ -183,9 +183,9 @@ class QuotesController extends Controller
 			
 			pDebug("Quotes::actionCreate() - saving Quote with the following attributes", $modelQuotes->attributes );
 			if ( $modelQuotes->save() ) {
-				pDebug("Quotes::actionCreate() - Quote No. " . $modelQuotes->quote_no . " saved.");
+				pDebug("Quotes::actionCreate() - Quote No. " . $modelQuotes->quote_no . " saved; quote ID=" . $modelQuotes->id );
 				Customers::model()->addContact($customer_id,$contact_id);
-				echo $modelQuotes->quote_no;
+				echo $modelQuotes->id . '|' . $modelQuotes->quote_no;
 			}
 			else {
 				pDebug("actionCreate() - Error on modelQuotes->save(): ", $modelQuotes->errors);
@@ -216,8 +216,98 @@ class QuotesController extends Controller
 				'data'=>$data,
 			));
 		}
-		
 	}
+
+
+	public function actionPartsUpdate() 	{
+		pDebug("actionPartsUpdate() - _POST: ", $_POST);
+
+			// actionPartsUpdate() - _POST: 
+			// Array
+			// (
+			//     [quote_id] => 139
+			//     [part_no] => AD5555CRUZ
+			//     [qty_1_24] => 
+			//     [qty_25_99] => 
+			//     [qty_100_499] => 
+			//     [qty_500_999] => 500
+			//     [qty_1000_Plus] => 500
+			//     [qty_Base] => 
+			//     [qty_Custom] => 
+			//     [unitPrice_1_24] => 
+			//     [unitPrice_25_99] => 
+			//     [unitPrice_100_499] => 
+			//     [unitPrice_500_999] => 
+			//     [unitPrice_1000_Plus] => 
+			//     [unitPrice_Base] => 
+			//     [unitPrice_Custom] => 
+			//     [comments] => Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor  
+			// )
+
+					// [lensCentOS:iq2@iq2]
+							// mysql >> desc stock_items;
+							// +-----------------+-------------+------+-----+-------------------+-----------------------------+
+							// | Field           | Type        | Null | Key | Default           | Extra                       |
+							// +-----------------+-------------+------+-----+-------------------+-----------------------------+
+							// | id              | int(11)     | NO   | PRI | NULL              | auto_increment              |
+							// | quote_id        | int(11)     | NO   | MUL | NULL              |                             |
+							// | part_no         | varchar(45) | NO   |     | NULL              |                             |
+				// | manufacturer    | varchar(45) | YES  |     | NULL              |                             |
+				// | line_note       | text        | YES  |     | NULL              |                             |
+				// | date_code       | varchar(45) | YES  |     | NULL              |                             |
+							// | qty_1_24        | int(11)     | YES  |     | NULL              |                             |
+							// | qty_25_99       | int(11)     | YES  |     | NULL              |                             |
+							// | qty_100_499     | int(11)     | YES  |     | NULL              |                             |
+							// | qty_500_999     | int(11)     | YES  |     | NULL              |                             |
+							// | qty_1000_Plus   | int(11)     | YES  |     | NULL              |                             |
+							// | qty_Base        | int(11)     | YES  |     | NULL              |                             |
+							// | qty_Custom      | int(11)     | YES  |     | NULL              |                             |
+				// | qty_NoBid       | varchar(45) | YES  |     | NULL              |                             |
+				// | qty_Available   | int(11)     | YES  |     | NULL              |                             |
+							// | price_1_24      | double      | YES  |     | NULL              |                             |
+							// | price_25_99     | double      | YES  |     | NULL              |                             |
+							// | price_100_499   | double      | YES  |     | NULL              |                             |
+							// | price_500_999   | double      | YES  |     | NULL              |                             |
+							// | price_1000_Plus | double      | YES  |     | NULL              |                             |
+							// | price_Base      | double      | YES  |     | NULL              |                             |
+							// | price_Custom    | double      | YES  |     | NULL              |                             |
+				// | last_updated    | timestamp   | YES  |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
+							// | comments        | text        | YES  |     | NULL              |                             |
+							// +-----------------+-------------+------+-----+-------------------+-----------------------------+
+							// 24 rows in set (0.00 sec)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		echo json_encode('ok');
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -228,23 +318,23 @@ class QuotesController extends Controller
 	 * If update is successful, the browser will be redirected to the 'view' page.
 	 * @param integer $id the ID of the model to be updated
 	 */
-	public function actionUpdate($id)
-	{
-		$model=$this->loadModel($id);
+	public function actionUpdate($id) 	{
 
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
+		// $model = $this->loadModel($id);
+		// if(isset($_POST['Quotes']))  {
+		// 	$model->attributes=$_POST['Quotes'];
+		// 	if($model->save())
+		// 		$this->redirect(array('view','id'=>$model->id));
+		// }
+		// else if ( isset($_POST['Parts']) )  {  
+		//
+		//
+		// }
 
-		if(isset($_POST['Quotes']))
-		{
-			$model->attributes=$_POST['Quotes'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
-		}
+		// $this->render('update',array(
+		// 	'model'=>$model,
+		// ));
 
-		$this->render('update',array(
-			'model'=>$model,
-		));
 	}
 
 	/**

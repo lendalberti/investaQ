@@ -1,0 +1,1105 @@
+
+
+#iSearch_title {
+	width: 500px;
+	float: right;
+	text-align: right;
+	margin-top: 20px;
+	color: #a31128;
+	font-size: 28px;
+}
+
+table[id^='table_PartDetail_'] > tbody > tr > td:nth-child(1),
+table[id^='table_PartDetail_'] > tbody > tr > td:nth-child(3) {
+	text-align: right;
+   	font-weight: bold;
+   	padding-right: 10px;
+   	width: 40%;
+   	color: #212121;
+   	
+}
+
+table[id^='table_PartDetail_'] > tbody > tr > td > span.salesPrice {
+	color: green;
+	padding-right: 10px;
+}
+
+#bto_table,
+#results_table,
+#approvals_table {
+	padding-top: 10px;
+}
+
+
+#bto_table > tbody > tr > td {
+	text-align: center;
+	font-size: .8em;
+}
+
+#approvals_table > tbody > tr > td {
+	text-align: center;
+	font-size: .8em;
+}
+
+#sales_table {
+	width: 100%;
+}
+
+/*
+
+#bto_table > thead > tr > th,
+#sales_table > thead > tr > th,
+#quotes_table > thead > tr > th,
+#results_table > thead > tr > th,
+#approvals_table > thead > tr > th  {
+	background: #5E6E78;
+  	color: white;
+  	font-variant: small-caps;
+  	font-size: .9em;
+  	text-align: center;
+}*/
+
+#results_table > thead > tr#filterRow > th {   /* filter row...    */
+	background-color: white;
+}
+
+
+/* striping */
+#table_StockCodes > tbody > tr:nth-child(odd) {
+	background: lightyellow;
+}
+
+
+#content > div:nth-child(5) > table > tbody > tr:nth-child(odd) {
+	background: #FEF1E1;
+}
+
+#content > div:nth-child(5) > table > tbody > tr:hover {
+	background: #FEE0C6;
+}
+
+/*  row hover */
+#bto_table > tbody > tr:hover,
+#approvals_table > tbody > tr:hover,
+#sales_table > tbody > tr:hover,
+#quotes_table > tbody > tr:hover,
+#results_table > tbody > tr:hover {
+	 background: lightyellow;
+   cursor: pointer;
+
+}
+
+#sales_table > tbody > tr > td,
+#quotes_table > tbody > tr > td {
+	cursor: pointer;
+}
+
+
+
+.qty_history {
+	color: red;
+	font-size: .8em;
+}
+
+
+.odd {
+	background: lightyellow;
+}
+
+@media print
+{
+    .no-print { display: none; }
+    .print { display: block; }
+}
+
+#results_table_div {
+	border: 0px solid green;
+	display: table;
+	
+}
+
+
+table#results_table_div td, th {
+    white-space: normal; /* Only needed when it's set differntly somewhere else */
+    word-wrap: break-word;
+}
+
+div#working_out {
+    background-image: url('../images/stick_men_background.gif');
+    height: 300px;
+    border: 1px solid gray;
+    margin-top: 150px;
+}
+
+div#working_in {
+    position: absolute;
+    top: 30%;  /*300px*/;
+    left: 50%;  /*600px*/;
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+}
+
+
+table.items_table th {
+	background-color: lightgray;
+	margin-top: 20px;
+}
+
+/*************************************/
+
+#table_AddToQuote {
+	border: 1px solid gray;
+	margin-top: 20px;
+	text-align: left;
+}
+
+#table_AddToQuote tr {
+	border: 0px solid green;
+}
+
+#table_AddToQuote tr:nth-child(even){
+    background-color : lightyellow; 
+}
+
+
+#table_AddToQuote tr:hover {
+	background-color:#ededed;
+}
+
+#table_AddToQuote tr th {
+	border: 0px solid green;
+	background-color: lightblue;
+	font-size: .8em;
+	width: 200px;
+}
+
+#table_AddToQuote tr td:nth-child(1),
+#table_AddToQuote tr th:nth-child(1) {
+	text-align: center;
+	width: 200px;
+	
+}
+
+#table_AddToQuote tr td:nth-child(2),
+#table_AddToQuote tr th:nth-child(2) {
+	text-align: center;
+	width: 200px;
+}
+
+#table_AddToQuote tr td:nth-child(2),
+#table_AddToQuote tr th:nth-child(2) {
+	text-align: center;
+	width: 200px;
+}
+#table_AddToQuote tr td:nth-child(3),
+#table_AddToQuote tr th:nth-child(3) {
+	text-align: center;
+	width: 200px;
+}
+#table_AddToQuote tr td:nth-child(4),
+#table_AddToQuote tr th:nth-child(4) {
+	text-align: center;
+	width: 200px;
+}
+
+#partTotalLabel {
+	font-weight: bold;
+	font-size: 1.2em;
+	padding-left: 150px;
+}
+
+
+#partTotal {
+	font-weight: bold;
+	font-size: 1.2em
+	color: blue;
+}
+
+#quoteTotal {
+	font-weight: bold;
+}
+
+#content > div > table > tbody > tr > td.high { 
+	font-weight: bold;
+}
+
+
+#content > div > table > thead > tr > th,
+#content > div > table > tbody > tr > td {
+	text-align: center;
+}
+
+
+#content > div > table > tbody > tr > td > table > tbody > tr > td {
+	color: gray;
+	text-align: right;
+}
+
+#content > div > table > tbody > tr > td {
+	vertical-align: top;
+}
+
+
+#content > div:nth-child(5) > table:nth-child(1) > thead > tr > th:nth-child(8) {
+
+}
+
+
+img[id^='item_pdf_']:hover,
+img[id^='item_edit_']:hover,
+img[id^='item_delete_']:hover,
+img[id^='quote_']:hover {
+	border: 1px solid gray;
+	cursor: pointer;
+} 
+
+a[id^='quote_delete_'] {
+	color: red;
+	text-decoration: underline;
+}
+
+a[id^='quote_delete_']:hover {
+	text-decoration: underline;
+}
+
+img[id^='quote_'] {
+	padding: 5px;
+}
+
+#content > div > table > tbody > tr > td  > table > tbody > tr > td {
+	width: 100px;
+	text-align: right;
+	font-size: 1em;
+}
+
+#content > div > table > tbody > tr > td  > table > tbody > tr > td > span {
+	font-size: .7em;
+	padding-right: 5px;
+	color: green;
+}
+
+#price_Custom {
+	text-align: right;
+}
+
+[id^='qty_'] {
+	text-align: right;
+}
+
+
+#clear_select {
+	font-weight: normal;
+	font-variant: small-caps;
+	text-align: center;
+	color: red;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+
+#div_StockCodes {
+    height: 120px;
+    overflow-y: scroll;
+    border: 1px solid lightgray;
+}
+
+
+/* behave almost 'like' a fixed heading -- TODO: redesign */
+#table_fixedHeading > tbody > tr > th {
+	background-color: lightgray;
+	font-weight: bold;
+	text-align: center;
+	font-size: .8em;
+	width: 120px;
+}
+#table_fixedHeading {
+	margin-bottom:0em;
+	width:100%;
+}
+#table_fixedHeading > tbody > tr > th:nth-child(4) {
+	width: 30px;
+}
+
+
+#table_FixedHeading_StockCodes thead tr {
+    display:block;
+}
+
+
+#table_FixedHeading_StockCodes th,table td {
+    /*width:100px;*/
+}
+
+
+#table_FixedHeading_StockCodes  tbody {
+  display:block;
+  height:200px;
+  overflow:auto;  
+}
+
+
+
+
+
+#table_StockCodes {
+	border: 1px solid lightgray;
+	font-weight: normal;
+}
+
+#table_StockCodes > tbody > tr > th { 
+	border: 1px solid lightgray;            
+	background-color: lightgray;
+	font-weight: bold;
+	text-align: center;
+	font-size: .8em;
+}
+
+#table_StockCodes  > tbody > tr > td {   
+	border: 0px solid lightgray;     
+	text-align: center;
+	width: 120px;
+	font-size: .8em;
+}   
+
+#table_StockCodes  > tbody > tr > td.row_selected {     /*  checkmark: -✔-✔-✔-✔-✔-✔-   */
+	width: 30px;
+	font-size: 1.3em;
+	color: red;
+}   
+
+#table_StockCodes > tbody > tr:hover {
+	background-color: #F1F1F1;
+}
+
+
+#table_Pricing {
+	border: 1px solid lightgray;
+	font-weight: normal;
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+
+#table_Pricing  > caption {
+	font-weight: bold;
+	background-color: white;
+	margin: 0;
+	padding: 0;
+}
+
+#table_Pricing > tbody > tr > th {             
+	background-color: lightgray;
+	font-weight: bold;
+	text-align: center;
+	font-size: .8em;
+}
+
+#table_Pricing  > tbody > tr > td {       
+	text-align: center;
+}   
+
+#table_Details {
+	border: 1px solid lightgray;
+	margin-top: 5px;
+}
+#table_Details > tbody > tr > td:nth-child(1) {
+	text-align: right;
+	width: 25%;
+	font-weight: bold;
+}
+
+#div_Pricing {
+	margin-top: 20px;
+}
+
+#div_Details {
+	margin-top: 20px;
+}
+
+#containerDiv {
+  position: relative;
+  height: 25px; 
+  border: 0px solid blue;
+  margin-top: 15px;
+}
+
+#leftDiv {
+   position: absolute;
+   top: 5px;
+   left: 5px;
+   border: 0px solid green;
+}
+
+#leftDiv > span {
+	font-weight: bold; 
+	font-size: 1.2em;'
+}
+
+#leftDiv > span:nth-child(2)  {
+	color: red;
+	font-size: 1.2em;
+}
+
+#rightDiv {
+   position: absolute;
+   top: 10px;
+   right: 5px;
+   border: 0px solid orange;
+}
+
+#rightDiv > span {
+	font-weight: bold; 
+	font-size: .9em;
+
+}
+
+#rightDiv > span:nth-child(2) {
+ 	font-size: .9em;
+ 	color: red;
+ 	font-weight: normal; 
+}
+
+
+.missingSEData {
+	color: lightgray;
+}
+
+.tbd {
+	color: #a31128;
+}
+.tn {
+	color: red;
+}
+
+#link_QuoteHistory {
+	padding-left: 20px;
+}
+
+#link_SalesHistory {
+	padding-left: 90px;
+}
+
+#link_DataSheet {
+	 padding-left: 100px; 
+}
+
+
+#link_QuoteHistory > a, 
+#link_SalesHistory > a, 
+#link_DataSheet > a {
+	color: #12749D;
+	cursor: pointer;
+	font-size: .9em;
+	font-weight: normal;
+}
+
+table#stats {
+	border: 0px solid red;
+}
+table#stats tr td {
+	font-size: .8em;
+}
+
+table#stats tr td:nth-child(odd){
+	font-weight: bold;
+	text-align: right;
+}
+
+
+#yw0 > table > tbody > tr > td > span.quote_approved,
+#approvals_table > tbody > tr > td > span.quote_approved {
+	width: 30px;
+	font-size: 1.5em;
+	color: green;
+}
+
+.small_caps {
+	font-variant: small-caps;
+	color: #a31128;
+	font-weight: bold;
+}
+.small_caps:hover {
+	cursor: pointer;
+}
+
+.small_caps_approver_purple{
+	font-variant: small-caps;
+	color: purple;
+	font-weight: bold;
+	text-align:middle;
+}
+
+.small_caps_approver_gray{
+	font-variant: small-caps;
+	color: gray;
+	font-weight: bold;
+	text-align:middle;
+}
+
+.small_caps_approver_blue {
+	font-variant: small-caps;
+	color: #104E8B;
+	font-weight: bold;
+	text-align:middle;
+}
+
+.small_caps_approver_green {
+	font-variant: small-caps;
+	color: green;
+	font-weight: bold;
+	text-align:middle;
+}
+
+.small_caps_approver_red {
+	font-variant: small-caps;
+	color: #a31128;
+	font-weight: bold;
+}
+
+.small_caps_approver_orange {
+	font-variant: small-caps;
+	color: #FF5E00;
+	font-weight: bold;
+	text-align:middle;
+}
+
+#create_customer_quote_div {
+	display: none; 
+	border: 1px solid lightgray; 
+	margin-top: 30px;
+	padding: 5px;
+}
+
+
+span.new_quote_control {
+	padding-left: 5px;
+	font-size: .8em; 
+	color: red;
+	text-decoration: underline;
+}
+
+span.new_quote_control:hover {
+	cursor: pointer;
+}
+
+table#update_approved_quote > tbody > tr > td:nth-child(1) {
+	text-align: right;
+   	font-weight: bold;
+   	padding-right: 10px;
+   	width: 30%;
+   	color: #212121;
+}
+
+#yw0 > table > tbody > tr > td.button-column {
+	width: 70px;
+	text-align: left;
+	padding-left: 20px;
+}
+
+#yw0 > table > tbody > tr > td.button-column > a {
+	padding: 0px 0px 0px 5px;
+}
+
+
+.update_button {
+	font-size: 1.3em;
+	font-weight: bold;
+}
+
+.cancel_link {
+	color: red;
+}
+
+
+#selected_customers > span,
+#selected_contacts > span,
+#currentlyAttached > span {
+	font-variant: small-caps;
+	font-weight: bold;
+	color: #06c;
+}
+
+#currentlyAttached > li {
+	margin-left:50px;
+}
+
+
+
+#selected_customers >  li,
+#selected_contacts > li {
+	margin-left: 30px;
+}
+
+#contacts-form > div > li:hover,
+#selected_customers > li:hover,
+#selected_contacts > li:hover,
+#currentlyAttached > li:hover {
+	cursor: pointer;
+	color: red;
+	text-decoration: underline;
+}
+
+
+
+#view_selected_customers > span {
+	font-variant: small-caps;
+	font-weight: bold;
+	font-size: 1.2em;
+	color: #555555;
+	margin-left: 80px;
+	text-decoration: underline;
+}
+
+#view_selected_customers  >  li {
+	margin-left: 120px;
+}
+
+
+#view_contacts > span,
+#view_attachments > span {
+	font-variant: small-caps;
+	font-weight: bold;
+	font-size: 1.2em;
+	color: #555555;
+	margin-left: 80px;
+	text-decoration: underline;
+}
+
+#view_contacts > li,
+#view_attachments > li {
+	margin-left: 120px;
+}
+
+span#remove_selected_customer,
+span#remove_selected_contact {
+	color: red;
+	font-size: .8em;
+	padding-left: 10px;
+	font-variant: normal;
+	font-weight: normal;
+}
+
+
+#create_new_quote {
+	color: red; 
+	font-size: .8em;
+	padding-left: 5px;
+}
+
+
+
+#customerQuoteSelect_div {
+	margin: 20px 0px 40px 0px;
+}
+
+#create_new_quote_form {
+	margin-bottom: 100px;
+}
+
+#new_quote_control_create {
+	font-size: 1.2em;
+	cursor: pointer;
+}
+
+a.edit_quote_cust {
+	color: red;
+	font-variant: small-caps;
+	margin-left: 20px;
+	padding: 2px;
+}
+
+#customers-grid, 
+#contacts-grid,
+#users-grid {
+	margin-top: 50px;
+}
+
+div#dashboard_div {
+	padding: 20px 20px 0px 20px; 
+	float: right; 
+	border: 0px solid orange;
+}
+
+#dashboard_table {
+	border: 1px solid lightblue;
+}
+
+#dashboard_table > caption {
+	text-align: center;
+	font-weight: bold;
+	font-variant: small-caps;
+	border: 1px solid lightblue;
+}
+
+#dashboard_table > tbody > tr > td {
+	font-size: .8em;
+	padding: 2px 4px 1px 2px;
+	color: gray;
+}
+
+#dashboard_table > tbody > tr > td:nth-child(1),
+#dashboard_table > tbody > tr > td:nth-child(3) {
+	text-align: right;
+	font-weight: bold;
+}
+
+#dashboard_table > tbody > tr > td:nth-child(2),
+#dashboard_table > tbody > tr > td:nth-child(4) {
+	text-align: center;
+	font-weight: normal;
+	color:#a31128;
+}
+
+	
+#content > div:nth-child(4) > div > img {
+	padding: 2px;
+}
+
+#content > div:nth-child(4) > div > img:hover {
+	border: 1px solid red;
+	cursor: pointer;
+}
+
+
+table.dataTable tbody th, table.dataTable tbody td {
+	text-align: center;
+}
+
+table.dataTable tfoot th, table.dataTable tfoot td {
+	text-align: center;
+}
+
+
+div#min_qty_search {
+	display: none;
+	padding: 5px 0px 0px 110px;
+}
+div#min_qty_search > span {
+	font-weight: bold
+}
+
+/*  display search at TOP of each column        */
+tfoot { 
+	display: table-header-group; 
+}
+
+#lifeCycle {
+	background-color: #8AFFE0;
+	color: black;
+	padding: 3px 5px 3px 5px;
+	border-radius: 10px;
+}
+
+
+#nobid {
+	display: none;
+	color: #06c;
+	padding: 20px;
+	font-size: .8em;
+}
+
+#nobid > span.nobid_text {
+	
+	font-size: .8em;
+	color: red;
+}
+
+
+#nobid_link {
+	font-size: 1em;
+	color: #06c;
+	font-variant: small-caps;
+	font-weight: bold;
+}
+
+#nobid_link:hover {
+	cursor: pointer;	
+	text-decoration: underline;
+
+}
+
+#nobid_table {
+	border: 0px solid red;
+	margin-top: 20px;
+}
+
+
+#nobid_table  > tbody > tr > td:nth-child(1),
+#nobid_table  > tbody > tr > td:nth-child(3) {
+	text-align: right;
+   	font-weight: bold;
+   	padding-right: 10px;
+   	width: 25%;
+   	color: #212121;
+}
+
+#addNoBidCustomer, #addNoBidContact {
+	font-size: .8em;
+	color: #06c;
+}
+
+/*#form_NoBidQuote > div > span {
+	font-weight: bold;
+}
+*/
+
+#nobid_item_table {
+	margin-top: 10px;
+}
+
+#customer_info_table,#contact_info_table {
+	display: none;
+}
+
+#part_info_table > tbody > tr > td:nth-child(1),
+#customer_info_table > tbody > tr > td:nth-child(odd),
+#contact_info_table > tbody > tr > td:nth-child(odd),
+#nobid_item_table > tbody > tr > td:nth-child(odd) {
+	text-align: right;
+	width: 25%;
+	font-size: .8em;
+}
+
+
+#customer_info_table > tbody > tr> td:nth-child(2),
+#contact_info_table > tbody > tr> td:nth-child(2) {
+	font-family: courier;
+	font-size: 1.1em;
+	font-weight: normal;
+}
+
+
+#form_NoBidQuote > div:nth-child(6) > span:nth-child(3),
+#form_NoBidQuote > div:nth-child(7) > span:nth-child(3) {
+	font-weight: normal;
+}
+
+
+#create_new_contact,
+#create_new_customer {
+	font-size: .8em;
+	font-weight: normal;
+	padding-left: 10px;
+	color: #06c;
+	text-decoration: underline;
+
+}
+
+#create_new_contact:hover,
+#create_new_customer:hover {
+	cursor: pointer;
+}
+
+
+.subheading_NoBidQuote {
+	font-variant: small-caps;
+	font-weight: bold;
+	color: #a31128;
+	font-size: 1.2em;
+}
+
+
+
+/* ************************************ */
+
+section.fixed {
+    position: relative;
+    border: 1px solid #000;
+    padding-top: 2px;
+    /*background: lightgray;*/
+}
+
+section.positioned {
+    position: absolute;
+    top:100px;
+    left:100px;
+    width:800px;
+    box-shadow: 0 0 15px #333;
+}
+
+.fixed_container {
+    overflow-y: auto;
+    height: 150px;
+}
+
+table#fixed {
+    border-spacing: 0;
+    /*width:100%;*/
+}
+
+
+table#fixed td, th {
+    background: #ddd;
+    color: #000;
+    /*padding: 10px 25px;*/
+}
+
+table#fixed th {
+    height: 0;
+    line-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    color: transparent;
+    border: none;
+    white-space: nowrap;
+}
+
+table#fixed th div{
+    position: absolute;
+    background: transparent;
+    color: #a31128;
+    padding: 9px 25px;
+    top: 0;
+    margin-left: -25px;
+    line-height: normal;
+    border-left: 1px solid #800;
+}
+
+table#fixed th:first-child div{
+    border: none;
+}
+
+.view_tech_notes {
+	color: red; 
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+
+#upload_div {
+	margin-top: 50px;	
+}
+
+span.bto {
+	font-family: small-caps;
+	font-weight: bold;
+	font-size: .8em;
+	color: #a31128;
+}
+
+img[id^=action] {
+	padding: 5px;
+}
+
+
+#yw0 > tbody > tr > td {
+	text-align: left;
+}
+
+span#edit_bto_quote,
+span#delete_bto_quote {
+	color: #06c;
+	text-decoration: underline;
+}
+
+
+span#edit_bto_quote:hover,
+span#delete_bto_quote:hover {
+	cursor: pointer;
+	color: #00BFFF;
+}
+
+span#delete_bto_quote {
+	padding-left: 10px;
+}
+
+span.bto_Pending {
+	text-align: left;
+	font-variant: small-caps;
+	font-weight: bold;
+	font-size: .9em;
+	color: red;
+}
+span.bto_Approved {
+	text-align: left;
+	font-variant: small-caps;
+	font-weight: bold;
+	font-size: .9em;
+	color: green;
+}
+
+#content > div:nth-child(5) > table > tbody > tr > td:nth-child(3) > span {
+	text-align: left;
+	font-variant: small-caps;
+	font-weight: bold;
+	font-size: .9em;
+}
+
+#content > div:nth-child(5) > table > tbody > tr > td {
+	text-align: left;
+	font-size: .9em;
+}
+
+span.ellipsis {
+  white-space: nowrap;
+  width: 100%;                
+  overflow: hidden;  /* "overflow" value must be different from "visible" */                
+  text-overflow: ellipsis;
+}
+
+
+span.bto_notes:hover {
+	text-decoration: underline;
+	color: #1485cc;
+	cursor: pointer;
+}
+
+img.bto_attachment {
+	margin-left: 10px;
+}
+
+img.bto_email:hover,
+img.bto_attachment:hover {
+	cursor: pointer;
+	border: 1px solid #1485cc;
+	height: 16px; 
+	width: 16px;
+	padding: 3px;
+	
+}
+
+span.full_bto_notes {
+	display: hidden;
+}
+
+#email_container {
+	width:100%;
+	height:auto;
+	padding:1%;
+}
+
+.email_container:hover {
+	cursor: pointer;
+	border: 1px solid #1485cc;
+	
+}
+
+.email_iconDetails {
+	 margin-left:2%;
+	float:left; 
+	padding: 3px;
+} 
+
+#quotes-form > div.row.buttons > input[type="submit"],
+#bto-form > div.row.buttons > input[type="submit"] {
+	font-size: 1.5em;
+}
+
+#form_SalesHistory,
+#form_QuoteHistory {
+	overflow: auto;
+}
+
+table#quotes_table,
+table#sales_table {
+    table-layout: auto;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#sales_table > tbody > tr > td:nth-child(10) > a,
+span[id^='view_invoice_'] {
+    color: #1485cc;
+    text-decoration: underline;
+}
+
