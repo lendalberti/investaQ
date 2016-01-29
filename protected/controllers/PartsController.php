@@ -64,8 +64,8 @@ class PartsController extends Controller {
 		$prices  = $p->parts[0]->prices;
 		$sc_Arr  = $p->parts[0]->stock_codes;
 
-		$css = '<style>' . file_get_contents('http://lenscentos/iq2/css/dialog.css') . '</style>';
-		$js = '<script>' . file_get_contents('http://lenscentos/iq2/js/dialog.js') . '</script>';
+		$css = '<style type="text/css">' . file_get_contents('http://localhost/iq2/css/dialog.css') . '</style>';
+		$js = '<script type="text/javascript">' . file_get_contents('http://localhost/iq2/js/dialog.js') . '</script>';
 
 		$se_data = $p->parts[0]->se_data; 
 
