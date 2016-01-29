@@ -2,7 +2,6 @@ $(document).ready(function() {
 
 	var qty_available_selected = $('#rightDiv > span:nth-child(2)').html();  
 
-
     // ----------------------------------------------------------------------------- Any Qty Input
 	$('input[id^=qty_]').focus(function() {}).blur(function() {
 		var elementID = this.id;
@@ -56,10 +55,19 @@ $(document).ready(function() {
 		$('input#price_Custom').val(toCurrency(cp));
 	});
 
+	function nothingToQuote() {
+		var total = 0;
+		$('input[id^=qty_]').each(function(k, v) { 
+		//$('input[id^=subTotal_]').each(function(k, v) { 
+			total += +$(this).val();
+		});
+		return total===0 ? true : false;
+    }
+
 
 	function checkCustomPrice(cp) {
 		var buttonText = '';
-		var f = $( "#form_PartPricing" );
+		var form_PartPricing = $( "#form_PartPricing" );
 		var msg = '';
 		var quoteID = $('#form_QuoteID').val();
 
@@ -82,12 +90,12 @@ $(document).ready(function() {
 			// - clear hidden variable on form 'approvalNeeded'
 		}
 
-		f.dialog({
+		form_PartPricing.dialog({
 			buttons :  [{
 							text: "Cancel",
 							id: "button_Cancel",
 							click: function(){
-								f.dialog( "close" );  
+								form_PartPricing.dialog( "close" );  
 			 					return false; 
 							}
 						}, 
@@ -106,7 +114,10 @@ $(document).ready(function() {
 									part_no: 			$('#part_no').text(),
 									approval_needed: 	approvalNeeded,
 
-									qty_1_24: 			$('#qty_1_24').val(),
+									manufacturer: 		$('#manufacturer').val(),	
+									qty_Available:      $('#total_qty_for_part').val(),
+
+									qty_1_24: 			$('#qty_1_24').val(),		// val == inputs
 									qty_25_99: 			$('#qty_25_99').val(),
 									qty_100_499: 		$('#qty_100_499').val(),
 									qty_500_999: 		$('#qty_500_999').val(),
@@ -114,18 +125,19 @@ $(document).ready(function() {
 									qty_Base: 			$('#qty_Base').val(),
 									qty_Custom: 		$('#qty_Custom').val(),	
 
-									price_1_24: 		$('#price_1_24').val(),		
-									price_25_99: 		$('#price_25_99').val(),	
-									price_100_499: 		$('#price_100_499').val(),		
-									price_500_999: 		$('#price_500_999').val(),		
-									price_1000_Plus: 	$('#price_1000_Plus').val(),			
-									price_Base: 		$('#price_Base').val(),		
+									price_1_24: 		$('#price_1_24').text().replace('$', ''),		// text == spans
+									price_25_99: 		$('#price_25_99').text().replace('$', ''),	
+									price_100_499: 		$('#price_100_499').text().replace('$', ''),
+									price_500_999: 		$('#price_500_999').text().replace('$', ''),		
+									price_1000_Plus: 	$('#price_1000_Plus').text().replace('$', ''),			
+									price_Base: 		$('#price_Base').text().replace('$', ''),	
+
 									price_Custom: 		$('#price_Custom').val(),		
-									comments: 			$('#comments').val()		
+									comments: 			$('#comments').val()
 								};
 
+								// dialog.js
 								$.ajax({
-										//url: '../quotes/partsUpdate/' + $('#form_QuoteID').val(),
 										url: '../quotes/partsUpdate',
 										type: 'POST',
 										data: info, 
@@ -133,23 +145,19 @@ $(document).ready(function() {
 									  	success: function(data, textStatus, jqXHR) {
 									  		console.log("AJAX Post: Success!");
 									  		alert("Your Customer Quote has been updated.");
-									  		//window.location.replace("../quotes/" + quoteID );
 									  	},
 									  	error: function (jqXHR, textStatus, errorThrown)  {
 									  		console.log("AJAX Post: FAIL! error:"+errorThrown);
-									  		alert("Your Customer Quote could NOT be updated.");
+									  		alert("Your Customer Quote could NOT be updated - see Admin");
 									  	} 
 								});
 
-				             	console.log('Data to post:\n', info);
-
-								f.dialog( "close" );  
+								form_PartPricing.dialog( "close" );  
 								return false;
 							}
 						} ]
 		});	
 	}
-
 
 	// ------------------------------------------------------------- sub total 
 	function getSubTotal(pr,q) {
@@ -167,8 +175,10 @@ $(document).ready(function() {
 		var max = qty_available_selected.replace(',','');
 		var total = 0;
 		$('input[id^=qty_]').each(function(k, v) {
-			total += +$(this).val();
+			console.log("adding value: ["+$(this).val()+"]");
+			total += +$(this).val(); // plus sign in front of $(this).val() is needed (make it a number)
 		});
+		console.log("total=["+total+"], max=["+max+"]");
 		return total>max ? true : false;
 	}
 

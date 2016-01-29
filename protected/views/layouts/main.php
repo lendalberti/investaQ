@@ -74,10 +74,11 @@
 
 			if ( Yii::app()->user->isLoggedIn ) {
 				$menuItems = array();
-				$menuItems[] = array('label'=>'Home', 'url'=>array('/site/index') );
+				// $menuItems[] = array('label'=>'Home', 'url'=>array('/site/index') );
+				$menuItems[] = array('label'=>'Home', 'url'=>array('/quotes/index') );
 
-				$menuItems[] = array('label'=>'My Quotes', 'url'=>array('/quotes/index') ); 
-				$menuItems[] = array('label'=>'Movements ', 'url'=>array('/PriceBook/movements') );
+				//$menuItems[] = array('label'=>'My Quotes', 'url'=>array('/quotes/index') ); 
+				// $menuItems[] = array('label'=>'Movements ', 'url'=>array('/PriceBook/movements') );
 				$menuItems[] = array('label'=>'Customers ', 'url'=>array('/Customers') );
 				$menuItems[] = array('label'=>'Contacts ', 'url'=>array('/Contacts') );
 				$menuItems[] = array('label'=>'My Profile', 'url'=>array('/quotes/index/stock') ); 
@@ -116,6 +117,20 @@
 
 
 	</div>  <!--  mainmenu -->
+
+	<?php
+		if ( Yii::app()->user->isLoggedIn ) { ?>
+			<div id='dashboard_div'>
+				<table id='dashboard_table' style='border: 1px solid lightblue;'><caption>My Quotes Board</caption>
+					<tr>	<td>Pending</td>       <td><?php echo getMyQuoteCount(Status::WAITING_APPROVAL); ?></td>          <td>Ready</td>   	   <td><?php echo getMyQuoteCount(Status::READY); ?></td>   </tr>  
+					<tr>	<td>Order Placed</td>  <td><?php echo getMyQuoteCount(Status::ORDER_PLACED); ?></td>              <td>Draft</td>       <td><?php echo getMyQuoteCount(Status::DRAFT); ?></td>   </tr>  
+					<tr>	<td>Submitted</td>     <td><?php echo getMyQuoteCount(Status::SUBMITTED_CUSTOMER); ?></td>        <td>Won</td>         <td><?php echo getMyQuoteCount(Status::WON); ?></td>     </tr> 
+					<tr>	<td>BTO Pending</td>   <td><?php echo getMyQuoteCount(Status::SUBMITTED_CUSTOMER); ?></td>        <td>Lost</td>        <td><?php echo getMyQuoteCount(Status::LOST); ?></td>    </tr>
+					<tr>	<td>BTO Ready</td>   <td><?php echo getMyQuoteCount(Status::SUBMITTED_CUSTOMER); ?></td>          <td>NoBid</td>       <td><?php echo getMyQuoteCount(Status::NO_BID); ?></td>  </tr>
+				</table>
+			</div>
+	<?php } ?>
+		
 
 	
 	<?php echo $content; ?>

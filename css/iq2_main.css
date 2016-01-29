@@ -58,10 +58,12 @@ div#dashboard_div {
 	padding: 20px 20px 0px 20px; 
 	float: left; 
 	border: 0px solid orange;
+	float: right;
 }
 
 #dashboard_table {
 	border: 1px solid lightblue;
+
 }
 
 #dashboard_table > caption {
@@ -400,4 +402,71 @@ span[id^="Customer_"] {
     padding-left: 5px;
     padding-right: 5px;
 }
+
+#yw0 > tbody > tr > th {
+	background-color: lightgray;
+	color: black;
+}
+
+
+#view_contacts > span, 
+#view_attachments > span {
+    font-variant: small-caps;
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #555555;
+    margin-left: 80px;
+    text-decoration: underline;
+}
+
+#view_contacts > li, #view_attachments > li {
+    margin-left: 120px;
+}
+
+
+a.edit_quote_cust {
+    color: red;
+    font-variant: small-caps;
+    margin-left: 20px;
+    padding: 2px;
+}
+
+
+
+table.items_table th {
+	background-color: lightgray;
+	margin-top: 20px;
+}
+
+#content > table.items_table > tbody:nth-child(3) > tr > td:nth-child(6) > table > tbody > tr > td:nth-child(2) > span  {
+    font-size: .7em;
+    padding-right: 5px;
+    color: green;
+}
+
+
+#table_quote_pricing {
+     margin-bottom: 0; 
+    width: 100%;
+}
+
+table#fixed td, th {
+	color: black;
+}
+
+
+img[id^='item_pdf_']:hover,
+img[id^='item_edit_']:hover,
+img[id^='item_delete_']:hover,
+img[id^='quote_']:hover {
+	border: 1px solid gray;
+	cursor: pointer;
+} 
+
+
+
+
+
+
+
 

@@ -115,6 +115,9 @@ span.open_close:hover {
 	text-align: center;
 }
 
+#section_CustomerContact {
+    margin-top: 50px;
+}
 
 </style>
 

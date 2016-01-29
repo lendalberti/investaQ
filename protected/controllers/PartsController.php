@@ -31,10 +31,11 @@ class PartsController extends Controller {
 			$url        = 'http://mongoa/parts/*/500/?q='.$item;	  // mongoa for my local use
 
 			$tmp        = file_get_contents($url);
+			pDebug("Found item: ", $tmp);
+
 			echo ( isset($_GET['dialog']) ?  $this->formatDialog($tmp) : $tmp );
 
 			/*
-
 				In the event that http://mongoa is not available, use the files in Docs as a temp solution for testing purposes;
 
 						[iMac@Home] /Users/len/www/iq2/Docs (master) 
@@ -52,8 +53,10 @@ class PartsController extends Controller {
 				you can then access the data by: $m->parts[0]->part_number, $m->total_count, etc.
 
 			*/
-
 		}
+		pDebug("Parts::actionSearch() _GET: not set...");
+
+		
 	}
 
 	private function formatDialog($data) {
@@ -167,10 +170,20 @@ class PartsController extends Controller {
 		$pRows .= "<tr><td colspan='4' style='padding: 10px 0px 10px 0px; background-color: #EDECEB; color: #a31128; font-weight: bold;'>NOTE: <span style='padding: 20px 0px 20px 0px;color: #a31128; font-weight: normal;'>Approval is needed if custom price is less than <span id='min_custom_price' style='color: blue;'>$min_custom_price</span> <br /> (75% of Distributor Price) </span></td></tr>";
 		$pRows .= "<tr><td colspan='4'><textarea rows='4' cols='45' name='comments' id='comments' placeholder='Add comments...'></textarea></td></tr>";
 
+		$hiddenValues  = '';
+		$hiddenValues .= "<input type='hidden' name='manufacturer' id='manufacturer' value='".$p->parts[0]->manufacturer."'  >";
+		$hiddenValues .= "<input type='hidden' name='total_qty_for_part' id='total_qty_for_part' value='".$p->parts[0]->total_qty_for_part."'  >";
+		// $hiddenValues .= "<input type='hidden' name='xxx' id='xxx' value='".xxx."'  >";
+		// $hiddenValues .= "<input type='hidden' name='xxx' id='xxx' value='".xxx."'  >";
+		// $hiddenValues .= "<input type='hidden' name='xxx' id='xxx' value='".xxx."'  >";
+		// $hiddenValues .= "<input type='hidden' name='xxx' id='xxx' value='".xxx."'  >";
+		// $hiddenValues .= "<input type='hidden' name='xxx' id='xxx' value='".xxx."'  >";
+		// $hiddenValues .= "<input type='hidden' name='xxx' id='xxx' value='".xxx."'  >";
+		
 		$pricing_table = $tStart2  .  $pricingtHeader  .  $pRows  .  $tEnd ;
 
 		// --------------------------------------------- Last piece
-		$html = $js . $css . $tHeader . $tableStockCodes .  $spacingDiv . $tableDetails . $pricing_table; 
+		$html = $js . $css . $tHeader . $tableStockCodes .  $spacingDiv . $tableDetails . $hiddenValues . $pricing_table; 
 		return $html;
 	}
 

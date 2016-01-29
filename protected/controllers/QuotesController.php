@@ -69,11 +69,17 @@ class QuotesController extends Controller
 	
 	// --- 
 	public function actionView($id) {
-		$model = $this->loadModel($id);
-		pDebug('QuotesController::actionView() - quote attributes:', $model->attributes);
-		
+		$data['model'] = $this->loadModel($id);
+		pDebug('QuotesController::actionView() - quote attributes:', $data['model']->attributes);
+
+		$data['customerContacts'] = $this->getCustomerContacts($id);
+		pDebug('QuotesController::actionView() - customerContacts:', $data['customerContacts']);
+
+		// $data['quoteAttachments'] = $this->getQuoteAttachments($id);
+		// pDebug('QuotesController::actionView() - quoteAttachments:', $data['quoteAttachments']);
+
 		$this->render('view',array(
-			'model'=>$model,
+			'data'=>$data,
 		));
 
 		
@@ -92,9 +98,6 @@ class QuotesController extends Controller
 		// else if ( $model->quote_type_id == QuoteTypes::TBD ) {
 		// 	echo 'quote type tbd...';
 		// }
-
-
-
 	}
 
 
@@ -222,6 +225,29 @@ class QuotesController extends Controller
 	public function actionPartsUpdate() 	{
 		pDebug("actionPartsUpdate() - _POST: ", $_POST);
 
+		// TODO: error checking
+
+		// save into stock_items
+		$model = new StockItems;
+		$model->attributes = $_POST;
+		pDebug( "actionPartsUpdate() - saving StockItems model withthe following attributes: ", $model->attributes );
+		$model->save();
+		$modelQuote = Quotes::model()->findByPk( $_POST['quote_id'] );
+
+		// update Quote type
+		$modelQuote->quote_type_id = QuoteTypes::STOCK;
+		$modelQuote->save();
+
+		echo json_encode('');
+
+
+
+
+
+		// update quotes with type
+
+
+
 			// actionPartsUpdate() - _POST: 
 			// Array
 			// (
@@ -244,6 +270,21 @@ class QuotesController extends Controller
 			//     [comments] => Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor  
 			// )
 
+			//		manufacturer
+			//		qty_Available
+
+
+			// Quotes::quote_type_id = 'Stock'
+
+
+
+
+
+
+
+
+
+
 					// [lensCentOS:iq2@iq2]
 							// mysql >> desc stock_items;
 							// +-----------------+-------------+------+-----+-------------------+-----------------------------+
@@ -252,9 +293,9 @@ class QuotesController extends Controller
 							// | id              | int(11)     | NO   | PRI | NULL              | auto_increment              |
 							// | quote_id        | int(11)     | NO   | MUL | NULL              |                             |
 							// | part_no         | varchar(45) | NO   |     | NULL              |                             |
-				// | manufacturer    | varchar(45) | YES  |     | NULL              |                             |
-				// | line_note       | text        | YES  |     | NULL              |                             |
-				// | date_code       | varchar(45) | YES  |     | NULL              |                             |
+							// | manufacturer    | varchar(45) | YES  |     | NULL              |                             |
+							// | line_note       | text        | YES  |     | NULL              |                             |
+							// | date_code       | varchar(45) | YES  |     | NULL              |                             |
 							// | qty_1_24        | int(11)     | YES  |     | NULL              |                             |
 							// | qty_25_99       | int(11)     | YES  |     | NULL              |                             |
 							// | qty_100_499     | int(11)     | YES  |     | NULL              |                             |
@@ -262,8 +303,8 @@ class QuotesController extends Controller
 							// | qty_1000_Plus   | int(11)     | YES  |     | NULL              |                             |
 							// | qty_Base        | int(11)     | YES  |     | NULL              |                             |
 							// | qty_Custom      | int(11)     | YES  |     | NULL              |                             |
-				// | qty_NoBid       | varchar(45) | YES  |     | NULL              |                             |
-				// | qty_Available   | int(11)     | YES  |     | NULL              |                             |
+							// | qty_NoBid       | varchar(45) | YES  |     | NULL              |                             |
+							// | qty_Available   | int(11)     | YES  |     | NULL              |                             |
 							// | price_1_24      | double      | YES  |     | NULL              |                             |
 							// | price_25_99     | double      | YES  |     | NULL              |                             |
 							// | price_100_499   | double      | YES  |     | NULL              |                             |
@@ -271,11 +312,54 @@ class QuotesController extends Controller
 							// | price_1000_Plus | double      | YES  |     | NULL              |                             |
 							// | price_Base      | double      | YES  |     | NULL              |                             |
 							// | price_Custom    | double      | YES  |     | NULL              |                             |
-				// | last_updated    | timestamp   | YES  |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
+							// | last_updated    | timestamp   | YES  |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
 							// | comments        | text        | YES  |     | NULL              |                             |
 							// +-----------------+-------------+------+-----+-------------------+-----------------------------+
 							// 24 rows in set (0.00 sec)
 
+				// [lensCentOS:iq2@iq2]
+				// mysql >> desc quotes;
+				// +-------------------------
+				// | Field                   
+				// +-------------------------
+				// | id                      
+				// | quote_no                
+				// | quote_type_id           
+				// | status_id               
+				// | owner_id                
+				// | customer_id             
+				// | contact_id              
+				// | created_date            
+				// | updated_date            
+				// | expiration_date         
+				// | level_id                
+				// | source_id               
+				// | lead_quality_id         
+				// | additional_notes        
+				// | terms_conditions        
+				// | customer_acknowledgment 
+				// | risl                    
+				// | manufacturing_lead_time 
+				// | lost_reason_id          
+				// | no_bid_reason_id        
+				// | ready_to_order          
+				// | requested_part_number   
+				// | generic_part_number     
+				// | quantity1               
+				// | quantity2               
+				// | quantity3               
+				// | die_manufacturer_id     
+				// | package_type_id         
+				// | lead_count              
+				// | process_flow_id         
+				// | testing_id              
+				// | priority_id             
+				// | temp_low                
+				// | temp_high               
+				// | ncnr                    
+				// | itar                    
+				// | have_die                
+				// | spa                     
 
 
 
@@ -292,7 +376,7 @@ class QuotesController extends Controller
 
 
 
-		echo json_encode('ok');
+		
 	}
 
 
@@ -366,39 +450,39 @@ class QuotesController extends Controller
 		$navigation_links = '';
 		$page_title = "My Quotes";
 
-		if ( isset($_GET['stock']) ) {
-			$quote_type = Quotes::STOCK;
-			$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/mfg'> Manufacturing Quotes </a></span>";
-			$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/srf'> Supplier Request Form </a></span>";
-		}
-		else if ( isset($_GET['mfg']) ) {
-			$quote_type = Quotes::MANUFACTURING;
-			$page_title = "Manufacturing Quotes";
-			$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/stock'> Stock Quotes </a></span>";
-			$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/srf'> Supplier Request Form </a></span>";
-		}
-		else if ( isset($_GET['srf']) ) {
-			$quote_type = Quotes::SUPPLIER_REQUEST_FORM;
-			$page_title = "Supplier Request Form";
-			$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/stock'> Stock Quotes </a></span>";
-			$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/mfg'> Manufacturing Quotes </a></span>";
-		}
+		// if ( isset($_GET['stock']) ) {
+		// 	$quote_type = Quotes::STOCK;
+		// 	$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/mfg'> Manufacturing Quotes </a></span>";
+		// 	$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/srf'> Supplier Request Form </a></span>";
+		// }
+		// else if ( isset($_GET['mfg']) ) {
+		// 	$quote_type = Quotes::MANUFACTURING;
+		// 	$page_title = "Manufacturing Quotes";
+		// 	$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/stock'> Stock Quotes </a></span>";
+		// 	$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/srf'> Supplier Request Form </a></span>";
+		// }
+		// else if ( isset($_GET['srf']) ) {
+		// 	$quote_type = Quotes::SUPPLIER_REQUEST_FORM;
+		// 	$page_title = "Supplier Request Form";
+		// 	$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/stock'> Stock Quotes </a></span>";
+		// 	$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/mfg'> Manufacturing Quotes </a></span>";
+		// }
 		
 		$criteria = new CDbCriteria();
 		if ( !Yii::app()->user->isAdmin ) {
 			 $criteria->addCondition("owner_id = " . Yii::app()->user->id);
 		} 
 
-		if ( $quote_type ) {
-			$criteria->addCondition("quote_type_id = $quote_type");
-		}
+		// if ( $quote_type ) {
+		// 	$criteria->addCondition("quote_type_id = $quote_type");
+		// }
 
 		$model = Quotes::model()->findAll( $criteria );
 
 		$this->render( 'index', array(
 			'model' => $model,
 			'page_title' => $page_title,
-			'navigation_links' => $navigation_links,
+			// 'navigation_links' => $navigation_links,
 		));
 	}
 
@@ -661,6 +745,23 @@ EOT;
 	}
 
 
+	private function getCustomerContacts( $customer_id ) {
+		$customerContacts = array();
+		//$cc = Contacts::model()->findAll( array( "condition" => "contact_id = $contact_id" ) );
 
+		//$sql = "SELECT co.id AS 'contact_id', concat(co.first_name,' ',co.last_name) AS 'contact_name' FROM customer_contacts cc join contacts co ON cc.contact_id = co.id WHERE cc.customer_id = $id";
+		
+		$sql = "SELECT co.id, concat(co.first_name, ' ', co.last_name) AS fullname, co.title, co.email, co.phone1 FROM contacts co JOIN customer_contacts cc ON cc.contact_id = co.id AND cc.customer_id = $customer_id";
+		$command = Yii::app()->db->createCommand($sql);
+		$results = $command->queryAll();
+
+		foreach( $results as $r ) {
+			$customerContacts[] = array( 'id' => $r['id'], 'fullname' => $r['fullname'], 'title' => $r['title'], 'email' => $r['email'], 'phone1' => $r['phone1'] );
+		}
+
+		return $customerContacts;
+	}
+
+	
 
 }

@@ -66,7 +66,7 @@ table[id^='table_PartDetail_'] > tbody > tr > td > span.salesPrice {
 
 /* striping */
 #table_StockCodes > tbody > tr:nth-child(odd) {
-	background: lightyellow;
+	background: #F3F3F3;
 }
 
 
@@ -368,10 +368,10 @@ img[id^='quote_'] {
 	color: red;
 }   
 
-#table_StockCodes > tbody > tr:hover {
+/*#table_StockCodes > tbody > tr:hover {
 	background-color: #F1F1F1;
 }
-
+*/
 
 #table_Pricing {
 	border: 1px solid lightgray;

@@ -91,6 +91,17 @@ $(document).ready(function() {
 	// });
 
 
+	// ----------------------------------------------------- edit item
+	$('[id^=item_edit_]').on('click', function() {
+		var itemID = getID($(this));
+		window.location.replace("../stockItems/update/" + itemID);
+	});
+
+	function getID(that) {
+			var tmp =  $(that).attr('id');
+			var thisId = /\w+[_delete_|_edit_]\w+_(.+)$/i.exec( tmp );
+			return RegExp.$1;
+		}
 
 
     $('#Customer_select').on('change', function () { //  Select from available customers
@@ -155,11 +166,13 @@ $(document).ready(function() {
   		var searchFor = $('#parts_Searchfield').val();
   		var searchBy  = $('#parts_SearchBy').val();
   		var parts     = '';
+  		var myURL     = '../parts/search?item=' + searchFor.trim().toUpperCase() + '&by=' + searchBy;
+  		console.log("myURL=["+myURL+"]");
 
   		if ( searchFor.trim() && searchBy ) {
   			$.ajax({
 	                type: 'GET',
-	                url: '../parts/search?item=' + searchFor.trim().toUpperCase() + '&by=' + searchBy,
+	                url: myURL,
 	                success: function (results) {
 	                	displayPartLookupResults(results);
 	                }
@@ -452,7 +465,10 @@ $(document).ready(function() {
 									part_no: 			$('#part_no').text(),
 									approval_needed: 	null,
 
-									qty_1_24: 			$('#qty_1_24').val(),
+									manufacturer: 		$('#manufacturer').val(),	
+									qty_Available:      $('#total_qty_for_part').val(),
+
+									qty_1_24: 			$('#qty_1_24').val(),		// val == inputs
 									qty_25_99: 			$('#qty_25_99').val(),
 									qty_100_499: 		$('#qty_100_499').val(),
 									qty_500_999: 		$('#qty_500_999').val(),
@@ -460,18 +476,19 @@ $(document).ready(function() {
 									qty_Base: 			$('#qty_Base').val(),
 									qty_Custom: 		$('#qty_Custom').val(),	
 
-									price_1_24: 		$('#price_1_24').val(),		
-									price_25_99: 		$('#price_25_99').val(),	
-									price_100_499: 		$('#price_100_499').val(),		
-									price_500_999: 		$('#price_500_999').val(),		
-									price_1000_Plus: 	$('#price_1000_Plus').val(),			
-									price_Base: 		$('#price_Base').val(),		
+									price_1_24: 		$('#price_1_24').text().replace('$', ''),		// text == spans
+									price_25_99: 		$('#price_25_99').text().replace('$', ''),	
+									price_100_499: 		$('#price_100_499').text().replace('$', ''),
+									price_500_999: 		$('#price_500_999').text().replace('$', ''),		
+									price_1000_Plus: 	$('#price_1000_Plus').text().replace('$', ''),			
+									price_Base: 		$('#price_Base').text().replace('$', ''),	
+
 									price_Custom: 		$('#price_Custom').val(),
 									comments: 			$('#comments').val()				
 								};
 
-								$.ajax({
-										//url: '../quotes/partsUpdate/' + $('#form_QuoteID').val(),
+								// iq2_main.js
+								$.ajax({ 
 										url: '../quotes/partsUpdate',
 										type: 'POST',
 										data: info, 
@@ -482,7 +499,7 @@ $(document).ready(function() {
 										},
 										error: function (jqXHR, textStatus, errorThrown)  {
 											console.log("AJAX Post: FAIL! error:"+errorThrown);
-											alert("Your Customer Quote could NOT be updated.");
+											alert("Your Customer Quote could NOT be updated - see Admin");
 										} 
 								});
 

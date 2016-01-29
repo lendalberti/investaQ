@@ -63,11 +63,13 @@ class StockItems extends CActiveRecord
 			array('quote_id, part_no', 'required'),
 			array('quote_id, qty_1_24, qty_25_99, qty_100_499, qty_500_999, qty_1000_Plus, qty_Base, qty_Custom, qty_Available', 'numerical', 'integerOnly'=>true),
 			array('price_1_24, price_25_99, price_100_499, price_500_999, price_1000_Plus, price_Base, price_Custom', 'numerical'),
-			array('part_no, manufacturer, date_code, qty_NoBid', 'length', 'max'=>45),
+			// array('part_no, manufacturer, date_code, qty_NoBid', 'length', 'max'=>45),
+			array('part_no, manufacturer, date_code',               'length', 'max'=>45),
 			array('line_note, last_updated, comments', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, quote_id, part_no, manufacturer, line_note, date_code, qty_1_24, qty_25_99, qty_100_499, qty_500_999, qty_1000_Plus, qty_Base, qty_Custom, qty_NoBid, qty_Available, price_1_24, price_25_99, price_100_499, price_500_999, price_1000_Plus, price_Base, price_Custom, last_updated, comments', 'safe', 'on'=>'search'),
+			// array('id, quote_id, part_no, manufacturer, line_note, date_code, qty_1_24, qty_25_99, qty_100_499, qty_500_999, qty_1000_Plus, qty_Base, qty_Custom, qty_NoBid, qty_Available, price_1_24, price_25_99, price_100_499, price_500_999, price_1000_Plus, price_Base, price_Custom, last_updated, comments', 'safe', 'on'=>'search'),
+			array('id, quote_id, part_no, manufacturer, line_note, date_code, qty_1_24, qty_25_99, qty_100_499, qty_500_999, qty_1000_Plus, qty_Base, qty_Custom, qty_Available, price_1_24, price_25_99, price_100_499, price_500_999, price_1000_Plus, price_Base, price_Custom, last_updated, comments', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -102,7 +104,7 @@ class StockItems extends CActiveRecord
 			'qty_1000_Plus' => 'Qty 1000 Plus',
 			'qty_Base' => 'Qty Base',
 			'qty_Custom' => 'Qty Custom',
-			'qty_NoBid' => 'Qty No Bid',
+			// 'qty_NoBid' => 'Qty No Bid',
 			'qty_Available' => 'Qty Available',
 			'price_1_24' => 'Price 1 24',
 			'price_25_99' => 'Price 25 99',
@@ -140,7 +142,7 @@ class StockItems extends CActiveRecord
 		$criteria->compare('qty_1000_Plus',$this->qty_1000_Plus);
 		$criteria->compare('qty_Base',$this->qty_Base);
 		$criteria->compare('qty_Custom',$this->qty_Custom);
-		$criteria->compare('qty_NoBid',$this->qty_NoBid,true);
+		// $criteria->compare('qty_NoBid',$this->qty_NoBid,true);
 		$criteria->compare('qty_Available',$this->qty_Available);
 		$criteria->compare('price_1_24',$this->price_1_24);
 		$criteria->compare('price_25_99',$this->price_25_99);
