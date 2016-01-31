@@ -31,8 +31,8 @@ class StockItemsController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
-				'users'=>array('@'),
+				'actions'=>array('create','update', 'delete'),
+				'expression' => '$user->isLoggedIn'
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions'=>array('admin','delete'),
@@ -90,9 +90,16 @@ class StockItemsController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['StockItems']))
-		{
+		if(isset($_POST['StockItems'])) {
 			$model->attributes=$_POST['StockItems'];
+
+			if ( $this->moreThanAvailable($model) ) {
+				$model->addError('', "Can't specify more than what's available.");
+				$this->render('update',array(
+					'model'=>$model,
+				));
+			}
+
 			if($model->save())
 				// $this->redirect(array('view','id'=>$model->id));
 				$this->redirect('../../quotes/view?id='.$model->quote_id);
@@ -102,6 +109,21 @@ class StockItemsController extends Controller
 			'model'=>$model,
 		));
 	}
+
+
+
+
+
+
+	public function moreThanAvailable( $m ) {
+    	$tot = $m->qty_1_24+$m->qty_25_99+$m->qty_100_499+$m->qty_500_999+$m->qty_1000_Plus+$m->qty_Base+$m->qty_Custom;
+    	if ( $tot > $m->qty_Available ) {
+    		return true;
+    	}
+    	return false;
+	}
+
+
 
 	/**
 	 * Deletes a particular model.
@@ -114,10 +136,11 @@ class StockItemsController extends Controller
 		{
 			// we only allow deletion via POST request
 			$this->loadModel($id)->delete();
+			echo 'ok';
 
 			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-			if(!isset($_GET['ajax']))
-				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+			//if(!isset($_GET['ajax']))
+			//	$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
 		}
 		else
 			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');

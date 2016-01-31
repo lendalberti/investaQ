@@ -165,15 +165,11 @@ a[id^='quote_delete_']:hover {
 	background-color: #FDFCDC; 
 }
 
-span[id^='view_quote_'] > img,
-span[id^='edit_quote_'] > img,
-span[id^='delete_quote_'] > img {
+span[id^='view_quote_'] > img {
 	border: 1px dotted white;
 }
 
-span[id^='view_quote_'] > img:hover,
-span[id^='edit_quote_'] > img:hover,
-span[id^='delete_quote_'] > img:hover {
+span[id^='view_quote_'] > img:hover {
 	border: 1px solid gray;
 }
 
@@ -227,7 +223,7 @@ span.required {
  	font-weight: bold;
  	padding-top: 5px;
  	padding-bottom: 5px;
- 	margin-top: 10px;
+ 	margin-top: 30px;
 }
 
 #quote_details {
@@ -464,7 +460,24 @@ img[id^='quote_']:hover {
 } 
 
 
+span[id^='delete_quote_']  {
+	padding: 10px; 
+	color: #1485cc; 
+	font-variant: small-caps;
+	text-decoration: underline;
+}
 
+span[id^='edit_quote_']:hover {
+	cursor: pointer;
+}
+
+span[id^='edit_quote_'] {
+	padding: 0px 60px 0px 0px;
+	color: #a31128;
+	font-weight: bold;
+    text-decoration: underline;
+    font-variant: small-caps;
+}
 
 
 

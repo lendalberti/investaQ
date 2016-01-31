@@ -72,10 +72,11 @@ class QuotesController extends Controller
 		$data['model'] = $this->loadModel($id);
 		pDebug('QuotesController::actionView() - quote attributes:', $data['model']->attributes);
 
-		$data['customerContacts'] = $this->getCustomerContacts($id);
-		pDebug('QuotesController::actionView() - customerContacts:', $data['customerContacts']);
+		$data['quoteCustomerContact'] = Contacts::model()->findByPk($data['model']->contact_id);
+		pDebug('QuotesController::actionView() - customerContacts:', $data['quoteCustomerContact']->attributes);
 
-		// $data['quoteAttachments'] = $this->getQuoteAttachments($id);
+		// $criteria = ' quote_id = $id ';
+		// $data['quoteAttachments'] = Attachments::model()->findAll( $criteria);
 		// pDebug('QuotesController::actionView() - quoteAttachments:', $data['quoteAttachments']);
 
 		$this->render('view',array(
@@ -427,6 +428,7 @@ class QuotesController extends Controller
 	 * @param integer $id the ID of the model to be deleted
 	 */
 	public function actionDelete($id) 	{
+
 		if ( $this->loadModel($id)->delete() ) {
 			pDebug("Quotes:actionDelete() - quote id $id deleted...");
 		}
@@ -434,10 +436,12 @@ class QuotesController extends Controller
 			pDebug("Quotes:actionDelete() - ERROR: can't delete quote id $id; error=", $model->errors  );
 		}
 
+		echo 'ok';
+
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax']))
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		// if(!isset($_GET['ajax']))
+		// 	$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
 	}
 
 	/**
@@ -477,6 +481,7 @@ class QuotesController extends Controller
 		// 	$criteria->addCondition("quote_type_id = $quote_type");
 		// }
 
+		$criteria->order = 'id DESC';
 		$model = Quotes::model()->findAll( $criteria );
 
 		$this->render( 'index', array(
@@ -745,22 +750,29 @@ EOT;
 	}
 
 
-	private function getCustomerContacts( $customer_id ) {
-		$customerContacts = array();
-		//$cc = Contacts::model()->findAll( array( "condition" => "contact_id = $contact_id" ) );
 
-		//$sql = "SELECT co.id AS 'contact_id', concat(co.first_name,' ',co.last_name) AS 'contact_name' FROM customer_contacts cc join contacts co ON cc.contact_id = co.id WHERE cc.customer_id = $id";
-		
-		$sql = "SELECT co.id, concat(co.first_name, ' ', co.last_name) AS fullname, co.title, co.email, co.phone1 FROM contacts co JOIN customer_contacts cc ON cc.contact_id = co.id AND cc.customer_id = $customer_id";
-		$command = Yii::app()->db->createCommand($sql);
-		$results = $command->queryAll();
 
-		foreach( $results as $r ) {
-			$customerContacts[] = array( 'id' => $r['id'], 'fullname' => $r['fullname'], 'title' => $r['title'], 'email' => $r['email'], 'phone1' => $r['phone1'] );
-		}
 
-		return $customerContacts;
-	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	
 

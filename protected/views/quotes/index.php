@@ -23,7 +23,8 @@
 						<th>Part No.</th>
 
 						<!-- <th>Sales Person</th> -->
-						<th>Customer Name</th>
+						<th>Contact </th>
+						<th>Customer </th>
 						<th>Location</th>
 					</tr>
 				</thead>
@@ -35,8 +36,8 @@
 						echo '<tr>';
 						echo '<td>';
 						echo '<span title="View this quote" id="view_quote_'.     $m->id  .'" ><img src="' .Yii::app()->baseUrl. '/images/view_glyph.png"   height="24" width="24"></span>';
-						echo '<span title="Edit this quote" id="edit_quote_'.     $m->id  .'" ><img src="' .Yii::app()->baseUrl. '/images/edit_glyph.png"   height="24" width="24"></span>'; 
-						echo '<span title="Delete this quote" id="delete_quote_'. $m->id  .'" ><img src="' .Yii::app()->baseUrl. '/images/delete_glyph.png" height="24" width="24"></span>';
+						// echo '<span title="Edit this quote" id="edit_quote_'.     $m->id  .'" ><img src="' .Yii::app()->baseUrl. '/images/edit_glyph.png"   height="24" width="24"></span>'; 
+						// echo '<span title="Delete this quote" id="delete_quote_'. $m->id  .'" ><img src="' .Yii::app()->baseUrl. '/images/delete_glyph.png" height="24" width="24"></span>';
 						echo '</td>'; 
 						echo '<td>' . $m->quote_no . '</td>'; 
 						echo '<td>' . $m->quoteType->name . '</td>'; 
@@ -46,6 +47,7 @@
 						echo '<td>' . getQuotePartNumbers($m->id) . '</td>';   
 
 						// echo '<td>' . $m->owner->fullname . '</td>'; 
+						echo '<td>' . $m->contact->first_name . ' ' . $m->contact->last_name . '</td>'; 
 						echo '<td>' . $m->customer->name . '</td>'; 
 						echo '<td>' . $m->customer->address1.', '. $m->customer->city . ', '. $m->customer->country->short_name .'</td>'; 
 						echo '</tr>';

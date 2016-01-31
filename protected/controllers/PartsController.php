@@ -75,7 +75,6 @@ class PartsController extends Controller {
 
 		$tHeader  = "<div id='containerDiv'>";
 		$tHeader .= "<div id='leftDiv'><span>Part Number: </span><span id='part_no' name='part_no'>" .          $p->parts[0]->part_number . "</span><br /></div>";
-		$tHeader .= "<div id='rightDiv'><span>Total Qty Available: </span><span>" . number_format($p->parts[0]->total_qty_for_part) . "</span><br /></div>";
 		$tHeader .= "</div>";
 
 		$fixedHeading = "<table id='table_fixedHeading'><tr>";
@@ -153,7 +152,9 @@ class PartsController extends Controller {
 		$tableDetails = $tStart1 . $rows . $tEnd;
 
 		// ------------------------------------------------ Add to Quote
-		$tStart2 = "<table id='table_AddToQuote'>";
+		$caption = "<span style='color: black; font-size: .9em;'>Total Qty Available: </span><span style='font-size: .9em;color: red; font-weight: bold;'>" . number_format($p->parts[0]->total_qty_for_part) . "</span>";
+
+		$tStart2 = "<table id='table_AddToQuote'><caption style='text-align: right;'>$caption</caption>";
 		$pricingtHeader = "<tr><th>Volume</th><th>Unit Price</th><th>Quantity</th><th>SubTotal</th></tr>";
 		$tEnd = "</table>";
 

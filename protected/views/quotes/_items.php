@@ -25,11 +25,11 @@
 
 		$customer_id = $model->customer_id;
 
-		$edit   = Yii::app()->request->baseUrl . "/images/edit_glyph_33x30.png"; // "/images/pencil_glyph.png";
+		$edit   = Yii::app()->request->baseUrl . "/images/edit_glyph_33x30.png"; 
  		$delete = Yii::app()->request->baseUrl . "/images/delete_glyph.png";
  		$pdf    = Yii::app()->request->baseUrl . "/images/pdf_32x32.png";
 
-		$sql = "SELECT si.* FROM stock_items si join quotes q ON si.quote_id = q.id join customer_contacts cc ON q.customer_id = cc.customer_id WHERE  q.customer_id = $customer_id";
+		$sql = "SELECT * FROM stock_items WHERE  quote_id = $model->id";
 		$command = Yii::app()->db->createCommand($sql);
 		$results = $command->queryAll();
 

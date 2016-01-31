@@ -12,8 +12,8 @@
 
 
 	<?php echo "<span style='font-weight: bold; font-size: .9em; '>Total Available: </span>"; ?>
-	<span style='color: red; font-size: 1.2em;'><?php echo number_format($model->qty_Available); ?></span>
-	<?php echo "<span style='font-weight: bold; font-size: .9em; '>for Part No.<span style='font-size: 1.2em;'>".$model->part_no."</span> </span>"; ?>
+	<span style='color: red; font-size: 1.2em; padding-left: 5px; padding-right: 5px; '><?php echo number_format($model->qty_Available); ?></span>
+	<?php echo "<span style='font-weight: bold; font-size: .9em;'> for Part No.<span style='padding-left:10px; color: red;font-size: 1.2em;'>".$model->part_no."</span> </span>"; ?>
 
 
 	<div class="row">

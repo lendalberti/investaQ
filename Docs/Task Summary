@@ -1,0 +1,101 @@
+
+
++-------------------------+
+|  Main Menu - Home       |
++-------------------------+
+
+	[x] new quote
+	[x] view quote
+	[x] My Quotes Board
+
+
+
+
++----------------------+
+|  View Stock Quote    |
++----------------------+
+
+	[ ] use newly created quote screen as view
+
+	[ ] Edit quote 
+
+	[ ] Delete quote
+
+	[x] Contacts (* only 1 contact per quote for now)
+		[x] list of contacts is incorrect - FIX 
+
+	[ ] Attachments
+
+	[x] Items
+		[x] list of items is incorrect - FIX
+
+	[ ] Add item
+
+	[x] Edit item
+		[x] fix max available check
+		
+	[x] Delete item
+
+	
+	
+
++----------------------+
+|  Start a New Quote   |
++----------------------+
+
+	[ ] select customer
+	[ ] select contact
+	[ ] select source
+	[ ] inventory parts lookup
+	[ ] if found, show terms & conditions section
+
+
+
+	Part Found:
+		[x] stock quote - standard pricing
+
+		[ ] 
+
+
+
+		[ ] stock quote - custom pricing
+			- needing approval, item not added to stock_items
+
+	Part NOT Found:
+		[ ] stock quote - nobid
+		[ ] manufacturing quote
+
+
+
+
++-------------------------+
+|  Main Menu - Customers  |
++-------------------------+
+
+	[ ] access real customers
+	[ ] add new customers?
+
+
++-------------------------+
+|  Main Menu - Contacts   |
++-------------------------+
+
+	[ ] access real contacts
+	[ ] add new contacts?
+
+
++-------------------------+
+|  Main Menu - MyProfile  |
++-------------------------+
+
+	[ ] view profile
+	[ ] edit profile
+	[ ] upload image
+
+
++-------------------------+
+|  Main Menu - Help       |
++-------------------------+
+
+	[ ] video
+

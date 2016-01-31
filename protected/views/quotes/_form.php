@@ -98,7 +98,8 @@ span.open_close {
 	padding-left: 10px;
 }
 
-#section_PartsLookup {
+#section_PartsLookup,
+#section_TermsConditions {
 	display: none;
 }
 
@@ -119,11 +120,22 @@ span.open_close:hover {
     margin-top: 50px;
 }
 
+#div_Submit {
+	margin-top: 20px;
+	display: none;
+}
+
+#div_Submit > input {
+	background-color: lightgray;
+    font-size: 1.2em;
+}
+
+
 </style>
 
 <form id='quoteForm' name='quoteForm' method='post'>
 
-	<!-- ################################  -->
+	<!-- ################################################################################################################################################################  -->
 	<div id='section_CustomerContact'>
 
 		<div class='quote_section_heading'>
@@ -205,11 +217,26 @@ span.open_close:hover {
 
 	<div id='div_ContinueReset' style='padding: 20px;'> <input type='submit' value='Continue'> <span id='reset_form'>Reset Form</span> </div>
 
-	<!-- ################################  -->
+	<!-- ################################################################################################################################################################  -->
+	<div id='section_TermsConditions'>
+
+		<div class='quote_section_heading'>
+			<span class='open_close'>&minus;</span>
+			<span style='padding-left: 350px;'>Terms &amp; Conditions</span>
+		</div>
+
+		<div  class='my_container'>
+			<div id="box5">
+				Terms &amp; Conditions go here...
+			</div>  <!--  box5  -->
+		</div>
+	</div>
+
+	<!-- ################################################################################################################################################################  -->
 	<div id='section_PartsLookup'>
 
 		<div class='quote_section_heading'>
-			<!-- <span class='open_close'>&minus;</span> -->
+			<span class='open_close'>&minus;</span>
 			<span style='padding-left: 350px;'>Inventory Parts Lookup</span>
 		</div>
 
@@ -241,24 +268,6 @@ span.open_close:hover {
 							<th>Carrier Type</th>
 							<th>MPQ</th>
 							<th>Quantity<br />Available</th>
-
-						<!-- <th>Price<br />1-24</th>
-							<th>Price<br />25-99</th>
-							<th>Price<br />100-499</th>
-
-							<th>Price<br />500-999</th>
-							<th>Price<br />1000+</th>
-							<th>Distributor<br /> Price</th> -->
-
-							
-							
-							
-							
-
-
-
-
-
 						</tr>
 					</thead>
 
@@ -267,6 +276,13 @@ span.open_close:hover {
 			</div>  <!--  box4  -->
 		</div>
 	</div>
+
+	<div id='div_Submit'> <input type='button' value='Done'> </div>
+
+
+    
+
+
 
 </form>
 

@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-	var qty_available_selected = $('#rightDiv > span:nth-child(2)').html();  
+	var qty_available_selected = $('#table_AddToQuote > caption > span:nth-child(2)').html();   // $('#rightDiv > span:nth-child(2)').html();  
 
     // ----------------------------------------------------------------------------- Any Qty Input
 	$('input[id^=qty_]').focus(function() {}).blur(function() {
