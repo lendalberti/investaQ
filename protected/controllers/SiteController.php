@@ -27,7 +27,7 @@ class SiteController extends Controller
 	 */
 	public function actionIndex() 	{
 		if (Yii::app()->user->isLoggedIn) {
-			$this->render('index');
+			$this->redirect(Yii::app()->homeUrl . '/quotes/index');
 		}
 		else {
 			$this->redirect(Yii::app()->homeUrl . '/site/login');
