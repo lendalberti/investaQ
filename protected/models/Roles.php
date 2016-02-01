@@ -104,7 +104,7 @@ class Roles extends CActiveRecord  {
 		foreach( $results as $r ) {
 			$roles[] = $r['role_id'];
 		}
-		pDebug("Roles::getListByUser() - roles=", $roles);
+		//pDebug("Roles::getListByUser() - roles=", $roles);
 		return $roles;
 	}
 

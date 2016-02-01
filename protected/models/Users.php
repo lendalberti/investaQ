@@ -91,7 +91,7 @@ class Users extends CActiveRecord
 			'email' => 'Email',
 			'title' => 'Title',
 			'phone' => 'Phone',
-			'fax' => 'Fax',
+			'fax' => 'Signature',
 			'sig' => 'Sig',
 		);
 	}

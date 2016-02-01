@@ -1,4 +1,10 @@
 
++-------------------------+
+|  Quotes Index Page      |
++-------------------------+
+
+	[x] replace Part Nos. with # of items
+	[x] move Contact after Location
 
 +-------------------------+
 |  Main Menu - Home       |
@@ -8,23 +14,22 @@
 	[x] view quote
 	[x] My Quotes Board
 
-
-
-
 +----------------------+
 |  View Stock Quote    |
 +----------------------+
 
-	[ ] use newly created quote screen as view
+	[x] use newly created quote screen as view
 
-	[ ] Edit quote 
+	[x] Edit quote link
 
-	[ ] Delete quote
+	[x] Delete quote link
 
 	[x] Contacts (* only 1 contact per quote for now)
 		[x] list of contacts is incorrect - FIX 
 
-	[ ] Attachments
+	[x] Print link (create pdf)
+	[x] Attachment link
+	[x] Send email link
 
 	[x] Items
 		[x] list of items is incorrect - FIX
@@ -36,26 +41,50 @@
 		
 	[x] Delete item
 
-	
+
++-----------------+
+|  Edit  Quote    |
++-----------------+
+
+	[x] copy form from 'view' and remove 'readOnly' attribute
+
+
+
++------------------+
+|  Delete  Quote   |
++------------------+
+
+	[x] cascade db delete
+
+
+
+
++----------------------+
+|  Quote Attachments   |
++----------------------+
+
+
 	
 
 +----------------------+
 |  Start a New Quote   |
 +----------------------+
 
-	[ ] select customer
-	[ ] select contact
-	[ ] select source
-	[ ] inventory parts lookup
-	[ ] if found, show terms & conditions section
+	[x] Confirm before leaving page from refresh or back button
+
+	[x] select customer
+	[x] select contact
+	[x] select source
+	[x] inventory parts lookup
+	[x] if found, show terms & conditions section
 
 
 
 	Part Found:
 		[x] stock quote - standard pricing
 
-		[ ] 
-
+		[x] display selected parts above lookup box
+			- "Added: "AD5555CRUZ ANA 1000 $2.17"
 
 
 		[ ] stock quote - custom pricing
@@ -88,9 +117,9 @@
 |  Main Menu - MyProfile  |
 +-------------------------+
 
-	[ ] view profile
-	[ ] edit profile
-	[ ] upload image
+	[x] view profile
+	[x] edit profile
+	[x] upload image
 
 
 +-------------------------+

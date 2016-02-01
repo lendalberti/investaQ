@@ -1,9 +1,13 @@
 $(document).ready(function() {
 
-    var myURL           = getAbsolutePath();   console.log('myURL=['+myURL+']');
+    var myURL           = getAbsolutePath();  
     var customerPrefill = true;
     var contactPrefill  = true;
     var searchURL       = myURL + 'search';
+
+    console.log('myURL=['+myURL+']');
+    console.log('returnUrl=[' + $('#returnUrl').val() + ']' );
+
 
     // -----------------------------------------------
 	// ---------- set up UI Dialogs ------------------
@@ -33,9 +37,27 @@ $(document).ready(function() {
     //-------- Event Handlers  --------------------------------------------------------------------------------------------    
     //---------------------------------------------------------------------------------------------------------------------
 
+    $('#clearContactFields').on('click', function() {
+        $('[id^=Contact_]').val('');
+        $('[id^=Contact_]').removeAttr('readOnly');
+    });
 
-    $('#div_HomeButton > input').on('click', function() {
+
+    $('#button_Home').on('click', function() {
         window.location = myURL + 'index';
+    });
+
+    $('#button_Cancel').on('click', function() { 
+        window.location = myURL + '../index';
+    });
+
+    $('#button_SaveQuoteChanges').on('click', function() {
+        if ( formValidated() ) {    
+            window.location = myURL + '../index';
+        }
+        else {
+            alert("Missing required field(s)...");
+        }
     });
 
 
@@ -64,20 +86,41 @@ $(document).ready(function() {
     	}
 	});
 
-    $('#div_Submit > input').on('click', function () {
-        window.location = myURL + 'index';
+    // ------------------------------------------------------------------
+    $('#div_SubmitDone > input').on('click', function () {
+
+        $(window).unbind('beforeunload');
+
+        var quoteID = $('#form_QuoteID').val();
+
+        var data = {
+            quote_Terms:       $('#quote_Terms').val(),
+            quote_CustAck:     $('#quote_CustAck').val(),
+            quote_RISL:        $('#quote_RISL').val(),
+            quote_MfgLeadTime: $('#quote_MfgLeadTime').val(),
+            quote_Notes:       $('#quote_Notes').val()
+        };
+
+       // var postData = data.serialize();
+        $.ajax({
+            type: "POST",
+                url: myURL + 'update/' + quoteID,
+                //data: postData,
+                data: data,
+                success: function(results)  {
+                  
+                }
+        });
+
+         window.location = myURL + 'index';
+
     });
 
 
-	function toCurrency(n)  {   
-		if ( !n || isNaN(n) ) {
-			return '';
-		}
-		var currency = '$';
-		n1 = parseFloat(n);
-		var tmp = currency + " " + n1.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
-	   		return tmp; 
-	}
+
+
+
+
 
 
 
@@ -103,9 +146,9 @@ $(document).ready(function() {
 
 
     // ----------------------------------------------------- delete item
-    $('[id^=item_delete_]').on('click', function() {
+    $('[id^=item_trash_]').on('click', function() {
         var itemID = getID($(this));
-        if ( confirm("Are you sure you want to remove this item?" ) ) {
+        if ( confirm("Are you sure you want to delete this item?" ) ) {
             $.ajax({
                   url: '../stockItems/delete/' + itemID,
                   type: 'POST',
@@ -117,17 +160,23 @@ $(document).ready(function() {
                   }
             });
         }
-        return false;
+        return false;z
     });
 
 
 
 
-	// ----------------------------------------------------- edit item
-	$('[id^=item_edit_]').on('click', function() {
-		var itemID = getID($(this));
-		window.location.replace("../stockItems/update/" + itemID);
-	});
+    // ----------------------------------------------------- edit item
+    $('[id^=item_edit_]').on('click', function() {
+        var itemID = getID($(this));  
+
+        var returnUrl = $('#returnUrl').val();
+        var u = myURL + "../../stockItems/update/" + itemID + '?returnUrl=' + returnUrl;
+
+        console.log('url=' +  u);
+        window.location.replace(u);
+    });
+
 
 	function getID(that) {
 			var tmp =  $(that).attr('id');
@@ -165,15 +214,16 @@ $(document).ready(function() {
 
     $('[id^=quote_edit_]').on('click', function() { //   Edit quote  
         var quoteID = getThisID( $(this) ); 
-        alert('editing this quote...' + quoteID);
+        window.location = myURL + 'update/' + quoteID;  
     })
 
-    $('[id^=quote_delete_]').on('click', function() { //   Delete quote  
+    $('[id^=quote_trash_]').on('click', function() { //   Delete quote  
         var quoteID = getThisID( $(this) ); 
         if ( confirm("Are you sure you want to delete this quote?" ) ) {
             $.ajax({
                   url: '../quotes/delete/' + quoteID,
                   type: 'POST',
+                  data: { data: quoteID },
                   success: function(data, textStatus, jqXHR) {
                     window.location = myURL + 'index';
                   },
@@ -211,7 +261,6 @@ $(document).ready(function() {
   		var searchBy  = $('#parts_SearchBy').val();
   		var parts     = '';
   		var myURL     = '../parts/search?item=' + searchFor.trim().toUpperCase() + '&by=' + searchBy;
-  		console.log("myURL=["+myURL+"]");
 
   		if ( searchFor.trim() && searchBy ) {
   			$.ajax({
@@ -254,12 +303,24 @@ $(document).ready(function() {
         }
         $('#section_TermsConditions > div.my_container').fadeToggle(250);   // toggle();
     })
+    $('#section_TermsConditions > div.quote_section_heading > span.open_close').trigger('click'); // default=closed
 
 
     //---------------------------------------------------------------------------------------------------------------------
     //-------- Functions --------------------------------------------------------------------------------------------------    
     //---------------------------------------------------------------------------------------------------------------------
 
+
+
+    function toCurrency(n)  {   
+        if ( !n || isNaN(n) ) {
+            return '';
+        }
+        var currency = '$';
+        n1 = parseFloat(n);
+        var tmp = currency + " " + n1.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+            return tmp; 
+    }
 
 
 
@@ -395,6 +456,16 @@ $(document).ready(function() {
 										success: function(data, textStatus, jqXHR) {
 											console.log("AJAX Post: Success!");
 											alert("Your Customer Quote has been updated.");
+
+                                            if ( $('#selectedParts').html() == '' ) {
+                                                $('#selectedParts').html(  'Item(s) added to quote: ' + $('#part_no').text());
+                                            }
+                                            else {
+                                                $('#selectedParts').append(  ', ' + $('#part_no').text());
+                                            }
+
+
+
 										},
 										error: function (jqXHR, textStatus, errorThrown)  {
 											console.log("AJAX Post: FAIL! error:"+errorThrown);
@@ -573,6 +644,8 @@ $(document).ready(function() {
 		        });
 		    }
 		});
+
+        $('#section_TermsConditions').show();
     }
 
     function continueQuote( quote_no ) {
@@ -582,10 +655,9 @@ $(document).ready(function() {
     	$('#heading_container').hide();
     	$('#selection_container').hide();
     	$('#div_ContinueReset').hide();
-        $('#section_TermsConditions').show();
         $('#section_PartsLookup').show();
 
-        $('#div_Submit').show();
+        $('#div_SubmitDone').show();
 
         $('#section_CustomerContact > div.quote_section_heading > span.open_close').show()
         $('#section_TermsConditions > div.quote_section_heading > span.open_close').show()

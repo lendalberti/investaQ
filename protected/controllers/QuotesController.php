@@ -28,12 +28,12 @@ class QuotesController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view','create','update', 'search', 'partsUpdate'),
+				'actions'=>array('index','view','create','update', 'search', 'partsUpdate', 'delete'),
 				'expression' => '$user->isLoggedIn'
 			),
 		
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete'),
+				'actions'=>array('admin'),
 				'expression' => '$user->isAdmin'
 			),
 			array('deny',  // deny all users
@@ -67,147 +67,39 @@ class QuotesController extends Controller
 
 
 	
-	// --- 
+	// ------------------------------------- 
 	public function actionView($id) {
+
 		$data['model'] = $this->loadModel($id);
-		pDebug('QuotesController::actionView() - quote attributes:', $data['model']->attributes);
+		pDebug('quote model attributes: ', $data['model']->attributes );
 
-		$data['quoteCustomerContact'] = Contacts::model()->findByPk($data['model']->contact_id);
-		pDebug('QuotesController::actionView() - customerContacts:', $data['quoteCustomerContact']->attributes);
-
-		// $criteria = ' quote_id = $id ';
-		// $data['quoteAttachments'] = Attachments::model()->findAll( $criteria);
-		// pDebug('QuotesController::actionView() - quoteAttachments:', $data['quoteAttachments']);
-
-
-
+		$data['items'] = array();
 
 		$customer_id = $data['model']->customer_id;
+		$contact_id  = $data['model']->contact_id;
+		$quote_id    = $data['model']->id;
 
-		$edit   = Yii::app()->request->baseUrl . "/images/edit_glyph_33x30.png"; 
- 		$delete = Yii::app()->request->baseUrl . "/images/delete_glyph.png";
- 		$pdf    = Yii::app()->request->baseUrl . "/images/pdf_32x32.png";
+		// ------------------------------ get customer
+		$data['customer'] = Customers::model()->findByPk($customer_id);
+		
+		// ------------------------------ get contact
+		$data['contact']  = Contacts::model()->findByPk($contact_id);
 
-		$sql = "SELECT * FROM stock_items WHERE  quote_id = " . $data['model']->id;
+		// ------------------------------ get stock_items
+		$sql = "SELECT * FROM stock_items WHERE  quote_id = $quote_id";
 		$command = Yii::app()->db->createCommand($sql);
 		$results = $command->queryAll();
-
-		$data['items'] = <<<EOT
-
-<table id='items_table'>
-	<thead>
-		<tr>
-			<th>Part No.</th>
-			<th>Manufacturer</th>
-			<th>Date Code</th>
-			<th>Quantity</th>
-			<th>Price</th>
-			<th>Total</th>
-		</tr>
-	</thead>
-
-	<tbody>
-		<tr>
-			<td>FJB5555TM</td>
-			<td>FSC</td>
-			<td></td>
-			<td>200</td>
-			<td>$ 2.00</td>
-			<td>$ 400.00</td>
-		</tr>
-		<tr>
-			<td>FJB5555TM</td>
-			<td>FSC</td>
-			<td></td>
-			<td>200</td>
-			<td>$ 2.00</td>
-			<td>$ 400.00</td>
-		</tr>
-		<tr>
-			<td>FJB5555TM</td>
-			<td>FSC</td>
-			<td></td>
-			<td>200</td>
-			<td>$ 2.00</td>
-			<td>$ 400.00</td>
-		</tr>
-		<tr>
-			<td>FJB5555TM</td>
-			<td>FSC</td>
-			<td></td>
-			<td>200</td>
-			<td>$ 2.00</td>
-			<td>$ 400.00</td>
-		</tr>
-		<tr>
-			<td>FJB5555TM</td>
-			<td>FSC</td>
-			<td></td>
-			<td>200</td>
-			<td>$ 2.00</td>
-			<td>$ 400.00</td>
-		</tr>
-
-	</tbody>
-</table>
-
-EOT;
-
+		foreach( $results as $i ) {
+			$data['items'][] = array( 'id' => $i['id'],  'part_no' => $i['part_no'], 'manufacturer'=>$i['manufacturer'], 'date_code'=>$i['date_code'], 'qpt'=>$this->getQtyPriceTotal($i) );
+		}
 
 		$this->render('view',array(
 			'data'=>$data,
 		));
 
-		
-		// if ( $model->quote_type_id == QuoteTypes::STOCK ) {
-		// 	// display only Stock Quote relevant fields
-		// 	echo 'displaying Stock quote...';
-		// }
-		// else if ( $model->quote_type_id == QuoteTypes::MANUFACTURING ) {
-		// 	// display only Manufacturing Quote relevant fields
-		// 	echo 'displaying Manufacturing quote...';
-		// }
-		// else if ( $model->quote_type_id == QuoteTypes::SUPPLIER_REQUEST_FORM ) {
-		// 	// display only SRF relevant fields
-		// 	echo 'displaying SRF...';
-		// }
-		// else if ( $model->quote_type_id == QuoteTypes::TBD ) {
-		// 	echo 'quote type tbd...';
-		// }
 	}
 
-
-
-
-
-
-
-
-
-	/**
-	 * Creates a new model.
-	 * If creation is successful, the browser will be redirected to the 'view' page.
-	 */
-	public function actionCreate_ORIG() 
-	{
-		$model=new Quotes;
-
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-
-		if(isset($_POST['Quotes']))
-		{
-			$model->attributes=$_POST['Quotes'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
-		}
-
-		$this->render('create',array(
-			'model'=>$model,
-		));
-	}
-
-
+	
 	public function actionCreate() {
 		pDebug("Quotes::actionCreate() - _POST values from serialzed form values:", $_POST);
 
@@ -316,156 +208,7 @@ EOT;
 
 		echo json_encode('');
 
-
-
-
-
-		// update quotes with type
-
-
-
-			// actionPartsUpdate() - _POST: 
-			// Array
-			// (
-			//     [quote_id] => 139
-			//     [part_no] => AD5555CRUZ
-			//     [qty_1_24] => 
-			//     [qty_25_99] => 
-			//     [qty_100_499] => 
-			//     [qty_500_999] => 500
-			//     [qty_1000_Plus] => 500
-			//     [qty_Base] => 
-			//     [qty_Custom] => 
-			//     [unitPrice_1_24] => 
-			//     [unitPrice_25_99] => 
-			//     [unitPrice_100_499] => 
-			//     [unitPrice_500_999] => 
-			//     [unitPrice_1000_Plus] => 
-			//     [unitPrice_Base] => 
-			//     [unitPrice_Custom] => 
-			//     [comments] => Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor  
-			// )
-
-			//		manufacturer
-			//		qty_Available
-
-
-			// Quotes::quote_type_id = 'Stock'
-
-
-
-
-
-
-
-
-
-
-					// [lensCentOS:iq2@iq2]
-							// mysql >> desc stock_items;
-							// +-----------------+-------------+------+-----+-------------------+-----------------------------+
-							// | Field           | Type        | Null | Key | Default           | Extra                       |
-							// +-----------------+-------------+------+-----+-------------------+-----------------------------+
-							// | id              | int(11)     | NO   | PRI | NULL              | auto_increment              |
-							// | quote_id        | int(11)     | NO   | MUL | NULL              |                             |
-							// | part_no         | varchar(45) | NO   |     | NULL              |                             |
-							// | manufacturer    | varchar(45) | YES  |     | NULL              |                             |
-							// | line_note       | text        | YES  |     | NULL              |                             |
-							// | date_code       | varchar(45) | YES  |     | NULL              |                             |
-							// | qty_1_24        | int(11)     | YES  |     | NULL              |                             |
-							// | qty_25_99       | int(11)     | YES  |     | NULL              |                             |
-							// | qty_100_499     | int(11)     | YES  |     | NULL              |                             |
-							// | qty_500_999     | int(11)     | YES  |     | NULL              |                             |
-							// | qty_1000_Plus   | int(11)     | YES  |     | NULL              |                             |
-							// | qty_Base        | int(11)     | YES  |     | NULL              |                             |
-							// | qty_Custom      | int(11)     | YES  |     | NULL              |                             |
-							// | qty_NoBid       | varchar(45) | YES  |     | NULL              |                             |
-							// | qty_Available   | int(11)     | YES  |     | NULL              |                             |
-							// | price_1_24      | double      | YES  |     | NULL              |                             |
-							// | price_25_99     | double      | YES  |     | NULL              |                             |
-							// | price_100_499   | double      | YES  |     | NULL              |                             |
-							// | price_500_999   | double      | YES  |     | NULL              |                             |
-							// | price_1000_Plus | double      | YES  |     | NULL              |                             |
-							// | price_Base      | double      | YES  |     | NULL              |                             |
-							// | price_Custom    | double      | YES  |     | NULL              |                             |
-							// | last_updated    | timestamp   | YES  |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
-							// | comments        | text        | YES  |     | NULL              |                             |
-							// +-----------------+-------------+------+-----+-------------------+-----------------------------+
-							// 24 rows in set (0.00 sec)
-
-				// [lensCentOS:iq2@iq2]
-				// mysql >> desc quotes;
-				// +-------------------------
-				// | Field                   
-				// +-------------------------
-				// | id                      
-				// | quote_no                
-				// | quote_type_id           
-				// | status_id               
-				// | owner_id                
-				// | customer_id             
-				// | contact_id              
-				// | created_date            
-				// | updated_date            
-				// | expiration_date         
-				// | level_id                
-				// | source_id               
-				// | lead_quality_id         
-				// | additional_notes        
-				// | terms_conditions        
-				// | customer_acknowledgment 
-				// | risl                    
-				// | manufacturing_lead_time 
-				// | lost_reason_id          
-				// | no_bid_reason_id        
-				// | ready_to_order          
-				// | requested_part_number   
-				// | generic_part_number     
-				// | quantity1               
-				// | quantity2               
-				// | quantity3               
-				// | die_manufacturer_id     
-				// | package_type_id         
-				// | lead_count              
-				// | process_flow_id         
-				// | testing_id              
-				// | priority_id             
-				// | temp_low                
-				// | temp_high               
-				// | ncnr                    
-				// | itar                    
-				// | have_die                
-				// | spa                     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		
 	}
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -479,23 +222,51 @@ EOT;
 	 * @param integer $id the ID of the model to be updated
 	 */
 	public function actionUpdate($id) 	{
+		$quote_id = $id;
 
-		// $model = $this->loadModel($id);
-		// if(isset($_POST['Quotes']))  {
+		pDebug("actionUpdate() - _GET: ", $_GET);
+		pDebug("actionUpdate() - _POST: ", $_POST);
+
+		// if ( isset($_POST['Quotes']) )  {
 		// 	$model->attributes=$_POST['Quotes'];
-		// 	if($model->save())
+		// 	if ( $model->save() ) {
 		// 		$this->redirect(array('view','id'=>$model->id));
+		// 	}
 		// }
-		// else if ( isset($_POST['Parts']) )  {  
-		//
-		//
+		// else {
+			$data['model'] = $this->loadModel($quote_id);
+			pDebug('quote model attributes: ', $data['model']->attributes );
+
+			$data['items'] = array();
+
+			$customer_id = $data['model']->customer_id;
+			$contact_id  = $data['model']->contact_id;
+
+			// ------------------------------ get customer
+			$data['customer'] = Customers::model()->findByPk($customer_id);
+			
+			// ------------------------------ get contact
+			$data['contact']  = Contacts::model()->findByPk($contact_id);
+
+			$sql = "SELECT * FROM stock_items WHERE  quote_id = $quote_id";
+			$command = Yii::app()->db->createCommand($sql);
+			$results = $command->queryAll();
+			foreach( $results as $i ) {
+				$data['items'][] = array( 'id' => $i['id'],  'part_no' => $i['part_no'], 'manufacturer'=>$i['manufacturer'], 'date_code'=>$i['date_code'], 'qpt'=>$this->getQtyPriceTotal($i) );
+			}
+
+			$data['model']    = $this->loadModel($quote_id);
+			$data['sources']  = Sources::model()->findAll( array('order' => 'name') );
 		// }
 
-		// $this->render('update',array(
-		// 	'model'=>$model,
-		// ));
-
+		$this->render('update',array(
+			'data'=>$data,
+		));
 	}
+
+
+
+
 
 	/**
 	 * Deletes a particular model.
@@ -503,21 +274,24 @@ EOT;
 	 * @param integer $id the ID of the model to be deleted
 	 */
 	public function actionDelete($id) 	{
+		pDebug("QuotesController::actionDelete() - _GET=", $_GET);
+		pDebug("QuotesController::actionDelete() - _POST=", $_POST);
 
-		if ( $this->loadModel($id)->delete() ) {
-			pDebug("Quotes:actionDelete() - quote id $id deleted...");
+		if ( $_POST['data'][0] == $id ) {
+			if ( $this->loadModel($id)->delete() ) {
+				pDebug("Quotes:actionDelete() - quote id $id deleted...");
+				echo 'ok';
+			}
+			else {
+				pDebug("Quotes:actionDelete() - ERROR: can't delete quote id $id; error=", $model->errors  );
+			}
 		}
-		else {
-			pDebug("Quotes:actionDelete() - ERROR: can't delete quote id $id; error=", $model->errors  );
-		}
 
-		echo 'ok';
-
-
-		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		// if(!isset($_GET['ajax']))
-		// 	$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		echo '';
 	}
+
+
+
 
 	/**
 	 * Lists all models.
@@ -609,22 +383,7 @@ EOT;
 		}
 	}
 
-	// --------------------------------------------------------
-	private function getQuoteNumber() {
-		$id = Yii::app()->db->createCommand()->select('max(id) as max')->from('quotes')->queryScalar() + 1;
-		$id = $id ? $id : 1;
-		return Date('Ymd-') . sprintf("%04d", $id);
-	}
-
-
-	// -----------------------------------------------------------
-    function getQuoteExpirationDate() {
-        // quote expiration 30 days from today
-        $exp = "+30 days";
-        return Date( 'Y-m-d 00:00:00', strtotime($exp) );
-    }
-
-
+	
 
 
     	//-------------------------------------------------------
@@ -825,51 +584,58 @@ EOT;
 	}
 
 
-	private function fp($n) {
-        setlocale(LC_MONETARY, 'en_US');
-        $res = money_format("%6.2n", trim($n) );
-        return $res;
+
+
+
+	// --------------------------------------------------------
+	private function getQtyPriceTotal( $i ) { 
+		$data = '<table id="table_Parts">';
+		if ( fq($i['qty_1_24']) != '0' ) {
+ 			$data .=  "<tr>  <td> ".fq($i['qty_1_24'])."</td>        <td><span class='volume'>1-24</span>"      .fp($i['price_1_24'])."</td>      <td> ".fp(calc($i,'1_24'))."</td>   </tr>"; 
+ 		}
+
+ 		if ( fq($i['qty_25_99']) != '0' ) {
+ 			$data .=  "<tr> <td> ".fq($i['qty_25_99'])."</td>        <td><span class='volume'>25-99</span>"     .fp($i['price_25_99'])."</td>     <td> ".fp(calc($i,'25_99'))."</td>   </tr>"; 
+ 		}
+
+ 		if ( fq($i['qty_100_499']) != '0' ) {
+ 			$data .=  "<tr> <td> ".fq($i['qty_100_499'])."</td>      <td><span class='volume'>100-499</span>"   .fp($i['price_100_499'])."</td>   <td> ".fp(calc($i,'100_499'))."</td>   </tr>"; 
+ 		}
+
+ 		if ( fq($i['qty_500_999']) != '0' ) {
+ 			$data .=  "<tr> <td> ".fq($i['qty_500_999'])."</td>      <td><span class='volume'>500-999</span>"   .fp($i['price_500_999'])."</td>   <td> ".fp(calc($i,'500_999'))."</td>   </tr>"; 
+ 		}
+
+ 		if ( fq($i['qty_1000_Plus']) != '0' ) {
+ 			$data .=  "<tr> <td> ".fq($i['qty_1000_Plus'])."</td>    <td><span class='volume'>1000+</span>"     .fp($i['price_1000_Plus'])."</td> <td> ".fp(calc($i,'1000_Plus'))."</td>   </tr>"; 
+ 		}
+
+		if ( fq($i['qty_Base']) != '0' ) {
+ 			$data .=  "<tr> <td> ".fq($i['qty_Base'])."</td>    <td><span class='volume'>Base</span>"     .fp($i['price_Base'])."</td> <td> ".fp(calc($i,'Base'))."</td>   </tr>"; 
+ 		}
+
+		if ( fq($i['qty_Custom']) != '0' ) {
+ 			$data .=  "<tr> <td> ".fq($i['qty_Custom'])."</td>    <td><span class='volume'>Custom</span>"     .fp($i['price_Custom'])."</td> <td> ".fp(calc($i,'Custom'))."</td>   </tr>"; 
+ 		}
+ 		$data .= "</table>";
+
+ 		return $data;
+	}
+
+
+	// --------------------------------------------------------
+	private function getQuoteNumber() {
+		$id = Yii::app()->db->createCommand()->select('max(id) as max')->from('quotes')->queryScalar() + 1;
+		$id = $id ? $id : 1;
+		return Date('Ymd-') . sprintf("%04d", $id);
+	}
+
+
+	// -----------------------------------------------------------
+    private function getQuoteExpirationDate() {
+        // quote expiration 30 days from today
+        $exp = "+30 days";
+        return Date( 'Y-m-d 00:00:00', strtotime($exp) );
     }
-
-    private function fq($n) {
-        return $n=='' ? '0' : $n;
-    }
-
-    private function calc($model, $key) {
-        $res = $model['qty_'.$key] * $model['price_'.$key];
-        return $res; //=='0' ? '--' : $res;
-    }
-
-    private function subTotal($model) {
-        $total = 0;
-        foreach( ['1_24','25_99','100_499','500_999','1000_Plus'] as $key ) {
-            $total += calc($model,$key);
-        }
-        return $total;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
 
 }

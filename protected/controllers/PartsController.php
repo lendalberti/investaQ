@@ -31,7 +31,7 @@ class PartsController extends Controller {
 			$url        = 'http://mongoa/parts/*/500/?q='.$item;	  // mongoa for my local use
 
 			$tmp        = file_get_contents($url);
-			pDebug("Found item: ", $tmp);
+			//pDebug("Found item: ", $tmp);
 
 			echo ( isset($_GET['dialog']) ?  $this->formatDialog($tmp) : $tmp );
 

@@ -32,8 +32,8 @@ class UsersController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
-				'users'=>array('@'),
+				'actions'=>array('create','update', 'profile', 'profileUpdate', 'uploadSig'),
+				'expression' => '$user->isLoggedIn',
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions'=>array('admin','delete'),
@@ -44,6 +44,113 @@ class UsersController extends Controller
 			),
 		);
 	}
+
+
+
+	
+	public function actionProfile($id) {
+		pDebug('actionProfile()');
+
+		if ($id != Yii::app()->user->id) {
+			return;
+		}
+
+		$this->render('myProfile',array(
+			'model'=>$this->loadModel($id),
+		));
+	}
+
+	// --------------------------------------------------
+	public function actionProfileUpdate($id) {
+		if ($id != Yii::app()->user->id) {
+			return;
+		}
+
+		pDebug('actionProfileUpdate() - _POST:', $_POST);
+		pDebug('actionProfileUpdate() - _FILES:', $_FILES);
+
+		if ( isset($_POST['user_sig_file']) ) {
+			$sig_file = $_POST['user_sig_file'];
+		}
+		else {
+			$sig_file = null;
+		}
+
+		$model=$this->loadModel($id);
+		if ( isset($_POST['Users']) )	{
+			$model->attributes = $_POST['Users'];
+			$model->title      = $_POST['Users']['title'];
+			$model->phone      = $_POST['Users']['phone'];
+			$model->fax        = $_POST['Users']['fax'];
+			$model->sig        = $_POST['Users']['sig'];
+
+			// if ( $sig_file ) {
+			// 	$model->sig    = $sig_file;
+			// }
+
+			if ( $model->save() ) {
+				pDebug("actionProfileUpdate() - profile saved:", $model->attributes);
+				$this->redirect(array('profile','id'=>$model->id));
+			}
+			else {
+				pDebug("actionProfileUpdate() - Can't update profile; error: ",  $model->errors);
+			}
+		}
+
+		$this->render('myProfileUpdate',array(
+			'model'=>$model,
+		));
+	}
+
+
+	public function actionUploadSig($id) {
+		$model = $this->loadModel($id);
+
+		if ( isset($_FILES["uploaded_file"]) ) {
+			if ( $_FILES["uploaded_file"]['name']  )  {
+
+				pDebug("upload file:", $_FILES["uploaded_file"]);
+
+				$name = $_FILES["uploaded_file"]["name"];
+				$from = $_FILES["uploaded_file"]["tmp_name"];
+				$size = $_FILES["uploaded_file"]["size"];
+				$type = $_FILES["uploaded_file"]["type"];
+
+				if ( $size > Yii::app()->params['max_upload_size'] ) {
+					$uploadMessage = "File is too large; needs to be less than " . Yii::app()->params['max_upload_size'] . ' bytes';
+				}
+				else {
+					$model->sig = $name;
+					if ( $model->save() ) {
+						pDebug("actionUploadSig() - model saved.");
+
+						$new_file = 'user'.Yii::app()->user->id; 							// "user1", "user2", "user3", etc.
+						$to   = Yii::app()->params['profile_sig'] . '/' . $new_file;
+						
+					 	if ( move_uploaded_file( $from, $to ) ) {
+					 		`convert -resize 240x140 $to $to.png; rm -f $to`;
+						    $uploadMessage ="File successfully uploaded; moved from [$from] to [$to]";
+						}
+					}
+					else {
+						pDebug("actionUploadSig() - error: can't save model with sig",  $model->errors);
+					}
+					}
+			}
+			else {
+				$uploadMessage = "Nothing to upload.";
+			}
+		}
+
+		$this->render('uploadSig',array(
+			'model'         => $model,
+			'uploadMessage' => $uploadMessage,
+		));
+
+	}  // END_OF_FUNCTION actionUploadSig()
+
+
+
 
 	/**
 	 * Displays a particular model.

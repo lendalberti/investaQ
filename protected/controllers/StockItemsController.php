@@ -83,26 +83,28 @@ class StockItemsController extends Controller
 	 * If update is successful, the browser will be redirected to the 'view' page.
 	 * @param integer $id the ID of the model to be updated
 	 */
-	public function actionUpdate($id)
-	{
-		$model=$this->loadModel($id);
+	public function actionUpdate($id) 	{
+		$model = $this->loadModel($id);
+		pDebug("StockItemsController::actionUpdate() - model=", $model);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['StockItems'])) {
+		if ( isset($_POST['StockItems']) ) {
 			$model->attributes=$_POST['StockItems'];
 
 			if ( $this->moreThanAvailable($model) ) {
 				$model->addError('', "Can't specify more than what's available.");
-				$this->render('update',array(
-					'model'=>$model,
-				));
+				// $this->render('update',array(
+				// 	'model'=>$model,
+				// ));
+				// return;
 			}
-
-			if($model->save())
+			else {
+				if($model->save())
 				// $this->redirect(array('view','id'=>$model->id));
 				$this->redirect('../../quotes/view?id='.$model->quote_id);
+			}
 		}
 
 		$this->render('update',array(
@@ -130,8 +132,7 @@ class StockItemsController extends Controller
 	 * If deletion is successful, the browser will be redirected to the 'admin' page.
 	 * @param integer $id the ID of the model to be deleted
 	 */
-	public function actionDelete($id)
-	{
+	public function actionDelete($id)	{
 		if(Yii::app()->request->isPostRequest)
 		{
 			// we only allow deletion via POST request

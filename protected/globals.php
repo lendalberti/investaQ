@@ -1,17 +1,44 @@
 <?php
 
+    function fp($n) {
+        setlocale(LC_MONETARY, 'en_US');
+        $res = money_format("%6.2n", trim($n) );
+        return $res;
+    }
 
-    // ------------------------------------------------
-    function getQuotePartNumbers( $quote_id ) {
+    function fq($n) {
+        return $n=='' ? '0' : $n;
+    }
+
+    function calc($model, $key) {
+        $res = $model['qty_'.$key] * $model['price_'.$key];
+        return $res; //=='0' ? '--' : $res;
+    }
+
+    function subTotal($model) {
+        $total = 0;
+        foreach( ['1_24','25_99','100_499','500_999','1000_Plus'] as $key ) {
+            $total += calc($model,$key);
+        }
+        return $total;
+    }
+
+
+
+
+    // ------------------------------------------------ TODO: rename this since we're just getting a count
+    function getQuotePartNumbers( $quote_id ) {     //        - use SELECT COUNT(*)
         $part_no = ''; 
 
         $sql = "SELECT part_no FROM stock_items WHERE quote_id = $quote_id";
         $results = Yii::app()->db->createCommand($sql)->queryAll();
 
-        foreach( $results as $m ) {
-            $part_no .= $m['part_no'].'<br />';
-        }
-        return $part_no;
+        return count($results); 
+
+        // foreach( $results as $m ) {
+        //     $part_no .= $m['part_no'].'<br />';
+        // }
+        // return $part_no;
     }
 
 

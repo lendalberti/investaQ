@@ -120,18 +120,35 @@ span.open_close:hover {
     margin-top: 50px;
 }
 
-#div_Submit {
+#div_SubmitDone {
 	margin-top: 20px;
 	display: none;
 }
 
-#div_Submit > input {
+#div_SubmitDone > input {
 	background-color: lightgray;
     font-size: 1.2em;
 }
 
 
 </style>
+
+<script>
+
+	$(document).ready(function() {
+
+		$(window).on('beforeunload', function(){
+			return '';
+		})
+
+	});
+
+
+</script>
+
+
+
+
 
 <form id='quoteForm' name='quoteForm' method='post'>
 
@@ -219,38 +236,6 @@ span.open_close:hover {
 
 
 	<!-- ################################################################################################################################################################  -->
-	<div id='section_TermsConditions'>
-
-		<div class='quote_section_heading'>
-			<span class='open_close'>&minus;</span>
-			<span style='padding-left: 350px;'>Quote Terms</span>
-		</div>
-
-		<div  class='my_container'>
-			<div id="box5" style='border: 0px solid green; width: 45%; margin: 5px;'>
-				<span class='terms'>Terms & Conditions</span><textarea rows="4" cols="60" name="quote_Terms" id="quote_Terms"></textarea>
-			</div>
-
-			<div id="box6" style='border: 0px solid blue; width: 45%; margin: 5px'>
-				<span class='terms'>Customer Ackowledgment<textarea rows="4" cols="60" name="quote_CustAck" id="quote_CustAck"></textarea>
-			</div>
-
-			<div id="box7" style='border: 0px solid orange; width: 45%; margin: 5px;'>
-				<span class='terms'>Risl<textarea rows="4" cols="60" name="quote_RISL" id="quote_RISL"></textarea>
-			</div>
-
-			<div id="box8" style='border: 0px solid red; width: 45%; margin: 5px;'>
-				<span class='terms'>Manufacturing Lead Time<textarea rows="4" cols="60" name="quote_MfgLeadTime" id="quote_MfgLeadTime"></textarea>
-			</div>
-			
-			<div id="box9" style='border: 0px solid cyan; width: 95%; margin: 5px;'>
-				<span class='terms'>Additional Notes<textarea rows="4" cols="135" name="quote_Notes" id="quote_Notes"></textarea>
-			</div>
-		</div>
-	</div>
-
-
-	<!-- ################################################################################################################################################################  -->
 	<div id='section_PartsLookup'>
 
 		<div class='quote_section_heading'>
@@ -259,9 +244,8 @@ span.open_close:hover {
 		</div>
 
 		<div  class='my_container'>
-			<div>
-				<!-- // < ?php echo $this->renderPartial('_items', array('model'=>$data['model'])); ?> -->
-			</div>
+			<div id='selectedParts' style='width: 100%;'></div>
+
 			<div id="box4">
 				<table id='quote_parts'>
 						<tr>  
@@ -298,10 +282,40 @@ span.open_close:hover {
 		</div>
 	</div>
 
-	<div id='div_Submit'> <input type='button' value='Done'> </div>
 
+	<!-- ################################################################################################################################################################  -->
+	<div id='section_TermsConditions'>
+
+		<div class='quote_section_heading'>
+			<span class='open_close'>&minus;</span>
+			<span style='padding-left: 350px;'>Quote Terms</span>
+		</div>
+
+		<div  class='my_container'>
+			<div id="box5" style='border: 0px solid green; width: 45%; margin: 5px;'>
+				<span class='terms'>Terms & Conditions</span><textarea rows="4" cols="50" name="quote_Terms" id="quote_Terms"></textarea>
+			</div>
+
+			<div id="box6" style='border: 0px solid blue; width: 45%; margin: 5px'>
+				<span class='terms'>Customer Ackowledgment<textarea rows="4" cols="50" name="quote_CustAck" id="quote_CustAck"></textarea>
+			</div>
+
+			<div id="box7" style='border: 0px solid orange; width: 45%; margin: 5px;'>
+				<span class='terms'>Risl<textarea rows="4" cols="50" name="quote_RISL" id="quote_RISL"></textarea>
+			</div>
+
+			<div id="box8" style='border: 0px solid red; width: 45%; margin: 5px;'>
+				<span class='terms'>Manufacturing Lead Time<textarea rows="4" cols="50" name="quote_MfgLeadTime" id="quote_MfgLeadTime"></textarea>
+			</div>
+			
+			<div id="box9" style='border: 0px solid cyan; width: 95%; margin: 5px;'>
+				<span class='terms'>Additional Notes<textarea rows="4" cols="100" name="quote_Notes" id="quote_Notes"></textarea>
+			</div>
+		</div>
+	</div>
 
     
+	<div id='div_SubmitDone'> <input type='button' value='Done'> </div>
 
 
 
