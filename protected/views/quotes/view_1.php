@@ -94,14 +94,14 @@ div.my_container > div > table > tbody > tr > td:nth-child(odd) {
 }
 
 span.open_close {
-	display: none;
+	/*display: none;*/
 	padding-left: 10px;
 }
 
-#section_PartsLookup,
-#section_TermsConditions {
+#section_PartsLookup {
 	display: none;
 }
+
 
 span.open_close:hover {
 	cursor: pointer;
@@ -116,48 +116,42 @@ span.open_close:hover {
 	text-align: center;
 }
 
-#section_CustomerContact {
-    margin-top: 50px;
+span.terms {
+	font-variant: small-caps;
+	color: black;
 }
 
-#div_Submit {
-	margin-top: 20px;
-	display: none;
+span.volume {
+	font-size: .8em;
+	color: blue;
 }
-
-#div_Submit > input {
-	background-color: lightgray;
-    font-size: 1.2em;
-}
-
 
 </style>
+
+<script>
+
+	$(document).ready(function() {
+
+		
+
+	});
+
+</script>
+
+<div style='height: 100px; border: 0px solid gray;'>
+	<div style='color: #2C6371;  font-size: 2em; border: 0px solid green; float: left; padding-right: 10px;' id='header_PageTitle'>Viewing Stock Quote No.</div>
+	<div style='color: #a31128;  font-size: 1.5em; border: 0px solid red; font-family: courier.;padding-top:  5px; font-family: courier.;padding-top:  5px;' id='header_QuoteNo'><?php echo $data['model']->quote_no; ?> </div>
+</div>
+
 
 <form id='quoteForm' name='quoteForm' method='post'>
 
 	<!-- ################################################################################################################################################################  -->
 	<div id='section_CustomerContact'>
-
 		<div class='quote_section_heading'>
-			<span class='open_close'>&minus;</span>
 			<span style='padding-left: 350px;'>Customer Information</span>
 		</div>
-
-		<div id='selection_container'>
-			<span style='padding-left: 50px; font-weight: bold;'><span class='required'> * </span>Contact Source
-				<select name='Quote[source_id]' id='Quote_source_id'>
-					<?php
-						echo "<option value='0'></option>";
-						foreach( $data['sources'] as $c ) {
-							echo "<option value='".$c->id."'>".$c->name."</option>";
-						}
-					?>
-				</select>
-			</span>
-			<span style='padding-left: 120px;'><input type='text' name='Search[typeahead]' id='search_typeahead' size='40' placeholder='Search for...'/> </span>
-			<br /><span style='margin-left: 400px;'>( test: Babbleblab, 44 Hazelcrest Junction)</span>
-		</div>
-										
+			
 		<div class='my_container'>
 			<div id='heading_container' style='display: none;'>
 				<span id='span_SelectCustomer' style='display: none;'> Select customer  <select name='Customer[select]' id='Customer_select'> </select><span id='add_NewCustomer'>New</span> </span>
@@ -215,18 +209,18 @@ span.open_close:hover {
 		</div>
 	</div>
 
-	<div id='div_ContinueReset' style='padding: 20px;'> <input type='submit' value='Continue'> <span id='reset_form'>Reset Form</span> </div>
+	
 
 
 	<!-- ################################################################################################################################################################  -->
 	<div id='section_TermsConditions'>
 
 		<div class='quote_section_heading'>
-			<span class='open_close'>&minus;</span>
 			<span style='padding-left: 350px;'>Quote Terms</span>
 		</div>
 
 		<div  class='my_container'>
+			
 			<div id="box5" style='border: 0px solid green; width: 45%; margin: 5px;'>
 				<span class='terms'>Terms & Conditions</span><textarea rows="4" cols="60" name="quote_Terms" id="quote_Terms"></textarea>
 			</div>
@@ -246,37 +240,129 @@ span.open_close:hover {
 			<div id="box9" style='border: 0px solid cyan; width: 95%; margin: 5px;'>
 				<span class='terms'>Additional Notes<textarea rows="4" cols="135" name="quote_Notes" id="quote_Notes"></textarea>
 			</div>
+
 		</div>
+
 	</div>
 
 
+
 	<!-- ################################################################################################################################################################  -->
-	<div id='section_PartsLookup'>
+	<div id='section_Parts'>
 
 		<div class='quote_section_heading'>
-			<!-- <span class='open_close'>&minus;</span> -->
 			<span style='padding-left: 350px;'>Inventory Parts Lookup</span>
 		</div>
 
 		<div  class='my_container'>
-			<div>
-				<!-- // < ?php echo $this->renderPartial('_items', array('model'=>$data['model'])); ?> -->
+
+			<div style='overflow: auto; border: 1px solid red; width: 97%;'>
+				<?php
+
+				    function fp($n) {
+				        setlocale(LC_MONETARY, 'en_US');
+				        $res = money_format("%6.2n", trim($n) );
+				        return $res;
+				    }
+
+				    function fq($n) {
+				        return $n=='' ? '0' : $n;
+				    }
+
+				    function calc($model, $key) {
+				        $res = $model['qty_'.$key] * $model['price_'.$key];
+				        return $res; //=='0' ? '--' : $res;
+				    }
+
+				    function subTotal($model) {
+				        $total = 0;
+				        foreach( ['1_24','25_99','100_499','500_999','1000_Plus'] as $key ) {
+				            $total += calc($model,$key);
+				        }
+				        return $total;
+				    }
+
+					$customer_id = $data['model']->customer_id;
+
+					$edit   = Yii::app()->request->baseUrl . "/images/edit_glyph_33x30.png"; 
+			 		$delete = Yii::app()->request->baseUrl . "/images/delete_glyph.png";
+			 		$pdf    = Yii::app()->request->baseUrl . "/images/pdf_32x32.png";
+
+					$sql = "SELECT * FROM stock_items WHERE  quote_id = " . $data['model']->id;
+					$command = Yii::app()->db->createCommand($sql);
+					$results = $command->queryAll();
+
+					foreach( $results as $key => $i ) { 
+			 			echo "<table style='border: 1px solid blue; width: 100%;' class='items_table'>";
+			 			// echo "<tr><thead>";
+			 			// echo "<th>Part No.</th>";
+			 			// echo "<th>Manufacturer</th>";
+			 			// echo "<th>Supplier</th>";
+			 			// echo "<th>Date Code</th>";
+			 			// echo "<th>Qty</th>";
+			 			// echo "<th>Price</th>";
+			 			// echo "<th>Total</th>";
+			 			// echo "</thead></tr>";
+
+			 			echo "<td>".$i['part_no']."</td>";
+			 			echo "<td>".$i['manufacturer']."</td>";
+			 			echo "<td>".$i['supplier']."</td>";
+			 			echo "<td>".$i['date_code']."</td>";
+			 			echo "<td colspan='3'><table style='text-align: center;border: 1px solid orange;' id='table_quote_pricing' >";
+
+			 			echo "<tr><thead><th style='text-align: right;'>Qty</th>";
+			 			echo "<th style='text-align: right;'>Price</th>";
+			 			echo "<th style='text-align: right;'>Total</th></thead></tr>";
+
+			 			if ( fq($i['qty_1_24']) != '0' ) {
+				 			echo "<tr>  <td style='text-align: right;'> ".fq($i['qty_1_24'])."</td>        <td style='text-align: right;'><span class='volume'>1-24</span>"      .fp($i['price_1_24'])."</td>      <td style='text-align: right;'> ".fp(calc($i,'1_24'))."</td>   </tr>"; 
+				 		}
+
+				 		if ( fq($i['qty_25_99']) != '0' ) {
+				 			echo "<tr> <td style='text-align: right;'> ".fq($i['qty_25_99'])."</td>        <td style='text-align: right;'><span class='volume'>25-99</span>"     .fp($i['price_25_99'])."</td>     <td style='text-align: right;'> ".fp(calc($i,'25_99'))."</td>   </tr>"; 
+				 		}
+
+				 		if ( fq($i['qty_100_499']) != '0' ) {
+				 			echo "<tr> <td style='text-align: right;'> ".fq($i['qty_100_499'])."</td>      <td style='text-align: right;'><span class='volume'>100-499</span>"   .fp($i['price_100_499'])."</td>   <td style='text-align: right;'> ".fp(calc($i,'100_499'))."</td>   </tr>"; 
+				 		}
+
+				 		if ( fq($i['qty_500_999']) != '0' ) {
+				 			echo "<tr> <td style='text-align: right;'> ".fq($i['qty_500_999'])."</td>      <td style='text-align: right;'><span class='volume'>500-999</span>"   .fp($i['price_500_999'])."</td>   <td style='text-align: right;'> ".fp(calc($i,'500_999'))."</td>   </tr>"; 
+				 		}
+
+				 		if ( fq($i['qty_1000_Plus']) != '0' ) {
+				 			echo "<tr> <td style='text-align: right;'> ".fq($i['qty_1000_Plus'])."</td>    <td style='text-align: right;'><span class='volume'>1000+</span>"     .fp($i['price_1000_Plus'])."</td> <td style='text-align: right;'> ".fp(calc($i,'1000_Plus'))."</td>   </tr>"; 
+				 		}
+
+						if ( fq($i['qty_Base']) != '0' ) {
+				 			echo "<tr> <td style='text-align: right;'> ".fq($i['qty_Base'])."</td>    <td style='text-align: right;'><span class='volume'>Base</span>"     .fp($i['price_Base'])."</td> <td style='text-align: right;'> ".fp(calc($i,'Base'))."</td>   </tr>"; 
+				 		}
+
+						if ( fq($i['qty_Custom']) != '0' ) {
+				 			echo "<tr> <td style='text-align: right;'> ".fq($i['qty_Custom'])."</td>    <td style='text-align: right;'><span class='volume'>Custom</span>"     .fp($i['price_Custom'])."</td> <td style='text-align: right;'> ".fp(calc($i,'Custom'))."</td>   </tr>"; 
+				 		}
+						
+						echo "</td></table></table>";
+				 	}
+			 	?>
+
 			</div>
+
 			<div id="box4">
-				<table id='quote_parts'>
+				<!-- <table id='quote_parts'>
 						<tr>  
 							<td style='text-align: center;' colspan='2'>Lookup by:
 									 <select id="parts_SearchBy">
 						                  <option value=""></option>
 						                  <option value="1" selected>Part Number</option>
-						                  <!-- <option value="3">Manufacturer</option> -->
+						                  
 						            </select>     
 				            
 				            	<input id="parts_Searchfield" class="parts_Searchfield" type="text"  />  
 						   	    <input id="parts_Searchbutton" class="parts_Searchbutton" type="button" value="Find" /><span> Test part no. AD5555CRUZ</span>
 					   	    </td>
 				   	    </tr>
-				</table>
+				</table> -->
 
 				<table id='results_table'>
 					<thead>
@@ -297,13 +383,6 @@ span.open_close:hover {
 			</div>  <!--  box4  -->
 		</div>
 	</div>
-
-	<div id='div_Submit'> <input type='button' value='Done'> </div>
-
-
-    
-
-
 
 </form>
 

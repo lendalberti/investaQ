@@ -79,6 +79,81 @@ class QuotesController extends Controller
 		// $data['quoteAttachments'] = Attachments::model()->findAll( $criteria);
 		// pDebug('QuotesController::actionView() - quoteAttachments:', $data['quoteAttachments']);
 
+
+
+
+		$customer_id = $data['model']->customer_id;
+
+		$edit   = Yii::app()->request->baseUrl . "/images/edit_glyph_33x30.png"; 
+ 		$delete = Yii::app()->request->baseUrl . "/images/delete_glyph.png";
+ 		$pdf    = Yii::app()->request->baseUrl . "/images/pdf_32x32.png";
+
+		$sql = "SELECT * FROM stock_items WHERE  quote_id = " . $data['model']->id;
+		$command = Yii::app()->db->createCommand($sql);
+		$results = $command->queryAll();
+
+		$data['items'] = <<<EOT
+
+<table id='items_table'>
+	<thead>
+		<tr>
+			<th>Part No.</th>
+			<th>Manufacturer</th>
+			<th>Date Code</th>
+			<th>Quantity</th>
+			<th>Price</th>
+			<th>Total</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		<tr>
+			<td>FJB5555TM</td>
+			<td>FSC</td>
+			<td></td>
+			<td>200</td>
+			<td>$ 2.00</td>
+			<td>$ 400.00</td>
+		</tr>
+		<tr>
+			<td>FJB5555TM</td>
+			<td>FSC</td>
+			<td></td>
+			<td>200</td>
+			<td>$ 2.00</td>
+			<td>$ 400.00</td>
+		</tr>
+		<tr>
+			<td>FJB5555TM</td>
+			<td>FSC</td>
+			<td></td>
+			<td>200</td>
+			<td>$ 2.00</td>
+			<td>$ 400.00</td>
+		</tr>
+		<tr>
+			<td>FJB5555TM</td>
+			<td>FSC</td>
+			<td></td>
+			<td>200</td>
+			<td>$ 2.00</td>
+			<td>$ 400.00</td>
+		</tr>
+		<tr>
+			<td>FJB5555TM</td>
+			<td>FSC</td>
+			<td></td>
+			<td>200</td>
+			<td>$ 2.00</td>
+			<td>$ 400.00</td>
+		</tr>
+
+	</tbody>
+</table>
+
+EOT;
+
+
 		$this->render('view',array(
 			'data'=>$data,
 		));
@@ -750,7 +825,28 @@ EOT;
 	}
 
 
+	private function fp($n) {
+        setlocale(LC_MONETARY, 'en_US');
+        $res = money_format("%6.2n", trim($n) );
+        return $res;
+    }
 
+    private function fq($n) {
+        return $n=='' ? '0' : $n;
+    }
+
+    private function calc($model, $key) {
+        $res = $model['qty_'.$key] * $model['price_'.$key];
+        return $res; //=='0' ? '--' : $res;
+    }
+
+    private function subTotal($model) {
+        $total = 0;
+        foreach( ['1_24','25_99','100_499','500_999','1000_Plus'] as $key ) {
+            $total += calc($model,$key);
+        }
+        return $total;
+    }
 
 
 

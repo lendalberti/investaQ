@@ -32,6 +32,13 @@ $(document).ready(function() {
 	//---------------------------------------------------------------------------------------------------------------------
     //-------- Event Handlers  --------------------------------------------------------------------------------------------    
     //---------------------------------------------------------------------------------------------------------------------
+
+
+    $('#div_HomeButton > input').on('click', function() {
+        window.location = myURL + 'index';
+    });
+
+
     $('#quoteForm').submit(function( e ) {  //  click "Continue"
     	e.preventDefault();
     	if ( formValidated() ) { 		
@@ -156,12 +163,12 @@ $(document).ready(function() {
     	window.location = myURL + 'view?id='+quoteID;
     })
 
-    $('[id^=edit_quote_]').on('click', function() { //   Edit quote  
+    $('[id^=quote_edit_]').on('click', function() { //   Edit quote  
         var quoteID = getThisID( $(this) ); 
         alert('editing this quote...' + quoteID);
     })
 
-    $('[id^=delete_quote_]').on('click', function() { //   Delete quote  
+    $('[id^=quote_delete_]').on('click', function() { //   Delete quote  
         var quoteID = getThisID( $(this) ); 
         if ( confirm("Are you sure you want to delete this quote?" ) ) {
             $.ajax({
@@ -252,6 +259,11 @@ $(document).ready(function() {
     //---------------------------------------------------------------------------------------------------------------------
     //-------- Functions --------------------------------------------------------------------------------------------------    
     //---------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
     $(function() {  // Search for either Customer or Contact using typeahead, autocompletion 
         $( "#search_typeahead" ).autocomplete({
             source: searchURL,

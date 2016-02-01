@@ -3,12 +3,14 @@
 
 <style>
 
+
 div.my_container {
 	padding: 5px;
 	border: 1px solid lightgray;
 	height: 100%; 
 	overflow: auto;
 }
+
 
 div.my_container > div {
 	float: left;
@@ -102,6 +104,9 @@ span.open_close {
 	display: none;
 }
 
+#section_Parts {
+	margin-top: 10px;
+}
 
 span.open_close:hover {
 	cursor: pointer;
@@ -116,34 +121,51 @@ span.open_close:hover {
 	text-align: center;
 }
 
-/*#section_CustomerContact {  
-    margin-top: 50px;
-}*/
+span.terms {
+	font-variant: small-caps;
+	color: black;
+}
+
+span.volume {
+	font-size: .8em;
+	color: blue;
+}
+
+div.quote_section_heading {
+	text-align: center;
+}
+
+#div_HomeButton > input {
+	background-color: lightgray;
+    font-size: 1.2em;
+    margin: 20px 0px 0px 10px;
+}
+
+
 
 </style>
 
-<script>
-
-	$(document).ready(function() {
-
-		// $('#dashboard_div').hide();
-
-	});
-
-</script>
 
 <div style='height: 100px; border: 0px solid gray;'>
 	<div style='color: #2C6371;  font-size: 2em; border: 0px solid green; float: left; padding-right: 10px;' id='header_PageTitle'>Viewing Stock Quote No.</div>
 	<div style='color: #a31128;  font-size: 1.5em; border: 0px solid red; font-family: courier.;padding-top:  5px; font-family: courier.;padding-top:  5px;' id='header_QuoteNo'><?php echo $data['model']->quote_no; ?> </div>
+
+	<br />
+	<?php 
+		$edit   = Yii::app()->request->baseUrl . "/images/edit_glyph_33x30.png"; 
+ 		$delete = Yii::app()->request->baseUrl . "/images/delete_glyph.png";
+ 		$pdf    = Yii::app()->request->baseUrl . "/images/pdf_32x32.png";
+ 		echo "<img id='quote_edit_".$data['model']['id']."' title='Edit this quote' src='$edit' /><img id='quote_delete_".$data['model']['id']."' title='Delete this quote' src='$delete' />";
+ 	?>
 </div>
 
 
-<form id='quoteForm' name='quoteForm' method='post'>
+<!-- <form id='quoteForm' name='quoteForm' method='post'> -->
 
 	<!-- ################################################################################################################################################################  -->
 	<div id='section_CustomerContact'>
 		<div class='quote_section_heading'>
-			<span style='padding-left: 350px;'>Customer Information</span>
+			<span>Customer Information</span>
 		</div>
 			
 		<div class='my_container'>
@@ -203,82 +225,102 @@ span.open_close:hover {
 		</div>
 	</div>
 
-	<!-- <div id='div_ContinueReset' style='padding: 20px;'> <input type='submit' value='Continue'> <span id='reset_form'>Reset Form</span> </div> -->
-
-
-
 	<!-- ################################################################################################################################################################  -->
 	<div id='section_TermsConditions'>
 
 		<div class='quote_section_heading'>
-			<span style='padding-left: 350px;'>Terms &amp; Conditions</span>
+			<span>Quote Terms</span>
 		</div>
 
 		<div  class='my_container'>
-			<div id="box5">
-				Terms &amp; Conditions go here...
-			</div>  <!--  box5  -->
+			
+			<div id="box5" style='border: 0px solid green; width: 45%; margin: 5px;'>
+				<span class='terms'>Terms & Conditions</span><textarea rows="4" cols="60" name="quote_Terms" id="quote_Terms"></textarea>
+			</div>
+
+			<div id="box6" style='border: 0px solid blue; width: 45%; margin: 5px'>
+				<span class='terms'>Customer Ackowledgment<textarea rows="4" cols="60" name="quote_CustAck" id="quote_CustAck"></textarea>
+			</div>
+
+			<div id="box7" style='border: 0px solid orange; width: 45%; margin: 5px;'>
+				<span class='terms'>Risl<textarea rows="4" cols="60" name="quote_RISL" id="quote_RISL"></textarea>
+			</div>
+
+			<div id="box8" style='border: 0px solid red; width: 45%; margin: 5px;'>
+				<span class='terms'>Manufacturing Lead Time<textarea rows="4" cols="60" name="quote_MfgLeadTime" id="quote_MfgLeadTime"></textarea>
+			</div>
+			
+			<div id="box9" style='border: 0px solid cyan; width: 95%; margin: 5px;'>
+				<span class='terms'>Additional Notes<textarea rows="4" cols="135" name="quote_Notes" id="quote_Notes"></textarea>
+			</div>
+
 		</div>
-
 	</div>
-
-
-
-
-
-
-
-
-
-
-
 
 	<!-- ################################################################################################################################################################  -->
 	<div id='section_Parts'>
-
-		<div class='quote_section_heading'>
-			<span style='padding-left: 350px;'>Inventory Parts Lookup</span>
-		</div>
-
-		<div  class='my_container'>
+		
+		<div >
 			<div id="box4">
-				<!-- <table id='quote_parts'>
-						<tr>  
-							<td style='text-align: center;' colspan='2'>Lookup by:
-									 <select id="parts_SearchBy">
-						                  <option value=""></option>
-						                  <option value="1" selected>Part Number</option>
-						                  
-						            </select>     
-				            
-				            	<input id="parts_Searchfield" class="parts_Searchfield" type="text"  />  
-						   	    <input id="parts_Searchbutton" class="parts_Searchbutton" type="button" value="Find" /><span> Test part no. AD5555CRUZ</span>
-					   	    </td>
-				   	    </tr>
-				</table> -->
-
 				<table id='results_table'>
 					<thead>
 						<tr>
 							<th>Part Number</th>
-							<th>Mfg</th>
-							<th>Supplier</th>
-							<th>Lifecycle</th>
-							<th>Drawing</th>
-							<th>Carrier Type</th>
-							<th>MPQ</th>
-							<th>Quantity<br />Available</th>
+							<th>Manufacturer</th>
+							<th>Date Code</th>
+
+							<th>Quantity</th>
+							<th>Price</th>
+							<th>Total</th>
+
 						</tr>
 					</thead>
+					<tbody>
+						<tr>
+							<td>FJB5555TM</td>
+							<td>FSC</td>
+							<td>XYZ</td>
+
+							<td>200</td>
+							<td>$ 2.00</td>
+							<td>$ 400.00</td>
+
+							
+						</tr>
+						<tr>
+							<td>FJB5555TM</td>
+							<td>FSC</td>
+							<td>XYZ</td>
+
+							<td>200</td>
+							<td>$ 2.00</td>
+							<td>$ 400.00</td>
+
+							
+						</tr>
+						<tr>
+							<td>FJB5555TM</td>
+							<td>FSC</td>
+							<td>XYZ</td>
+
+							<td>200</td>
+							<td>$ 2.00</td>
+							<td>$ 400.00</td>
+
+							
+						</tr>
+					</tbody>
 
 				</table>
-
 			</div>  <!--  box4  -->
 		</div>
 	</div>
 
-</form>
 
-<div class='print' id="form_PartPricing" style='display: none'> pricing details content goes here </div>
+	<div id='div_HomeButton'> <input type='button' value='Home'> </div>
+
+
+
+<!-- <div class='print' id="form_PartPricing" style='display: none'> pricing details content goes here </div> -->
 
 <!--  fini --> 

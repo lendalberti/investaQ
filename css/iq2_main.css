@@ -451,6 +451,9 @@ table#fixed td, th {
 }
 
 
+img[id^='quote_pdf_']:hover,
+img[id^='quote_edit_']:hover,
+img[id^='quote_delete_']:hover,
 img[id^='item_pdf_']:hover,
 img[id^='item_edit_']:hover,
 img[id^='item_delete_']:hover,
