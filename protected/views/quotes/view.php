@@ -126,8 +126,9 @@
 	<div id='section_Parts'>
 		
 		<div >
-			<div id="box4">
-				<table id='results_table'>
+			<div id="box4" style='margin-top: 30px;'>
+				<span style='color: blue; text-decoration: underline; font-size: .9em;'>Add Part(s)</span> 
+				<table id='results_table' style='margin-top: 5px;'>
 					<thead>
 						<tr>
 							<th></th>
