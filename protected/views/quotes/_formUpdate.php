@@ -1,5 +1,7 @@
 <?php $this->layout = '//layouts/column1'; ?>
 
+<input type='hidden' id='return_URL' name='return_URL' value='<?php echo $_SERVER['REQUEST_URI'];  ?>'>
+
 
 <div style='height: 100px; border: 0px solid gray;'>
 	<div style='color: #2C6371;  font-size: 2em; border: 0px solid green; float: left; padding-right: 10px;' id='header_PageTitle'>Updating Stock Quote No.</div>
@@ -13,30 +15,33 @@
  		$email  = Yii::app()->request->baseUrl . "/images/New/mail.png";
  		$attach = Yii::app()->request->baseUrl . "/images/New/attachment.png";
 
- 	// 	echo "<img id='quote_edit_"  .$data['model']['id']."' title='Edit this quote'   src='$edit' />";
- 	// 	echo "<img id='quote_attach_".$data['model']['id']."' title='Attach a file'     src='$attach' />";
- 	// 	echo "<img id='quote_print_" .$data['model']['id']."' title='Print this quote'  src='$print' />";
- 	// 	echo "<img id='quote_email_" .$data['model']['id']."' title='Email this quote'  src='$email' />";
- 	// 	echo "<img id='quote_trash_" .$data['model']['id']."' title='Delete this quote' src='$trash' />";
- 		
-
- 		$q  = $data['model']->attributes; 
+ 		$q  = $data['model']; 
  		$cu = $data['customer'];
  		$co = $data['contact'];
 
+ 		$quote_id    = $q->id;
+ 		$customer_id = $cu->id;
+ 		$contact_id  = $co->id; 
+ 		$source_id   = $q->source_id;
+
  	?>
 </div>
+
+<form id='quoteUpdateForm' name='quoteUpdateForm' method='post'>
+
+	<input type='hidden' id='Quote_id'  name='Quote[id]' value='<?php echo $quote_id; ?>'>
 
 	<!-- ################################################################################################################################################################  -->
 	<div id='section_CustomerContact'>
 		<div class='quote_section_heading_View'>
 			<span>Customer Information</span>
-			<input type='hidden' id='returnUrl' value='<?php echo Yii::app()->request->baseUrl . 'quotes/update/' . $q->id ?>'>
+			<input type='hidden' id='returnUrl'       value='<?php echo Yii::app()->request->baseUrl . 'quotes/update/' . $quote_id  ?>'>
+			<input type='hidden' id='Quote_source_id' name='Quote[source_id]' value='<?php echo $source_id; ?>'>
 		</div>
 			
 		<div class='my_container'>
 		    <div id="box1">
-			    <input type='hidden' id='Customer_id' name='Customer[id]' value=''>
+			    <input type='hidden' id='Customer_id' name='Customer[id]' value='<?php echo $customer_id; ?>'>
 		     	<table>
 			       		<tr>  <td>Customer Name</td>            <td><input  readonly='readonly' type='text' id='Customer_name' name='Customer[name]'  value='<?php echo $cu->name; ?>' > </td> </tr>
 						<tr>  <td>Address1</td>                 <td><input  readonly='readonly' type='text' id='Customer_address1' name='Customer[address1]'  value='<?php echo $cu->address1; ?>'  > </td> </tr>
@@ -67,7 +72,7 @@
 		    </div>
 
 		    <div id="box3">
-		    	<input type='hidden' id='Contact_id' name='Contact[id]' value=''>  
+		    	<input type='hidden' id='Contact_id' name='Contact[id]' value='<?php echo $contact_id; ?>'>  
 			    <table>
 			    		<tr>  <td></td>                         <td style='text-align: right;'><span id='clearContactFields'>New Contact</span></td> </tr>
 				        <tr>  <td>Contact First Name</td>       <td><input  readonly='readonly' type='text' id='Contact_first_name' name='Contact[first_name]'   value='<?php echo $co->first_name; ?>' > </td> </tr>
@@ -84,6 +89,19 @@
 				        <tr>  <td>Country</td>                  <td><input  readonly='readonly' type='text' id='Contact_country_id' name='Contact[country_id]'   value='<?php echo $co->country->long_name; ?>'  > </td> </tr>
 			    </table>
 		    </div>
+
+		    <span style='padding-left: 50px; font-weight: bold;'><span class='required'> * </span>Contact Source
+				<select name='Quote[source_id]' id='Quote_source_id'>
+					<?php
+						echo "<option value='0'></option>";
+						foreach( $data['sources'] as $c ) {
+							$selected = ($c->id == $source_id ? 'selected' : null );
+							echo "<option value='".$c->id."' $selected>".$c->name."</option>";
+						}
+					?>
+				</select>
+			</span>
+
 		</div>
 	</div>
 
@@ -95,25 +113,25 @@
 		</div>
 
 		<div  class='my_container'>
-			
+
 			<div id="box5" style='border: 0px solid green; width: 45%; margin: 5px;'>
-				<span class='terms'>Terms &amp; Conditions</span><textarea rows="4" cols="50" name="quote_Terms" id="quote_Terms" ><?php echo $q['terms_conditions']; ?></textarea>
+				<span class='terms'>Terms &amp; Conditions</span><textarea rows="4" cols="50"  name="Quote[terms_conditions]"         id="Quote_terms_conditions" ><?php echo $q->terms_conditions; ?></textarea>
 			</div>
 
 			<div id="box6" style='border: 0px solid blue; width: 45%; margin: 5px'>
-				<span class='terms'>Customer Ackowledgment<textarea rows="4" cols="50" name="quote_CustAck" id="quote_CustAck" ><?php echo $q['customer_acknowledgment']; ?></textarea>
+				<span class='terms'>Customer Ackowledgment</span><textarea rows="4" cols="50"  name="Quote[customer_acknowledgment]" id="Quote_customer_acknowledgment" ><?php echo $q->customer_acknowledgment; ?></textarea>
 			</div>
 
 			<div id="box7" style='border: 0px solid orange; width: 45%; margin: 5px;'>
-				<span class='terms'>Risl<textarea rows="4" cols="50" name="quote_RISL" id="quote_RISL"  ><?php echo $q['risl']; ?></textarea>
+				<span class='terms'>Risl</span><textarea rows="4" cols="50"                    name="Quote[risl]"                    d="Quote_risl"  ><?php echo $q->risl; ?></textarea>
 			</div>
 
 			<div id="box8" style='border: 0px solid red; width: 45%; margin: 5px;'>
-				<span class='terms'>Manufacturing Lead Time<textarea rows="4" cols="50" name="quote_MfgLeadTime" id="quote_MfgLeadTime"  ><?php echo $q['manufacturing_lead_time']; ?></textarea>
+				<span class='terms'>Manufacturing Lead Time</span><textarea rows="4" cols="50" name="Quote[manufacturing_lead_time]" id="Quote_manufacturing_lead_time"  ><?php echo $q->manufacturing_lead_time; ?></textarea>
 			</div>
 			
 			<div id="box9" style='border: 0px solid cyan; width: 95%; margin: 5px;'>
-				<span class='terms'>Additional Notes<textarea rows="4" cols="100" name="quote_Notes" id="quote_Notes"  ><?php echo $q['additional_notes']; ?></textarea>
+				<span class='terms'>Additional Notes</span><textarea rows="4" cols="100"       name="Quote[terms_conditions]"         id="Quote_terms_conditions"  ><?php echo $q->additional_notes; ?></textarea>
 			</div>
 
 		</div>
@@ -123,8 +141,9 @@
 	<div id='section_Parts'>
 		
 		<div >
-			<div id="box4">
-				<table id='results_table'>
+			<div id="box4" style='margin-top: 30px;'>
+			    <span style='color: blue; text-decoration: underline; font-size: .9em;'>Add Part(s)</span> 
+				<table id='results_table' style='margin-top: 5px;'>
 					<thead>
 						<tr>
 							<th></th>
@@ -160,9 +179,10 @@
 
 
 	<div id='div_ActionButtons'> 
-		<input id='button_SaveQuoteChanges' type='button' value='Save Changes'> 
-		<input id='button_Cancel' type='button' value='Cancel'> 
+		<input id='button_SaveQuoteChanges' type='submit' value='Save Changes'> 
+		<input id='button_CancelQuoteChanges' type='button' value='Cancel'> 
 	</div> 
 
+</form>
 
 <!--  fini --> 

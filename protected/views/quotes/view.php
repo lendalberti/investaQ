@@ -1,6 +1,9 @@
 <?php $this->layout = '//layouts/column1'; ?>
 
 
+<input type='hidden' id='return_URL' name='return_URL' value='<?php echo $_SERVER['REQUEST_URI'];  ?>'>
+
+
 <div style='height: 100px; border: 0px solid gray;'>
 	<div style='color: #2C6371;  font-size: 2em; border: 0px solid green; float: left; padding-right: 10px;' id='header_PageTitle'>Viewing Stock Quote No.</div>
 	<div style='color: #a31128;  font-size: 1.5em; border: 0px solid red; font-family: courier.;padding-top:  5px; font-family: courier.;padding-top:  5px;' id='header_QuoteNo'><?php echo $data['model']->quote_no; ?> </div>
@@ -127,7 +130,7 @@
 		
 		<div >
 			<div id="box4" style='margin-top: 30px;'>
-				<span style='color: blue; text-decoration: underline; font-size: .9em;'>Add Part(s)</span> 
+				
 				<table id='results_table' style='margin-top: 5px;'>
 					<thead>
 						<tr>

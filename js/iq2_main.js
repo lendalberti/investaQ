@@ -1,9 +1,10 @@
 $(document).ready(function() {
 
-    var myURL           = getAbsolutePath();  
+   // var myURL           = getAbsolutePath();  
     var customerPrefill = true;
     var contactPrefill  = true;
     var searchURL       = myURL + 'search';
+    var myURL           = '/iq2/index.php/';
 
     console.log('myURL=['+myURL+']');
     console.log('returnUrl=[' + $('#returnUrl').val() + ']' );
@@ -26,7 +27,7 @@ $(document).ready(function() {
     });
 
     $('#add_quote').on('click', function() {
-        window.location = myURL + 'create';
+        window.location = myURL + 'quotes/create';
     });
 
     // set up DataTable
@@ -44,20 +45,58 @@ $(document).ready(function() {
 
 
     $('#button_Home').on('click', function() {
-        window.location = myURL + 'index';
+        window.location = myURL + 'quotes/index';
     });
 
-    $('#button_Cancel').on('click', function() { 
-        window.location = myURL + '../index';
+    $('#button_CancelQuoteChanges').on('click', function() { 
+        window.location = myURL + 'quotes/index';
     });
 
-    $('#button_SaveQuoteChanges').on('click', function() {
-        if ( formValidated() ) {    
-            window.location = myURL + '../index';
-        }
-        else {
-            alert("Missing required field(s)...");
-        }
+    $('#quoteUpdateForm').submit(function( e ) {  // click "Save Changes"
+        e.preventDefault();
+
+        var quoteID = $('#Quote_id').val(); 
+        var postData = $(this).serialize();
+        var returnURL =  $('#return_URL').val();
+
+        $.ajax({
+                type: "POST",
+                    url: myURL + 'quotes/update/' + quoteID,
+                    data: postData,
+                    success: function(results)  {
+                        console.log('results from quote update=['+results+']');
+
+                        if ( results == 0  ) { // update succeeded
+                            alert('Update succeeded');
+                            window.location = myURL + 'quotes/view/'+quoteID;
+                        }
+                        else {
+                            alert('Missing required fields...');
+                            return false;
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown)  {
+                        alert("Couldn't update quote " + quoteID + "; error=\n\n" + errorThrown);
+                    }
+        });
+
+
+
+       // if ( formValidated() ) {    // do server side validation instead
+            /*
+                 save changes
+
+                    - new contact
+                    - new source
+                    - new terms
+            */
+
+          //  window.location = myURL + '../index';
+        // }
+        // else {
+        //     alert("Can't save changes; missing required field(s)...");
+        // }
+
     });
 
 
@@ -69,7 +108,7 @@ $(document).ready(function() {
     		var postData = $(this).serialize();
     		$.ajax({
 	            type: "POST",
-		            url: myURL + 'create',
+		            url: myURL + 'quotes/create',
 		            data: postData,
 		            success: function(results)  {
 		            	var q = results.split('|');
@@ -104,7 +143,7 @@ $(document).ready(function() {
        // var postData = data.serialize();
         $.ajax({
             type: "POST",
-                url: myURL + 'update/' + quoteID,
+                url: myURL + 'quotes/update/' + quoteID,
                 //data: postData,
                 data: data,
                 success: function(results)  {
@@ -112,7 +151,7 @@ $(document).ready(function() {
                 }
         });
 
-         window.location = myURL + 'index';
+         window.location = myURL + 'quotes/index';
 
     });
 
@@ -171,7 +210,7 @@ $(document).ready(function() {
         var itemID = getID($(this));  
 
         var returnUrl = $('#returnUrl').val();
-        var u = myURL + "../../stockItems/update/" + itemID + '?returnUrl=' + returnUrl;
+        var u = myURL + "stockItems/update/" + itemID + '?returnUrl=' + returnUrl;
 
         console.log('url=' +  u);
         window.location.replace(u);
@@ -209,13 +248,15 @@ $(document).ready(function() {
 
     $('[id^=view_quote_]').on('click', function() { //   View quote  
     	var quoteID = getThisID( $(this) ); 
-    	window.location = myURL + 'view?id='+quoteID;
+    	window.location = myURL + 'quotes/view?id='+quoteID;
     })
 
     $('[id^=quote_edit_]').on('click', function() { //   Edit quote  
         var quoteID = getThisID( $(this) ); 
-        window.location = myURL + 'update/' + quoteID;  
+        window.location = myURL + 'quotes/update/' + quoteID; 
     })
+
+
 
     $('[id^=quote_trash_]').on('click', function() { //   Delete quote  
         var quoteID = getThisID( $(this) ); 
@@ -225,7 +266,7 @@ $(document).ready(function() {
                   type: 'POST',
                   data: { data: quoteID },
                   success: function(data, textStatus, jqXHR) {
-                    window.location = myURL + 'index';
+                    window.location = myURL + 'quotes/index';
                   },
                   error: function (jqXHR, textStatus, errorThrown)  {
                     alert("Couldn't delete quote " + quoteID + "; error=\n\n" + errorThrown);
@@ -244,7 +285,7 @@ $(document).ready(function() {
 
 		$('[id^=view_quote_]').on('click', function() {
 	    	var quoteID = getThisID( $(this) ); 
-	    	window.location = myURL + 'view?id='+quoteID;
+	    	window.location = myURL + 'quotes/view?id='+quoteID;
 	    })
 
     });
@@ -260,12 +301,12 @@ $(document).ready(function() {
   		var searchFor = $('#parts_Searchfield').val();
   		var searchBy  = $('#parts_SearchBy').val();
   		var parts     = '';
-  		var myURL     = '../parts/search?item=' + searchFor.trim().toUpperCase() + '&by=' + searchBy;
+        var url       = 'parts/search?item=' + searchFor.trim().toUpperCase() + '&by=' + searchBy;
 
   		if ( searchFor.trim() && searchBy ) {
   			$.ajax({
 	                type: 'GET',
-	                url: myURL,
+	                url: url,
 	                success: function (results) {
 	                	displayPartLookupResults(results);
 	                }
@@ -665,6 +706,11 @@ $(document).ready(function() {
     }
 
     function formValidated() {
+        console.log("Customer_id=" + $('#Customer_id').val() );
+        console.log("Contact_id=" + $('#Contact_id').val() );
+        console.log("Quote_source_id=" + $('#Quote_source_id').val() );
+
+
     	if ( $('#Customer_id').val() && $('#Contact_id').val() && $('#Quote_source_id').val()  > 0  ) {
     		return true;
     	}

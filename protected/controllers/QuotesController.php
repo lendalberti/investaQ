@@ -225,15 +225,25 @@ class QuotesController extends Controller
 		$quote_id = $id;
 
 		pDebug("actionUpdate() - _GET: ", $_GET);
-		pDebug("actionUpdate() - _POST: ", $_POST);
 
-		// if ( isset($_POST['Quotes']) )  {
-		// 	$model->attributes=$_POST['Quotes'];
-		// 	if ( $model->save() ) {
-		// 		$this->redirect(array('view','id'=>$model->id));
-		// 	}
-		// }
-		// else {
+		if ( $_POST ) {
+			pDebug("actionUpdate() - _POST: ", $_POST);
+			
+			// validate contact - if missing id, then assume it's a new contact, check for required fields
+			if ( $_POST['Quote']['source_id'] == 0 ) {
+				echo "can't update: error";
+				return;
+			}
+			else {
+				echo 0; // success
+				return;
+			}
+
+			// validate source id > 0
+
+			// update quote with source_id, contact_id, terms
+		}
+		else {
 			$data['model'] = $this->loadModel($quote_id);
 			pDebug('quote model attributes: ', $data['model']->attributes );
 
@@ -257,11 +267,12 @@ class QuotesController extends Controller
 
 			$data['model']    = $this->loadModel($quote_id);
 			$data['sources']  = Sources::model()->findAll( array('order' => 'name') );
-		// }
+			
 
-		$this->render('update',array(
-			'data'=>$data,
-		));
+			$this->render('update',array(
+				'data'=>$data,
+			));
+		}
 	}
 
 

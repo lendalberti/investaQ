@@ -20,42 +20,42 @@
 
 	[x] use newly created quote screen as view
 
-	[x] Edit quote link
+	[x] update quote link
 
 	[x] Delete quote link
+		[x] cascade db delete
 
 	[x] Contacts (* only 1 contact per quote for now)
 		[x] list of contacts is incorrect - FIX 
 
-	[x] Print link (create pdf)
-	[x] Attachment link
-	[x] Send email link
+	[ ] Print link (create pdf)
+
+	[ ] Attachments 
+		[ ] icon link
+		[ ] 
+
+	[ ] Send email link
 
 	[x] Items
 		[x] list of items is incorrect - FIX
 
-	[ ] Add item
-
-	[x] Edit item
-		[x] fix max available check
-		
-	[x] Delete item
 
 
-+-----------------+
-|  Edit  Quote    |
-+-----------------+
++-------------------+
+|  Update  Quote    |
++-------------------+
 
 	[x] copy form from 'view' and remove 'readOnly' attribute
 
+	[ ] new contact
 
+	[ ] add item(s)
 
-+------------------+
-|  Delete  Quote   |
-+------------------+
+	[ ] edit item
+		[x] fix max available check
+		[ ] use 'returnUrl' to return to update page NOT view
 
-	[x] cascade db delete
-
+	[ ] delete item
 
 
 
@@ -78,6 +78,9 @@
 	[x] inventory parts lookup
 	[x] if found, show terms & conditions section
 
+	Customer Not Found:
+		[ ] create new cust
+		[ ] create new contact
 
 
 	Part Found:
