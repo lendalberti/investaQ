@@ -47,7 +47,7 @@
 
 	[x] copy form from 'view' and remove 'readOnly' attribute
 
-	[ ] new contact
+	[s] new contact
 
 	[ ] add item(s)
 
@@ -56,6 +56,7 @@
 		[ ] use 'returnUrl' to return to update page NOT view
 
 	[ ] delete item
+		[ ] error - can't delete... exception
 
 
 

@@ -224,24 +224,61 @@ class QuotesController extends Controller
 	public function actionUpdate($id) 	{
 		$quote_id = $id;
 
-		pDebug("actionUpdate() - _GET: ", $_GET);
-
 		if ( $_POST ) {
 			pDebug("actionUpdate() - _POST: ", $_POST);
-			
-			// validate contact - if missing id, then assume it's a new contact, check for required fields
-			if ( $_POST['Quote']['source_id'] == 0 ) {
-				echo "can't update: error";
-				return;
-			}
-			else {
-				echo 0; // success
-				return;
-			}
 
 			// validate source id > 0
+			if ( $_POST['Quote']['source_id'] == 0 ) {
+				echo "error";
+				return;
+			}
+
+			// validate contact - if missing id, then assume it's a new contact, check for required fields
+			if ( $_POST['Contact']['id'] ) {
+				$contact_id =  $_POST['Contact']['id'];
+			}
+			else {
+				if ( 	$_POST['Contact']['first_name'] &&
+						$_POST['Contact']['last_name'] && 
+						$_POST['Contact']['email'] &&
+						$_POST['Contact']['title'] &&
+						$_POST['Contact']['phone1'] ) {
+					
+					// create new contact
+					$contactModel = new Contacts();
+					$contactModel->attributes =  $_POST['Contact'];
+					if ($contactModel->save()) {
+						pDebug('Saved new contact: ', $contactModel->attributes);
+						$contact_id = $contactModel->id;
+					}
+					else {
+						pDebug("actionUpdate() - can't save new contact; error=", $contactModel->errors );
+						echo 1;
+					}
+				}
+				else {
+					echo 1;
+				}
+			}
 
 			// update quote with source_id, contact_id, terms
+			$quoteModel = $this->loadModel($quote_id);
+
+			$quoteModel->contact_id              = $contact_id;
+			$quoteModel->source_id               = $_POST['Quote']['source_id'];
+    		$quoteModel->additional_notes        = $_POST['Quote']['additional_notes'];
+    		$quoteModel->terms_conditions        = $_POST['Quote']['terms_conditions'];
+    		$quoteModel->customer_acknowledgment = $_POST['Quote']['customer_acknowledgment'];
+    		$quoteModel->risl                    = $_POST['Quote']['risl'];
+    		$quoteModel->manufacturing_lead_time = $_POST['Quote']['manufacturing_lead_time'];
+
+         	if ($quoteModel->save()) {
+				pDebug('Saved quote changes: ', $quoteModel->attributes);
+			}
+			else {
+				pDebug("actionUpdate() - can't save quote changes; error=", $quoteModel->errors );
+				echo 1;
+			}
 		}
 		else {
 			$data['model'] = $this->loadModel($quote_id);

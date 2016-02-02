@@ -84,8 +84,10 @@ class StockItemsController extends Controller
 	 * @param integer $id the ID of the model to be updated
 	 */
 	public function actionUpdate($id) 	{
+		$return_url = isset($_GET['returnUrl']) ?  $_GET['returnUrl'] : null; 
+
 		$model = $this->loadModel($id);
-		pDebug("StockItemsController::actionUpdate() - model=", $model);
+		//pDebug("StockItemsController::actionUpdate() - model=", $model);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
@@ -95,15 +97,11 @@ class StockItemsController extends Controller
 
 			if ( $this->moreThanAvailable($model) ) {
 				$model->addError('', "Can't specify more than what's available.");
-				// $this->render('update',array(
-				// 	'model'=>$model,
-				// ));
-				// return;
 			}
 			else {
-				if($model->save())
-				// $this->redirect(array('view','id'=>$model->id));
-				$this->redirect('../../quotes/view?id='.$model->quote_id);
+				if($model->save()) {
+					$this->redirect( $return_url ? $return_url : '/iq2' );
+				}
 			}
 		}
 

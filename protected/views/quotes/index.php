@@ -2,12 +2,6 @@
 <div>
 	<span style="padding-top: 10px;display:inline-block; vertical-align:top" class='pageTitle'><?php echo $page_title;  ?></span>
 	<span id='add_quote' href='#'><img src='<?php echo Yii::app()->baseUrl; ?>/images/add1.png' width='48' height='48' title='Add a New Quote'></span>
-	
-
-	<input type='hidden' id='base_url' value='<?php echo Yii::app()->baseUrl; ?>'>
-
-	<!-- <br />< ?php echo $navigation_links;   ?> -->
-	
 </div>
 
 

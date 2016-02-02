@@ -35,7 +35,7 @@
 	<div id='section_CustomerContact'>
 		<div class='quote_section_heading_View'>
 			<span>Customer Information</span>
-			<input type='hidden' id='returnUrl'       value='<?php echo Yii::app()->request->baseUrl . 'quotes/update/' . $quote_id  ?>'>
+			<input type='hidden' id='returnUrl'       value='<?php echo Yii::app()->request->baseUrl . '/index.php/quotes/update/' . $quote_id  ?>'>
 			<input type='hidden' id='Quote_source_id' name='Quote[source_id]' value='<?php echo $source_id; ?>'>
 		</div>
 			
@@ -131,7 +131,7 @@
 			</div>
 			
 			<div id="box9" style='border: 0px solid cyan; width: 95%; margin: 5px;'>
-				<span class='terms'>Additional Notes</span><textarea rows="4" cols="100"       name="Quote[terms_conditions]"         id="Quote_terms_conditions"  ><?php echo $q->additional_notes; ?></textarea>
+				<span class='terms'>Additional Notes</span><textarea rows="4" cols="100"       name="Quote[additional_notes]"         id="Quote_additional_notes"  ><?php echo $q->additional_notes; ?></textarea>
 			</div>
 
 		</div>
