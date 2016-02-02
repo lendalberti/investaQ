@@ -59,18 +59,17 @@ class StockItemsController extends Controller
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-	public function actionCreate()
-	{
-		$model=new StockItems;
+	public function actionCreate() 	{
+		$return_url = isset($_GET['returnUrl']) ?  $_GET['returnUrl'] : null; 
+		$model = new StockItems;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['StockItems']))
-		{
+		if ( isset($_POST['StockItems']) ) {
 			$model->attributes=$_POST['StockItems'];
 			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+				$this->redirect( $return_url ? $return_url : '/iq2' );
 		}
 
 		$this->render('create',array(

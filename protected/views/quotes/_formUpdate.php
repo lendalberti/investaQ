@@ -140,40 +140,126 @@
 	<!-- ################################################################################################################################################################  -->
 	<div id='section_Parts'>
 		
-		<div >
+		<div>
+
 			<div id="box4" style='margin-top: 30px;'>
-			    <span style='color: blue; text-decoration: underline; font-size: .9em;'>Add Part(s)</span> 
-				<table id='results_table' style='margin-top: 5px;'>
+
+			<!-- 	<div style='margin: 10px 0px 50px 200px; '>
+					<table id='table_CurrentParts' style='width: 500px;border: 1px solid gray;margin-top: 5px;'>
+					<caption style='text-align: center;'>Quote Items</caption>
 					<thead>
 						<tr>
 							<th></th>
-							<th>Part Number</th>
-							<th>Manufacturer</th>
-							<th>Date Code</th>
-							<th style='width: 100px; border: 0px solid red; text-align: center;'>Quantity</th>
-							<th style='width: 100px; border: 0px solid green; text-align: center;'>Price</th>
-							<th style='width: 100px; border: 0px solid blue; text-align: center;'>Total</th>
+							<th style='font-size: .8em; padding: 0px;' >Part Number</th>
+							<th style='font-size: .8em; padding: 0px;' >Manufacturer</th>
+							<th style='font-size: .8em; padding: 0px; width: 100px; border: 0px solid red; text-align: center;'>Quantity</th>
+							<th style='font-size: .8em; padding: 0px; width: 100px; border: 0px solid green; text-align: center;'>Price</th>
+							<th style='font-size: .8em; padding: 0px; width: 100px; border: 0px solid blue; text-align: center;'>Total</th>
+						</tr>
+					</thead>
+					<tbody>
+							< ?php
+								foreach( $data['items'] as $i ) {
+									echo '<tr>';
+									echo '<td style="font-size: .8em; padding: 0px;">';
+									// echo "<img id='item_edit_"  . $i['id'] . "' title='Edit this item'    src='$edit' />";
+									// echo "<img id='item_trash_" . $i['id'] . "' title='Delete this item'  src='$trash' />";
+									
+									echo '<td style="font-size: .8em; padding: 0px;">' . $i['part_no'] . '</td>';
+									echo '<td style="font-size: .8em; padding: 0px;">' . $i['manufacturer'] . '</td>';
+									// echo '<td style="font-size: .8em; padding: 0px;">' . $i['date_code'] . '</td>';
+									echo '<td style="font-size: .8em; padding: 0px;" colspan="3" >' . $i['qpt'] . '</td>';
+									echo '</tr>';
+								}
+							?>
+					</tbody>
+					</table>
+					<span id='addPartToQuote'>Add item(s) to this quote</span>
+				</div> -->
+
+				<div style='margin: 10px 0px 50px 100px; '>
+					<table id='table_CurrentParts' style='width: 700px;border: 1px solid gray;margin-top: 5px;'>
+					<thead>
+						<tr>
+							<th></th>
+							<th style='font-size: .8em; padding: 0px;' >Part Number</th>
+							<th style='font-size: .8em; padding: 0px;' >Manufacturer</th>
+							<!-- <th style='font-size: .8em; padding: 0px;' >Date Code</th> -->
+							<th style='font-size: .8em; padding: 0px; width: 100px; border: 0px solid red; text-align: center;'>Quantity</th>
+							<th style='font-size: .8em; padding: 0px; width: 100px; border: 0px solid green; text-align: center;'>Price</th>
+							<th style='font-size: .8em; padding: 0px; width: 100px; border: 0px solid blue; text-align: center;'>Total</th>
 						</tr>
 					</thead>
 					<tbody>
 							<?php
 								foreach( $data['items'] as $i ) {
 									echo '<tr>';
-									echo "<td>";
-									echo "<img id='item_edit_"  . $i['id'] . "' title='Edit this item'    src='$edit' />";
-									echo "<img id='item_trash_" . $i['id'] . "' title='Delete this item'  src='$trash' />";
+									echo '<td style="font-size: .8em; padding: 0px;">';
+									echo "<img id='item_edit_"  . $i['id'] . "' title='Edit this item'    src='$edit' width='16' height='16' />";
+									echo "<img id='item_trash_" . $i['id'] . "' title='Delete this item'  src='$trash' width='16' height='16' />";
 									
-									echo '<td>' . $i['part_no'] . '</td>';
-									echo '<td>' . $i['manufacturer'] . '</td>';
-									echo '<td>' . $i['date_code'] . '</td>';
-									echo '<td colspan="3" >' . $i['qpt'] . '</td>';
+									echo '<td style="font-size: .8em; padding: 0px;">' . $i['part_no'] . '</td>';
+									echo '<td style="font-size: .8em; padding: 0px;">' . $i['manufacturer'] . '</td>';
+									// echo '<td style="font-size: .8em; padding: 0px;">' . $i['date_code'] . '</td>';
+									echo '<td style="font-size: .8em; padding: 0px;" colspan="3" >' . $i['qpt'] . '</td>';
 									echo '</tr>';
 								}
 							?>
 					</tbody>
+					</table>
+					<span id='addPartToQuote'>Add item(s) to this quote</span>
+				</div>
 
-				</table>
+
+				<div id='div_PartsLookup' style='display: none;'>
+					<table id='parts_lookup'>
+						<tr>  
+							<td style='text-align: center;' colspan='2'>Lookup by:
+									 <select id="parts_SearchBy">
+						                  <option value=""></option>
+						                  <option value="1" selected>Part Number</option>
+						                  <!-- <option value="3">Manufacturer</option> -->
+						            </select>     
+				            
+				            	<input id="parts_Searchfield" class="parts_Searchfield" type="text"  />  
+						   	    <input id="parts_Searchbutton" class="parts_Searchbutton" type="button" value="Find" /><span> Test part no. AD5555CRUZ</span>
+					   	    </td>
+				   	    </tr>
+					</table>
+
+					<table id='results_table' style='margin-top: 5px;'>
+						<thead>
+							<tr>
+								<th>Part Number</th>
+								<th>Mfg</th>
+								<th>Supplier</th>
+								<th>Lifecycle</th>
+								<th>Drawing</th>
+								<th>Carrier Type</th>
+								<th>MPQ</th>
+								<th>Quantity<br />Available</th>
+							</tr>
+						</thead>
+						<tbody>
+								<!-- < ?php
+									foreach( $data['items'] as $i ) {
+										echo '<tr>';
+										echo "<td>";
+										echo "<img id='item_edit_"  . $i['id'] . "' title='Edit this item'    src='$edit' />";
+										echo "<img id='item_trash_" . $i['id'] . "' title='Delete this item'  src='$trash' />";
+										
+										echo '<td>' . $i['part_no'] . '</td>';
+										echo '<td>' . $i['manufacturer'] . '</td>';
+										echo '<td>' . $i['date_code'] . '</td>';
+										echo '<td colspan="3" >' . $i['qpt'] . '</td>';
+										echo '</tr>';
+									}
+								?> -->
+						</tbody>
+					</table>
+				</div>
 			</div>  <!--  box4  -->
+
 		</div>
 	</div>
 

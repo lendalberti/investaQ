@@ -3,8 +3,8 @@ $(document).ready(function() {
    // var myURL           = getAbsolutePath();  
     var customerPrefill = true;
     var contactPrefill  = true;
-    var searchURL       = myURL + 'search';
     var myURL           = '/iq2/index.php/';
+    var searchURL       = myURL + 'quotes/search';
 
     console.log('myURL=['+myURL+']');
     console.log('returnUrl=[' + $('#returnUrl').val() + ']' );
@@ -38,6 +38,15 @@ $(document).ready(function() {
     //-------- Event Handlers  --------------------------------------------------------------------------------------------    
     //---------------------------------------------------------------------------------------------------------------------
 
+    $('#addPartToQuote').on('click', function() {
+        $('#div_PartsLookup').show();
+
+
+
+
+
+    });
+
     $('#clearContactFields').on('click', function() {
         $('[id^=Contact_]').val('');
         $('[id^=Contact_]').removeAttr('readOnly');
@@ -49,7 +58,7 @@ $(document).ready(function() {
     });
 
     $('#button_CancelQuoteChanges').on('click', function() { 
-        window.location = myURL + 'quotes/index';
+        window.location = myURL + 'quotes/view/' + $('#Quote_id').val();
     });
 
     $('#quoteUpdateForm').submit(function( e ) {  // click "Save Changes"
@@ -79,23 +88,6 @@ $(document).ready(function() {
                         alert("Couldn't update quote " + quoteID + "; error=\n\n" + errorThrown);
                     }
         });
-
-
-
-       // if ( formValidated() ) {    // do server side validation instead
-            /*
-                 save changes
-
-                    - new contact
-                    - new source
-                    - new terms
-            */
-
-          //  window.location = myURL + '../index';
-        // }
-        // else {
-        //     alert("Can't save changes; missing required field(s)...");
-        // }
 
     });
 
@@ -189,7 +181,7 @@ $(document).ready(function() {
         var itemID = getID($(this));
         if ( confirm("Are you sure you want to delete this item?" ) ) {
             $.ajax({
-                  url: '../stockItems/delete/' + itemID,
+                  url: myURL + 'stockItems/delete/' + itemID,
                   type: 'POST',
                   success: function(data, textStatus, jqXHR) {
                     location.reload(true);
@@ -228,7 +220,7 @@ $(document).ready(function() {
         var custID = $(this).val();
         $.ajax({
             type: 'GET',
-            url: '../customers/find?id='+custID,
+            url: myURL + 'customers/find?id='+custID,
             success: function (ret) {
                 display_Customer(ret);
             }
@@ -239,7 +231,7 @@ $(document).ready(function() {
         var contactID = $(this).val();
         $.ajax({
             type: 'GET',
-            url: '../contacts/find?id='+contactID,
+            url: myURL + 'contacts/find?id='+contactID,
             success: function (ret) {
                 display_Contact(ret);
             }
@@ -262,7 +254,7 @@ $(document).ready(function() {
         var quoteID = getThisID( $(this) ); 
         if ( confirm("Are you sure you want to delete this quote?" ) ) {
             $.ajax({
-                  url: '../quotes/delete/' + quoteID,
+                  url: myURL + 'quotes/delete/' + quoteID,
                   type: 'POST',
                   data: { data: quoteID },
                   success: function(data, textStatus, jqXHR) {
@@ -301,7 +293,7 @@ $(document).ready(function() {
   		var searchFor = $('#parts_Searchfield').val();
   		var searchBy  = $('#parts_SearchBy').val();
   		var parts     = '';
-        var url       = 'parts/search?item=' + searchFor.trim().toUpperCase() + '&by=' + searchBy;
+        var url       = myURL + 'parts/search?item=' + searchFor.trim().toUpperCase() + '&by=' + searchBy;
 
   		if ( searchFor.trim() && searchBy ) {
   			$.ajax({
@@ -379,14 +371,14 @@ $(document).ready(function() {
                 if ( ui.item.label.match(/\(\d+\)/) == null ) {   // found a contact 
                     $.ajax({
                         type: 'GET',
-                        url: '../contacts/find?id='+selectID,  // lookup details for this contact
+                        url: myURL + 'contacts/find?id='+selectID,  // lookup details for this contact
                         success: function (contact_details) {
                         	$('[id^=Customer_]').val('');
                         	display_Contact(contact_details)
 
                             $.ajax({
                                 type: 'GET',
-                                url: '../customers/findbycontact?id='+selectID, // find contacts for this customer
+                                url: myURL + 'customers/findbycontact?id='+selectID, // find contacts for this customer
                                 success: function (customer_list) {
                                    display_CustomerSelect(customer_list);
                                 }
@@ -400,14 +392,14 @@ $(document).ready(function() {
                 else {     //  found a customer
                     $.ajax({
                         type: 'GET',
-                        url: '../customers/find?id='+selectID, // lookup details for this customer
+                        url:  myURL + 'customers/find?id='+selectID, // lookup details for this customer
                         success: function (customer_details) {
                         	$('[id^=Contact_]').val('');
                         	display_Customer(customer_details)
 
                             $.ajax({
                                 type: 'GET',
-                                url: '../contacts/findbycust?id='+selectID,  // find contacts for this customer
+                                url: myURL + 'contacts/findbycust?id='+selectID,  // find contacts for this customer
                                 success: function (contact_list) {
                                     display_ContactSelect(contact_list);
                                 }
@@ -490,7 +482,7 @@ $(document).ready(function() {
 
 								// iq2_main.js
 								$.ajax({ 
-										url: '../quotes/partsUpdate',
+										url: myURL + 'quotes/partsUpdate',
 										type: 'POST',
 										data: info, 
 										dataType: "json",
@@ -633,7 +625,7 @@ $(document).ready(function() {
 		var partNo = tmp[1];
 		$.ajax({
                 type: 'GET',
-                url: '../parts/search?item=' + partNo.trim().toUpperCase() + '&dialog=1',
+                url: myURL + 'parts/search?item=' + partNo.trim().toUpperCase() + '&dialog=1',
                 success: function (results) {
                 	openQuoteDialog(results);
                 }
@@ -726,7 +718,7 @@ $(document).ready(function() {
     function display_Customer(data) {
  		var o = JSON.parse(data);    
         $.each( o, function( k, v ) {
-        	 // console.log("Customer_: k=["+k+"], v=["+v+"]");
+        	//console.log("display_Customer_: k=["+k+"], v=["+v+"]");
            	$('#Customer_'+k).html( v );
             $('#Customer_'+k).val( v );
         });

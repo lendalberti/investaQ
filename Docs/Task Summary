@@ -50,13 +50,17 @@
 	[s] new contact
 
 	[ ] add item(s)
+		[ ] 
 
-	[ ] edit item
+	[x] edit item
 		[x] fix max available check
-		[ ] use 'returnUrl' to return to update page NOT view
+		[x] use 'returnUrl' to return to update page NOT view
 
-	[ ] delete item
-		[ ] error - can't delete... exception
+	[x] delete item
+		[x] error - can't delete... exception
+
+	[ ] add required fields marker (red asterisk)
+
 
 
 

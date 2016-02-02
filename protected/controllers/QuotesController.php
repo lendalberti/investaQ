@@ -89,9 +89,17 @@ class QuotesController extends Controller
 		$sql = "SELECT * FROM stock_items WHERE  quote_id = $quote_id";
 		$command = Yii::app()->db->createCommand($sql);
 		$results = $command->queryAll();
+
 		foreach( $results as $i ) {
-			$data['items'][] = array( 'id' => $i['id'],  'part_no' => $i['part_no'], 'manufacturer'=>$i['manufacturer'], 'date_code'=>$i['date_code'], 'qpt'=>$this->getQtyPriceTotal($i) );
+			foreach( array('1_24', '25_99', '100_499', '500_999', '1000_Plus', 'Base', 'Custom') as $v ) {
+				if ( fq($i['qty_'.$v]) != '0' ) {
+		 			//$data .=  "  <tr>  <td> ".fq($i['qty_'.$v])."</td>        <td><span class='volume'>$v</span>"      .fp($i['price_'.$v])."</td>          <td> ".fp(calc($i,$v))."</td>   </tr>"; 
+		 			$data['items'][] = array( 'id' => $i['id'],  'part_no' => $i['part_no'], 'manufacturer'=>$i['manufacturer'], 'date_code'=>$i['date_code'], "qty" => fq($i["qty_$v"]), "price" => "<span class='volume'>$v</span>". fp($i["price_$v"]), "total" => fp(calc($i,$v))  );
+		 		}
+			}
 		}
+
+		pDebug('actionView() - data[items]:', $data['items'] );
 
 		$this->render('view',array(
 			'data'=>$data,

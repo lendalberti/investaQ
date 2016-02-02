@@ -131,7 +131,7 @@
 		<div >
 			<div id="box4" style='margin-top: 30px;'>
 				
-				<table id='results_table' style='margin-top: 5px;'>
+				<!-- <table id='results_table' style='margin-top: 5px;'>
 					<thead>
 						<tr>
 							<th></th>
@@ -144,7 +144,7 @@
 						</tr>
 					</thead>
 					<tbody>
-							<?php
+							< ?php
 								foreach( $data['items'] as $i ) {
 									echo '<tr>';
 									echo "<td>";
@@ -159,8 +159,47 @@
 								}
 							?>
 					</tbody>
+				</table> -->
 
-				</table>
+
+				<div style='margin: 10px 0px 50px 100px; '>
+					<table id='table_CurrentParts' style='width: 700px;border: 1px solid gray;margin-top: 5px;'>
+					<thead>
+						<tr>
+							<th></th>
+							<th style='font-size: .8em; padding: 0px;' >Part Number</th>
+							<th style='font-size: .8em; padding: 0px;' >Manufacturer</th>
+							<!-- <th style='font-size: .8em; padding: 0px;' >Date Code</th> -->
+							<th style='font-size: .8em; padding: 0px; width: 100px; border: 0px solid red; text-align: right;'>Quantity</th>
+							<th style='font-size: .8em; padding: 0px; width: 100px; border: 0px solid green; text-align: right;'>Price</th>
+							<th style='font-size: .8em; padding: 0px 10px 0px 0px; width: 100px; border: 0px solid blue; text-align: right;'>Total</th>
+						</tr>
+					</thead>
+					<tbody>
+							<?php
+								foreach( $data['items'] as $i ) {
+									echo '<tr>';
+									echo '<td style="font-size: .8em; padding: 0px;">';
+									// echo "<img id='item_edit_"  . $i['id'] . "' title='Edit this item'    src='$edit' width='16' height='16' />";
+									// echo "<img id='item_trash_" . $i['id'] . "' title='Delete this item'  src='$trash' width='16' height='16' />";
+									
+									echo '<td style="font-size: .8em; padding: 0px;">' . $i['part_no'] . '</td>';
+									echo '<td style="font-size: .8em; padding: 0px;">' . $i['manufacturer'] . '</td>';
+
+									echo '<td style="text-align: right; font-size: .8em; padding: 0px;">' . $i['qty'] . '</td>';
+									echo '<td style="text-align: right; font-size: .8em; padding: 0px;">' . $i['price'] . '</td>';
+									echo '<td style="text-align: right; font-size: .8em; padding: 0px 10px 0px 0px;">' . $i['total'] . '</td>';
+									
+									echo '</tr>';
+								}
+							?>
+					</tbody>
+					</table>
+					
+				</div>
+
+
+
 			</div>  <!--  box4  -->
 		</div>
 	</div>

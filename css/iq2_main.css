@@ -621,11 +621,6 @@ span.terms {
 	color: black;
 }
 
-span.volume {
-	font-size: .8em;
-	color: blue;
-}
-
 div.quote_section_heading_View {
 	text-align: center;
 }
@@ -633,7 +628,7 @@ div.quote_section_heading_View {
 #div_ActionButtons > input {
 	background-color: lightgray;
     font-size: 1.2em;
-    margin: 20px 0px 0px 10px;
+    margin: 50px 0px 0px 10px;
 }
 
 #div_ActionButtons > input:hover {
@@ -670,9 +665,15 @@ span#clearContactFields:hover {
 	cursor: pointer;
 }
 
+#addPartToQuote {
+	color: blue; 
+	text-decoration: underline; 
+	font-size: .9em;
+}
 
-
-
+#addPartToQuote:hover {
+	cursor: pointer;
+}
 
 
 
