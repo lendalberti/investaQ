@@ -159,19 +159,21 @@ table.items_table th {
 }
 
 #table_AddToQuote tr:nth-child(even){
-    background-color : lightyellow; 
+    background-color : #f3f3f3; 
 }
 
 
-#table_AddToQuote tr:hover {
-	background-color:#ededed;
-}
+/*#table_AddToQuote tr:hover {
+	background-color:                 #FDFDF0;
+}*/
 
 #table_AddToQuote tr th {
 	border: 0px solid green;
-	background-color: lightblue;
-	font-size: .8em;
-	width: 200px;
+	background-color: #5E6E78;
+	font-size: .9em;
+	color: white;
+    font-weight: normal;
+    font-variant: small-caps;
 }
 
 #table_AddToQuote tr td:nth-child(1),
@@ -307,8 +309,10 @@ img[id^='quote_'] {
 
 /* behave almost 'like' a fixed heading -- TODO: redesign */
 #table_fixedHeading > tbody > tr > th {
-	background-color: lightgray;
-	font-weight: bold;
+	background-color: #5E6E78;
+	color: white;
+	font-variant: small-caps;
+	font-weight: normal;
 	text-align: center;
 	font-size: .8em;
 	width: 120px;
