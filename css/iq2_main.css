@@ -288,16 +288,21 @@ div.form {
 }
 
 
-
+#table_CurrentParts > thead > tr > th:nth-child(7) {
+	text-align: center;
+}
 #table_CurrentParts > thead > tr > th {
 	background: #E6E6E6;
-	color: gray;
+	color: black;
 	font-size: .9em;
 	padding: 5px;
 	height: 20px;
 	text-align: right;
 }
-
+#table_CurrentParts > tbody > tr > td:nth-child(7) {
+	text-align: left;
+	width: 300px;
+}
 #table_CurrentParts > tbody > tr > td {
 	font-size: .9em; 
 	padding: 0px;
@@ -313,13 +318,13 @@ div.form {
 }
 
 
-
+/*
 #table_CurrentParts tbody > tr:nth-child(odd)  {
    background: #FBF5E6;
-}
+}*/
 
 #table_CurrentParts tbody > tr:hover {
-	background: #ECF1EF;
+	background: #FEF5CA;
 }
 
 

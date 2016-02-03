@@ -78,7 +78,7 @@ return array(
 		'adminEmail'=>'ldalberti@rocelec.com',
 		'email_host' => '192.168.1.15',
 		'ldap_domain' => 'rei',
-		'ldap_server' => '192.168.1.4',
+		'ldap_server' => '192.168.1.4',   //   Yii::app()->params['ldap_server'];
 		'ldap_port' => '389',
 		'profile_sig' => 'images/Signatures',
 		'max_upload_size' => 1000000,
@@ -86,6 +86,10 @@ return array(
 		'current_invoices' => '/data/current_invoices',
 		'older_invoices'   => '/data/older_invoices',
 		'app_title'   =>  'InvestaQ²',
-		'DEBUG'  => true                  
+		'DEBUG'  => true,
+		'DISTRIBUTOR_PRICE_FLOOR' => .75                
 	),
 );
+
+
+

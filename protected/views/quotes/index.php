@@ -17,9 +17,9 @@
 
 						<th>No. of Items</th>
 
-						<!-- <th>Sales Person</th> -->
+						<th>Sales Person</th>
 						<th>Customer </th>
-						<th>Location</th>
+						<!-- <th>Location</th> -->
 						<th>Contact </th>
 					</tr>
 				</thead>
@@ -41,9 +41,9 @@
 
 						echo '<td>' . getQuotePartNumbers($m->id) . '</td>';   
 
-						// echo '<td>' . $m->owner->fullname . '</td>'; 
+						echo '<td>' . $m->owner->fullname . '</td>'; 
 						echo '<td>' . $m->customer->name . '</td>'; 
-						echo '<td>' . $m->customer->address1.', '. $m->customer->city . ', '. $m->customer->country->short_name .'</td>'; 
+						// echo '<td>' . $m->customer->address1.', '. $m->customer->city . ', '. $m->customer->country->short_name .'</td>'; 
 						echo '<td>' . $m->contact->first_name . ' ' . $m->contact->last_name . '</td>'; 
 						echo '</tr>';
 					}

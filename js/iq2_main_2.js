@@ -59,12 +59,12 @@ $(document).ready(function() {
     });
 
 
-    // $('#button_Home').on('click', function() {
-    //     window.location = myURL + 'quotes/index';
-    // });
+    $('#button_Home').on('click', function() {
+        window.location = myURL + 'quotes/index';
+    });
 
     $('#button_CancelQuoteChanges').on('click', function() { 
-        window.location = myURL + 'quotes/view/' + $('#Quote_id').val();
+        window.location = myURL + 'quotes/view/' + $('#Quote_id'.val());
     });
 
     $('#quoteUpdateForm').submit(function( e ) {  // click "Save Changes"
@@ -295,18 +295,13 @@ $(document).ready(function() {
        }
     });
 
-
-
-
     $('#parts_Searchbutton').click(function() {
   		var searchFor = $('#parts_Searchfield').val();
   		var searchBy  = $('#parts_SearchBy').val();
-  		var item      = encodeURIComponent(searchFor.trim().toUpperCase() );  // >>>>>>>  THE ONLY PLACE WE NEED TO USE "encodeURIComponent()"
+  		var parts     = '';
+      var url = encodeURIComponent( myURL + 'parts/search?item=' + searchFor.trim().toUpperCase() + '&by=' + searchBy);      // >>>>>>>  THE ONLY PLACE WE NEED TO USE "encodeURIComponent()"
 
-        var url       =  myURL + 'parts/search?item=' + item + '&by=' + searchBy; 
-        console.log('url=' + url);    
-
-  		if ( searchFor.trim() && searchBy ) {
+  		if ( searchFor.trim( && searchBy ) {
   			$.ajax({
 	                type: 'GET',
 	                url: url,
@@ -316,12 +311,6 @@ $(document).ready(function() {
             });
   		}
   	});
-
-
-
-
-
-
 
     $('#section_Parts > div.quote_section_heading > span.open_close').on('click', function() {  // toggle  section
         if ( $(this).html() == '+') {
@@ -517,8 +506,6 @@ $(document).ready(function() {
 		var msg     = 'Adding this part to Quote No. [' + quoteID + ']';
         var info    = '';
 
-        console.log('** iq2_main.js:openQuoteDialog() - distributor_price_floor=' + $('#distributor_price_floor').val() );
-
 		dialog_PartPricing.dialog('option', 'title', 'Inventory Part Pricing Details'); 
 		dialog_PartPricing.dialog({
 			buttons :  [{
@@ -713,8 +700,7 @@ $(document).ready(function() {
 	function displayPartDetails(that) {
 		var tmp = /^rowID_(.+)$/.exec( that[0].id);
 		var partNo = tmp[1];
-        var item   = encodeURIComponent(partNo.trim().toUpperCase());    // >>>>>>>  THE ONLY PLACE WE NEED TO USE "encodeURIComponent()"
-        var url    = myURL + 'parts/search?item=' +  item + '&dialog=1';    
+        var url = encodeURIComponent( myURL + 'parts/search?item=' + partNo.trim().toUpperCase() + '&dialog=1' );      // >>>>>>>  THE ONLY PLACE WE NEED TO USE "encodeURIComponent()"
         console.log('url=' + url);
 
 		$.ajax({

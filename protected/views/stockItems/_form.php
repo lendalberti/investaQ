@@ -1,3 +1,5 @@
+<?php $this->layout = '//layouts/column1'; ?>
+
 <div class="form">
 
 <?php $form=$this->beginWidget('CActiveForm', array(
@@ -12,11 +14,20 @@
 
 
 	<?php echo "<span style='font-weight: bold; font-size: .9em; '>Total Available: </span>"; ?>
-	<span style='color: red; font-size: 1.2em; padding-left: 5px; padding-right: 5px; '><?php echo number_format($model->qty_Available); ?></span>
+		<span style='color: red; font-size: 1.2em; padding-left: 5px; padding-right: 5px; '><?php echo number_format($model->qty_Available); ?></span>
 	<?php echo "<span style='font-weight: bold; font-size: .9em;'> for Part No.<span style='padding-left:10px; color: red;font-size: 1.2em;'>".$model->part_no."</span> </span>"; ?>
 
 
+ 	<?php
+ 			$dpf = Yii::app()->params['DISTRIBUTOR_PRICE_FLOOR'];
+ 			$min_custom_price =  money_format("%6.2n", $model->price_Base * $dpf );  
+ 	?>
+
+
 	<div class="row">
+
+		<input type='hidden' name='distributor_price_floor' id='distributor_price_floor' value='<?php echo Yii::app()->params['DISTRIBUTOR_PRICE_FLOOR']; ?>' > 
+ 
 		<table style='width: 300px;'>
 			<tr><td></td><td></td><td></td></tr>
 			<tr style='background-color: gray; color: white; font-weight: bold;'>
@@ -72,10 +83,24 @@
 				<td><?php echo $form->error($model,'qty_Custom'); ?></td>
 			</tr>
 
+			<tr style='font-size: .8em;' >
+				<td colspan='3' style='padding: 10px 0px 10px 0px; background-color: lightyellow; color: #a31128; font-weight: bold;'>NOTE: 
+							<span style='padding: 20px 0px 20px 0px;color: #a31128; font-weight: normal;'>Approval is needed if custom price is <br />
+								less than <span id='min_custom_price' style='color: blue;'><?php echo $min_custom_price; ?></span>  (<?php echo $dpf*100; ?>% of Distributor Price) 
+							</span>
+				</td>
+			</tr>
+			
 		</table>
+	</div>
 
+	<div class="row">
+			<?php echo "<span style='font-weight: bold;'>Comments</span>"; ?><br />
+			<?php echo $form->textArea($model,'comments',array('rows'=>6, 'cols'=>50)); ?>
+			<?php echo $form->error($model,'comments'); ?>
+	</div>
 
-	<div class="row buttons">
+	<div class="row buttons" style='margin-top: 20px;'>
 		<?php echo CHtml::submitButton('Save Changes'); ?>
 		<?php echo CHtml::link('Cancel', '../../quotes/update/' . $model->quote_id ); ?>
 	</div>

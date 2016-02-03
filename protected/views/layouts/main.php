@@ -71,11 +71,18 @@
 			if ( Yii::app()->user->isAdmin ) {
 				$user_type = ' (Admin)';
 			}
+			else if (Yii::app()->user->isApprover) {
+				$user_type = ' (Approver)';
+			}
 
 			if ( Yii::app()->user->isLoggedIn ) {
 				$menuItems = array();
 				// $menuItems[] = array('label'=>'Home', 'url'=>array('/site/index') );
 				$menuItems[] = array('label'=>'Home', 'url'=>array('/quotes/index') );
+
+				if (Yii::app()->user->isApprover) {
+					$menuItems[] = array('label'=>'Approval Queue ', 'url'=>array('/quotes/index?a=1') );
+				}
 
 				//$menuItems[] = array('label'=>'My Quotes', 'url'=>array('/quotes/index') ); 
 				// $menuItems[] = array('label'=>'Movements ', 'url'=>array('/PriceBook/movements') );

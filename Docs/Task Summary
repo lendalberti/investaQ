@@ -1,4 +1,22 @@
 
+	[x] view comments
+	[x] edit comments
+
+	[x] need approval
+
+	[ ] approver's queue
+		[ ] add 'thumbs up' icon for approval              <---------------------- Next
+		[ ] add 'thumbs down' icon for rejection
+
+
+	[ ] add fields to Quotes:
+		- date_won
+		- date_lost
+		- date_nobid
+		- date_approved
+
+
+
 +-------------------------+
 |  Quotes Index Page      |
 +-------------------------+

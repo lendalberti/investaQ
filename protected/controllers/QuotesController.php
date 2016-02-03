@@ -36,11 +36,38 @@ class QuotesController extends Controller
 				'actions'=>array('admin'),
 				'expression' => '$user->isAdmin'
 			),
+
+			array('allow', // allow approvers  to perform 'approval' 
+				'actions'=>array('approval'),
+				'expression' => '$user->isApprover'
+			),
+			
 			array('deny',  // deny all users
 				'users'=>array('*'),
 			),
 		);
 	}
+
+
+	// ------------------------------------- Approval Queue...
+    public function actionApproval()     { 
+    	// just like index - only that status == WaitingForApproval
+    	pDebug('actionApproval() - _GET=', $_GET);
+
+		$quote_type = '';
+		$navigation_links = '';
+		$page_title = "Quotes Needing Approval";
+
+		$criteria = new CDbCriteria();
+		$criteria->addCondition("status_id = " . Status::WAITING_APPROVAL);
+		$criteria->order = 'id DESC';
+		$model = Quotes::model()->findAll( $criteria );
+
+		$this->render( 'indexApproval', array(
+			'model' => $model,
+			'page_title' => $page_title,
+		));
+    }
 
 	
 	// ------------------------------------- AutoCompletion Search...
@@ -71,7 +98,7 @@ class QuotesController extends Controller
 	public function actionView($id) {
 
 		$data['model'] = $this->loadModel($id);
-		pDebug('quote model attributes: ', $data['model']->attributes );
+		//pDebug('quote model attributes: ', $data['model']->attributes );
 
 		$data['items'] = array();
 
@@ -94,12 +121,12 @@ class QuotesController extends Controller
 			foreach( array('1_24', '25_99', '100_499', '500_999', '1000_Plus', 'Base', 'Custom') as $v ) {
 				if ( fq($i['qty_'.$v]) != '0' ) {
 		 			//$data .=  "  <tr>  <td> ".fq($i['qty_'.$v])."</td>        <td><span class='volume'>$v</span>"      .fp($i['price_'.$v])."</td>          <td> ".fp(calc($i,$v))."</td>   </tr>"; 
-		 			$data['items'][] = array( 'id' => $i['id'],  'part_no' => $i['part_no'], 'manufacturer'=>$i['manufacturer'], 'date_code'=>$i['date_code'], "qty" => fq($i["qty_$v"]), "price" => "<span class='volume'>$v</span>". fp($i["price_$v"]), "total" => fp(calc($i,$v))  );
+		 			$data['items'][] = array( 'id' => $i['id'],  'part_no' => $i['part_no'], 'manufacturer'=>$i['manufacturer'], 'date_code'=>$i['date_code'], "qty" => fq($i["qty_$v"]), "price" => "<span class='volume'>$v</span>". fp($i["price_$v"]), "total" => fp(calc($i,$v)), "comments" => mb_strimwidth($i['comments'],0,150, '...')  );
 		 		}
 			}
-		}
+		}  //  mb_strimwidth("Hello World", 0, 10, "...");
 
-		pDebug('actionView() - data[items]:', $data['items'] );
+		//pDebug('actionView() - data[items]:', $data['items'] );
 
 		$this->render('view',array(
 			'data'=>$data,
@@ -201,31 +228,26 @@ class QuotesController extends Controller
 	public function actionPartsUpdate() 	{
 		pDebug("actionPartsUpdate() - _POST: ", $_POST);
 
-		// TODO: error checking
+		$modelStockItem = new StockItems;
+		$modelStockItem->attributes = $_POST;
+		pDebug( "actionPartsUpdate() - saving StockItems model with the following attributes: ", $modelStockItem->attributes );
 
-		// save into stock_items
-		$model = new StockItems;
-		$model->attributes = $_POST;
-		pDebug( "actionPartsUpdate() - saving StockItems model withthe following attributes: ", $model->attributes );
-		if ( $model->save() ) {
-			pDebug("actionPartsUpdate() - item saved.");
-		}
-		else {
-			pDebug("actionPartsUpdate() - item NOT saved; error=", $model->errors);
+		if ( !$modelStockItem->save() ) {
+			pDebug("actionPartsUpdate() - item NOT saved; error=", $modelStockItem->errors);
 		}
 
 		$modelQuote = Quotes::model()->findByPk( $_POST['quote_id'] );
+		$modelQuote->quote_type_id = QuoteTypes::STOCK;   // update Quote type
+		$modelQuote->status_id = ( $_POST['approval_needed'] ? Status::WAITING_APPROVAL : Status::DRAFT );  // update Status
 
-		// update Quote type
-		$modelQuote->quote_type_id = QuoteTypes::STOCK;
 		if ( $modelQuote->save() ) {
-			pDebug("actionPartsUpdate() - quote saved.");
+			pDebug("actionPartsUpdate() - quote saved; new stock item id=" . $modelQuote->id );
 		}
 		else {
-			pDebug("actionPartsUpdate() - quote NOT saved; error=", $model->errors);
+			pDebug("actionPartsUpdate() - quote NOT saved; error=", $modelQuote->errors);
 		}
 
-		echo ($model->id);
+		echo ($modelStockItem->id);
 
 	}
 
@@ -301,7 +323,7 @@ class QuotesController extends Controller
 		}
 		else {
 			$data['model'] = $this->loadModel($quote_id);
-			pDebug('quote model attributes: ', $data['model']->attributes );
+			//pDebug('quote model attributes: ', $data['model']->attributes );
 
 			$data['items'] = array();
 
@@ -329,7 +351,7 @@ class QuotesController extends Controller
 				foreach( array('1_24', '25_99', '100_499', '500_999', '1000_Plus', 'Base', 'Custom') as $v ) {
 					if ( fq($i['qty_'.$v]) != '0' ) {
 			 			//$data .=  "  <tr>  <td> ".fq($i['qty_'.$v])."</td>        <td><span class='volume'>$v</span>"      .fp($i['price_'.$v])."</td>          <td> ".fp(calc($i,$v))."</td>   </tr>"; 
-			 			$data['items'][] = array( 'id' => $i['id'],  'part_no' => $i['part_no'], 'manufacturer'=>$i['manufacturer'], 'date_code'=>$i['date_code'], "qty" => fq($i["qty_$v"]), "price" => "<span class='volume'>$v</span>". fp($i["price_$v"]), "total" => fp(calc($i,$v))  );
+			 			$data['items'][] = array( 'id' => $i['id'],  'part_no' => $i['part_no'], 'manufacturer'=>$i['manufacturer'], 'date_code'=>$i['date_code'], "qty" => fq($i["qty_$v"]), "price" => "<span class='volume'>$v</span>". fp($i["price_$v"]), "total" => fp(calc($i,$v)), "comments" => mb_strimwidth($i['comments'],0,150, '...')  );
 			 		}
 				}
 			}
@@ -372,11 +394,42 @@ class QuotesController extends Controller
 
 
 
+	public function actionIndex() 	{
+		pDebug('actionIndex() - _GET=', $_GET);
+
+		$criteria = new CDbCriteria();
+
+		if ( isset($_GET['a']) ) {
+			$page_title = "Quotes Needing Approval";
+			$criteria->addCondition("status_id = " . Status::WAITING_APPROVAL);
+		}
+		else {
+			if ( Yii::app()->user->isAdmin || Yii::app()->user->isApprover ) {
+				 $page_title = "All Sales Quotes";
+			} 
+			else {
+				$criteria->addCondition("owner_id = " . Yii::app()->user->id);
+				$page_title = "My Quotes";
+			}
+		}
+
+		$criteria->order = 'id DESC';
+		$model = Quotes::model()->findAll( $criteria );
+
+		$this->render( 'index', array(
+			'model' => $model,
+			'page_title' => $page_title,
+		));
+
+
+
+	}
+
 
 	/**
 	 * Lists all models.
 	 */
-	public function actionIndex() 	{
+	public function actionIndex_ORIG() 	{
 		pDebug('actionIndex() - _GET=', $_GET);
 
 		$quote_type = '';

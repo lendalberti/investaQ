@@ -1,5 +1,6 @@
 $(document).ready(function() {
 
+	var myURL = '/iq2/index.php/';
 	var qty_available_selected = $('#table_AddToQuote > caption > span:nth-child(2)').html();   // $('#rightDiv > span:nth-child(2)').html();  
 
     // ----------------------------------------------------------------------------- Any Qty Input
@@ -71,6 +72,8 @@ $(document).ready(function() {
 		var msg = '';
 		var quoteID = $('#form_QuoteID').val();
 
+		console.log('** dialog.js:checkCustomPrice() - distributor_price_floor=' + $('#distributor_price_floor').val() );
+
 		var min_custom_price = $('#min_custom_price').html().substring(1).trim(); // ignore first character of '$' and leading spaces...
 		var diff =  parseFloat(min_custom_price) - parseFloat(cp);
 		var approvalNeeded =  ( diff > 0 ? 1 : 0 );
@@ -132,13 +135,13 @@ $(document).ready(function() {
 									price_1000_Plus: 	$('#price_1000_Plus').text().replace('$', ''),			
 									price_Base: 		$('#price_Base').text().replace('$', ''),	
 
-									price_Custom: 		$('#price_Custom').val(),		
+									price_Custom: 		$('#price_Custom').val().replace('$', ''),		
 									comments: 			$('#comments').val()
 								};
 
 								// dialog.js
 								$.ajax({
-										url: '../quotes/partsUpdate',
+										url: myURL + 'quotes/partsUpdate',
 										type: 'POST',
 										data: info, 
 										dataType: "json",

@@ -230,4 +230,5 @@ class Quotes extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
 }

@@ -83,31 +83,52 @@ class StockItemsController extends Controller
 	 * @param integer $id the ID of the model to be updated
 	 */
 	public function actionUpdate($id) 	{
-		$return_url = isset($_GET['returnUrl']) ?  $_GET['returnUrl'] : null; 
-
-		$model = $this->loadModel($id);
-		//pDebug("StockItemsController::actionUpdate() - model=", $model);
-
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
+		pDebug('StockItemsController::actionUpdate() - _POST:', $_POST);
+		$modelStockItems = $this->loadModel($id);
 
 		if ( isset($_POST['StockItems']) ) {
-			$model->attributes=$_POST['StockItems'];
+			$return_url = isset($_GET['returnUrl']) ?  $_GET['returnUrl'] : null; 
+			$status = Status::DRAFT;
+	 		
+ 			if ( $_POST['StockItems']['price_Custom'] ) {
+ 				$dpf = Yii::app()->params['DISTRIBUTOR_PRICE_FLOOR'];
+		 		
+		 		$min_custom_price    =  $modelStockItems->price_Base * $dpf;
+		 		$actual_custom_price = $_POST['StockItems']['price_Custom'];
 
-			if ( $this->moreThanAvailable($model) ) {
-				$model->addError('', "Can't specify more than what's available.");
+		 		pDebug("min_custom_price=[$min_custom_price], actual price_Custom=[".$_POST['StockItems']['price_Custom']."]");
+		 		if ( $_POST['StockItems']['price_Custom'] < $min_custom_price ) {
+		 			$status = Status::WAITING_APPROVAL;
+		 		}
+ 			}
+
+			$modelQuote = Quotes::model()->findByPk( $modelStockItems->quote_id );
+			$modelQuote->status_id = $status;
+			if ( $modelQuote->save() ) {
+				pDebug( 'StockItemsController::actionUpdate() - updated quote; status=' . $modelQuote->status->name );
+				// TODO - notify Approvers
 			}
 			else {
-				if($model->save()) {
+				pDebug( 'StockItemsController::actionUpdate() - could NOT update quote; status='.  $modelQuote->status->name  .', error: ', $modelQuote->errors );
+			}
+
+
+			$modelStockItems->attributes = $_POST['StockItems'];
+
+			if ( $this->moreThanAvailable($modelStockItems) ) {
+				$modelStockItems->addError('', "Can't specify more than what's available.");
+			}
+			else {
+				if($modelStockItems->save()) {
 					$this->redirect( $return_url ? $return_url : '/iq2' );
 				}
 			}
 		}
 
 		$this->render('update',array(
-			'model'=>$model,
+			'model'=>$modelStockItems,
 		));
-	}
+	} // END_OF_FUNCTION actionUpdate()
 
 
 

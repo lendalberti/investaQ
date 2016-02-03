@@ -160,7 +160,8 @@ class PartsController extends Controller {
 		$pricingtHeader = "<tr><th>Volume</th><th>Unit Price</th><th>Quantity</th><th>SubTotal</th></tr>";
 		$tEnd = "</table>";
 
-		$min_custom_price =  money_format("$%6.2n", $p->parts[0]->distributor_price * .75);
+		$dpf = Yii::app()->params['DISTRIBUTOR_PRICE_FLOOR'];   // .75
+		$min_custom_price =  money_format("$%6.2n", $p->parts[0]->distributor_price * $dpf );  
 		
 		$pRows  = '';
 		$pRows .= "<tr style='font-size: .8em;' ><td>1-24</td>    <td><span id='price_1_24'>" .  money_format("$%6.2n", trim(floatval($p->parts[0]->prices->p1_24)))          .  "</span></td><td><input type='text' size='7' id='qty_1_24'>    </td><td><span id='subTotal_1_24'>    </span></td></tr>";	
@@ -170,18 +171,13 @@ class PartsController extends Controller {
 		$pRows .= "<tr style='font-size: .8em;' ><td>1000+ </td>   <td><span id='price_1000_Plus'>" .  money_format("$%6.2n", trim(floatval($p->parts[0]->prices->over_1000)))   .  "</span></td><td><input type='text'        size='7' id='qty_1000_Plus'>   </td><td><span id='subTotal_1000_Plus'>   </span></td></tr>";	
 		$pRows .= "<tr style='font-size: .8em;' ><td style='font-weight: bold;'>Distributor</td>   <td><span id='price_Base'>" .  money_format("$%6.2n", trim(floatval($p->parts[0]->distributor_price)))          .  "</span></td><td><input type='text' size='7' id='qty_Base'>     </td><td><span id='subTotal_Base'>     </span></td></tr>";	
 		$pRows .= "<tr style='font-size: .8em;' ><td style='font-weight: bold;'>Custom</td>   <td> <input type='text' size='7' id='price_Custom'></td><td><input type='text' size='7' id='qty_Custom'> </td><td><span id='subTotal_Custom'>   </span></td></tr>";	
-		$pRows .= "<tr style='font-size: .8em;' ><td colspan='4' style='padding: 10px 0px 10px 0px; background-color: lightyellow; color: #a31128; font-weight: bold;'>NOTE: <span style='padding: 20px 0px 20px 0px;color: #a31128; font-weight: normal;'>Approval is needed if custom price is less than <span id='min_custom_price' style='color: blue;'>$min_custom_price</span> <br /> (75% of Distributor Price) </span></td></tr>";
+		$pRows .= "<tr style='font-size: .8em;' ><td colspan='4' style='padding: 10px 0px 10px 0px; background-color: lightyellow; color: #a31128; font-weight: bold;'>NOTE: <span style='padding: 20px 0px 20px 0px;color: #a31128; font-weight: normal;'>Approval is needed if custom price is less than <span id='min_custom_price' style='color: blue;'>$min_custom_price</span> <br /> (".($dpf*100)."% of Distributor Price) </span></td></tr>";
 		$pRows .= "<tr style='font-size: .8em;' ><td colspan='4'><textarea rows='4' cols='45' name='comments' id='comments' placeholder='Add comments...'></textarea></td></tr>";
 
 		$hiddenValues  = '';
 		$hiddenValues .= "<input type='hidden' name='manufacturer' id='manufacturer' value='".$p->parts[0]->manufacturer."'  >";
 		$hiddenValues .= "<input type='hidden' name='total_qty_for_part' id='total_qty_for_part' value='".$p->parts[0]->total_qty_for_part."'  >";
-		// $hiddenValues .= "<input type='hidden' name='xxx' id='xxx' value='".xxx."'  >";
-		// $hiddenValues .= "<input type='hidden' name='xxx' id='xxx' value='".xxx."'  >";
-		// $hiddenValues .= "<input type='hidden' name='xxx' id='xxx' value='".xxx."'  >";
-		// $hiddenValues .= "<input type='hidden' name='xxx' id='xxx' value='".xxx."'  >";
-		// $hiddenValues .= "<input type='hidden' name='xxx' id='xxx' value='".xxx."'  >";
-		// $hiddenValues .= "<input type='hidden' name='xxx' id='xxx' value='".xxx."'  >";
+		$hiddenValues .= "<input type='hidden' name='distributor_price_floor' id='distributor_price_floor' value='".Yii::app()->params['DISTRIBUTOR_PRICE_FLOOR']."' >";
 		
 		$pricing_table = $tStart2  .  $pricingtHeader  .  $pRows  .  $tEnd ;
 

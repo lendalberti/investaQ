@@ -6,7 +6,9 @@
 
 <div style='height: 100px; border: 0px solid gray;'>
 	<div style='color: #2C6371;  font-size: 2em; border: 0px solid green; float: left; padding-right: 10px;' id='header_PageTitle'>Viewing Stock Quote No.</div>
-	<div style='color: #a31128;  font-size: 1.5em; border: 0px solid red; font-family: courier.;padding-top:  5px; font-family: courier.;padding-top:  5px;' id='header_QuoteNo'><?php echo $data['model']->quote_no; ?> </div>
+	<div style='color: #a31128;  font-size: 1.5em; border: 0px solid red; font-family: courier.;padding-top:  5px; font-family: courier.;padding-top:  5px;' id='header_QuoteNo'><?php echo $data['model']->quote_no; ?> 
+		<span style='color: #2C6371;  font-size: .7em; border: 0px solid red; '> [ <?php echo $data['model']->status->name; ?> ]</span>
+	</div>
 
 	<br />
 	<?php 
@@ -136,9 +138,9 @@
 
 			<div  class='my_container'>
 
-				<div id="box4" style='margin-top: 30px;'>
-					<div style='margin: 10px 0px 50px 100px; '>
-						<table id='table_CurrentParts' style='width: 700px;border: 1px solid gray;margin-top: 5px;'>
+				<div id="box4">
+					<div style='margin: 10px 0px 50px 10px; '>
+						<table id='table_CurrentParts' style='width: 100%; border: 1px solid gray;margin-top: 5px;'>
 						<thead>
 							<tr>
 								<th></th>
@@ -147,6 +149,7 @@
 								<th>Quantity</th>
 								<th>Price</th>
 								<th>Total</th>
+								<th>Comments</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -159,6 +162,7 @@
 										echo '<td>' . $i['qty'] . '</td>';
 										echo '<td>' . $i['price'] . '</td>';
 										echo '<td>' . $i['total'] . '</td>';
+										echo '<td>' . $i['comments'] . '</td>';
 										echo '</tr>';
 									}
 								?>
@@ -171,7 +175,7 @@
 	</div>
 
 
-	<div id='div_ActionButtons'> <input id='button_Home' type='button' value='Home'> </div>
+	<!-- <div id='div_ActionButtons'> <input id='button_Home' type='button' value='Home'> </div> -->
 
 
 <!--  fini --> 

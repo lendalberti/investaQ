@@ -1,3 +1,4 @@
+<?php $this->layout = '//layouts/column1'; ?>
 
 <h1>My Profile</h1>
 
