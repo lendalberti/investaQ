@@ -3,11 +3,14 @@
 <input type='hidden' id='return_URL' name='return_URL' value='<?php echo $_SERVER['REQUEST_URI'];  ?>'>
 
 
-<div style='height: 100px; border: 0px solid gray;'>
-	<div style='color: #2C6371;  font-size: 2em; border: 0px solid green; float: left; padding-right: 10px;' id='header_PageTitle'>Updating Stock Quote No.</div>
-	<div style='color: #a31128;  font-size: 1.5em; border: 0px solid red; font-family: courier.;padding-top:  5px; font-family: courier.;padding-top:  5px;' id='header_QuoteNo'><?php echo $data['model']->quote_no; ?> </div>
+<div style='height: 80px; border: 0px solid gray;'>
+	<div style='color: #2C6371;  font-size: 2em; border: 0px solid green; float: left; padding-right: 10px;' id='header_PageTitle'>Updating Stock Quote No. <br />
+		
+	</div>
+	<div style='color: #a31128;  font-size: 1.5em; border: 0px solid red; font-family: courier.;padding-top:  5px; font-family: courier.;padding-top:  5px;' id='header_QuoteNo'><?php echo $data['model']->quote_no; ?> 
+		</div>
 
-	<br />
+	
 	<?php 
 		$edit   = Yii::app()->request->baseUrl . "/images/New/edit.png"; 
  		$trash  = Yii::app()->request->baseUrl . "/images/New/trash.png";
@@ -27,12 +30,16 @@
  	?>
 </div>
 
+<span style='color: #555; font-size: 14px;'>Fields with <span class="required">*</span> are required.</span>
+
 <form id='quoteUpdateForm' name='quoteUpdateForm' method='post'>
 
 	<input type='hidden' id='Quote_id'  name='Quote[id]' value='<?php echo $quote_id; ?>'>
+	<input type='hidden' id='form_QuoteID' name='form_QuoteID' value='<?php echo $quote_id; ?>'>
 
 	<!-- ################################################################################################################################################################  -->
 	<div id='section_CustomerContact'>
+
 		<div class='quote_section_heading_View'>
 			<span>Customer Information</span>
 			<input type='hidden' id='returnUrl'       value='<?php echo Yii::app()->request->baseUrl . '/index.php/quotes/update/' . $quote_id  ?>'>
@@ -75,11 +82,11 @@
 		    	<input type='hidden' id='Contact_id' name='Contact[id]' value='<?php echo $contact_id; ?>'>  
 			    <table>
 			    		<tr>  <td></td>                         <td style='text-align: right;'><span id='clearContactFields'>New Contact</span></td> </tr>
-				        <tr>  <td>Contact First Name</td>       <td><input  readonly='readonly' type='text' id='Contact_first_name' name='Contact[first_name]'   value='<?php echo $co->first_name; ?>' > </td> </tr>
-				        <tr>  <td>Last Name</td>                <td><input  readonly='readonly' type='text' id='Contact_last_name' name='Contact[last_name]'    value='<?php echo $co->last_name; ?>' > </td> </tr>
-				        <tr>  <td>Email</td>                    <td><input  readonly='readonly' type='text' id='Contact_email' name='Contact[email]'    value='<?php echo $co->email; ?>' > </td> </tr>
-				        <tr>  <td>Title</td>                    <td><input  readonly='readonly' type='text' id='Contact_title' name='Contact[title]'   value='<?php echo $co->title; ?>'  > </td> </tr>
-				        <tr>  <td>Phone1</td>                   <td><input  readonly='readonly' type='text' id='Contact_phone1' name='Contact[phone1]'    value='<?php echo $co->phone1; ?>' > </td> </tr>
+				        <tr>  <td><span class='required'> * </span>Contact First Name</td>       <td><input  readonly='readonly' type='text' id='Contact_first_name' name='Contact[first_name]'   value='<?php echo $co->first_name; ?>' > </td> </tr>
+				        <tr>  <td><span class='required'> * </span>Last Name</td>                <td><input  readonly='readonly' type='text' id='Contact_last_name' name='Contact[last_name]'    value='<?php echo $co->last_name; ?>' > </td> </tr>
+				        <tr>  <td><span class='required'> * </span>Email</td>                    <td><input  readonly='readonly' type='text' id='Contact_email' name='Contact[email]'    value='<?php echo $co->email; ?>' > </td> </tr>
+				        <tr>  <td><span class='required'> * </span>Title</td>                    <td><input  readonly='readonly' type='text' id='Contact_title' name='Contact[title]'   value='<?php echo $co->title; ?>'  > </td> </tr>
+				        <tr>  <td><span class='required'> * </span>Phone1</td>                   <td><input  readonly='readonly' type='text' id='Contact_phone1' name='Contact[phone1]'    value='<?php echo $co->phone1; ?>' > </td> </tr>
 				        <tr>  <td>Phone2</td>                   <td><input  readonly='readonly' type='text' id='Contact_phone2' name='Contact[phone2]'    value='<?php echo $co->phone2; ?>' > </td> </tr>
 				        <tr>  <td>Address1</td>                 <td><input  readonly='readonly' type='text' id='Contact_address1' name='Contact[address1]'   value='<?php echo $co->address1; ?>'  > </td> </tr>
 				        <tr>  <td>Address2</td>                 <td><input  readonly='readonly' type='text' id='Contact_address2' name='Contact[address2]'    value='<?php echo $co->address2; ?>' > </td> </tr>
@@ -142,124 +149,86 @@
 		
 		<div>
 
-			<div id="box4" style='margin-top: 30px;'>
+			<div class='quote_section_heading_View'>
+				<span>Inventory Items</span>
+			</div>
 
-			<!-- 	<div style='margin: 10px 0px 50px 200px; '>
-					<table id='table_CurrentParts' style='width: 500px;border: 1px solid gray;margin-top: 5px;'>
-					<caption style='text-align: center;'>Quote Items</caption>
-					<thead>
-						<tr>
-							<th></th>
-							<th style='font-size: .8em; padding: 0px;' >Part Number</th>
-							<th style='font-size: .8em; padding: 0px;' >Manufacturer</th>
-							<th style='font-size: .8em; padding: 0px; width: 100px; border: 0px solid red; text-align: center;'>Quantity</th>
-							<th style='font-size: .8em; padding: 0px; width: 100px; border: 0px solid green; text-align: center;'>Price</th>
-							<th style='font-size: .8em; padding: 0px; width: 100px; border: 0px solid blue; text-align: center;'>Total</th>
-						</tr>
-					</thead>
-					<tbody>
-							< ?php
-								foreach( $data['items'] as $i ) {
-									echo '<tr>';
-									echo '<td style="font-size: .8em; padding: 0px;">';
-									// echo "<img id='item_edit_"  . $i['id'] . "' title='Edit this item'    src='$edit' />";
-									// echo "<img id='item_trash_" . $i['id'] . "' title='Delete this item'  src='$trash' />";
+			<div  class='my_container'>
+				<div id="box4" style='margin-top: 30px;'>
+
+					<div style='margin: 10px 0px 50px 100px; '>
+						<table id='table_CurrentParts' style='width: 700px;border: 1px solid gray; margin-top: 5px;'>
+							<thead>
+								<tr>
+									<th></th>
+									<th >Part Number</th>
+									<th >Manufacturer</th>
+									<th >Quantity</th>
+									<th >Price</th>
+									<th >Total</th>
+								</tr>
+							</thead>
+							<tbody>
+									<?php
+										foreach( $data['items'] as $i ) {
+											echo '<tr>';
+											echo '<td style="font-size: .9em; padding: 2px;">';
+											echo "<img id='item_edit_"  . $i['id'] . "' title='Edit this item'    src='$edit' width='16' height='16' />";
+											echo "<img id='item_trash_" . $i['id'] . "' title='Delete this item'  src='$trash' width='16' height='16' />";
+											
+											echo '<td>' . $i['part_no'] . '</td>';
+											echo '<td>' . $i['manufacturer'] . '</td>';
+
+											echo '<td>' . $i['qty'] . '</td>';
+											echo '<td>' . $i['price'] . '</td>';
+											echo '<td>' . $i['total'] . '</td>';
+											
+											echo '</tr>';
+										}
+									?>
+							</tbody>
+						</table>
+						<span id='addPartToQuote'>Add item(s) to this quote</span>
+					</div>
+
+					<div id='div_PartsLookup' style='display: none;'>
+						<table id='parts_lookup'>
+							<tr>  
+								<td style='text-align: center;' colspan='2'>Lookup by:
+										 <select id="parts_SearchBy">
+							                  <option value=""></option>
+							                  <option value="1" selected>Part Number</option>
+							                  <!-- <option value="3">Manufacturer</option> -->
+							            </select>     
+					            
+					            	<input id="parts_Searchfield" class="parts_Searchfield" type="text"  />  
+							   	    <input id="parts_Searchbutton" class="parts_Searchbutton" type="button" value="Find" />
+						   	    </td>
+					   	    </tr>
+						</table>
+
+
+						<table id='results_table' style='margin-top: 5px;'>
+							<thead>
+								<tr>
+									<th>Part Number</th>
+									<th>Mfg</th>
+									<th>Supplier</th>
+									<th>Lifecycle</th>
+									<th>Drawing</th>
+									<th>Carrier Type</th>
+									<th>MPQ</th>
+									<th>Quantity<br />Available</th>
+								</tr>
+							</thead>
+							<tbody>
 									
-									echo '<td style="font-size: .8em; padding: 0px;">' . $i['part_no'] . '</td>';
-									echo '<td style="font-size: .8em; padding: 0px;">' . $i['manufacturer'] . '</td>';
-									// echo '<td style="font-size: .8em; padding: 0px;">' . $i['date_code'] . '</td>';
-									echo '<td style="font-size: .8em; padding: 0px;" colspan="3" >' . $i['qpt'] . '</td>';
-									echo '</tr>';
-								}
-							?>
-					</tbody>
-					</table>
-					<span id='addPartToQuote'>Add item(s) to this quote</span>
-				</div> -->
+							</tbody>
+						</table>
 
-				<div style='margin: 10px 0px 50px 100px; '>
-					<table id='table_CurrentParts' style='width: 700px;border: 1px solid gray;margin-top: 5px;'>
-					<thead>
-						<tr>
-							<th></th>
-							<th style='font-size: .8em; padding: 0px;' >Part Number</th>
-							<th style='font-size: .8em; padding: 0px;' >Manufacturer</th>
-							<!-- <th style='font-size: .8em; padding: 0px;' >Date Code</th> -->
-							<th style='font-size: .8em; padding: 0px; width: 100px; border: 0px solid red; text-align: center;'>Quantity</th>
-							<th style='font-size: .8em; padding: 0px; width: 100px; border: 0px solid green; text-align: center;'>Price</th>
-							<th style='font-size: .8em; padding: 0px; width: 100px; border: 0px solid blue; text-align: center;'>Total</th>
-						</tr>
-					</thead>
-					<tbody>
-							<?php
-								foreach( $data['items'] as $i ) {
-									echo '<tr>';
-									echo '<td style="font-size: .8em; padding: 0px;">';
-									echo "<img id='item_edit_"  . $i['id'] . "' title='Edit this item'    src='$edit' width='16' height='16' />";
-									echo "<img id='item_trash_" . $i['id'] . "' title='Delete this item'  src='$trash' width='16' height='16' />";
-									
-									echo '<td style="font-size: .8em; padding: 0px;">' . $i['part_no'] . '</td>';
-									echo '<td style="font-size: .8em; padding: 0px;">' . $i['manufacturer'] . '</td>';
-									// echo '<td style="font-size: .8em; padding: 0px;">' . $i['date_code'] . '</td>';
-									echo '<td style="font-size: .8em; padding: 0px;" colspan="3" >' . $i['qpt'] . '</td>';
-									echo '</tr>';
-								}
-							?>
-					</tbody>
-					</table>
-					<span id='addPartToQuote'>Add item(s) to this quote</span>
-				</div>
-
-
-				<div id='div_PartsLookup' style='display: none;'>
-					<table id='parts_lookup'>
-						<tr>  
-							<td style='text-align: center;' colspan='2'>Lookup by:
-									 <select id="parts_SearchBy">
-						                  <option value=""></option>
-						                  <option value="1" selected>Part Number</option>
-						                  <!-- <option value="3">Manufacturer</option> -->
-						            </select>     
-				            
-				            	<input id="parts_Searchfield" class="parts_Searchfield" type="text"  />  
-						   	    <input id="parts_Searchbutton" class="parts_Searchbutton" type="button" value="Find" /><span> Test part no. AD5555CRUZ</span>
-					   	    </td>
-				   	    </tr>
-					</table>
-
-					<table id='results_table' style='margin-top: 5px;'>
-						<thead>
-							<tr>
-								<th>Part Number</th>
-								<th>Mfg</th>
-								<th>Supplier</th>
-								<th>Lifecycle</th>
-								<th>Drawing</th>
-								<th>Carrier Type</th>
-								<th>MPQ</th>
-								<th>Quantity<br />Available</th>
-							</tr>
-						</thead>
-						<tbody>
-								<!-- < ?php
-									foreach( $data['items'] as $i ) {
-										echo '<tr>';
-										echo "<td>";
-										echo "<img id='item_edit_"  . $i['id'] . "' title='Edit this item'    src='$edit' />";
-										echo "<img id='item_trash_" . $i['id'] . "' title='Delete this item'  src='$trash' />";
-										
-										echo '<td>' . $i['part_no'] . '</td>';
-										echo '<td>' . $i['manufacturer'] . '</td>';
-										echo '<td>' . $i['date_code'] . '</td>';
-										echo '<td colspan="3" >' . $i['qpt'] . '</td>';
-										echo '</tr>';
-									}
-								?> -->
-						</tbody>
-					</table>
-				</div>
-			</div>  <!--  box4  -->
-
+					</div>
+				</div>  <!--  box4  -->
+			</div>
 		</div>
 	</div>
 
@@ -271,4 +240,10 @@
 
 </form>
 
+<div class='print' id="form_PartPricing" style='display: none'> pricing details content goes here </div>
+
+
 <!--  fini --> 
+
+
+

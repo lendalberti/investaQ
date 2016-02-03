@@ -23,7 +23,7 @@
  		echo "<img id='quote_trash_" .$data['model']['id']."' title='Delete this quote' src='$trash' />";
  		
 
- 		$q  = $data['model']->attributes; 
+ 		$q  = $data['model']; 
  		$cu = $data['customer'];
  		$co = $data['contact'];
 
@@ -90,6 +90,7 @@
 				        <tr>  <td>Country</td>                  <td><input type='text' id='Contact_country_id' name='Contact[country_id]' readonly='readonly'  value='<?php echo $co->country->long_name; ?>'  > </td> </tr>
 			    </table>
 		    </div>
+		    <span style='padding-left: 50px; font-weight: bold;'>Contact Source: </span><span style='background-color: #E6E6E6; font-size: .8em; font-weight: bold; color: black; border: 1px solid lightgray; padding: 3px;'><?php echo $q->source->name; ?></span>
 		</div>
 	</div>
 
@@ -103,23 +104,23 @@
 		<div  class='my_container'>
 			
 			<div id="box5" style='border: 0px solid green; width: 45%; margin: 5px;'>
-				<span class='terms'>Terms & Conditions</span><textarea rows="4" cols="50" name="quote_Terms" id="quote_Terms" readonly='readonly'><?php echo $q['terms_conditions']; ?></textarea>
+				<span class='terms'>Terms & Conditions</span><textarea rows="4" cols="50" name="quote_Terms" id="quote_Terms" readonly='readonly'><?php echo $q->terms_conditions; ?></textarea>
 			</div>
 
 			<div id="box6" style='border: 0px solid blue; width: 45%; margin: 5px'>
-				<span class='terms'>Customer Ackowledgment<textarea rows="4" cols="50" name="quote_CustAck" id="quote_CustAck" readonly='readonly'><?php echo $q['customer_acknowledgment']; ?></textarea>
+				<span class='terms'>Customer Ackowledgment<textarea rows="4" cols="50" name="quote_CustAck" id="quote_CustAck" readonly='readonly'><?php echo $q->customer_acknowledgment; ?></textarea>
 			</div>
 
 			<div id="box7" style='border: 0px solid orange; width: 45%; margin: 5px;'>
-				<span class='terms'>Risl<textarea rows="4" cols="50" name="quote_RISL" id="quote_RISL" readonly='readonly' ><?php echo $q['risl']; ?></textarea>
+				<span class='terms'>Risl<textarea rows="4" cols="50" name="quote_RISL" id="quote_RISL" readonly='readonly' ><?php echo $q->risl; ?></textarea>
 			</div>
 
 			<div id="box8" style='border: 0px solid red; width: 45%; margin: 5px;'>
-				<span class='terms'>Manufacturing Lead Time<textarea rows="4" cols="50" name="quote_MfgLeadTime" id="quote_MfgLeadTime" readonly='readonly' ><?php echo $q['manufacturing_lead_time']; ?></textarea>
+				<span class='terms'>Manufacturing Lead Time<textarea rows="4" cols="50" name="quote_MfgLeadTime" id="quote_MfgLeadTime" readonly='readonly' ><?php echo $q->manufacturing_lead_time; ?></textarea>
 			</div>
 			
 			<div id="box9" style='border: 0px solid cyan; width: 95%; margin: 5px;'>
-				<span class='terms'>Additional Notes<textarea rows="4" cols="100" name="quote_Notes" id="quote_Notes" readonly='readonly' ><?php echo $q['additional_notes']; ?></textarea>
+				<span class='terms'>Additional Notes<textarea rows="4" cols="100" name="quote_Notes" id="quote_Notes" readonly='readonly' ><?php echo $q->additional_notes; ?></textarea>
 			</div>
 
 		</div>
@@ -129,78 +130,43 @@
 	<div id='section_Parts'>
 		
 		<div >
-			<div id="box4" style='margin-top: 30px;'>
-				
-				<!-- <table id='results_table' style='margin-top: 5px;'>
-					<thead>
-						<tr>
-							<th></th>
-							<th>Part Number</th>
-							<th>Manufacturer</th>
-							<th>Date Code</th>
-							<th style='width: 100px; border: 0px solid red; text-align: center;'>Quantity</th>
-							<th style='width: 100px; border: 0px solid green; text-align: center;'>Price</th>
-							<th style='width: 100px; border: 0px solid blue; text-align: center;'>Total</th>
-						</tr>
-					</thead>
-					<tbody>
-							< ?php
-								foreach( $data['items'] as $i ) {
-									echo '<tr>';
-									echo "<td>";
-									echo '';  // "<img id='item_edit_"  . $i['id'] . "' title='Edit this item'    src='$edit' />";
-									echo '';  // "<img id='item_trash_" . $i['id'] . "' title='Delete this item'  src='$trash' />";
-									
-									echo '<td>' . $i['part_no'] . '</td>';
-									echo '<td>' . $i['manufacturer'] . '</td>';
-									echo '<td>' . $i['date_code'] . '</td>';
-									echo '<td colspan="3" >' . $i['qpt'] . '</td>';
-									echo '</tr>';
-								}
-							?>
-					</tbody>
-				</table> -->
+			<div class='quote_section_heading_View'>
+				<span>Inventory Items</span>
+			</div>
 
+			<div  class='my_container'>
 
-				<div style='margin: 10px 0px 50px 100px; '>
-					<table id='table_CurrentParts' style='width: 700px;border: 1px solid gray;margin-top: 5px;'>
-					<thead>
-						<tr>
-							<th></th>
-							<th style='font-size: .8em; padding: 0px;' >Part Number</th>
-							<th style='font-size: .8em; padding: 0px;' >Manufacturer</th>
-							<!-- <th style='font-size: .8em; padding: 0px;' >Date Code</th> -->
-							<th style='font-size: .8em; padding: 0px; width: 100px; border: 0px solid red; text-align: right;'>Quantity</th>
-							<th style='font-size: .8em; padding: 0px; width: 100px; border: 0px solid green; text-align: right;'>Price</th>
-							<th style='font-size: .8em; padding: 0px 10px 0px 0px; width: 100px; border: 0px solid blue; text-align: right;'>Total</th>
-						</tr>
-					</thead>
-					<tbody>
-							<?php
-								foreach( $data['items'] as $i ) {
-									echo '<tr>';
-									echo '<td style="font-size: .8em; padding: 0px;">';
-									// echo "<img id='item_edit_"  . $i['id'] . "' title='Edit this item'    src='$edit' width='16' height='16' />";
-									// echo "<img id='item_trash_" . $i['id'] . "' title='Delete this item'  src='$trash' width='16' height='16' />";
-									
-									echo '<td style="font-size: .8em; padding: 0px;">' . $i['part_no'] . '</td>';
-									echo '<td style="font-size: .8em; padding: 0px;">' . $i['manufacturer'] . '</td>';
-
-									echo '<td style="text-align: right; font-size: .8em; padding: 0px;">' . $i['qty'] . '</td>';
-									echo '<td style="text-align: right; font-size: .8em; padding: 0px;">' . $i['price'] . '</td>';
-									echo '<td style="text-align: right; font-size: .8em; padding: 0px 10px 0px 0px;">' . $i['total'] . '</td>';
-									
-									echo '</tr>';
-								}
-							?>
-					</tbody>
-					</table>
-					
-				</div>
-
-
-
-			</div>  <!--  box4  -->
+				<div id="box4" style='margin-top: 30px;'>
+					<div style='margin: 10px 0px 50px 100px; '>
+						<table id='table_CurrentParts' style='width: 700px;border: 1px solid gray;margin-top: 5px;'>
+						<thead>
+							<tr>
+								<th></th>
+								<th>Part Number</th>
+								<th>Manufacturer</th>
+								<th>Quantity</th>
+								<th>Price</th>
+								<th>Total</th>
+							</tr>
+						</thead>
+						<tbody>
+								<?php
+									foreach( $data['items'] as $i ) {
+										echo '<tr>';
+										echo '<td>';
+										echo '<td>' . $i['part_no'] . '</td>';
+										echo '<td>' . $i['manufacturer'] . '</td>';
+										echo '<td>' . $i['qty'] . '</td>';
+										echo '<td>' . $i['price'] . '</td>';
+										echo '<td>' . $i['total'] . '</td>';
+										echo '</tr>';
+									}
+								?>
+						</tbody>
+						</table>
+					</div>
+				</div>  <!--  box4  -->
+			</div>
 		</div>
 	</div>
 

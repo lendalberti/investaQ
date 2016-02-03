@@ -77,7 +77,7 @@
 
 	<div class="row buttons">
 		<?php echo CHtml::submitButton('Save Changes'); ?>
-		<?php echo CHtml::link('Cancel', '../../quotes/' . $model->quote_id ); ?>
+		<?php echo CHtml::link('Cancel', '../../quotes/update/' . $model->quote_id ); ?>
 	</div>
 
 <?php $this->endWidget(); ?>

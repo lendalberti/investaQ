@@ -287,6 +287,44 @@ div.form {
 	padding-bottom: 5px;
 }
 
+
+
+#table_CurrentParts > thead > tr > th {
+	background: #E6E6E6;
+	color: gray;
+	font-size: .9em;
+	padding: 5px;
+	height: 20px;
+	text-align: right;
+}
+
+#table_CurrentParts > tbody > tr > td {
+	font-size: .9em; 
+	padding: 0px;
+	text-align: right;
+}
+
+#table_CurrentParts > tbody > tr > td:nth-child(6) {
+	padding-right: 10px;
+}
+
+#table_CurrentParts > tbody > tr  {
+	height: 20px;
+}
+
+
+
+#table_CurrentParts tbody > tr:nth-child(odd)  {
+   background: #FBF5E6;
+}
+
+#table_CurrentParts tbody > tr:hover {
+	background: #ECF1EF;
+}
+
+
+
+
 /*  row striping */
 #results_table > tbody > tr:nth-child(odd)  {
    background: #E6E6E6;
@@ -468,7 +506,7 @@ img[id^='quote_edit_']:hover,
 img[id^='quote_delete_']:hover,
 img[id^='item_pdf_']:hover,
 img[id^='item_edit_']:hover,
-img[id^='item_delete_']:hover,
+img[id^='item_trash_']:hover,
 img[id^='quote_']:hover {
 	border: 1px solid gray;
 	cursor: pointer;

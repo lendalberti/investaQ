@@ -54,7 +54,9 @@ class PartsController extends Controller {
 
 			*/
 		}
-		pDebug("Parts::actionSearch() _GET: not set...");
+		else {
+			pDebug("Parts::actionSearch() _GET['item']: not set...");
+		}
 
 		
 	}
@@ -185,6 +187,7 @@ class PartsController extends Controller {
 
 		// --------------------------------------------- Last piece
 		$html = $js . $css . $tHeader . $tableStockCodes .  $spacingDiv . $tableDetails . $hiddenValues . $pricing_table; 
+		//pDebug('formatDialog() - html:', $html);
 		return $html;
 	}
 

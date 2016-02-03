@@ -76,7 +76,7 @@ $(document).ready(function() {
                         console.log('results from quote update=['+results+']');
 
                         if ( results == 0  ) { // update succeeded
-                            alert('Update succeeded');
+                            //alert('Update succeeded');
                             window.location = myURL + 'quotes/view/'+quoteID;
                         }
                         else {
@@ -427,11 +427,76 @@ $(document).ready(function() {
 	
     }
 
+
+    function appendTable_CurrentParts( info, itemID) {
+
+        var images   = "<td style='font-size: .9em; padding: 2px;'><img id='item_edit_"+itemID+"' title='Edit this item' src='/iq2/images/New/edit.png' width='16' height='16' /><img id='item_trash_"+itemID+"' title='Delete this item'  src='/iq2/images/New/trash.png' width='16' height='16' />";
+        var quantity = 0;
+        var volume   = 0;
+        var price    = 0; 
+        var total    = 0;  // num.toFixed(2)
+
+        if ( info.qty_1_24 > 0 ) {
+            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td><td>"+info.qty_1_24+"</td><td><span class='volume'>1_24</span>$ "+info.price_1_24+"</td><td>$ "+(info.qty_1_24*info.price_1_24).toFixed(2).toString()+"</td></tr>" );
+        }
+        if ( info.qty_25_99 > 0 ) {
+            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td><td>"+info.qty_25_99+"</td><td><span class='volume'>25_99</span>$ "+info.price_25_99+"</td><td>$ "+(info.qty_25_99*info.price_25_99).toFixed(2).toString()+"</td></tr>" );
+        }
+        if ( info.qty_100_499 > 0 ) {
+            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td><td>"+info.qty_100_499+"</td><td><span class='volume'>100_499</span>$ "+info.price_100_499+"</td><td>$ "+(info.qty_100_499*info.price_100_499).toFixed(2).toString()+"</td></tr>" );
+        }
+        if ( info.qty_500_999 > 0 ) {
+            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td><td>"+info.qty_500_999+"</td><td><span class='volume'>500_999</span>$ "+info.price_500_999+"</td><td>$ "+(info.qty_500_999*info.price_500_999).toFixed(2).toString()+"</td></tr>" );
+        }
+        if ( info.qty_1000_Plus > 0 ) {
+            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td><td>"+info.qty_1000_Plus+"</td><td><span class='volume'>1000_Plus</span>$ "+info.price_1000_Plus+"</td><td>$ "+(info.qty_1000_Plus*info.price_1000_Plus).toFixed(2).toString()+"</td></tr>" );
+        }
+        if ( info.qty_Base > 0 ) {
+            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td><td>"+info.qty_Base+"</td><td><span class='volume'>Base</span>$ "+info.price_Base+"</td><td>$ "+(info.qty_Base*info.price_Base).toFixed(2).toString()+"</td></tr>" );
+        }
+        if ( info.qty_Custom > 0 ) {
+            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td><td>"+info.qty_Custom+"</td><td><span class='volume'>Custom</span>$ "+info.price_Custom+"</td><td>$ "+(info.qty_Custom*info.price_Custom).toFixed(2).toString()+"</td></tr>" );
+        }
+
+        // ----------------------------------------------------- delete item
+        $('[id^=item_trash_]').on('click', function() {
+            var itemID = getID($(this));
+            if ( confirm("Are you sure you want to delete this item?" ) ) {
+                $.ajax({
+                      url: myURL + 'stockItems/delete/' + itemID,
+                      type: 'POST',
+                      success: function(data, textStatus, jqXHR) {
+                        location.reload(true);
+                      },
+                      error: function (jqXHR, textStatus, errorThrown)  {
+                        alert("Couldn't delete item " + itemID + " from this quote; error=\n\n" + errorThrown);
+                      }
+                });
+            }
+            return false;z
+        });
+
+        // ----------------------------------------------------- edit item
+        $('[id^=item_edit_]').on('click', function() {
+            var itemID = getID($(this));  
+
+            var returnUrl = $('#returnUrl').val();
+            var u = myURL + "stockItems/update/" + itemID + '?returnUrl=' + returnUrl;
+
+            console.log('url=' +  u);
+            window.location.replace(u);
+        });
+
+
+    }
+
+
 	function openQuoteDialog(results) {
 		$('#form_PartPricing').html(results);
 
 		var quoteID = $('#form_QuoteID').val();
-		var msg     = 'Adding this part to Quote No. ' + quoteID;
+		var msg     = 'Adding this part to Quote No. [' + quoteID + ']';
+        var info    = '';
 
 		dialog_PartPricing.dialog('option', 'title', 'Inventory Part Pricing Details'); 
 		dialog_PartPricing.dialog({
@@ -447,37 +512,40 @@ $(document).ready(function() {
 							text: "Add to Quote",
 							id: "button_AddToQuote",
 							click: function(){
-								// alert(msg);
+								//alert(msg);
 								if ( nothingToQuote() ) {
 				             		alert("Nothing to quote.");
 				             		return false;
 				             	}
 								
-								var info = {
-									quote_id:			quoteID,
-									part_no: 			$('#part_no').text(),
-									approval_needed: 	null,
+								info = {
+        									quote_id:			quoteID,
+        									part_no: 			$('#part_no').text(),
+        									approval_needed: 	null,
 
-									manufacturer: 		$('#manufacturer').val(),	
-									qty_Available:      $('#total_qty_for_part').val(),
+        									manufacturer: 		$('#manufacturer').val(),	
+        									qty_Available:      $('#total_qty_for_part').val(),
 
-									qty_1_24: 			$('#qty_1_24').val(),		// val == inputs
-									qty_25_99: 			$('#qty_25_99').val(),
-									qty_100_499: 		$('#qty_100_499').val(),
-									qty_500_999: 		$('#qty_500_999').val(),
-									qty_1000_Plus: 		$('#qty_1000_Plus').val(),	
-									qty_Base: 			$('#qty_Base').val(),
-									qty_Custom: 		$('#qty_Custom').val(),	
+        									qty_1_24: 			$('#qty_1_24').val(),		// val == inputs
+        									qty_25_99: 			$('#qty_25_99').val(),
 
-									price_1_24: 		$('#price_1_24').text().replace('$', ''),		// text == spans
-									price_25_99: 		$('#price_25_99').text().replace('$', ''),	
-									price_100_499: 		$('#price_100_499').text().replace('$', ''),
-									price_500_999: 		$('#price_500_999').text().replace('$', ''),		
-									price_1000_Plus: 	$('#price_1000_Plus').text().replace('$', ''),			
-									price_Base: 		$('#price_Base').text().replace('$', ''),	
+        									qty_100_499: 		$('#qty_100_499').val(),
+        									qty_500_999: 		$('#qty_500_999').val(),
+        									
+                                            qty_1000_Plus: 		$('#qty_1000_Plus').val(),	
+        									qty_Base: 			$('#qty_Base').val(),
+        									
+                                            qty_Custom: 		$('#qty_Custom').val(),	
 
-									price_Custom: 		$('#price_Custom').val(),
-									comments: 			$('#comments').val()				
+        									price_1_24: 		$('#price_1_24').text().replace('$', ''),		// text == spans
+        									price_25_99: 		$('#price_25_99').text().replace('$', ''),	
+        									price_100_499: 		$('#price_100_499').text().replace('$', ''),
+        									price_500_999: 		$('#price_500_999').text().replace('$', ''),		
+        									price_1000_Plus: 	$('#price_1000_Plus').text().replace('$', ''),			
+        									price_Base: 		$('#price_Base').text().replace('$', ''),	
+
+        									price_Custom: 		$('#price_Custom').val(),
+        									comments: 			$('#comments').val()				
 								};
 
 								// iq2_main.js
@@ -486,9 +554,9 @@ $(document).ready(function() {
 										type: 'POST',
 										data: info, 
 										dataType: "json",
-										success: function(data, textStatus, jqXHR) {
+										success: function(item_id, textStatus, jqXHR) {
 											console.log("AJAX Post: Success!");
-											alert("Your Customer Quote has been updated.");
+											//alert("Your Customer Quote has been updated; item_id:" + item_id);
 
                                             if ( $('#selectedParts').html() == '' ) {
                                                 $('#selectedParts').html(  'Item(s) added to quote: ' + $('#part_no').text());
@@ -497,7 +565,8 @@ $(document).ready(function() {
                                                 $('#selectedParts').append(  ', ' + $('#part_no').text());
                                             }
 
-
+                                            appendTable_CurrentParts(info, item_id);
+                                            //alert('insert new part '+ info.part_no + manufacturer + ' into table...');
 
 										},
 										error: function (jqXHR, textStatus, errorThrown)  {
@@ -636,9 +705,9 @@ $(document).ready(function() {
     	var a          = JSON.parse(res);
     	var partsCount = a.parts.length; 
 
-    	if ( partsCount == 0 ) {
-    		alert('Part not found; \n\nWant to create a Manufacturing Quote?');
-    	}
+    	// if ( partsCount == 0 ) {
+    	// 	alert('Part not found; \n\nWant to create a Manufacturing Quote?');
+    	// }
 
   		if ( ResultsTable ) {
   			ResultsTable.destroy();

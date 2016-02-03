@@ -49,8 +49,7 @@
 
 	[s] new contact
 
-	[ ] add item(s)
-		[ ] 
+	[x] add item(s)
 
 	[x] edit item
 		[x] fix max available check
@@ -59,7 +58,7 @@
 	[x] delete item
 		[x] error - can't delete... exception
 
-	[ ] add required fields marker (red asterisk)
+	[x] add required fields marker (red asterisk)
 
 
 

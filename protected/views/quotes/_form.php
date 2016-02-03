@@ -161,24 +161,15 @@ span.open_close:hover {
 		</div>
 
 		<div id='selection_container'>
-			<span style='padding-left: 50px; font-weight: bold;'><span class='required'> * </span>Contact Source
-				<select name='Quote[source_id]' id='Quote_source_id'>
-					<?php
-						echo "<option value='0'></option>";
-						foreach( $data['sources'] as $c ) {
-							echo "<option value='".$c->id."'>".$c->name."</option>";
-						}
-					?>
-				</select>
-			</span>
-			<span style='padding-left: 120px;'><input type='text' name='Search[typeahead]' id='search_typeahead' size='40' placeholder='Search for...'/> </span>
-			<br /><span style='margin-left: 400px;'>( test: Babbleblab, 44 Hazelcrest Junction)</span>
+			
+			<span style='padding-left: 300px;'><input type='text' name='Search[typeahead]' id='search_typeahead' size='40' placeholder='Search for...'/> </span>
+			<br /><!-- <span style='margin-left: 400px;'>( test: Babbleblab, 44 Hazelcrest Junction)</span> -->
 		</div>
 										
 		<div class='my_container'>
 			<div id='heading_container' style='display: none;'>
-				<span id='span_SelectCustomer' style='display: none;'> Select customer  <select name='Customer[select]' id='Customer_select'> </select><span id='add_NewCustomer'>New</span> </span>
-				<span id='span_SelectContact'  style='display: none;'> Select contact   <select name='Contact[select]'  id='Contact_select'>  </select><span id='add_NewContact'>New</span> </span>
+				<span id='span_SelectCustomer' style='display: none;'> Select customer  <select name='Customer[select]' id='Customer_select'> </select> </span> 
+				<span id='span_SelectContact'  style='display: none;'> Select contact   <select name='Contact[select]'  id='Contact_select'>  </select> </span>
 			</div>
 
 		    <div id="box1">
@@ -229,6 +220,21 @@ span.open_close:hover {
 				        <tr>  <td>Country</td>                  <td><input type='text' id='Contact_country_id' name='Contact[country_id]' readonly='readonly' > </td> </tr>
 			    </table>
 		    </div>
+
+		    <div style='margin-bottom: 20px;'>
+		    	<span style='padding-left: 0px; font-weight: bold;'><span class='required'> * </span>Contact Source
+					<select name='Quote[source_id]' id='Quote_source_id'>
+						<?php
+							echo "<option value='0'></option>";
+							foreach( $data['sources'] as $c ) {
+								echo "<option value='".$c->id."'>".$c->name."</option>";
+							}
+						?>
+					</select>
+				</span>
+			</div>
+
+
 		</div>
 	</div>
 

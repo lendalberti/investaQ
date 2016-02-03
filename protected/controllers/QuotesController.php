@@ -207,14 +207,25 @@ class QuotesController extends Controller
 		$model = new StockItems;
 		$model->attributes = $_POST;
 		pDebug( "actionPartsUpdate() - saving StockItems model withthe following attributes: ", $model->attributes );
-		$model->save();
+		if ( $model->save() ) {
+			pDebug("actionPartsUpdate() - item saved.");
+		}
+		else {
+			pDebug("actionPartsUpdate() - item NOT saved; error=", $model->errors);
+		}
+
 		$modelQuote = Quotes::model()->findByPk( $_POST['quote_id'] );
 
 		// update Quote type
 		$modelQuote->quote_type_id = QuoteTypes::STOCK;
-		$modelQuote->save();
+		if ( $modelQuote->save() ) {
+			pDebug("actionPartsUpdate() - quote saved.");
+		}
+		else {
+			pDebug("actionPartsUpdate() - quote NOT saved; error=", $model->errors);
+		}
 
-		echo json_encode('');
+		echo ($model->id);
 
 	}
 
@@ -303,11 +314,24 @@ class QuotesController extends Controller
 			// ------------------------------ get contact
 			$data['contact']  = Contacts::model()->findByPk($contact_id);
 
+			// $sql = "SELECT * FROM stock_items WHERE  quote_id = $quote_id";
+			// $command = Yii::app()->db->createCommand($sql);
+			// $results = $command->queryAll();
+			// foreach( $results as $i ) {
+			// 	$data['items'][] = array( 'id' => $i['id'],  'part_no' => $i['part_no'], 'manufacturer'=>$i['manufacturer'], 'date_code'=>$i['date_code'], 'qpt'=>$this->getQtyPriceTotal($i) );
+			// }
+
 			$sql = "SELECT * FROM stock_items WHERE  quote_id = $quote_id";
 			$command = Yii::app()->db->createCommand($sql);
 			$results = $command->queryAll();
+
 			foreach( $results as $i ) {
-				$data['items'][] = array( 'id' => $i['id'],  'part_no' => $i['part_no'], 'manufacturer'=>$i['manufacturer'], 'date_code'=>$i['date_code'], 'qpt'=>$this->getQtyPriceTotal($i) );
+				foreach( array('1_24', '25_99', '100_499', '500_999', '1000_Plus', 'Base', 'Custom') as $v ) {
+					if ( fq($i['qty_'.$v]) != '0' ) {
+			 			//$data .=  "  <tr>  <td> ".fq($i['qty_'.$v])."</td>        <td><span class='volume'>$v</span>"      .fp($i['price_'.$v])."</td>          <td> ".fp(calc($i,$v))."</td>   </tr>"; 
+			 			$data['items'][] = array( 'id' => $i['id'],  'part_no' => $i['part_no'], 'manufacturer'=>$i['manufacturer'], 'date_code'=>$i['date_code'], "qty" => fq($i["qty_$v"]), "price" => "<span class='volume'>$v</span>". fp($i["price_$v"]), "total" => fp(calc($i,$v))  );
+			 		}
+				}
 			}
 
 			$data['model']    = $this->loadModel($quote_id);
