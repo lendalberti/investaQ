@@ -268,6 +268,69 @@
     }
 
 
+
+
+    // -----------------------------------------------------------------------------------
+    function notifySalespersonStatusChange( $model ) {
+        pDebug( "notifySalespersonStatusChange() - start..." );
+
+        $subject           = "Your Quote Status has Been Updated";
+        $salesperson_name  = $model->owner->fullname;
+        $salesperson_email = $model->owner->email;
+        $cc                = Yii::app()->user->email;   // always CC me for now if NOT in Debug
+        
+        $link    = "<a href='http://http://www.wcvb.com'>".$model->quote_no."</a>";
+        $message = "This is to inform you the status for your quote " . $link . " has been changed to: " . $model->status->name;
+
+        if ( Yii::app()->params['DEBUG'] ) {
+            $salesperson_email = Yii::app()->user->email;               // all to me in Debug
+            $subject .= " (email meant for " . $salesperson_name . ")";
+            $cc = null; 
+        }
+       
+       try {
+            require_once("phpmailer/class.phpmailer.php");
+
+            $mail = new PHPMailer();
+            $mail->isHTML();
+            $mail->IsSMTP();
+            $mail->Host = Yii::app()->params['email_host'];
+
+            $mail->FromName = Yii::app()->user->fullname;
+            $mail->From     = Yii::app()->user->email;
+
+            $mail->AddAddress( $salesperson_email );
+
+            if ( !Yii::app()->params['DEBUG'] ) {
+                 $mail->AddCC( $cc );               
+            }
+
+            $mail->Subject = $subject; 
+            $mail->MsgHTML($message);
+
+            if ( !$mail->Send() ) {
+                pDebug( "notifySalespersonStatusChange() - Error sending email to [" . $salesperson_name . "], error: [" . $mail->ErrorInfo ."]" );
+                return false;
+            }
+            else {
+                pDebug( "notifySalespersonStatusChange() - email successfully sent to " . $salesperson_name );
+                return true;
+            }
+        }
+        catch (Exception $e) {
+            pDebug( "notifySalespersonStatusChange() - Exception sending email to [" . $salesperson_name . "], error: [", $e->errorInfo );
+            return false;
+        }
+    }
+
+
+
+
+
+
+
+
+
     // -----------------------------------------------------------------------------------
     function notifySalesPerson( $user_id, $subject, $message ) {
         
@@ -325,7 +388,8 @@
     }
     
     function pDebug( $msg, $what='' ) {
-        $msg = print_r($msg, true);
+
+        $msg = Yii::app()->user->fullname . ': ' .  print_r($msg, true);
         if ( $what ) {
           $what = "\n" . print_r($what, true);
         }
@@ -333,6 +397,14 @@
         Yii::log( "\n\n$msg\n$what\n", 'info', 'MyDebug' );
         //Yii::trace( "$msg\n$what\n\n", 'MyDebug' );
     }
+
+    function pTrace($where) {
+        if ( Yii::app()->params['TRACE'] ) {
+            $msg = '[TRACE] ' . Yii::app()->user->fullname . ": $where";
+            Yii::log( "\n\n$msg\n", 'info', 'MyDebug' );
+        }
+    }
+
 
 
    /**
@@ -367,76 +439,6 @@
     function getQuoteItemCount($quote_id) {
         return Items::model()->count( "quote_id=$quote_id") > 0 ? Items::model()->count( "quote_id=$quote_id") : '-';
     } 
-
-
-    function getIndexApprovalText($id, $my_quotes=false) {
-        if ( $my_quotes ) {
-            if ( $id == Status::DRAFT ) {
-                return "<span class='small_caps_approver_gray' ' title='Quote is still in draft mode' >draft</span>";
-            }
-            else if ( $id == Status::WAITING_APPROVAL ) {
-                return "<span class='small_caps_approver_orange' title='Waiting for approval' >Pending Approval</span>"; 
-            }
-            
-            else if ( $id == Status::LOST ) {
-                return "<span class='small_caps_approver_red' title='Lost Oportunity' >Lost</span>"; 
-            }
-            else if ( $id == Status::NO_BID ) {
-                return "<span class='small_caps_approver_red' title='No Bid' >NoBid</span>"; 
-            }
-            else if ( $id == Status::WON ) {
-                return "<span class='small_caps_approver_blue' title='Won Order' >Won</span>"; 
-            }
-            else if ( $id == Status::ORDER_PLACED ) {
-                return "<span class='quote_approved' title='Order Placed' >$$</span>"; 
-            }
-
-            else if ( $id == Status::READY ) {
-                return "<span class='quote_approved' title='Quote ready for submittal'>✔</span>";  // green check 
-            }
-            else  if ( $id == Status::SUBMITTED_CUSTOMER ) {
-                return "<span class='small_caps_approver_purple' title='Submitted to customer' >Submitted to Customer</span>"; 
-            }
-            else  if ( $id == Status::READY ) {
-                return "<span class='small_caps_approver_green' title='Submitted to customer' >Ready</span>"; 
-            }
-
-        }
-        else {
-            if ( $id == Status::DRAFT ) {
-                return "<span class='small_caps_approver_gray' title='Quote is still in draft mode' >draft</span>";
-            }
-            else if ( $id == Status::WAITING_APPROVAL ) {
-                return "<span class='small_caps_approver_green' title='Quote is ready to be approved or rejected'>Ready For Approval</span>"; 
-            }
-
-              else if ( $id == Status::LOST ) {
-                return "<span class='small_caps_approver_gray' title='Lost Oportunity' >Lost</span>"; 
-            }
-             else if ( $id == Status::NO_BID ) {
-                return "<span class='small_caps_approver_gray' title='No Bid' >NoBid</span>"; 
-            }
-             else if ( $id == Status::WON ) {
-                return "<span class='small_caps_approver_gray' title='Won Order' >Won</span>"; 
-            }
-            else if ( $id == Status::ORDER_PLACED ) {
-                 return "<span class='quote_approved' title='Order Placed' >$$</span>"; 
-            }
-
-            else if ( $id == Status::READY ) {
-                return "<span class='quote_approved' title='Quote ready for submittal' >✔</span>";  // green check
-            }
-            else  if ( $id == Status::SUBMITTED_CUSTOMER ) {
-                return "<span class='small_caps_approver_gray' title='Submitted to customer' >Submitted to Customer</span>"; 
-            }
-            else  if ( $id == Status::READY ) {
-                return "<span class='small_caps_approver_green' title='Submitted to customer' >Ready</span>"; 
-            }
-
-        }
-
-    }
-
 
 
     function getFormattedDate($d) {

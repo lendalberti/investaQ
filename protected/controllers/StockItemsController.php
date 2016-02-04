@@ -98,7 +98,7 @@ class StockItemsController extends Controller
 
 		 		pDebug("min_custom_price=[$min_custom_price], actual price_Custom=[".$_POST['StockItems']['price_Custom']."]");
 		 		if ( $_POST['StockItems']['price_Custom'] < $min_custom_price ) {
-		 			$status = Status::WAITING_APPROVAL;
+		 			$status = Status::PENDING;
 		 		}
  			}
 

@@ -144,6 +144,39 @@ table.dataTable thead th.sorting_desc:after {
     color: lightyellow;
 }
 
+
+/*   from Annalyse  */
+.status_accepted {
+	background-color: #CCFFCC;
+	border: 1px solid blue;
+	color: black;
+	padding: 0px 5px 0px 5px;
+}
+
+.status_completed {
+	color: blue;
+}
+
+.status_inprocess {
+	background-color: #66FFFF;
+	border: 1px solid blue;
+	color: black;
+	padding: 0px 5px 0px 5px;
+}
+
+.status_rejected {
+	color: red;
+}
+
+.status_submitted {
+	background-color: #FFDA91;
+	border: 1px solid blue;
+	color: black;
+	padding: 0px 5px 0px 5px;
+}
+
+
+
 #quotes_table > tbody > tr > td:nth-child(4) {
 	color: #a31128;
 }
@@ -165,11 +198,11 @@ a[id^='quote_delete_']:hover {
 	background-color: #FDFCDC; 
 }
 
-span[id^='view_quote_'] > img {
+span[id^='quote_view_'] > img {
 	border: 1px dotted white;
 }
 
-span[id^='view_quote_'] > img:hover {
+span[id^='quote_view_'] > img:hover {
 	border: 1px solid gray;
 }
 
@@ -496,16 +529,22 @@ table#fixed td, th {
 
 img[id^='item_trash_'],
 img[id^='item_edit_'],
+
+img[id^='quote_approve_'],
+img[id^='quote_reject_'],
+
 img[id^='quote_edit_'],
 img[id^='quote_attach_'],
 img[id^='quote_print_'],
 img[id^='quote_email_'],
 img[id^='quote_trash_'],
+img[id^='quote_contact_'],
 img[id^='quote_pdf_'] {
 	padding: 5px;
 }
 
 
+img[id^='quote_contact_']:hover,
 img[id^='quote_pdf_']:hover,
 img[id^='quote_edit_']:hover,
 img[id^='quote_delete_']:hover,
@@ -718,9 +757,14 @@ span#clearContactFields:hover {
 	cursor: pointer;
 }
 
+#changeStatus {
+	color: blue;
+	text-decoration: underline;
+}
 
-
-
+#changeStatus:hover {
+	cursor: pointer;
+}
 
 
 

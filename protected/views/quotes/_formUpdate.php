@@ -2,12 +2,21 @@
 
 <input type='hidden' id='return_URL' name='return_URL' value='<?php echo $_SERVER['REQUEST_URI'];  ?>'>
 
+<?php
+	if ( Yii::app()->user->isAdmin ) {
+		$status_link = "<span id='changeStatus'>".$data['model']->status->name."</span>";
+	}
+	else {
+		$status_link = $data['model']->status->name;
+	}
+?>
+
 
 <div style='height: 80px; border: 0px solid gray;'>
 	
 	<div style='color: #2C6371;  font-size: 2em; border: 0px solid green; float: left; padding-right: 10px;' id='header_PageTitle'>Updating Stock Quote No.</div>
 	<div style='color: #a31128;  font-size: 1.5em; border: 0px solid red; font-family: courier.;padding-top:  5px; font-family: courier.;padding-top:  5px;' id='header_QuoteNo'><?php echo $data['model']->quote_no; ?> 
-		<span style='color: #2C6371;  font-size: .7em; border: 0px solid red; '> [ <?php echo $data['model']->status->name; ?> ]</span>
+		<span style='color: #2C6371;  font-size: .7em; border: 0px solid red; '> [  <?php echo $status_link; ?>  ]</span>
 	</div>
 
 <!-- 
@@ -251,6 +260,31 @@
 </form>
 
 <div class='print' id="form_PartPricing" style='display: none'> pricing details content goes here </div>
+
+
+<div class='print' id="form_PartPricing" style='display: none'> pricing details content goes here </div>
+
+<div id="dialog_status_form" title="Change Quote Status">
+	<form id='new_status_form' name='new_status_form' >
+		<fieldset>
+
+		<input type='hidden' id='Quote_id' name='Quote[id]' value='<?php echo $data['model']->id; ?>'>
+
+			<label for="name">Select new status: </label>
+				
+				<select id='newQuoteStatus' name='newQuoteStatus' style='margin-top: 10px;'>
+						<?php
+							foreach( $data['status'] as $arr ) {
+								echo "<option value=".$arr->id.">$arr->name</option>";
+							}
+						?>
+				</select>
+
+			<!-- Allow form submission with keyboard without duplicating the dialog button -->
+			<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+		</fieldset>
+	</form>
+</div>
 
 
 <!--  fini --> 

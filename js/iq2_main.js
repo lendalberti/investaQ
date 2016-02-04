@@ -44,13 +44,46 @@ $(document).ready(function() {
     //-------- Event Handlers  --------------------------------------------------------------------------------------------    
     //---------------------------------------------------------------------------------------------------------------------
 
+
+
+    $('#changeStatus').on('click', function() {
+        dialog_status.dialog( "open" );
+    });
+
+
+    dialog_status = $( "#dialog_status_form" ).dialog({
+        autoOpen: false,
+        height: 160,
+        width: 350,
+        modal: true,
+        buttons: {
+            "Change": function() {
+                var newStatus =  $('#newQuoteStatus').val();
+                console.log( "new status = " + newStatus + ", form: " + $('#new_status_form').serialize() );
+                var postData = $('#new_status_form').serialize() 
+                var quoteID = $('#Quote_id').val();
+
+                $.ajax({
+                        type: "POST",
+                        url: myURL + 'quotes/update/' + quoteID,
+                        data: postData,
+                        success: function(results)  {
+                            console.log('results from quote update=['+results+']');
+                            location.reload();
+                        }
+                });
+
+                dialog_status.dialog( "close" );
+                return false;
+            },
+            Cancel: function() {
+                dialog_status.dialog( "close" );
+            }
+        }
+    });
+
     $('#addPartToQuote').on('click', function() {
         $('#div_PartsLookup').show();
-
-
-
-
-
     });
 
     $('#clearContactFields').on('click', function() {
@@ -244,7 +277,50 @@ $(document).ready(function() {
         });
     });
 
-    $('[id^=view_quote_]').on('click', function() { //   View quote  
+
+    $('[id^=quote_approve_]').on('click', function() { //   Approve quote  
+        var quoteID = getThisID( $(this) ); 
+
+        if ( confirm("Are you sure you want to approve this quote?" ) ) {
+            $.ajax({
+                type: 'GET',
+                url: myURL + 'quotes/approve?id='+quoteID ,
+                success: function (ret) {
+                    if ( ret == 1 ) {
+                       // alert('Quote approved.');
+                        window.location = myURL + 'quotes/index?a=1'; 
+                    }
+                    else {
+                        alert('Error: could not approve quote - see Admin.');
+                    }
+                }
+            });
+        }
+    })
+
+
+    $('[id^=quote_reject_]').on('click', function() { //   Reject quote  
+        var quoteID = getThisID( $(this) ); 
+
+
+        if ( confirm("Are you sure you want to reject this quote?" ) ) {
+            $.ajax({
+                type: 'GET',
+                url: myURL + 'quotes/reject?id='+quoteID ,
+                success: function (ret) {
+                    if ( ret == 1 ) {
+                       // alert('Quote rejected.');
+                        window.location = myURL + 'quotes/index?a=1'; 
+                    }
+                    else {
+                        alert('Error: could not reject quote - see Admin.');
+                    }
+                }
+            });
+        }
+    })
+
+    $('[id^=quote_view_]').on('click', function() { //   View quote  
     	var quoteID = getThisID( $(this) ); 
     	window.location = myURL + 'quotes/view?id='+quoteID ;
     })
@@ -279,9 +355,9 @@ $(document).ready(function() {
     	// have to attach click event handler; after paging, 
     	// dataTables reloads the tableBody and all attached event handlers
 
-    	// do this for view_quote_xx, edit_quote_xx, delete_quote_xx
+    	// do this for quote_view_xx, edit_quote_xx, delete_quote_xx
 
-		$('[id^=view_quote_]').on('click', function() {
+		$('[id^=quote_view_]').on('click', function() {
 	    	var quoteID = getThisID( $(this) ); 
 	    	window.location = myURL + 'quotes/view?id='+quoteID ;
 	    })

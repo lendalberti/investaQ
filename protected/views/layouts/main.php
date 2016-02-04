@@ -128,18 +128,25 @@
 	<?php
 		if ( Yii::app()->user->isLoggedIn ) { ?>
 			<div id='dashboard_div'>
-				<table id='dashboard_table' style='border: 1px solid lightblue;'><caption>My Quotes Board</caption>
-					<tr>	<td>Pending</td>       <td><?php echo getMyQuoteCount(Status::WAITING_APPROVAL); ?></td>          <td>Ready</td>   	   <td><?php echo getMyQuoteCount(Status::READY); ?></td>   </tr>  
-					<tr>	<td>Order Placed</td>  <td><?php echo getMyQuoteCount(Status::ORDER_PLACED); ?></td>              <td>Draft</td>       <td><?php echo getMyQuoteCount(Status::DRAFT); ?></td>   </tr>  
-					<tr>	<td>Submitted</td>     <td><?php echo getMyQuoteCount(Status::SUBMITTED_CUSTOMER); ?></td>        <td>Won</td>         <td><?php echo getMyQuoteCount(Status::WON); ?></td>     </tr> 
-					<tr>	<td>BTO Pending</td>   <td><?php echo getMyQuoteCount(Status::SUBMITTED_CUSTOMER); ?></td>        <td>Lost</td>        <td><?php echo getMyQuoteCount(Status::LOST); ?></td>    </tr>
-					<tr>	<td>BTO Ready</td>   <td><?php echo getMyQuoteCount(Status::SUBMITTED_CUSTOMER); ?></td>          <td>NoBid</td>       <td><?php echo getMyQuoteCount(Status::NO_BID); ?></td>  </tr>
+				<table id='dashboard_table' style='border: 1px solid lightblue;'><caption>My Quotes Board</caption> 
+
+				<!--       TODO: redesign layout?   3x4, 4x3, 2x6?              
+
+							Pending 	 	Approved 		Rejected 	Draft 
+							Submitted 	 	Won 			Lost 		NoBid 		
+							BTO_Pending 	BTO_Approved 	BTO_NoBid 	OrderPlaced
+				-->
+
+					<tr>	<td>Pending</td>       <td><?php echo getMyQuoteCount(Status::PENDING); ?></td>          <td>Approved</td>    <td><?php echo getMyQuoteCount(Status::APPROVED); ?></td>   </tr>  
+					<tr>	<td>Order Placed</td>  <td><?php echo getMyQuoteCount(Status::ORDER_PLACED); ?></td>     <td>Rejected</td>       <td><?php echo getMyQuoteCount(Status::REJECTED); ?></td>   </tr>  
+					<tr>	<td>Submitted</td>     <td><?php echo getMyQuoteCount(Status::SUBMITTED); ?></td>        <td>Won</td>         <td><?php echo getMyQuoteCount(Status::WON); ?></td>     </tr> 
+					<tr>	<td>BTO Pending</td>   <td><?php echo getMyQuoteCount(Status::BTO_PENDING); ?></td>      <td>Lost</td>        <td><?php echo getMyQuoteCount(Status::LOST); ?></td>    </tr>
+					<tr>	<td>BTO Approved</td>     <td><?php echo getMyQuoteCount(Status::BTO_APPROVED); ?></td>  <td>NoBid</td>    <td><?php echo getMyQuoteCount(Status::NO_BID); ?></td>  </tr>
+					<tr>	<td>BTO NoBid</td>     <td><?php echo getMyQuoteCount(Status::BTO_NOBID); ?></td>        <td>Draft</td>    <td><?php echo getMyQuoteCount(Status::DRAFT); ?></td>  </tr>
 				</table>
 			</div>
 	<?php } ?>
 		
-
-	
 	<?php echo $content; ?>
 
 	<div class="clear"></div>

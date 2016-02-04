@@ -10,8 +10,13 @@
  * The followings are the available model relations:
  * @property Quotes[] $quotes
  */
-class Levels extends CActiveRecord
-{
+class Levels extends CActiveRecord  {
+
+
+	const 	INQUIRY  = 1,
+			PROPOSAL = 2;
+
+			
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.

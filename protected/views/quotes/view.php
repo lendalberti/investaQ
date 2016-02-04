@@ -3,11 +3,25 @@
 
 <input type='hidden' id='return_URL' name='return_URL' value='<?php echo $_SERVER['REQUEST_URI'];  ?>'>
 
+<?php
+
+	if ( Yii::app()->user->isAdmin ) {
+		$status_link = "<span id='changeStatus'>".$data['model']->status->name."</span>";
+	}
+	else {
+		$status_link = $data['model']->status->name;
+	}
+
+	
+
+
+
+?>
 
 <div style='height: 100px; border: 0px solid gray;'>
 	<div style='color: #2C6371;  font-size: 2em; border: 0px solid green; float: left; padding-right: 10px;' id='header_PageTitle'>Viewing Stock Quote No.</div>
 	<div style='color: #a31128;  font-size: 1.5em; border: 0px solid red; font-family: courier.;padding-top:  5px; font-family: courier.;padding-top:  5px;' id='header_QuoteNo'><?php echo $data['model']->quote_no; ?> 
-		<span style='color: #2C6371;  font-size: .7em; border: 0px solid red; '> [ <?php echo $data['model']->status->name; ?> ]</span>
+		<span style='color: #2C6371;  font-size: .7em; border: 0px solid red; '> [ <?php echo $status_link; ?> ]</span>
 	</div>
 
 	<br />
@@ -15,15 +29,39 @@
 		$edit   = Yii::app()->request->baseUrl . "/images/New/edit.png"; 
  		$trash  = Yii::app()->request->baseUrl . "/images/New/trash.png";
  		$print  = Yii::app()->request->baseUrl . "/images/New/print.png";
- 		$email  = Yii::app()->request->baseUrl . "/images/New/mail.png";
  		$attach = Yii::app()->request->baseUrl . "/images/New/attachment.png";
-
- 		echo "<img id='quote_edit_"  .$data['model']['id']."' title='Edit this quote'   src='$edit' />";
- 		echo "<img id='quote_attach_".$data['model']['id']."' title='Attach a file'     src='$attach' />";
- 		echo "<img id='quote_print_" .$data['model']['id']."' title='Print this quote'  src='$print' />";
- 		echo "<img id='quote_email_" .$data['model']['id']."' title='Email this quote'  src='$email' />";
- 		echo "<img id='quote_trash_" .$data['model']['id']."' title='Delete this quote' src='$trash' />";
+ 		$email  = Yii::app()->request->baseUrl . "/images/New/mail.png";
+ 		$contact  = Yii::app()->request->baseUrl . "/images/New/mail.png";
  		
+ 		$thumbs_up   = Yii::app()->request->baseUrl . "/images/New/thumbs_up.png";
+ 		$thumbs_down = Yii::app()->request->baseUrl . "/images/New/thumbs_down.png";
+
+ 		if ( Yii::app()->user->isAdmin ) { // allow all for Admin
+ 			echo "<img id='quote_edit_"  .$data['model']['id']."' title='Edit this quote'   src='$edit' />";
+ 			echo "<img id='quote_approve_" .$data['model']['id']."' title='Approve this quote' src='$thumbs_up' />";
+			echo "<img id='quote_reject_" .$data['model']['id']."' title='Reject this quote' src='$thumbs_down' />";
+	 		echo "<img id='quote_contact_" .$data['model']['id']."' title='Contact Salesperson'  src='$contact' />";
+			echo "<img id='quote_print_" .$data['model']['id']."' title='Print this quote'  src='$print' />";
+			echo "<img id='quote_attach_".$data['model']['id']."' title='Attach a file'     src='$attach' />";
+			echo "<img id='quote_email_" .$data['model']['id']."' title='Email this quote'  src='$email' />";
+			echo "<img id='quote_trash_" .$data['model']['id']."' title='Delete this quote' src='$trash' />";
+ 		}
+ 		else if ( Yii::app()->user->isApprover && $data['model']->status->id == Status::PENDING ) {
+			echo "<img id='quote_approve_" .$data['model']['id']."' title='Approve this quote' src='$thumbs_up' />";
+			echo "<img id='quote_reject_" .$data['model']['id']."' title='Reject this quote' src='$thumbs_down' />";
+	 		echo "<img id='quote_contact_" .$data['model']['id']."' title='Contact Salesperson'  src='$contact' />";
+			echo "<img id='quote_print_" .$data['model']['id']."' title='Print this quote'  src='$print' />";
+ 		}
+ 		else {
+ 			if ( $data['model']->status_id == Status::DRAFT || $data['model']->status_id == Status::REJECTED ) { // edits allowed only for draft,rejected quotes
+ 				echo "<img id='quote_edit_"  .$data['model']['id']."' title='Edit this quote'   src='$edit' />";
+ 			}
+	 		echo "<img id='quote_attach_".$data['model']['id']."' title='Attach a file'     src='$attach' />";
+	 		echo "<img id='quote_print_" .$data['model']['id']."' title='Print this quote'  src='$print' />";
+	 		echo "<img id='quote_email_" .$data['model']['id']."' title='Email this quote'  src='$email' />";
+	 		echo "<img id='quote_trash_" .$data['model']['id']."' title='Delete this quote' src='$trash' />";
+	 	}
+ 	
 
  		$q  = $data['model']; 
  		$cu = $data['customer'];
@@ -176,6 +214,31 @@
 
 
 	<!-- <div id='div_ActionButtons'> <input id='button_Home' type='button' value='Home'> </div> -->
+
+
+	<div id="dialog_status_form" title="Change Quote Status">
+		<form id='new_status_form' name='new_status_form' >
+			<fieldset>
+
+			<input type='hidden' id='Quote_id' name='Quote[id]' value='<?php echo $data['model']->id; ?>'>
+
+				<label for="name">Select new status: </label>
+					
+					<select id='newQuoteStatus' name='newQuoteStatus' style='margin-top: 10px;'>
+							<?php
+								foreach( $data['status'] as $arr ) {
+									echo "<option value=".$arr->id.">$arr->name</option>";
+								}
+							?>
+					</select>
+
+				<!-- Allow form submission with keyboard without duplicating the dialog button -->
+				<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+			</fieldset>
+		</form>
+	</div>
+
+
 
 
 <!--  fini --> 

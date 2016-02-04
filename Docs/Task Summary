@@ -4,16 +4,43 @@
 
 	[x] need approval
 
-	[ ] approver's queue
-		[ ] add 'thumbs up' icon for approval              <---------------------- Next
-		[ ] add 'thumbs down' icon for rejection
-
+	[x] Approver's queue
+		[x] add 'thumbs up' icon for approval    
+		[x] add 'thumbs down' icon for rejection
+		[x] jquery functions
+		[ ] contact salesperson
 
 	[ ] add fields to Quotes:
 		- date_won
 		- date_lost
 		- date_nobid
 		- date_approved
+
+	[ ] Attachments 
+		[x] icon link
+		[ ] jquery functions
+
+	[x] notifySalespersonStatusChange()
+
+	[x] if not draft or rejected quotes, then prevent edits
+
+	[x] allow Admin to change status
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -47,10 +74,6 @@
 		[x] list of contacts is incorrect - FIX 
 
 	[ ] Print link (create pdf)
-
-	[ ] Attachments 
-		[ ] icon link
-		[ ] 
 
 	[ ] Send email link
 

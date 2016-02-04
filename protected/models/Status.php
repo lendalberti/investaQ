@@ -12,18 +12,18 @@
  */
 class Status extends CActiveRecord {
 
-	const 	DRAFT              = 1,  // custom pricing needs approval
-			WAITING_APPROVAL   = 2, 
-			READY              = 3,  // no custom pricing
-			ORDER_PLACED       = 4,
-			WON                = 5,
-			LOST               = 6,
-			NO_BID             = 7,
-			SUBMITTED_CUSTOMER = 8,
-			APPROVED           = 9,
-			PENDING            = 10,
-			INQUIRY            = 11,  // inquired only
-			PROPOSAL           = 12;
+	const 	DRAFT         = 1, 
+			PENDING       = 2, 
+			ORDER_PLACED  = 3,
+			WON           = 4,
+			LOST          = 5,
+			NO_BID        = 6,
+			SUBMITTED     = 7,
+			APPROVED      = 8,
+			REJECTED	  = 9,
+			BTO_PENDING   = 10,
+			BTO_APPROVED  = 11,
+			BTO_NOBID     = 12;
 			
 	/**
 	 * Returns the static model of the specified AR class.

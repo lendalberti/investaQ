@@ -38,7 +38,7 @@ class QuotesController extends Controller
 			),
 
 			array('allow', // allow approvers  to perform 'approval' 
-				'actions'=>array('approval'),
+				'actions'=>array('approve', 'reject'),
 				'expression' => '$user->isApprover'
 			),
 			
@@ -49,30 +49,64 @@ class QuotesController extends Controller
 	}
 
 
-	// ------------------------------------- Approval Queue...
-    public function actionApproval()     { 
-    	// just like index - only that status == WaitingForApproval
-    	pDebug('actionApproval() - _GET=', $_GET);
 
-		$quote_type = '';
-		$navigation_links = '';
-		$page_title = "Quotes Needing Approval";
 
-		$criteria = new CDbCriteria();
-		$criteria->addCondition("status_id = " . Status::WAITING_APPROVAL);
-		$criteria->order = 'id DESC';
-		$model = Quotes::model()->findAll( $criteria );
 
-		$this->render( 'indexApproval', array(
-			'model' => $model,
-			'page_title' => $page_title,
-		));
+
+
+
+	// ------------------------------------- Approve Quote...  TODO:  combine these 2 ( actionDisposition() with POST variable? )
+    public function actionApprove($id)     { 
+		pTrace( __METHOD__ );
+    	
+    	$model = $this->loadModel($id);
+    	$model->status_id = Status::APPROVED;
+
+    	if ( $model->save() ) {
+    		pDebug('actionApprove() - quote ' . $model->quote_no . ' approved');
+    		notifySalespersonStatusChange($model);
+    		echo 1;
+    	}
+    	else {
+    		pDebug('actionApprove() - ERROR approving quote: ', $model->errors);
+    		echo 0;
+    	}
+    }
+    // ------------------------------------- Reject Quote...
+    public function actionReject($id)     { 
+		pTrace( __METHOD__ );
+    	$model = $this->loadModel($id);
+    	$model->status_id = Status::REJECTED;
+    	if ( $model->save() ) {
+    		pDebug('actionReject() - quote ' . $model->quote_no . ' rejected');
+    		notifySalespersonStatusChange($model);
+    		echo 1;
+    	}
+    	else {
+    		pDebug('actionReject() - ERROR rejecting quote: ', $model->errors);
+    		echo 0;
+    	}
     }
 
 	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	// ------------------------------------- AutoCompletion Search...
     public function actionSearch()     {        
-        $term = isset( $_GET['term'] ) ? trim(strip_tags($_GET['term'])) : null; if ( !$term ) return null;
+ 		pTrace( __METHOD__ );
+       $term = isset( $_GET['term'] ) ? trim(strip_tags($_GET['term'])) : null; if ( !$term ) return null;
         
         // search customer fields: [ name, address1, syspro_account_code ]
 		$tmp = Customers::model()->findAll( array('condition' => "name LIKE '%$term%' OR address1 LIKE '%$term%' OR syspro_account_code LIKE '%$term%' OR zip LIKE '%$term%'  OR city LIKE '%$term%' ") );
@@ -96,11 +130,13 @@ class QuotesController extends Controller
 	
 	// ------------------------------------- 
 	public function actionView($id) {
+		pTrace( __METHOD__ );
 
 		$data['model'] = $this->loadModel($id);
 		//pDebug('quote model attributes: ', $data['model']->attributes );
 
 		$data['items'] = array();
+		$data['status'] = array();
 
 		$customer_id = $data['model']->customer_id;
 		$contact_id  = $data['model']->contact_id;
@@ -111,6 +147,10 @@ class QuotesController extends Controller
 		
 		// ------------------------------ get contact
 		$data['contact']  = Contacts::model()->findByPk($contact_id);
+
+		// ------------------------------ get status
+		$data['status']  = Status::model()->findAll();
+
 
 		// ------------------------------ get stock_items
 		$sql = "SELECT * FROM stock_items WHERE  quote_id = $quote_id";
@@ -136,6 +176,7 @@ class QuotesController extends Controller
 
 	
 	public function actionCreate() {
+		pTrace( __METHOD__ );
 		pDebug("Quotes::actionCreate() - _POST values from serialzed form values:", $_POST);
 
 		if ( isset($_POST['Customer']) && isset($_POST['Contact']) && isset($_POST['Quote'])   ) {
@@ -226,6 +267,7 @@ class QuotesController extends Controller
 
 
 	public function actionPartsUpdate() 	{
+		pTrace( __METHOD__ );
 		pDebug("actionPartsUpdate() - _POST: ", $_POST);
 
 		$modelStockItem = new StockItems;
@@ -238,7 +280,7 @@ class QuotesController extends Controller
 
 		$modelQuote = Quotes::model()->findByPk( $_POST['quote_id'] );
 		$modelQuote->quote_type_id = QuoteTypes::STOCK;   // update Quote type
-		$modelQuote->status_id = ( $_POST['approval_needed'] ? Status::WAITING_APPROVAL : Status::DRAFT );  // update Status
+		$modelQuote->status_id = ( $_POST['approval_needed'] ? Status::PENDING : Status::DRAFT );  // update Status
 
 		if ( $modelQuote->save() ) {
 			pDebug("actionPartsUpdate() - quote saved; new stock item id=" . $modelQuote->id );
@@ -263,10 +305,29 @@ class QuotesController extends Controller
 	 * @param integer $id the ID of the model to be updated
 	 */
 	public function actionUpdate($id) 	{
+		pTrace( __METHOD__ );
 		$quote_id = $id;
 
 		if ( $_POST ) {
 			pDebug("actionUpdate() - _POST: ", $_POST);
+
+			if ( isset($_POST['newQuoteStatus']) && Yii::app()->user->isAdmin ) {  // should only be Admin updating status
+				$quoteModel = $this->loadModel($quote_id);
+				$oldQuoteStatus = $quoteModel->status->name;
+
+				$quoteModel->status_id = $_POST['newQuoteStatus'];
+				if ($quoteModel->save()) {
+					$new_quoteModel = $this->loadModel($quote_id);
+					pDebug("Changed quote status from [$oldQuoteStatus] to [" . $new_quoteModel->status->name . "]" );
+					notifySalespersonStatusChange($quoteModel);
+					echo '';
+				}
+				else {
+					pDebug("actionUpdate() - can't update quote status; error=", $quoteModel->errors );
+					echo 'error';
+				}
+				return;
+			}
 
 			// validate source id > 0
 			if ( $_POST['Quote']['source_id'] == 0 ) {
@@ -323,7 +384,11 @@ class QuotesController extends Controller
 		}
 		else {
 			$data['model'] = $this->loadModel($quote_id);
-			//pDebug('quote model attributes: ', $data['model']->attributes );
+			if ( $data['model']->status_id != Status::DRAFT && $data['model']->status_id != Status::REJECTED && !Yii::app()->user->isAdmin  ) { // allow for edits only for draft,rejected quotes
+				$this->redirect(array('index'));
+			}
+
+
 
 			$data['items'] = array();
 
@@ -358,6 +423,8 @@ class QuotesController extends Controller
 
 			$data['model']    = $this->loadModel($quote_id);
 			$data['sources']  = Sources::model()->findAll( array('order' => 'name') );
+			// ------------------------------ get status
+			$data['status']   = Status::model()->findAll();
 			
 
 			$this->render('update',array(
@@ -376,6 +443,7 @@ class QuotesController extends Controller
 	 * @param integer $id the ID of the model to be deleted
 	 */
 	public function actionDelete($id) 	{
+		pTrace( __METHOD__ );
 		pDebug("QuotesController::actionDelete() - _GET=", $_GET);
 		pDebug("QuotesController::actionDelete() - _POST=", $_POST);
 
@@ -395,22 +463,21 @@ class QuotesController extends Controller
 
 
 	public function actionIndex() 	{
+		pTrace( __METHOD__ );
 		pDebug('actionIndex() - _GET=', $_GET);
 
 		$criteria = new CDbCriteria();
 
-		if ( isset($_GET['a']) ) {
+		if ( isset($_GET['a']) && Yii::app()->user->isApprover ) {
 			$page_title = "Quotes Needing Approval";
-			$criteria->addCondition("status_id = " . Status::WAITING_APPROVAL);
+			$criteria->addCondition("status_id = " . Status::PENDING);
 		}
+		else if ( Yii::app()->user->isAdmin || Yii::app()->user->isApprover ) {
+			$page_title = "All Sales Quotes";
+		} 
 		else {
-			if ( Yii::app()->user->isAdmin || Yii::app()->user->isApprover ) {
-				 $page_title = "All Sales Quotes";
-			} 
-			else {
-				$criteria->addCondition("owner_id = " . Yii::app()->user->id);
-				$page_title = "My Quotes";
-			}
+			$criteria->addCondition("owner_id = " . Yii::app()->user->id);
+			$page_title = "My Quotes";
 		}
 
 		$criteria->order = 'id DESC';
@@ -521,6 +588,7 @@ class QuotesController extends Controller
 
     	//-------------------------------------------------------
 	public function actionPdf($id) {
+		pTrace( __METHOD__ );
 		pDebug('actionPdf() - creating PDF file for quote no. ' . $id);
 
 		$data          = array();
@@ -620,7 +688,7 @@ class QuotesController extends Controller
 	    $pdf->displayPageHeading();
 
 	    // --------------------------------------------- Add Watermark
-	    if ( $d['status_id'] == Status::DRAFT || $d['status_id'] == Status::WAITING_APPROVAL ) {
+	    if ( $d['status_id'] == Status::DRAFT || $d['status_id'] == Status::PENDING ) {
 	    	$pdf->addWatermark();
 	    } 
 	    	
@@ -709,7 +777,7 @@ EOT;
 	    $pdf->displayProfile();
 
 		// --------------------------------------------- Add Watermark
-    	if ( $d['status_id'] == Status::DRAFT || $d['status_id'] == Status::WAITING_APPROVAL ) {
+    	if ( $d['status_id'] == Status::DRAFT || $d['status_id'] == Status::PENDING ) {
     		$pdf->addWatermark();
     	}
 
