@@ -1,39 +1,65 @@
 $(document).ready(function() {
 
 	var myURL = '/iq2/index.php/';
-	var qty_available_selected = $('#table_AddToQuote > caption > span:nth-child(2)').html();   // $('#rightDiv > span:nth-child(2)').html();  
+	var qty_available_selected = $('#table_AddToQuote > caption > span:nth-child(2)').html(); 
+
 
     // ----------------------------------------------------------------------------- Any Qty Input
-	$('input[id^=qty_]').focus(function() {}).blur(function() {
-		var elementID = this.id;
+    $('input[id^=qty_]').on('focus',function() {}).on('blur', function() {
+        console.log('qty_  focus/blur' );
+        var elementID = this.id;
 
-		var id = /qty_(.+)$/i.exec( elementID );  id = RegExp.$1;
-		var q  = $(this).val();
-		var cp = '';
+        var id = /qty_(.+)$/i.exec( elementID );  id = RegExp.$1;
+        var q  = $(this).val();
+        var cp = '';
 
-		if (id=='Custom') {
-			cp = $('#price_'+id).val();
-		}
-		else {
-			cp = $('#price_'+id).html();
-		}
+        if (id=='Custom') {
+            cp = $('#price_'+id).val();
+        }
+        else {
+            cp = $('#price_'+id).html();
+        }
 
-		if ( isNaN(q) ) {
-			$(this).val('');
-			$('#subTotal_'+id).html('');
-			return false;
+        if ( isNaN(q) ) {
+            $(this).val('');
+            $('#subTotal_'+id).html('');
+            return false;
+        }
+        
+        if ( overMaxAvailable() ) {
+            alert("That's more than what's available; try again." );
+            $(this).val('');
+            $('#subTotal_'+id).html('');
+            return false;
+        }
+        else {
+            $('#subTotal_'+id).html( toCurrency(getSubTotal(cp,q)) );
+        }
+    });
+
+
+    function overMaxAvailable() {
+        var max = qty_available_selected.replace(',','');
+        var total = 0;
+        $('input[id^=qty_]').each(function(k, v) {
+            // console.log("adding value: ["+$(this).val()+"]");
+            total += +$(this).val(); // plus sign in front of $(this).val() is needed (make it a number)
+        });
+        console.log("total=["+total+"], max=["+max+"]");
+        return total>max ? true : false;
+    }
+
+
+	function toCurrency(n)  {   
+		if ( !n || isNaN(n) ) {
+			return '';
 		}
-		
-		if ( overMaxAvailable() ) {
-			alert("That's more than what's available; try again." );
-			$(this).val('');
-			$('#subTotal_'+id).html('');
-			return false;
-		}
-		else {
-			$('#subTotal_'+id).html( toCurrency(getSubTotal(cp,q)) );
-		}
-	});
+		var currency = '$';
+		n1 = parseFloat(n);
+		var tmp = currency + " " + n1.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+	   		return tmp; 
+	}
+
 
 	// ----------------------------------------------------------------------------- Custom Price
 	$('input#price_Custom').focus(function() {  // enter
@@ -59,7 +85,6 @@ $(document).ready(function() {
 	function nothingToQuote() {
 		var total = 0;
 		$('input[id^=qty_]').each(function(k, v) { 
-		//$('input[id^=subTotal_]').each(function(k, v) { 
 			total += +$(this).val();
 		});
 		return total===0 ? true : false;
@@ -141,18 +166,20 @@ $(document).ready(function() {
 
 								// dialog.js
 								$.ajax({
-										url: myURL + 'quotes/partsUpdate',
+										url: myURL + 'quotes/partsUpdate?from=dialog_js',
 										type: 'POST',
 										data: info, 
 										dataType: "json",
-									  	success: function(data, textStatus, jqXHR) {
-									  		console.log("AJAX Post: Success!");
+									  	success: function(data) {
+								  			console.log("dialog_js, AJAX Post: Success - item_id=" + data.item_id);
 									  		alert("Your Customer Quote has been updated.");
-									  	},
-									  	error: function (jqXHR, textStatus, errorThrown)  {
-									  		console.log("AJAX Post: FAIL! error:"+errorThrown);
-									  		alert("Your Customer Quote could NOT be updated - see Admin");
-									  	} 
+									  	}
+									  	//,
+									  //	error: function (jqXHR, textStatus, errorThrown)  {
+									  		// console.log("dialog_js, AJAX Post: jqXHR:"+jqXHR);
+									  		// console.log("dialog_js, AJAX Post: errorThrown:"+errorThrown);
+									  		// alert("Your Customer Quote could NOT be updated - see Admin (dialog_js)\n\nERROR=" + errorThrown);
+									  //	} 
 								});
 
 								form_PartPricing.dialog( "close" );  
@@ -174,27 +201,6 @@ $(document).ready(function() {
 		return Number(pr) * Number(q);
 	}
 
-	function overMaxAvailable() {
-		var max = qty_available_selected.replace(',','');
-		var total = 0;
-		$('input[id^=qty_]').each(function(k, v) {
-			console.log("adding value: ["+$(this).val()+"]");
-			total += +$(this).val(); // plus sign in front of $(this).val() is needed (make it a number)
-		});
-		console.log("total=["+total+"], max=["+max+"]");
-		return total>max ? true : false;
-	}
-
-	function toCurrency(n)  {   
-		if ( !n || isNaN(n) ) {
-			return '';
-		}
-		var currency = '$';
-		n1 = parseFloat(n);
-		var tmp = currency + " " + n1.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
-	   		return tmp; 
-	}
-
-
 
 });
+

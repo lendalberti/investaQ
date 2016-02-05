@@ -87,7 +87,7 @@ return array(
 		'older_invoices'   => '/data/older_invoices',
 		'app_title'   =>  'InvestaQ²',
 		'DEBUG'  => true,
-		'TRACE'  => true,
+		'TRACE'  => false,
 		'DISTRIBUTOR_PRICE_FLOOR' => .75                
 	),
 );

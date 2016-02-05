@@ -216,16 +216,27 @@
 
 
     // -----------------------------------------------------------------------------------
-    function notifyApprovers( $quote_id, $quote_no ) {
+    function notifyApprovers( $model_StockItem) {
+
+        $quote_id = $model_StockItem->quote_id;
+        $model    = Quotes::model()->findByPk($id);
+        $quote_no = $model->quote_no;
+
+        $subject = "Sales Quote Needs Review";
+        $cc      = 'LDAlberti@rocelec.com';                  
 
         if ( Yii::app()->params['DEBUG'] ) {
-            return true;
+            $recipients[] = 'LDAlberti@rocelec.com';               // all to me in Debug
+            $cc = null;                                            // no cc in debug mode
+        }
+        else {
+            $recipients = Users::model()->getApproverEmails();
         }
 
         require_once("phpmailer/class.phpmailer.php");
 
         try {
-            $me   = Yii::app()->user->fullname;
+            $current_user   = Yii::app()->user->fullname;
             $link = "http://" . Yii::app()->params['host'] . Yii::app()->baseUrl . '/index.php/quotes/' . $quote_id ; 
             $link = "<a href='$link' > here </a>"; 
 
@@ -237,11 +248,10 @@
             $mail->FromName = "InvestaQ Admin";
             $mail->From     = "noreply@rocelec.com";
 
-            $mail->AddCC( 'ldalberti@rocelec.com' );     // always CC me for now
-            $mail->Subject = "Sales Quote Needs Your Approval";
-            $mail->MsgHTML("Sales quote $quote_no by $me is ready for your approval; click $link to review it.");
+            $mail->AddCC( $cc );   
+            $mail->Subject =  $subject;
+            $mail->MsgHTML("Sales quote $quote_no by $current_user is ready for your approval; click $link to review it.");
 
-            $recipients = Users::model()->getApproverEmails();
             foreach( $recipients as $a ) {
                 $mail->AddAddress( $a );
             }
@@ -268,13 +278,11 @@
     }
 
 
-
-
     // -----------------------------------------------------------------------------------
     function notifySalespersonStatusChange( $model ) {
         pDebug( "notifySalespersonStatusChange() - start..." );
 
-        $subject           = "Your Quote Status has Been Updated";
+        $subject           = "Quote " . $model->status->name;
         $salesperson_name  = $model->owner->fullname;
         $salesperson_email = $model->owner->email;
         $cc                = Yii::app()->user->email;   // always CC me for now if NOT in Debug
@@ -283,7 +291,7 @@
         $message = "This is to inform you the status for your quote " . $link . " has been changed to: " . $model->status->name;
 
         if ( Yii::app()->params['DEBUG'] ) {
-            $salesperson_email = Yii::app()->user->email;               // all to me in Debug
+            $salesperson_email = 'LDAlberti@rocelec.com';               // all to me in Debug
             $subject .= " (email meant for " . $salesperson_name . ")";
             $cc = null; 
         }
@@ -389,12 +397,12 @@
     
     function pDebug( $msg, $what='' ) {
 
-        $msg = Yii::app()->user->fullname . ': ' .  print_r($msg, true);
+        $msg =  print_r($msg, true) . " (".Yii::app()->user->fullname .")";
         if ( $what ) {
           $what = "\n" . print_r($what, true);
         }
 
-        Yii::log( "\n\n$msg\n$what\n", 'info', 'MyDebug' );
+        Yii::log( "\n\n---------------------------------------\n$msg\n$what\n---------------------------------------\n", 'info', 'MyDebug' );
         //Yii::trace( "$msg\n$what\n\n", 'MyDebug' );
     }
 

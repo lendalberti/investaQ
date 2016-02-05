@@ -6,6 +6,7 @@ $(document).ready(function() {
     var myURL           = '/iq2/index.php/';
     var searchURL       = myURL + 'quotes/search';
 
+
     console.log('myURL=['+myURL+']');
     console.log('returnUrl=[' + $('#returnUrl').val() + ']' );
 
@@ -190,29 +191,27 @@ $(document).ready(function() {
 
 
 
+	// ----------------------------------------------------------------------------- Custom Price
+    $('input#price_Custom').focus(function() {  // enter
+        $(this).val('');
+    });
 
+    $('input#price_Custom').blur(function() {  // leave
+        var cp = $(this).val();
+        var q = $('#qty_Custom').val();    
 
+        checkCustomPrice(cp);
 
+        if ( isNaN(cp) ) {
+            $(this).val('');
+            $('#subTotal_Custom').html('');
+            return false;
+        }
 
-	// // ----------------------------------------------------------------------------- Custom Price
-	// $('input#price_Custom').focus(function() {  // enter
-	// 	$(this).val('');
-	// });
+        $('#subTotal_Custom').html( toCurrency(getSubTotal(cp, q)) );
+        $('input#price_Custom').val(toCurrency(cp));
+    });
 
-	// $('input#price_Custom').blur(function() {  // leave
-	// 	var cp = $(this).val();
-	// 	var q = $('#qty_Custom').val();
-
-	// 	if ( isNaN(cp) ) {
-	// 		$(this).val('');
-	// 		$('#subTotal_Custom').html('');
-	// 		return false;
-	// 	}
-
-	// 	$('#subTotal_Custom').html( toCurrency(getSubTotal(cp, q)) );
-	// 	$('input#price_Custom').val(toCurrency(cp));
-
-	// });
 
 
     // ----------------------------------------------------- delete item
@@ -432,9 +431,121 @@ $(document).ready(function() {
     $('#section_TermsConditions > div.quote_section_heading > span.open_close').trigger('click'); // default=closed
 
 
+
+
+
     //---------------------------------------------------------------------------------------------------------------------
     //-------- Functions --------------------------------------------------------------------------------------------------    
     //---------------------------------------------------------------------------------------------------------------------
+
+    function checkCustomPrice(cp) {
+        var buttonText = '';
+        var form_PartPricing = $( "#form_PartPricing" );
+        var msg = '';
+        var quoteID = $('#form_QuoteID').val();
+
+        console.log('** dialog.js:checkCustomPrice() - distributor_price_floor=' + $('#distributor_price_floor').val() );
+
+        var min_custom_price = $('#min_custom_price').html().substring(1).trim(); // ignore first character of '$' and leading spaces...
+        var diff =  parseFloat(min_custom_price) - parseFloat(cp);
+        var approvalNeeded =  ( diff > 0 ? 1 : 0 );
+        
+        if ( approvalNeeded ) {
+            console.log('Quote approval needed.' );
+            buttonText = 'Get Approval';
+            msg = 'This quote is being submitted for approval.';
+            // - set button to read 'Get Approval'
+            // - set hidden variable on form 'approvalNeeded'
+        }
+        else {
+            console.log('Quote approval NOT needed.' );
+            buttonText = 'Add to Quote';  
+            msg = 'Adding this part to quote: ' + quoteID;
+            // - set button to read 'Add to Quote'
+            // - clear hidden variable on form 'approvalNeeded'
+        }
+
+        form_PartPricing.dialog({
+            buttons :  [{
+                            text: "Cancel",
+                            id: "button_Cancel",
+                            click: function(){
+                                form_PartPricing.dialog( "close" );  
+                                return false; 
+                            }
+                        }, 
+                        {
+                            text: buttonText,
+                            id: "button_AddToQuote",
+                            click: function(){
+                                // alert(msg);
+                                if ( nothingToQuote() ) {
+                                    alert("Nothing to quote.");
+                                    return false;
+                                }
+
+                                var info = {
+                                    quote_id:           quoteID,
+                                    part_no:            $('#part_no').text(),
+                                    approval_needed:    approvalNeeded,
+
+                                    manufacturer:       $('#manufacturer').val(),   
+                                    qty_Available:      $('#total_qty_for_part').val(),
+
+                                    qty_1_24:           $('#qty_1_24').val(),       // val == inputs
+                                    qty_25_99:          $('#qty_25_99').val(),
+                                    qty_100_499:        $('#qty_100_499').val(),
+                                    qty_500_999:        $('#qty_500_999').val(),
+                                    qty_1000_Plus:      $('#qty_1000_Plus').val(),  
+                                    qty_Base:           $('#qty_Base').val(),
+                                    qty_Custom:         $('#qty_Custom').val(), 
+
+                                    price_1_24:         $('#price_1_24').text().replace('$', ''),       // text == spans
+                                    price_25_99:        $('#price_25_99').text().replace('$', ''),  
+                                    price_100_499:      $('#price_100_499').text().replace('$', ''),
+                                    price_500_999:      $('#price_500_999').text().replace('$', ''),        
+                                    price_1000_Plus:    $('#price_1000_Plus').text().replace('$', ''),          
+                                    price_Base:         $('#price_Base').text().replace('$', ''),   
+
+                                    price_Custom:       $('#price_Custom').val().replace('$', ''),      
+                                    comments:           $('#comments').val()
+                                };
+
+                                // dialog.js
+                                $.ajax({
+                                        url: myURL + 'quotes/partsUpdate?from=iq2_main_js',
+                                        type: 'POST',
+                                        data: info, 
+                                        dataType: "json",
+                                        success: function(data) {
+                                            console.log("iq2_main_js, AJAX Post: Success - item_id=" + data.item_id);
+                                            alert("Your Customer Quote has been updated.");
+                                        },
+                                        error: function (jqXHR, textStatus, errorThrown)  {
+                                            console.log("iq2_main_js, AJAX Post: FAIL! error:"+errorThrown);
+                                            alert("Your Customer Quote could NOT be updated - see Admin (iq2_main_js)\n\nERROR=" + errorThrown);
+                                        } 
+                                });
+
+                                form_PartPricing.dialog( "close" );  
+                                return false;
+                            }
+                        } ]
+        }); 
+    }
+
+
+    // ------------------------------------------------------------- sub total 
+    function getSubTotal(pr,q) {
+        if (pr) {
+            pr = pr.replace('$','');    pr = pr.replace(',',''); 
+        }
+        if (q) {
+            q = q.replace('$','');  q = q.replace(',',''); q = Math.floor(q);
+        }
+
+        return Number(pr) * Number(q);
+    }
 
 
 
@@ -447,8 +558,6 @@ $(document).ready(function() {
         var tmp = currency + " " + n1.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
             return tmp; 
     }
-
-
 
 
     $(function() {  // Search for either Customer or Contact using typeahead, autocompletion 
@@ -521,9 +630,18 @@ $(document).ready(function() {
     }
 
 
-    function appendTable_CurrentParts( info, itemID) {
+    function appendTable_CurrentParts( info, data ) {
+        var images        = '';
+        var itemID        = data.item_id;
+        var updatingQuote =  window.location.href.match(/update/);
 
-        var images   = "<td style='font-size: .9em; padding: 2px;'><img id='item_edit_"+itemID+"' title='Edit this item' src='/iq2/images/New/edit.png' width='16' height='16' /><img id='item_trash_"+itemID+"' title='Delete this item'  src='/iq2/images/New/trash.png' width='16' height='16' />";
+        if ( updatingQuote ) {
+           images = "<td style='font-size: .9em; padding: 2px;'><img id='item_edit_"+itemID+"' title='Edit this item' src='/iq2/images/New/edit.png' width='16' height='16' /><img id='item_trash_"+itemID+"' title='Delete this item'  src='/iq2/images/New/trash.png' width='16' height='16' />";
+       }
+       else {
+            images = "<td style='font-size: .9em; padding: 2px;'><img src='/iq2/images/New/blank_20x20.png' width='16' height='16' /><img src='/iq2/images/New/blank_20x20.png' width='16' height='16' />";
+       }
+
         var quantity = 0;
         var volume   = 0;
         var price    = 0; 
@@ -647,14 +765,12 @@ $(document).ready(function() {
 
 								// iq2_main.js
 								$.ajax({ 
-										url: myURL + 'quotes/partsUpdate' ,
+										url: myURL + 'quotes/partsUpdate?from=iq2_main_js' ,
 										type: 'POST',
 										data: info, 
 										dataType: "json",
-										success: function(item_id, textStatus, jqXHR) {
-											console.log("AJAX Post: Success!");
-											//alert("Your Customer Quote has been updated; item_id:" + item_id);
-
+										success: function(data, textStatus, jqXHR) {
+											console.log("iq2_main_js(), AJAX Post: Success - item_id=" + data.item_id);
                                             if ( $('#selectedParts').html() == '' ) {
                                                 $('#selectedParts').html(  'Item(s) added to quote: ' + $('#part_no').text());
                                             }
@@ -662,13 +778,11 @@ $(document).ready(function() {
                                                 $('#selectedParts').append(  ', ' + $('#part_no').text());
                                             }
 
-                                            appendTable_CurrentParts(info, item_id);
-                                            //alert('insert new part '+ info.part_no + manufacturer + ' into table...');
-
+                                            appendTable_CurrentParts(info, data);
 										},
-										error: function (jqXHR, textStatus, errorThrown)  {
+										error: function (data, textStatus, errorThrown)  {
 											console.log("AJAX Post: FAIL! error:"+errorThrown);
-											alert("Your Customer Quote could NOT be updated - see Admin");
+                                            alert("Your Customer Quote could NOT be updated ("+data.item_id+") - see Admin (iq2_main_js)\n\nERROR=" + errorThrown);
 										} 
 								});
 
@@ -829,6 +943,7 @@ $(document).ready(function() {
     		rows += "</tr>";
     	}
 
+        // this is where a click on 'rowID_' is detected...
     	$('#results_table thead').after('<tbody>'+rows+'</tbody>');
     	ResultsTable = $('#results_table').DataTable({
 			"iDisplayLength": 10,
@@ -836,13 +951,6 @@ $(document).ready(function() {
 		        var api = this.api();
 		        api.$('#results_table > tbody > tr').click(function() {
 		        	console.log( "Ready to display part details: ", $(this) );
-
-
-
-
-
-
-
 		            displayPartDetails( $(this) );  //alert('from displayPartLookupResults: parts row click...');
 		        });
 		    }

@@ -332,18 +332,26 @@ div.form {
 	height: 20px;
 	text-align: right;
 }
-#table_CurrentParts > tbody > tr > td:nth-child(7) {
+
+
+/*#table_CurrentParts > tbody > tr > td:nth-child(6),
+#table_CurrentParts > tbody > tr > th:nth-child(7)  {
 	text-align: left;
 	width: 300px;
-}
+}*/
+
 #table_CurrentParts > tbody > tr > td {
 	font-size: .9em; 
 	padding: 0px;
 	text-align: right;
 }
 
-#table_CurrentParts > tbody > tr > td:nth-child(6) {
-	padding-right: 10px;
+
+#table_CurrentParts > tbody > tr > td:nth-last-child(1) {
+	padding-left: 20px;
+	width: 300px;
+	text-align: left;
+	padding-top: 5px;
 }
 
 #table_CurrentParts > tbody > tr  {
@@ -765,9 +773,5 @@ span#clearContactFields:hover {
 #changeStatus:hover {
 	cursor: pointer;
 }
-
-
-
-
 
 

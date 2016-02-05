@@ -250,9 +250,26 @@ span.open_close:hover {
 		</div>
 
 		<div  class='my_container'>
-			<div id='selectedParts' style='width: 100%;'></div>
-
 			<div id="box4">
+				<div style='margin: 10px 0px 50px 10px; '>
+					<table id='table_CurrentParts' style='width: 100%; border: 1px solid lightgray; margin-top: 5px;'>
+						<thead>
+							<tr>
+								<th></th>
+								<th >Part Number</th>
+								<th >Manufacturer</th>
+								<th >Quantity</th>
+								<th >Price</th>
+								<th >Total</th>
+								<th >Comments</th>
+							</tr>
+						</thead>
+						<tbody>
+								
+						</tbody>
+					</table>
+				</div>
+
 				<table id='quote_parts'>
 						<tr>  
 							<td style='text-align: center;' colspan='2'>Lookup by:
@@ -263,7 +280,7 @@ span.open_close:hover {
 						            </select>     
 				            
 				            	<input id="parts_Searchfield" class="parts_Searchfield" type="text"  />  
-						   	    <input id="parts_Searchbutton" class="parts_Searchbutton" type="button" value="Find" /><span> Test part no. AD5555CRUZ</span>
+						   	    <input id="parts_Searchbutton" class="parts_Searchbutton" type="button" value="Find" />
 					   	    </td>
 				   	    </tr>
 				</table>
@@ -327,6 +344,7 @@ span.open_close:hover {
 
 </form>
 
-	
+	<div class='print' id="form_PartPricing" style='display: none'> pricing details content goes here </div>
+
 
 <!--  fini --> 

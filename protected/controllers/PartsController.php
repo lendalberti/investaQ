@@ -183,6 +183,7 @@ class PartsController extends Controller {
 
 		// --------------------------------------------- Last piece
 		$html = $js . $css . $tHeader . $tableStockCodes .  $spacingDiv . $tableDetails . $hiddenValues . $pricing_table; 
+		//$html = $css . $tHeader . $tableStockCodes .  $spacingDiv . $tableDetails . $hiddenValues . $pricing_table; 
 		//pDebug('formatDialog() - html:', $html);
 		return $html;
 	}

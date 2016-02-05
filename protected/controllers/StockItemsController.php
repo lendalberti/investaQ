@@ -99,17 +99,17 @@ class StockItemsController extends Controller
 		 		pDebug("min_custom_price=[$min_custom_price], actual price_Custom=[".$_POST['StockItems']['price_Custom']."]");
 		 		if ( $_POST['StockItems']['price_Custom'] < $min_custom_price ) {
 		 			$status = Status::PENDING;
+		 			notifyApprovers($modelStockItems);
 		 		}
  			}
 
 			$modelQuote = Quotes::model()->findByPk( $modelStockItems->quote_id );
 			$modelQuote->status_id = $status;
 			if ( $modelQuote->save() ) {
-				pDebug( 'StockItemsController::actionUpdate() - updated quote; status=' . $modelQuote->status->name );
-				// TODO - notify Approvers
+				pDebug( 'StockItemsController::actionUpdate() - updated quote: '.$modelStockItems->quote_id.'; status=' . $modelQuote->status->name );
 			}
 			else {
-				pDebug( 'StockItemsController::actionUpdate() - could NOT update quote; status='.  $modelQuote->status->name  .', error: ', $modelQuote->errors );
+				pDebug( 'StockItemsController::actionUpdate() - could NOT update quote: '.$modelStockItems->quote_id.'; status='.  $modelQuote->status->name  .', error: ', $modelQuote->errors );
 			}
 
 

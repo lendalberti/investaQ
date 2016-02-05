@@ -194,7 +194,7 @@
 								<?php
 									foreach( $data['items'] as $i ) {
 										echo '<tr>';
-										echo '<td>';
+										echo '<td></td>';
 										echo '<td>' . $i['part_no'] . '</td>';
 										echo '<td>' . $i['manufacturer'] . '</td>';
 										echo '<td>' . $i['qty'] . '</td>';

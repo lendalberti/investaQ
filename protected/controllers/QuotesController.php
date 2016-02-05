@@ -268,29 +268,46 @@ class QuotesController extends Controller
 
 	public function actionPartsUpdate() 	{
 		pTrace( __METHOD__ );
-		pDebug("actionPartsUpdate() - _POST: ", $_POST);
+		//pDebug("actionPartsUpdate() - _GET: ", $_GET);
+		//pDebug("actionPartsUpdate() - _POST: ", $_POST);
 
-		$modelStockItem = new StockItems;
-		$modelStockItem->attributes = $_POST;
-		pDebug( "actionPartsUpdate() - saving StockItems model with the following attributes: ", $modelStockItem->attributes );
+		$arr = array();
 
-		if ( !$modelStockItem->save() ) {
-			pDebug("actionPartsUpdate() - item NOT saved; error=", $modelStockItem->errors);
+		try {
+			$modelStockItem = new StockItems;
+			$modelStockItem->attributes = $_POST;
+			//pDebug( "actionPartsUpdate() - saving StockItems model with the following attributes: ", $modelStockItem->attributes );
+
+			if ( !$modelStockItem->save() ) {
+				pDebug("actionPartsUpdate() - item NOT saved; error=", $modelStockItem->errors);
+			}
+
+			$stockItem_ID = $modelStockItem->getPrimaryKey();
+
+			$modelQuote = Quotes::model()->findByPk( $_POST['quote_id'] );
+			$modelQuote->quote_type_id = QuoteTypes::STOCK;   // update Quote type
+
+			if ( $_POST['approval_needed'] ) {
+				$modelQuote->status_id = Status::PENDING;
+				notifyApprovers($modelStockItem);
+			}
+			else {
+				$modelQuote->status_id = Status::DRAFT;
+			}
+
+			if ( $modelQuote->save() ) {
+				pDebug("actionPartsUpdate() - called from: ".$_GET['from']." - quote saved; new stock item id=" . $stockItem_ID );
+				$arr = array( 'item_id' => $stockItem_ID );
+			}
+			else {
+				pDebug("actionPartsUpdate() - quote NOT saved; error=", $modelQuote->errors);
+			}
+		}
+		catch (Exception $e) {
+			Debug("actionPartsUpdate() - Exception: ", $e->errorInfo );
 		}
 
-		$modelQuote = Quotes::model()->findByPk( $_POST['quote_id'] );
-		$modelQuote->quote_type_id = QuoteTypes::STOCK;   // update Quote type
-		$modelQuote->status_id = ( $_POST['approval_needed'] ? Status::PENDING : Status::DRAFT );  // update Status
-
-		if ( $modelQuote->save() ) {
-			pDebug("actionPartsUpdate() - quote saved; new stock item id=" . $modelQuote->id );
-		}
-		else {
-			pDebug("actionPartsUpdate() - quote NOT saved; error=", $modelQuote->errors);
-		}
-
-		echo ($modelStockItem->id);
-
+		echo json_encode($arr);
 	}
 
 
