@@ -170,6 +170,17 @@ span.open_close:hover {
 			<div id='heading_container' style='display: none;'>
 				<span id='span_SelectCustomer' style='display: none;'> Select customer  <select name='Customer[select]' id='Customer_select'> </select> </span> 
 				<span id='span_SelectContact'  style='display: none;'> Select contact   <select name='Contact[select]'  id='Contact_select'>  </select> </span>
+		    	<span style='padding-left: 50px; font-weight: bold;'><span class='required'> * </span>Source
+					<select name='Quote[source_id]' id='Quote_source_id'>
+						<?php
+							echo "<option value='0'></option>";
+							foreach( $data['sources'] as $c ) {
+								echo "<option value='".$c->id."'>".$c->name."</option>";
+							}
+						?>
+					</select>
+				</span>
+
 			</div>
 
 		    <div id="box1">
@@ -221,10 +232,10 @@ span.open_close:hover {
 			    </table>
 		    </div>
 
-		    <div style='margin-bottom: 20px;'>
+		   <!--  <div style='margin-bottom: 20px;'>
 		    	<span style='padding-left: 0px; font-weight: bold;'><span class='required'> * </span>Contact Source
 					<select name='Quote[source_id]' id='Quote_source_id'>
-						<?php
+						< ?php
 							echo "<option value='0'></option>";
 							foreach( $data['sources'] as $c ) {
 								echo "<option value='".$c->id."'>".$c->name."</option>";
@@ -232,7 +243,7 @@ span.open_close:hover {
 						?>
 					</select>
 				</span>
-			</div>
+			</div> -->
 
 
 		</div>
@@ -306,43 +317,52 @@ span.open_close:hover {
 	</div>
 
 
-	<!-- ################################################################################################################################################################  -->
-	<div id='section_TermsConditions'>
-
-		<div class='quote_section_heading'>
-			<span class='open_close'>&minus;</span>
-			<span style='padding-left: 350px;'>Quote Terms</span>
-		</div>
-
-		<div  class='my_container'>
-			<div id="box5" style='border: 0px solid green; width: 45%; margin: 5px;'>
-				<span class='terms'>Terms & Conditions</span><textarea rows="4" cols="50" name="quote_Terms" id="quote_Terms"></textarea>
-			</div>
-
-			<div id="box6" style='border: 0px solid blue; width: 45%; margin: 5px'>
-				<span class='terms'>Customer Ackowledgment<textarea rows="4" cols="50" name="quote_CustAck" id="quote_CustAck"></textarea>
-			</div>
-
-			<div id="box7" style='border: 0px solid orange; width: 45%; margin: 5px;'>
-				<span class='terms'>Risl<textarea rows="4" cols="50" name="quote_RISL" id="quote_RISL"></textarea>
-			</div>
-
-			<div id="box8" style='border: 0px solid red; width: 45%; margin: 5px;'>
-				<span class='terms'>Manufacturing Lead Time<textarea rows="4" cols="50" name="quote_MfgLeadTime" id="quote_MfgLeadTime"></textarea>
-			</div>
-			
-			<div id="box9" style='border: 0px solid cyan; width: 95%; margin: 5px;'>
-				<span class='terms'>Additional Notes<textarea rows="4" cols="100" name="quote_Notes" id="quote_Notes"></textarea>
-			</div>
-		</div>
-	</div>
-
-    
-	<div id='div_SubmitDone'> <input type='button' value='Done'> </div>
-
-
 
 </form>
+
+
+	<!-- ################################################################################################################################################################  -->
+	<form id='quoteForm_Terms' name='quoteForm_Terms'  method='post'>
+
+		<div id='section_TermsConditions'>
+			<div class='quote_section_heading'>
+				<span class='open_close'>&minus;</span>
+				<span style='padding-left: 350px;'>Quote Terms</span>
+
+				<input type='hidden' id='quoteForm_Terms_QuoteID' name='quoteForm_Terms_QuoteID' value=''>
+
+			</div>
+
+			<div  class='my_container'>
+				<div id="box5" style='border: 0px solid green; width: 45%; margin: 5px;'>
+					<span class='terms'>Terms & Conditions</span><textarea rows="4" cols="50" name="quote_Terms" id="quote_Terms"></textarea>
+				</div>
+
+				<div id="box6" style='border: 0px solid blue; width: 45%; margin: 5px'>
+					<span class='terms'>Customer Ackowledgment<textarea rows="4" cols="50" name="quote_CustAck" id="quote_CustAck"></textarea>
+				</div>
+
+				<div id="box7" style='border: 0px solid orange; width: 45%; margin: 5px;'>
+					<span class='terms'>Risl<textarea rows="4" cols="50" name="quote_RISL" id="quote_RISL"></textarea>
+				</div>
+
+				<div id="box8" style='border: 0px solid red; width: 45%; margin: 5px;'>
+					<span class='terms'>Manufacturing Lead Time<textarea rows="4" cols="50" name="quote_MfgLeadTime" id="quote_MfgLeadTime"></textarea>
+				</div>
+				
+				<div id="box9" style='border: 0px solid cyan; width: 95%; margin: 5px;'>
+					<span class='terms'>Additional Notes<textarea rows="4" cols="100" name="quote_Notes" id="quote_Notes"></textarea>
+				</div>
+			</div>
+		</div>
+
+	    
+		<!-- <div id='div_SubmitDone'> <input type='button' value='Save Quote'> </div> -->
+		<div id='div_SubmitDone' > <input type='submit' value='Save Quote'> </div>
+
+	</form>
+
+
 
 	<div class='print' id="form_PartPricing" style='display: none'> pricing details content goes here </div>
 

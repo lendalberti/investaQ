@@ -92,17 +92,6 @@ class QuotesController extends Controller
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 	// ------------------------------------- AutoCompletion Search...
     public function actionSearch()     {        
  		pTrace( __METHOD__ );
@@ -177,9 +166,10 @@ class QuotesController extends Controller
 	
 	public function actionCreate() {
 		pTrace( __METHOD__ );
-		pDebug("Quotes::actionCreate() - _POST values from serialzed form values:", $_POST);
+		
 
 		if ( isset($_POST['Customer']) && isset($_POST['Contact']) && isset($_POST['Quote'])   ) {
+			pDebug("Quotes::actionCreate() - _POST values from serialzed form values:", $_POST);
 
 			$customer_id = $_POST['Customer']['id'];
 			$contact_id  = $_POST['Contact']['id'];
@@ -214,8 +204,6 @@ class QuotesController extends Controller
 			}
 
 			$modelQuotes                  = new Quotes;
-			pDebug("Quotes::actionCreate() - empty new modelQuotes:", $modelQuotes->attributes );
-
 			$modelQuotes->attributes      = $_POST['Quote'];
 			$modelQuotes->customer_id     = $customer_id;
 			$modelQuotes->contact_id      = $contact_id;
@@ -240,25 +228,7 @@ class QuotesController extends Controller
 			}
 		}
 		else {
-			// $data['customers'] = Customers::model()->findAll( array('order' => 'name') );
-			// foreach ( $data['customers'] as $c ) {
-			// 	$tmp[] = $c->name;
-			// }
-			// $data['[parent'] = array_unique($tmp);
-			// $data['contacts'] = Contacts::model()->findAll( array('order' => 'first_name') );
-			// $data['salespersons'] = Users::model()->findAll( array('order' => 'first_name') );
-
-			// $data['us_states']      = UsStates::model()->findAll( array('order' => 'long_name') );
-			// $data['countries']   = Countries::model()->findAll( array('order' => 'long_name') );
-			// $data['regions']     = Regions::model()->findAll( array('order' => 'name') );
-
-			// $data['types']       = CustomerTypes::model()->findAll( array('order' => 'name') );
-			// $data['territories'] = Territories::model()->findAll( array('order' => 'name') );
-
-			// $data['quote_types'] = QuoteTypes::model()->findAll( array('order' => 'name') );
-			$data['sources']     = Sources::model()->findAll( array('order' => 'name') );
-			// $data['levels']      = Levels::model()->findAll( array('order' => 'name') );
-
+			$data['sources'] = Sources::model()->findAll( array('order' => 'name') );
 			$this->render('create',array(
 				'data'=>$data,
 			));
@@ -268,9 +238,6 @@ class QuotesController extends Controller
 
 	public function actionPartsUpdate() 	{
 		pTrace( __METHOD__ );
-		//pDebug("actionPartsUpdate() - _GET: ", $_GET);
-		//pDebug("actionPartsUpdate() - _POST: ", $_POST);
-
 		$arr = array();
 
 		try {
@@ -326,7 +293,26 @@ class QuotesController extends Controller
 		$quote_id = $id;
 
 		if ( $_POST ) {
-			pDebug("actionUpdate() - _POST: ", $_POST);
+			
+			if ( isset( $_POST['quoteForm_Terms_QuoteID'] ) ) {   // updating just terms from Create page
+				$quoteModel = $this->loadModel( $_POST['quoteForm_Terms_QuoteID'] );
+
+				$quoteModel->terms_conditions =  $_POST['quote_Terms'];
+				$quoteModel->customer_acknowledgment =  $_POST['quote_CustAck'];
+				$quoteModel->risl =  $_POST['quote_RISL'];
+				$quoteModel->manufacturing_lead_time =  $_POST['quote_MfgLeadTime'];
+				$quoteModel->additional_notes =  $_POST['quote_Notes'];
+
+				if ($quoteModel->save()) {
+					pDebug( "actionUpdate() -  Terms saved for quote no. " . $_POST['quoteForm_Terms_QuoteID'] );
+				}
+				else {
+					pDebug( "actionUpdate() -  Error in saving terms: ", $quoteModel->errors );
+				}
+
+				echo '';
+				return;
+			}
 
 			if ( isset($_POST['newQuoteStatus']) && Yii::app()->user->isAdmin ) {  // should only be Admin updating status
 				$quoteModel = $this->loadModel($quote_id);
@@ -418,13 +404,6 @@ class QuotesController extends Controller
 			// ------------------------------ get contact
 			$data['contact']  = Contacts::model()->findByPk($contact_id);
 
-			// $sql = "SELECT * FROM stock_items WHERE  quote_id = $quote_id";
-			// $command = Yii::app()->db->createCommand($sql);
-			// $results = $command->queryAll();
-			// foreach( $results as $i ) {
-			// 	$data['items'][] = array( 'id' => $i['id'],  'part_no' => $i['part_no'], 'manufacturer'=>$i['manufacturer'], 'date_code'=>$i['date_code'], 'qpt'=>$this->getQtyPriceTotal($i) );
-			// }
-
 			$sql = "SELECT * FROM stock_items WHERE  quote_id = $quote_id";
 			$command = Yii::app()->db->createCommand($sql);
 			$results = $command->queryAll();
@@ -440,9 +419,7 @@ class QuotesController extends Controller
 
 			$data['model']    = $this->loadModel($quote_id);
 			$data['sources']  = Sources::model()->findAll( array('order' => 'name') );
-			// ------------------------------ get status
 			$data['status']   = Status::model()->findAll();
-			
 
 			$this->render('update',array(
 				'data'=>$data,
@@ -510,52 +487,7 @@ class QuotesController extends Controller
 	}
 
 
-	/**
-	 * Lists all models.
-	 */
-	public function actionIndex_ORIG() 	{
-		pDebug('actionIndex() - _GET=', $_GET);
-
-		$quote_type = '';
-		$navigation_links = '';
-		$page_title = "My Quotes";
-
-		// if ( isset($_GET['stock']) ) {
-		// 	$quote_type = Quotes::STOCK;
-		// 	$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/mfg'> Manufacturing Quotes </a></span>";
-		// 	$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/srf'> Supplier Request Form </a></span>";
-		// }
-		// else if ( isset($_GET['mfg']) ) {
-		// 	$quote_type = Quotes::MANUFACTURING;
-		// 	$page_title = "Manufacturing Quotes";
-		// 	$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/stock'> Stock Quotes </a></span>";
-		// 	$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/srf'> Supplier Request Form </a></span>";
-		// }
-		// else if ( isset($_GET['srf']) ) {
-		// 	$quote_type = Quotes::SUPPLIER_REQUEST_FORM;
-		// 	$page_title = "Supplier Request Form";
-		// 	$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/stock'> Stock Quotes </a></span>";
-		// 	$navigation_links .= "<span style='padding-right: 10px;'><a href='".Yii::app()->homeUrl."/quotes/index/mfg'> Manufacturing Quotes </a></span>";
-		// }
-		
-		$criteria = new CDbCriteria();
-		if ( !Yii::app()->user->isAdmin ) {
-			 $criteria->addCondition("owner_id = " . Yii::app()->user->id);
-		} 
-
-		// if ( $quote_type ) {
-		// 	$criteria->addCondition("quote_type_id = $quote_type");
-		// }
-
-		$criteria->order = 'id DESC';
-		$model = Quotes::model()->findAll( $criteria );
-
-		$this->render( 'index', array(
-			'model' => $model,
-			'page_title' => $page_title,
-			// 'navigation_links' => $navigation_links,
-		));
-	}
+	
 
 	/**
 	 * Manages all models.

@@ -1,4 +1,126 @@
 
+
++---------------------+
+|      Need fixes     |
++---------------------+
+
+	[ ] when approving/rejecting a quote, errors are
+		 displayed but quotes do get approved/rejected
+		- ajax message issue?
+
+	[ ] on create quote, terms don't get saved
+
+
+
++--------------------------------+
+|  Customers / Contacts / Users  |
++--------------------------------+
+
+	[ ] CRUD form
+	
+
++------------------------------+
+|  Salesperson -  Stock Quote  |
++------------------------------+
+
+	[x] view quote
+	[x] edit quote
+	[x] create quote
+	[x] delete quote
+	[x] lookup parts
+	[ ] print quote
+	[ ] email quote
+	[ ] attachments
+
+	[x] add parts
+	[x] delete parts
+	[x] edit parts
+
+
+	[x] find customer
+	[ ] create new customer
+	[x] view customer
+	[ ] edit customer (wait for CRUD)
+
+	[x] find contact
+	[ ] create new contact
+	[x] view contact
+	[ ] edit contact  (wait for CRUD)
+
+	[x] edit profile
+
+
++---------------------------+
+|  Approver -  Stock Quote  |
++---------------------------+
+
+	[x] Approval queue
+
+	[x] approve quote
+	[x] reject quote
+	[ ] contact salesperson
+	
+
++------------------------+
+|  Admin -  Stock Quote  |
++------------------------+
+
+	[ ] manage customers  (wait for CRUD)
+	[ ] manage contacts  (wait for CRUD)
+	[ ] manage users  (wait for CRUD)
+	
+
+
+
++---------------+
+|  Sales Audit  |
++---------------+
+
+Quote::Audit, 2016-02-16 10:35:04, Mathew Richardson, Create Quote, 20160206-0003  
+Quote::Audit, 2016-02-16 10:35:04, Mathew Richardson, Edit Quote, 20160206-0003  
+Quote::Audit, 2016-02-16 10:35:04, John Watson, Edit Customer, ZoomData 
+Quote::Audit, 2016-02-16 10:35:04, Mathew Richardson, Edit Contact, Mark Ellerson 
+Quote::Audit, 2016-02-16 10:35:04, Mathew Richardson, Add Customer, Babbleblab 
+Quote::Audit, 2016-02-16 10:35:04, Mathew Richardson, Edit Customer, Photojam 
+Quote::Audit, 2016-02-16 10:35:04, Mathew Richardson, Add Contact, Kimberly Payne
+
+...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	[x] view comments
 	[x] edit comments
 
@@ -10,6 +132,14 @@
 		[x] jquery functions
 		[ ] contact salesperson
 
+	[x] notifySalespersonStatusChange()
+
+	[x] if not draft or rejected quotes, then prevent edits
+
+	[x] allow Admin to change status
+
+
+
 	[ ] add fields to Quotes:
 		- date_won
 		- date_lost
@@ -19,15 +149,6 @@
 	[ ] Attachments 
 		[x] icon link
 		[ ] jquery functions
-
-	[x] notifySalespersonStatusChange()
-
-	[x] if not draft or rejected quotes, then prevent edits
-
-	[x] allow Admin to change status
-
-
-
 
 
 

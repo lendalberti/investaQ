@@ -218,6 +218,20 @@
     // -----------------------------------------------------------------------------------
     function notifyApprovers( $model_StockItem) {
 
+        if ( Yii::app()->params['DEBUG'] ) {   // no emails when working from home
+            return true;
+        }
+
+
+
+
+
+
+
+
+
+
+
         $quote_id = $model_StockItem->quote_id;
         $model    = Quotes::model()->findByPk($id);
         $quote_no = $model->quote_no;
@@ -402,7 +416,7 @@
           $what = "\n" . print_r($what, true);
         }
 
-        Yii::log( "\n\n---------------------------------------\n$msg\n$what\n---------------------------------------\n", 'info', 'MyDebug' );
+        Yii::log( "\n\n------------------------------------------------------------------------------ \n$msg\n$what\n------------------------------------------------------------------------------ \n", 'info', 'MyDebug' );
         //Yii::trace( "$msg\n$what\n\n", 'MyDebug' );
     }
 

@@ -132,11 +132,13 @@ $(document).ready(function() {
     });
 
 
-    $('#quoteForm').submit(function( e ) {  //  click "Continue"
+    $('#quoteForm').submit(function( e ) {                          //  click "Continue" 
     	e.preventDefault();
-    	if ( formValidated() ) { 		
-    		// console.log('formValidated() = TRUE');
+        var postData = $(this).serialize();
 
+
+
+    	if ( formValidated() ) { 		
     		var postData = $(this).serialize();
     		$.ajax({
 	            type: "POST",
@@ -146,6 +148,8 @@ $(document).ready(function() {
 		            	var q = results.split('|');
 		            	quoteId = q[0];
 		            	quoteNo = q[1];
+                        $('#quoteForm_Terms_QuoteID').val(quoteId); // for Terms form...
+
 		            	console.log('quoteId=['+quoteId+'], quoteNo=['+quoteNo+']');
 		            	$('#form_QuoteID').val(quoteId);
 		            	continueQuote(quoteNo);
@@ -157,35 +161,121 @@ $(document).ready(function() {
     	}
 	});
 
-    // ------------------------------------------------------------------
-    $('#div_SubmitDone > input').on('click', function () {
 
+
+     $('#quoteForm_Terms').submit(function( event ) {           //  click "Save Changes" 
         $(window).unbind('beforeunload');
+          event.preventDefault();
+
+          alert('quoteForm_Terms submit() - saving quote');
+
+          var postData = $(this).serialize();
+          alert('data serialized from submit: ' + postData);
+
 
         var quoteID = $('#form_QuoteID').val();
+        var postData = $('#quoteForm_Terms').serialize();
+        console.log('quoteForm_Terms serialized: ' + postData);
+       
 
-        var data = {
-            quote_Terms:       $('#quote_Terms').val(),
-            quote_CustAck:     $('#quote_CustAck').val(),
-            quote_RISL:        $('#quote_RISL').val(),
-            quote_MfgLeadTime: $('#quote_MfgLeadTime').val(),
-            quote_Notes:       $('#quote_Notes').val()
-        };
-
-       // var postData = data.serialize();
         $.ajax({
-            type: "POST",
-                url: myURL + 'quotes/update/' + quoteID ,
-                //data: postData,
-                data: data,
-                success: function(results)  {
-                  
-                }
+        type: "POST",
+            url: myURL + 'quotes/update/' + quoteID ,
+            data: postData,
+            success: function(results)  {
+              
+            }
         });
 
-         window.location = myURL + 'quotes/index' ;
+        window.location = myURL + 'quotes/index' ;
+
+
+
 
     });
+
+
+
+
+
+    
+    // $( "#quoteForm" ).on( "submit", function( event ) {
+    //     var quoteID = $('#form_QuoteID').val();
+    //     event.preventDefault();
+
+    //     var myData = $( this ).serialize();
+    //     console.log( "Serialize form data: " + myData );
+
+    //     $.ajax({
+    //         type: "POST",
+
+    //             url: myURL + 'quotes/update/' + quoteID,
+    //             data: myData,
+
+    //             success: function(results)  {
+    //                 alert("Quote has been created AND updated with terms...");
+    //             }
+    //     });
+
+    //      window.location = myURL + 'quotes/index' ;
+
+
+
+
+
+    // });
+
+
+    // $('#quoteForm_Terms').submit(function( event ) {
+    //       alert('via submit() - Savings terms...');
+    //       event.preventDefault();
+
+    //       var postData = $(this).serialize();
+    //       console.log('quoteForm_Terms serialized from submit: ' + postData);
+
+
+    // });
+
+
+
+    // // ------------------------------------------------------------------
+    // $('#div_SubmitDone > input').on('click', function () {
+    //     $(window).unbind('beforeunload');
+    //     alert('Savings terms...');
+
+
+    //     var quoteID = $('#form_QuoteID').val();
+
+    //     var data = {
+    //         TermsUpdate:       1,
+    //         quote_Terms:       $('#quote_Terms').val(),
+    //         quote_CustAck:     $('#quote_CustAck').val(),
+    //         quote_RISL:        $('#quote_RISL').val(),
+    //         quote_MfgLeadTime: $('#quote_MfgLeadTime').val(),
+    //         quote_Notes:       $('#quote_Notes').val()
+    //     };
+
+    //     var postData = $('#quoteForm_Terms').serialize();
+    //     console.log('quoteForm_Terms serialized: ' + postData);
+    //     console.log('data: ' + data);
+    //     return false;
+
+
+
+
+    //     $.ajax({
+    //         type: "POST",
+    //             url: myURL + 'quotes/update/' + quoteID ,
+    //             data: postData,
+    //             //data: data,
+    //             success: function(results)  {
+                  
+    //             }
+    //     });
+
+    //      window.location = myURL + 'quotes/index' ;
+
+    // });
 
 
 

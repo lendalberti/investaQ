@@ -30,11 +30,8 @@ class PartsController extends Controller {
 			$item       = urlencode($_GET['item']);
 			$url        = 'http://mongoa/parts/*/500/?q='.$item;	  // mongoa for my local use
 
-			$tmp        = file_get_contents($url);
-			//pDebug("Found item: ", $tmp);
-
-			echo ( isset($_GET['dialog']) ?  $this->formatDialog($tmp) : $tmp );
-
+			//$tmp        = file_get_contents($url);
+			$tmp = file_get_contents('/Users/len/www/iq2/Docs/mongo_sample_records_1.inc');
 			/*
 				In the event that http://mongoa is not available, use the files in Docs as a temp solution for testing purposes;
 
@@ -53,6 +50,8 @@ class PartsController extends Controller {
 				you can then access the data by: $m->parts[0]->part_number, $m->total_count, etc.
 
 			*/
+
+			echo ( isset($_GET['dialog']) ?  $this->formatDialog($tmp) : $tmp );
 		}
 		else {
 			pDebug("Parts::actionSearch() _GET['item']: not set...");
