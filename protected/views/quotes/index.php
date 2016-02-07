@@ -6,6 +6,7 @@
 
 
 <div style='width:906px; margin-top: 30px;'>
+
 	<table id='quotes_table'>
 				<thead>
 					<tr>

@@ -98,7 +98,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `iq2`.`territories` ;
 
 CREATE  TABLE IF NOT EXISTS `iq2`.`territories` (
-  `id` INT NOT NULL ,
+  `id` INT NOT NULL AUTO_INCREMENT ,
   `name` VARCHAR(45) NOT NULL ,
   PRIMARY KEY (`id`) )
 ENGINE = InnoDB;

@@ -155,7 +155,7 @@ class StockItemsController extends Controller
 		{
 			// we only allow deletion via POST request
 			$this->loadModel($id)->delete();
-			echo 'ok';
+			echo Status::SUCCESS;
 
 			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 			//if(!isset($_GET['ajax']))

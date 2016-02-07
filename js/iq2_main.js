@@ -6,6 +6,11 @@ $(document).ready(function() {
     var myURL           = '/iq2/index.php/';
     var searchURL       = myURL + 'quotes/search';
 
+    var SUCCESS      = '0';
+    var FAILURE      = '1';
+
+    var STATUS_DRAFT   = 1;
+    var STATUS_PENDING = 2;
 
     console.log('myURL=['+myURL+']');
     console.log('returnUrl=[' + $('#returnUrl').val() + ']' );
@@ -61,8 +66,8 @@ $(document).ready(function() {
             "Change": function() {
                 var newStatus =  $('#newQuoteStatus').val();
                 console.log( "new status = " + newStatus + ", form: " + $('#new_status_form').serialize() );
-                var postData = $('#new_status_form').serialize() 
-                var quoteID = $('#Quote_id').val();
+                var postData = $('#new_status_form').serialize();
+                var quoteID = $('#Quotes_id').val();
 
                 $.ajax({
                         type: "POST",
@@ -87,10 +92,148 @@ $(document).ready(function() {
         $('#div_PartsLookup').show();
     });
 
-    $('#clearContactFields').on('click', function() {
-        $('[id^=Contact_]').val('');
-        $('[id^=Contact_]').removeAttr('readOnly');
+    $('#span_NewContact').on('click', function() {
+        $('[id^=Contacts_]').val('');
+        $('[id^=Contacts_]').removeAttr('readOnly');
+
+$('#Contacts_state_id').replaceWith('<select                  name="Contacts[state_id]" id="Contacts_state_id"></select>');
+        $.ajax({
+            type: 'GET',
+            url: myURL + 'quotes/select?q=us_states',
+            success: function (data) {
+                var o = JSON.parse(data); 
+                $.each( o, function(k,v) {
+                    $('#Contacts_state_id').append( $('<option></option>' ).val(v.id).html(v.label) );
+                });
+            }
+        });
+
+        $('#Contacts_country_id').replaceWith('<select                name="Contacts[country_id]" id="Contacts_country_id"></select>');
+        $.ajax({
+            type: 'GET',
+            url: myURL + 'quotes/select?q=countries',
+            success: function (data) {
+                var o = JSON.parse(data); 
+                $.each( o, function(k,v) {
+                    $('#Contacts_country_id').append( $('<option></option>' ).val(v.id).html(v.label) );
+                });
+            }
+        });
+
+
     });
+
+    $('#span_NewCustomer').on('click', function() {
+        $('[id^=Customers_]').val('');
+        $('[id^=Customers_]').removeAttr('readOnly');
+
+        $('#Customers_state_id').replaceWith('<select                 name="Customers[state_id]" id="Customers_state_id"></select>');
+        $.ajax({
+            type: 'GET',
+            url: myURL + 'quotes/select?q=us_states',
+            success: function (data) {
+                var o = JSON.parse(data); 
+                $.each( o, function(k,v) {
+                    $('#Customers_state_id').append( $('<option></option>' ).val(v.id).html(v.label) );
+                });
+            }
+        });
+
+
+        $('#Customers_country_id').replaceWith('<select               name="Customers[country_id]" id="Customers_country_id"></select>');
+        $.ajax({
+            type: 'GET',
+            url: myURL + 'quotes/select?q=countries',
+            success: function (data) {
+                var o = JSON.parse(data); 
+                $.each( o, function(k,v) {
+                    $('#Customers_country_id').append( $('<option></option>' ).val(v.id).html(v.label) );
+                });
+            }
+        });
+
+        $('#Customers_region_id').replaceWith('<select                name="Customers[region_id]" id="Customers_region_id"></select>');
+        $.ajax({
+            type: 'GET',
+            url: myURL + 'quotes/select?q=regions',
+            success: function (data) {
+                var o = JSON.parse(data); 
+                $.each( o, function(k,v) {
+                    $('#Customers_region_id').append( $('<option></option>' ).val(v.id).html(v.label) );
+                });
+            }
+        });
+
+        $('#Customers_customer_type_id').replaceWith('<select         name="Customers[customer_type_id]" id="Customers_customer_type_id"></select>');
+        $.ajax({
+            type: 'GET',
+            url: myURL + 'quotes/select?q=customer_types',
+            success: function (data) {
+                var o = JSON.parse(data); 
+                $.each( o, function(k,v) {
+                    $('#Customers_customer_type_id').append( $('<option></option>' ).val(v.id).html(v.label) );
+                });
+            }
+        });
+
+        $('#Customers_outside_salesperson_id').replaceWith('<select   name="Customers[outside_salesperson_id]" id="Customers_outside_salesperson_id"></select>');
+        $('#Customers_inside_salesperson_id').replaceWith('<select    name="Customers[nside_salesperson_id]" id="Customers_inside_salesperson_id"></select>');
+        $.ajax({
+            type: 'GET',
+            url: myURL + 'quotes/select?q=users',
+            success: function (data) {
+                var o = JSON.parse(data); 
+                $.each( o, function(k,v) {
+                    $('#Customers_inside_salesperson_id').append( $('<option></option>' ).val(v.id).html(v.label) );
+                    $('#Customers_outside_salesperson_id').append( $('<option></option>' ).val(v.id).html(v.label) );
+                });
+            }
+        });
+        
+        $('#Customers_parent_id').replaceWith('<select                name="Customers[parent_id]" id="Customers_parent_id"></select>');
+        $.ajax({
+            type: 'GET',
+            url: myURL + 'quotes/select?q=customers',
+            success: function (data) {
+                var o = JSON.parse(data); 
+                $.each( o, function(k,v) {
+                    $('#Customers_parent_id').append( $('<option></option>' ).val(v.id).html(v.label) );
+                });
+            }
+        });
+
+        $('#Customers_tier_id').replaceWith('<select                  name="Customers[tier_id]" id="Customers_tier_id"></select>');
+        $.ajax({
+            type: 'GET',
+            url: myURL + 'quotes/select?q=tiers',
+            success: function (data) {
+                var o = JSON.parse(data); 
+                $.each( o, function(k,v) {
+                    $('#Customers_tier_id').append( $('<option></option>' ).val(v.id).html(v.label) );
+                });
+            }
+        });
+
+        $('#Customers_territory_id').replaceWith('<select             name="Customers[territory_id]" id="Customers_territory_id"></select>');
+        $.ajax({
+            type: 'GET',
+            url: myURL + 'quotes/select?q=territories',
+            success: function (data) {
+                var o = JSON.parse(data); 
+                $.each( o, function(k,v) {
+                    $('#Customers_territory_id').append( $('<option></option>' ).val(v.id).html(v.label) );
+                });
+            }
+        });
+
+
+
+    });
+
+
+
+
+
 
 
     // $('#button_Home').on('click', function() {
@@ -98,13 +241,19 @@ $(document).ready(function() {
     // });
 
     $('#button_CancelQuoteChanges').on('click', function() { 
-        window.location = myURL + 'quotes/view/' + $('#Quote_id').val();
+        window.location = myURL + 'quotes/view/' + $('#Quotes_id').val();
     });
 
     $('#quoteUpdateForm').submit(function( e ) {  // click "Save Changes"
         e.preventDefault();
 
-        var quoteID = $('#Quote_id').val(); 
+        if ( $('#header_QuoteNo > span').text().match(/Rejected/) ) {
+            $('#Quotes_status_id').val(STATUS_PENDING);
+            consoleDisplayFormFields($('#quoteUpdateForm'));
+            console.log('Setting quote status to "Pending Approval"');
+        }
+
+        var quoteID = $('#Quotes_id').val(); 
         var postData = $(this).serialize();
         var returnURL = $('#return_URL').val();
 
@@ -115,12 +264,12 @@ $(document).ready(function() {
                     success: function(results)  {
                         console.log('results from quote update=['+results+']');
 
-                        if ( results == 0  ) { // update succeeded
+                        if ( results == SUCCESS ) { // update succeeded
                             //alert('Update succeeded');
                             window.location = myURL + 'quotes/view/'+quoteID;
                         }
                         else {
-                            alert('Missing required fields...');
+                            alert('Server Validation: missing required field(s)...');
                             return false;
                         }
                     },
@@ -136,54 +285,51 @@ $(document).ready(function() {
     	e.preventDefault();
         var postData = $(this).serialize();
 
-
-
     	if ( formValidated() ) { 		
-    		var postData = $(this).serialize();
     		$.ajax({
 	            type: "POST",
 		            url: myURL + 'quotes/create',
 		            data: postData,
 		            success: function(results)  {
-		            	var q = results.split('|');
-		            	quoteId = q[0];
-		            	quoteNo = q[1];
-                        $('#quoteForm_Terms_QuoteID').val(quoteId); // for Terms form...
+                        if ( results != FAILURE ) {
+    		            	var q = results.split('|');
+    		            	quoteId = q[0];
+    		            	quoteNo = q[1];
+                            $('#quoteForm_Terms_QuoteID').val(quoteId); // for Terms form...
 
-		            	console.log('quoteId=['+quoteId+'], quoteNo=['+quoteNo+']');
-		            	$('#form_QuoteID').val(quoteId);
-		            	continueQuote(quoteNo);
+    		            	console.log('quoteId=['+quoteId+'], quoteNo=['+quoteNo+']');
+    		            	$('#form_QuoteID').val(quoteId);
+    		            	continueQuote(quoteNo);
+                        }
 		            }
 	        });
     	}
     	else {
-    			alert("Missing required field(s)...");
+    			alert("Client Validation: missing required field(s)...");
     	}
 	});
 
 
 
      $('#quoteForm_Terms').submit(function( event ) {           //  click "Save Changes" 
-        $(window).unbind('beforeunload');
-          event.preventDefault();
-
-          alert('quoteForm_Terms submit() - saving quote');
-
-          var postData = $(this).serialize();
-          alert('data serialized from submit: ' + postData);
-
+        event.preventDefault();
+        // var postData = $(this).serialize();
 
         var quoteID = $('#form_QuoteID').val();
         var postData = $('#quoteForm_Terms').serialize();
         console.log('quoteForm_Terms serialized: ' + postData);
-       
 
         $.ajax({
         type: "POST",
             url: myURL + 'quotes/update/' + quoteID ,
             data: postData,
             success: function(results)  {
-              
+                if ( results == SUCCESS ) {
+                    console.log('Quote terms updated.');
+                }
+                else {
+                    console.log('Quote terms NOT updated...');
+                }
             }
         });
 
@@ -319,7 +465,7 @@ $(document).ready(function() {
                   }
             });
         }
-        return false;z
+        return false;
     });
 
 
@@ -337,15 +483,13 @@ $(document).ready(function() {
     });
 
 
-	function getID(that) {
-			var tmp =  $(that).attr('id');
-			var thisId = /\w+[_delete_|_edit_]\w+_(.+)$/i.exec( tmp );
-			return RegExp.$1;
-		}
 
 
-    $('#Customer_select').on('change', function () { //  Select from available customers
+    // ----------------------------------------------------- Select from available customers
+    $('#Customers_select').on('change', function () { 
         var custID = $(this).val();
+        resetCustomerForm();
+
         $.ajax({
             type: 'GET',
             url: myURL + 'customers/find?id='+custID ,
@@ -355,8 +499,11 @@ $(document).ready(function() {
         });
     });
    
-    $('#Contact_select').on('change', function () { //  Select from available contact
+    // ----------------------------------------------------- Select from available contacts
+    $('#Contacts_select').on('change', function () { 
         var contactID = $(this).val();
+        resetContactForm();
+       
         $.ajax({
             type: 'GET',
             url: myURL + 'contacts/find?id='+contactID ,
@@ -375,17 +522,17 @@ $(document).ready(function() {
                 type: 'GET',
                 url: myURL + 'quotes/approve?id='+quoteID ,
                 success: function (ret) {
-                    if ( ret == 1 ) {
+                    if ( ret == SUCCESS) {
                        // alert('Quote approved.');
                         window.location = myURL + 'quotes/index?a=1'; 
                     }
                     else {
-                        alert('Error: could not approve quote - see Admin.');
+                        alert('Error: could not approve quote - see Admin. (ret=['+ret+']');
                     }
                 }
             });
         }
-    })
+    });
 
 
     $('[id^=quote_reject_]').on('click', function() { //   Reject quote  
@@ -397,27 +544,27 @@ $(document).ready(function() {
                 type: 'GET',
                 url: myURL + 'quotes/reject?id='+quoteID ,
                 success: function (ret) {
-                    if ( ret == 1 ) {
+                    if ( ret == SUCCESS ) {
                        // alert('Quote rejected.');
                         window.location = myURL + 'quotes/index?a=1'; 
                     }
                     else {
-                        alert('Error: could not reject quote - see Admin.');
+                        alert('Error: could not reject quote - see Admin. (ret=['+ret+']');
                     }
                 }
             });
         }
-    })
+    });
 
     $('[id^=quote_view_]').on('click', function() { //   View quote  
     	var quoteID = getThisID( $(this) ); 
     	window.location = myURL + 'quotes/view?id='+quoteID ;
-    })
+    });
 
     $('[id^=quote_edit_]').on('click', function() { //   Edit quote  
         var quoteID = getThisID( $(this) ); 
         window.location = myURL + 'quotes/update/' + quoteID ; 
-    })
+    });
 
 
 
@@ -438,7 +585,7 @@ $(document).ready(function() {
         }
         return false;
 
-    })
+    });
   
     $('#quotes_table').on('click', function() {  //  re-attach event handler 
     	// have to attach click event handler; after paging, 
@@ -496,7 +643,7 @@ $(document).ready(function() {
             $(this).html('+');
         }
         $('#section_Parts > div.my_container').fadeToggle(250);   // toggle();
-    })
+    });
 
 
     $('#section_CustomerContact > div.quote_section_heading > span.open_close').on('click', function() {  // toggle  section
@@ -507,7 +654,7 @@ $(document).ready(function() {
 			$(this).html('+');
 		}
 		$('#section_CustomerContact > div.my_container').fadeToggle(250);   // toggle();
-   	})
+   	});
 
     $('#section_TermsConditions > div.quote_section_heading > span.open_close').on('click', function() {  // toggle  section
         if ( $(this).html() == '+') {
@@ -517,8 +664,9 @@ $(document).ready(function() {
             $(this).html('+');
         }
         $('#section_TermsConditions > div.my_container').fadeToggle(250);   // toggle();
-    })
-    $('#section_TermsConditions > div.quote_section_heading > span.open_close').trigger('click'); // default=closed
+    });
+
+   // $('#section_TermsConditions > div.quote_section_heading > span.open_close').trigger('click'); // default=closed
 
 
 
@@ -527,6 +675,39 @@ $(document).ready(function() {
     //---------------------------------------------------------------------------------------------------------------------
     //-------- Functions --------------------------------------------------------------------------------------------------    
     //---------------------------------------------------------------------------------------------------------------------
+
+
+    function getID(that) {
+        var tmp =  $(that).attr('id');
+        var thisId = /\w+[_delete_|_edit_]\w+_(.+)$/i.exec( tmp );
+        return RegExp.$1;
+    }
+
+
+    function resetCustomerForm() {
+        $('#Customers_state_id').replaceWith("<input type='text'               id='Customers_state_id'               name='Customers[state_id]'                readonly='readonly'>");
+        $('#Customers_country_id').replaceWith("<input type='text'             id='Customers_country_id'             name='Customers[country_id]'              readonly='readonly'>");
+        $('#Customers_region_id').replaceWith("<input type='text'              id='Customers_region_id'              name='Customers[region_id]'               readonly='readonly'>");
+        $('#Customers_customer_type_id').replaceWith("<input type='text'       id='Customers_customer_type_id'       name='Customers[customer_type_id]'        readonly='readonly'>");
+        $('#Customers_inside_salesperson_id').replaceWith("<input type='text'  id='Customers_inside_salesperson_id'  name='Customers[inside_salesperson_id]'   readonly='readonly'>");
+        $('#Customers_outside_salesperson_id').replaceWith("<input type='text' id='Customers_outside_salesperson_id' name='Customers[outside_salesperson_id]'  readonly='readonly'>");
+        $('#Customers_parent_id').replaceWith("<input type='text'              id='Customers_parent_id'              name='Customers[parent_id]'               readonly='readonly'>");
+        $('#Customers_tier_id').replaceWith("<input type='text'                id='Customers_tier_id'                name='Customers[tier_id]'                 readonly='readonly'>");
+        $('#Customers_territory_id').replaceWith("<input type='text'           id='Customers_territory_id'           name='Customers[territory_id]'            readonly='readonly'>");
+
+        $('[id^=Customers_]').val('');
+        $('[id^=Customers_]').attr('readOnly', 'readonly');
+    }
+
+    function resetContactForm() {
+        $('#Contacts_state_id').replaceWith("<input type='text'   id='Contacts_state_id'     name='Contacts[state_id]'   readonly='readonly'>");
+        $('#Contacts_country_id').replaceWith("<input type='text' id='Contacts_country_id'   name='Contacts[country_id]' readonly='readonly'>");
+
+        $('[id^=Contacts_]').val('');
+        $('[id^=Contacts_]').attr('readOnly', 'readonly');
+    }
+
+
 
     function checkCustomPrice(cp) {
         var buttonText = '';
@@ -655,18 +836,20 @@ $(document).ready(function() {
             source: searchURL,
             minLength: 4, 
             close: function() {
-                $('#search_typeahead').val("");  
+                $('#search_typeahead').val(""); 
             },
             select: function(event,ui) {
                 var selectID = ui.item.value;
                 
-                if ( ui.item.label.match(/\(\d+\)/) == null ) {   // found a contact 
+                if ( ui.item.label.match(/\(\d+\)/) === null ) {   // found a contact 
+                    resetContactForm();
+
                     $.ajax({
                         type: 'GET',
                         url: myURL + 'contacts/find?id='+selectID ,
                         success: function (contact_details) {
-                        	$('[id^=Customer_]').val('');
-                        	display_Contact(contact_details)
+                        	$('[id^=Customers_]').val('');
+                        	display_Contact(contact_details);
 
                             $.ajax({
                                 type: 'GET',
@@ -682,12 +865,14 @@ $(document).ready(function() {
                     });
                 }
                 else {     //  found a customer
+                    resetCustomerForm();
+
                     $.ajax({
                         type: 'GET',
                         url:  myURL + 'customers/find?id='+selectID ,
                         success: function (customer_details) {
-                        	$('[id^=Contact_]').val('');
-                        	display_Customer(customer_details)
+                        	$('[id^=Contacts_]').val('');
+                        	display_Customer(customer_details);
 
                             $.ajax({
                                 type: 'GET',
@@ -776,7 +961,7 @@ $(document).ready(function() {
                       }
                 });
             }
-            return false;z
+            return false;
         });
 
         // ----------------------------------------------------- edit item
@@ -861,7 +1046,7 @@ $(document).ready(function() {
 										dataType: "json",
 										success: function(data, textStatus, jqXHR) {
 											console.log("iq2_main_js(), AJAX Post: Success - item_id=" + data.item_id);
-                                            if ( $('#selectedParts').html() == '' ) {
+                                            if ( $('#selectedParts').html() === '' ) {
                                                 $('#selectedParts').html(  'Item(s) added to quote: ' + $('#part_no').text());
                                             }
                                             else {
@@ -1053,7 +1238,7 @@ $(document).ready(function() {
     	$('#header_PageTitle').html('Quote No. ');
     	$('#header_QuoteNo').html(quote_no);
 
-    	$('#heading_container').hide();
+    	$('#heading_container_left').hide();
     	$('#selection_container').hide();
     	$('#div_ContinueReset').hide();
         $('#section_PartsLookup').show();
@@ -1065,14 +1250,31 @@ $(document).ready(function() {
 		$('#section_PartsLookup     > div.quote_section_heading > span.open_close').show()
     }
 
+
+    function consoleDisplayFormFields(f) {
+        $.each( f, function(i,f) {
+            $.each( f, function( k,v) {
+               // console.log("k=["+k+"], id=["+v.id+"], name=["+v.name+"], value=["+v.value+"]");
+                console.log(v.id+" =\t["+v.value+"]");
+            });
+        });
+    }
+
+
     function formValidated() {
-        console.log("Customer_id=" + $('#Customer_id').val() );
-        console.log("Contact_id=" + $('#Contact_id').val() );
-        console.log("Quote_source_id=" + $('#Quote_source_id').val() );
+        consoleDisplayFormFields($('#quoteForm'));
 
-
-    	if ( $('#Customer_id').val() && $('#Contact_id').val() && $('#Quote_source_id').val()  > 0  ) {
-    		return true;
+    	if (   $('#Customers_name').val()       != '' && 
+               $('#Customers_address1').val()   != '' && 
+               $('#Customers_city').val()       != '' && 
+               $('#Customers_country_id').val() != '' && 
+               $('#Quotes_source_id').val()      > 0  && 
+               $('#Contacts_first_name').val()  != '' && 
+               $('#Contacts_last_name').val()   != '' && 
+               $('#Contacts_email').val()       != '' && 
+               $('#Contacts_title').val()       != '' &&
+               $('#Contacts_phone1').val()      != '' ) {
+            return true;
     	}
     	return false;
     }
@@ -1086,49 +1288,64 @@ $(document).ready(function() {
     function display_Customer(data) {
  		var o = JSON.parse(data);    
         $.each( o, function( k, v ) {
-        	//console.log("display_Customer_: k=["+k+"], v=["+v+"]");
-           	$('#Customer_'+k).html( v );
-            $('#Customer_'+k).val( v );
+        	//console.log("display_Customers_: k=["+k+"], v=["+v+"]");
+           	$('#Customers_'+k).html( v );
+            $('#Customers_'+k).val( v );
         });
     }
 
     function display_Contact(data) {
     	var o = JSON.parse(data);    
         $.each( o, function( k, v ) {
-        	 // console.log("Contact_: k=["+k+"], v=["+v+"]");
-           	$('#Contact_'+k).html( v );
-            $('#Contact_'+k).val( v );
+        	 // console.log("Contacts_: k=["+k+"], v=["+v+"]");
+           	$('#Contacts_'+k).html( v );
+            $('#Contacts_'+k).val( v );
         });
     }
 
+    // function toggleHeading() {
+    //     $('#heading_container_left').toggle();
+    //     $('#span_SelectCustomer').toggle();
+    //     $('#span_SelectContact').toggle();  
+    //     $('#span_NewCustomer').toggle();
+    //     $('#span_NewContact').toggle();
+    // }
+
     function display_CustomerSelect( data ) {	// ok
-    	$('#Customer_select').empty();
-    	$('#Customer_select').append( $('<option></option>' ).val(0).html('') );;
+    	$('#Customers_select').empty();
+    	$('#Customers_select').append( $('<option></option>' ).val(0).html('') );;
 
     	var o = JSON.parse(data); 
     	$.each( o, function(k,v) {
-            $('#Customer_select').append( $('<option></option>' ).val(v.id).html(v.label) );
+            $('#Customers_select').append( $('<option></option>' ).val(v.id).html(v.label) );
             // console.log("display_CustomerSelect() - id=["+ v.id + "], label=[" + v.label + "]");
         });
 
-    	$('#heading_container').show();
+    	$('#heading_container_left').show();
     	$('#span_SelectCustomer').show();
     	$('#span_SelectContact').hide();  
+        $('#span_NewCustomer').show();
+        $('#span_NewContact').hide();
+        // toggleHeading();
+
     }
 
  	function display_ContactSelect( data ) {	// ok
- 		$('#Contact_select').empty();
- 		$('#Contact_select').append( $('<option></option>' ).val(0).html('') );
+ 		$('#Contacts_select').empty();
+ 		$('#Contacts_select').append( $('<option></option>' ).val(0).html('') );
 
  		var o = JSON.parse(data); 
     	$.each( o, function(k,v) {
-            $('#Contact_select').append( $('<option></option>' ).val(v.id).html(v.label) );
+            $('#Contacts_select').append( $('<option></option>' ).val(v.id).html(v.label) );
             // console.log("display_ContactSelect() - id=["+ v.id + "], label=[" + v.label + "]");
         });
 
-    	$('#heading_container').show();
+    	$('#heading_container_left').show();
     	$('#span_SelectCustomer').hide();
     	$('#span_SelectContact').show(); 
+        $('#span_NewCustomer').hide();
+        $('#span_NewContact').show();
+        // toggleHeading();
     }
 
 	function getThisID( that ) {

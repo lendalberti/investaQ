@@ -28,7 +28,7 @@ class QuotesController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view','create','update', 'search', 'partsUpdate', 'delete'),
+				'actions'=>array('index','view','create','update', 'search', 'partsUpdate', 'delete', 'select'),
 				'expression' => '$user->isLoggedIn'
 			),
 		
@@ -50,7 +50,72 @@ class QuotesController extends Controller
 
 
 
+	public function actionSelect() {
+		pDebug("actionSelect() - _GET=", $_GET);
 
+		 // us_states, countries, regions, customer_types, users, customers, tiers, territories
+		if ( isset($_GET['q']) ) {
+			$q = $_GET['q'];
+
+			if ( in_array( $q, array('regions', 'customer_types', 'tiers', 'territories' )) ) {
+				$list = array();
+				$sql  = "SELECT * FROM $q ORDER BY name";
+				$command = Yii::app()->db->createCommand($sql);
+				$results = $command->queryAll();
+				// pDebug("actionSelect() - sql=[$sql], results:", $results );
+
+				foreach( $results as $r ) {
+					$list[] = array( 'id' => $r['id'], 'label' => $r['name'] );
+				}
+				// pDebug("actionSelect() - list:", $list); 
+				echo json_encode($list);
+			}
+			else if ( in_array( $q, array( 'us_states', 'countries' )) ) {
+				$list = array();
+				$sql  = "SELECT * FROM $q ORDER BY long_name";
+				$command = Yii::app()->db->createCommand($sql);
+				$results = $command->queryAll();
+				// pDebug("actionSelect() - sql=[$sql], results:", $results );
+
+				foreach( $results as $r ) {
+					$list[] = array( 'id' => $r['id'], 'label' => $r['long_name'] );
+				}
+				// pDebug("actionSelect() - list:", $list); 
+				echo json_encode($list);
+			}
+			else if ( in_array( $q, array( 'users' )) ) {
+				$list = array();
+				$sql  = "SELECT * FROM $q ORDER BY first_name";
+				$command = Yii::app()->db->createCommand($sql);
+				$results = $command->queryAll();
+				// pDebug("actionSelect() - sql=[$sql], results:", $results );
+
+				foreach( $results as $r ) {
+					$list[] = array( 'id' => $r['id'], 'label' => $r['first_name'].' '.$r['last_name'] );
+				}
+				// pDebug("actionSelect() - list:", $list); 
+				echo json_encode($list);
+			}
+			else if ( in_array( $q, array('customers' )) ) {
+				$list = array();
+				$sql  = "SELECT * FROM $q ORDER BY name";
+				$command = Yii::app()->db->createCommand($sql);
+				$results = $command->queryAll();
+				// pDebug("actionSelect() - sql=[$sql], results:", $results );
+
+				foreach( $results as $r ) {
+					$list[] = array( 'id' => $r['id'], 'label' => $r['name'].' ('.$r['syspro_account_code'].') ');
+				}
+				// pDebug("actionSelect() - list:", $list); 
+				echo json_encode($list);
+			}
+			else {
+				pDebug("actionSelect() - list:", $list);
+				$this->redirect(array('index'));
+			}
+		}
+
+	}     
 
 
 
@@ -65,12 +130,13 @@ class QuotesController extends Controller
     	if ( $model->save() ) {
     		pDebug('actionApprove() - quote ' . $model->quote_no . ' approved');
     		notifySalespersonStatusChange($model);
-    		echo 1;
+    		echo Status::SUCCESS;
     	}
     	else {
     		pDebug('actionApprove() - ERROR approving quote: ', $model->errors);
-    		echo 0;
+    		echo Status::FAILURE;
     	}
+    	return;
     }
     // ------------------------------------- Reject Quote...
     public function actionReject($id)     { 
@@ -80,12 +146,13 @@ class QuotesController extends Controller
     	if ( $model->save() ) {
     		pDebug('actionReject() - quote ' . $model->quote_no . ' rejected');
     		notifySalespersonStatusChange($model);
-    		echo 1;
+    		echo Status::SUCCESS;
     	}
     	else {
     		pDebug('actionReject() - ERROR rejecting quote: ', $model->errors);
-    		echo 0;
+    		echo Status::FAILURE;
     	}
+    	return;
     }
 
 	
@@ -167,44 +234,65 @@ class QuotesController extends Controller
 	public function actionCreate() {
 		pTrace( __METHOD__ );
 		
+		// if ( count($_POST) > 0 ) {
+		// 	pDebug('Quotes:actionCreate() - _POST=', $_POST);
+		// 	echo '0';
+		// 	return;
+		// }
 
-		if ( isset($_POST['Customer']) && isset($_POST['Contact']) && isset($_POST['Quote'])   ) {
+		if ( isset($_POST['Customers']) && isset($_POST['Contacts']) && isset($_POST['Quotes'])   ) {
 			pDebug("Quotes::actionCreate() - _POST values from serialzed form values:", $_POST);
 
-			$customer_id = $_POST['Customer']['id'];
-			$contact_id  = $_POST['Contact']['id'];
-			$quote_type  = $_POST['Quote']['quote_type_id'];
+			$customer_id = $_POST['Customers']['id'];
+			$contact_id  = $_POST['Contacts']['id'];
+			$quote_type  = $_POST['Quotes']['quote_type_id'];
 
 			if (!$customer_id ) {
 				// create new customer, get id
 				$modelCustomers = new Customers;
-				$modelCustomers->attributes      = $_POST['Customer'];
+				$modelCustomers->attributes      = $_POST['Customers'];
+
+				$modelCustomers->country_id				= $_POST['Customers']['country_id'];
+				$modelCustomers->region_id				= $_POST['Customers']['region_id'];
+				$modelCustomers->customer_type_id		= $_POST['Customers']['customer_type_id'];
+				$modelCustomers->territory_id			= $_POST['Customers']['territory_id'];
+				$modelCustomers->xmas_list				= $_POST['Customers']['xmas_list'];
+				$modelCustomers->candy_list				= $_POST['Customers']['candy_list'];
+				$modelCustomers->strategic				= $_POST['Customers']['strategic'];
+				$modelCustomers->address1				= $_POST['Customers']['address1'];
+				$modelCustomers->city					= $_POST['Customers']['city'];
+				$modelCustomers->vertical_market		= $_POST['Customers']['vertical_market'];
+				$modelCustomers->syspro_account_code	= $_POST['Customers']['syspro_account_code'];
+
 				if ( $modelCustomers->save() ) {
 					$customer_id = $modelCustomers->id; 
 					pDebug("Quotes::actionCreate() - created new customer with the following attributes:", $modelCustomers->attributes );
 				}
 				else {
 					pDebug("Quotes::actionCreate() - ERROR: couldn't create new customer with the following attributes:", $modelCustomers->attributes );
-					echo ''; return;
+					pDebug("Quotes::actionCreate() - Error Message", $modelCustomers->errors );
+					echo Status::FAILURE; 
+					return;
 				}
 			}
 
 			if (!$contact_id ) {
 				// create new contact, get id
 				$modelContacts = new Contacts;
-				$modelContacts->attributes      = $_POST['Contact'];
+				$modelContacts->attributes      = $_POST['Contacts'];
 				if ( $modelContacts->save() ) {
 					$contact_id = $modelContacts->id; 
 					pDebug("Quotes::actionCreate() - created new contact with the following attributes:", $modelContacts->attributes );
 				}
 				else {
 					pDebug("Quotes::actionCreate() - ERROR: couldn't create new contact with the following attributes:", $modelContacts->attributes );
-					echo ''; return;
+					echo Status::FAILURE; 
+					return;
 				}
 			}
 
 			$modelQuotes                  = new Quotes;
-			$modelQuotes->attributes      = $_POST['Quote'];
+			$modelQuotes->attributes      = $_POST['Quotes'];
 			$modelQuotes->customer_id     = $customer_id;
 			$modelQuotes->contact_id      = $contact_id;
 			$modelQuotes->quote_no        = $this->getQuoteNumber();
@@ -224,7 +312,7 @@ class QuotesController extends Controller
 			}
 			else {
 				pDebug("actionCreate() - Error on modelQuotes->save(): ", $modelQuotes->errors);
-				echo '';
+				echo Status::FAILURE;
 			}
 		}
 		else {
@@ -305,12 +393,12 @@ class QuotesController extends Controller
 
 				if ($quoteModel->save()) {
 					pDebug( "actionUpdate() -  Terms saved for quote no. " . $_POST['quoteForm_Terms_QuoteID'] );
+					echo Status::SUCCESS;
 				}
 				else {
 					pDebug( "actionUpdate() -  Error in saving terms: ", $quoteModel->errors );
+					echo Status::FAILURE;
 				}
-
-				echo '';
 				return;
 			}
 
@@ -323,67 +411,97 @@ class QuotesController extends Controller
 					$new_quoteModel = $this->loadModel($quote_id);
 					pDebug("Changed quote status from [$oldQuoteStatus] to [" . $new_quoteModel->status->name . "]" );
 					notifySalespersonStatusChange($quoteModel);
-					echo '';
+					echo Status::SUCCESS;
 				}
 				else {
 					pDebug("actionUpdate() - can't update quote status; error=", $quoteModel->errors );
-					echo 'error';
+					echo Status::FAILURE;
 				}
 				return;
 			}
 
 			// validate source id > 0
-			if ( $_POST['Quote']['source_id'] == 0 ) {
-				echo "error";
+			if ( $_POST['Quotes']['source_id'] == 0 ) {
+				echo Status::FAILURE;
 				return;
 			}
 
-			// validate contact - if missing id, then assume it's a new contact, check for required fields
-			if ( $_POST['Contact']['id'] ) {
-				$contact_id =  $_POST['Contact']['id'];
+			// validate customer - if missing id, then assume it's a new customer, check for required fields
+			if ( $_POST['Customers']['id'] ) {
+				$customer_id =  $_POST['Customers']['id'];
 			}
 			else {
-				if ( 	$_POST['Contact']['first_name'] &&
-						$_POST['Contact']['last_name'] && 
-						$_POST['Contact']['email'] &&
-						$_POST['Contact']['title'] &&
-						$_POST['Contact']['phone1'] ) {
+				if ( 	$_POST['Customers']['name'] && 
+						$_POST['Customers']['address1'] && 
+						$_POST['Customers']['city'] && 
+						$_POST['Customers']['country_id'] ) {
+					// create new customer
+					$customerModel = new Customers();
+					$customerModel->attributes =  $_POST['Customers'];
+					if ($customerModel->save()) {
+						pDebug('Saved new customer: ', $customerModel->attributes);
+						$customer_id = $customerModel->id;
+					}
+					else {
+						pDebug("actionUpdate() - can't save new contact; error=", $customerModel->errors );
+						echo Status::FAILURE;
+					}
+				}
+				else {
+					echo Status::FAILURE;
+				}
+			}
+
+			// validate contact - if missing id, then assume it's a new customer, check for required fields
+			if ( $_POST['Contacts']['id'] ) {
+				$contact_id =  $_POST['Contacts']['id'];
+			}
+			else {
+				if ( 	$_POST['Contacts']['first_name'] &&
+						$_POST['Contacts']['last_name'] && 
+						$_POST['Contacts']['email'] &&
+						$_POST['Contacts']['title'] &&
+						$_POST['Contacts']['phone1'] ) {
 					
 					// create new contact
 					$contactModel = new Contacts();
-					$contactModel->attributes =  $_POST['Contact'];
+					$contactModel->attributes =  $_POST['Contacts'];
 					if ($contactModel->save()) {
 						pDebug('Saved new contact: ', $contactModel->attributes);
 						$contact_id = $contactModel->id;
 					}
 					else {
 						pDebug("actionUpdate() - can't save new contact; error=", $contactModel->errors );
-						echo 1;
+						echo Status::FAILURE;
 					}
 				}
 				else {
-					echo 1;
+					echo Status::FAILURE;
 				}
 			}
 
 			// update quote with source_id, contact_id, terms
 			$quoteModel = $this->loadModel($quote_id);
 
+			$quoteModel->customer_id             = $customer_id;
 			$quoteModel->contact_id              = $contact_id;
-			$quoteModel->source_id               = $_POST['Quote']['source_id'];
-    		$quoteModel->additional_notes        = $_POST['Quote']['additional_notes'];
-    		$quoteModel->terms_conditions        = $_POST['Quote']['terms_conditions'];
-    		$quoteModel->customer_acknowledgment = $_POST['Quote']['customer_acknowledgment'];
-    		$quoteModel->risl                    = $_POST['Quote']['risl'];
-    		$quoteModel->manufacturing_lead_time = $_POST['Quote']['manufacturing_lead_time'];
+			$quoteModel->source_id               = $_POST['Quotes']['source_id'];
+			$quoteModel->status_id               = $_POST['Quotes']['status_id'];
+    		$quoteModel->additional_notes        = $_POST['Quotes']['additional_notes'];
+    		$quoteModel->terms_conditions        = $_POST['Quotes']['terms_conditions'];
+    		$quoteModel->customer_acknowledgment = $_POST['Quotes']['customer_acknowledgment'];
+    		$quoteModel->risl                    = $_POST['Quotes']['risl'];
+    		$quoteModel->manufacturing_lead_time = $_POST['Quotes']['manufacturing_lead_time'];
 
          	if ($quoteModel->save()) {
 				pDebug('Saved quote changes: ', $quoteModel->attributes);
+				echo Status::SUCCESS;
 			}
 			else {
 				pDebug("actionUpdate() - can't save quote changes; error=", $quoteModel->errors );
-				echo 1;
+				echo Status::FAILURE;
 			}
+			return;
 		}
 		else {
 			$data['model'] = $this->loadModel($quote_id);
@@ -444,14 +562,14 @@ class QuotesController extends Controller
 		if ( $_POST['data'][0] == $id ) {
 			if ( $this->loadModel($id)->delete() ) {
 				pDebug("Quotes:actionDelete() - quote id $id deleted...");
-				echo 'ok';
+				echo Status::SUCCESS;
 			}
 			else {
 				pDebug("Quotes:actionDelete() - ERROR: can't delete quote id $id; error=", $model->errors  );
+				echo Status::FAILURE;
 			}
 		}
-
-		echo '';
+		return;
 	}
 
 

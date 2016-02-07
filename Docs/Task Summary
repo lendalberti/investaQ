@@ -4,11 +4,15 @@
 |      Need fixes     |
 +---------------------+
 
-	[ ] when approving/rejecting a quote, errors are
+	[x] when approving/rejecting a quote, errors are
 		 displayed but quotes do get approved/rejected
 		- ajax message issue?
 
-	[ ] on create quote, terms don't get saved
+	[x] on create quote, terms don't get saved
+
+	[ ] detect duplicates when creating new customer/contact
+
+	[x] when editing a 'Rejected' quote, it goes back to 'Pending'
 
 
 
@@ -36,17 +40,14 @@
 	[x] delete parts
 	[x] edit parts
 
-
 	[x] find customer
-	[ ] create new customer
+	[x] create new customer
 	[x] view customer
-	[ ] edit customer (wait for CRUD)
-
+	
 	[x] find contact
-	[ ] create new contact
+	[x] create new contact
 	[x] view contact
-	[ ] edit contact  (wait for CRUD)
-
+	
 	[x] edit profile
 
 

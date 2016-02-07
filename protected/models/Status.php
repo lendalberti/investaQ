@@ -24,6 +24,10 @@ class Status extends CActiveRecord {
 			BTO_PENDING   = 10,
 			BTO_APPROVED  = 11,
 			BTO_NOBID     = 12;
+
+	const		
+			SUCCESS       = 0,
+			FAILURE       = 1;
 			
 	/**
 	 * Returns the static model of the specified AR class.

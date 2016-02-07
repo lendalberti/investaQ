@@ -1,7 +1,9 @@
-
-INSERT INTO territories(id, name) VALUES(1, 'terr_1');
-INSERT INTO territories(id, name) VALUES(2, 'terr_2');
-INSERT INTO territories(id, name) VALUES(3, 'terr_3');
+INSERT INTO territories(name) VALUES('Territory 1');
+INSERT INTO territories(name) VALUES('Territory 2');
+INSERT INTO territories(name) VALUES('Territory 3');
+INSERT INTO territories(name) VALUES('Territory 4');
+INSERT INTO territories(name) VALUES('Territory 5');
+INSERT INTO territories(name) VALUES('Territory 6');
 
 
 

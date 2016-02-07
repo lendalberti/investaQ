@@ -477,7 +477,7 @@ span.select_replacement {
 	font-weight: bold;
 }
 
-span[id^="Customer_"] {
+span[id^="Customers_"] {
 	background-color: #f0f0f0;
 	border: 1px solid lightgray;
     padding-left: 5px;
@@ -744,16 +744,6 @@ span.volume {
 	margin-bottom: 0;
 }
 
-span#clearContactFields {
-	color: blue;
-	text-decoration: underline;
-	font-variant: small-caps;
-	font-weight: bold;
-}
-
-span#clearContactFields:hover {
-	cursor: pointer;
-}
 
 #addPartToQuote {
 	color: blue; 
@@ -773,5 +763,87 @@ span#clearContactFields:hover {
 #changeStatus:hover {
 	cursor: pointer;
 }
+
+
+#quoteForm {
+	margin-top: 20px;
+}
+
+
+#span_NewCustomer {
+	padding-left: 135px;
+
+}
+
+#span_NewContact:hover {
+	cursor: pointer;
+}
+
+#span_NewContact {
+	padding-left: 110px;
+	/*color: blue;
+	text-decoration: underline;
+	font-variant: small-caps;
+	font-weight: bold;*/
+}
+
+
+span.span_links {
+	font-size: .8em;
+	color: #3a89de;
+	text-decoration: underline;
+	padding-left: 20px;
+	font-weight: bold;
+	/*display: none;*/
+}
+
+span.span_links:hover {
+	cursor: pointer;
+}
+
+/*
+
+span#clearContactFields {
+	color: blue;
+	text-decoration: underline;
+	font-variant: small-caps;
+	font-weight: bold;
+}
+
+span#clearContactFields:hover {
+	cursor: pointer;
+}
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
