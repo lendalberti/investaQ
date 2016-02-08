@@ -135,13 +135,13 @@ span.open_close:hover {
 
 <script>
 
-	$(document).ready(function() {
+	// $(document).ready(function() {
 
-		$(window).on('beforeunload', function(){
-			return '';
-		})
+	// 	$(window).on('beforeunload', function(){
+	// 		return '';
+	// 	})
 
-	});
+	// });
 
 
 </script>
@@ -166,25 +166,6 @@ span.open_close:hover {
 		</div>
 										
 		<div class='my_container'>
-			
-
-<!--
-			<div id='heading_container' style='display: none;'>
-				<span id='span_SelectCustomer' style='display: none;'> Select customer  <select name='Customers[select]' id='Customers_select'> </select> </span> 
-				<span id='span_SelectContact'  style='display: none;'> Select contact   <select name='Contacts[select]'  id='Contacts_select'>  </select> </span>
-		    	<span id ='span_SelectSource' style='padding-left: 50px; font-weight: bold;'><span class='required'> * </span>Source
-					<select name='Quotes[source_id]' id='Quotes_source_id'>
-						< ?php
-							echo "<option value='0'></option>";
-							foreach( $data['sources'] as $c ) {
-								echo "<option value='".$c->id."'>".$c->name."</option>";
-							}
-						?>
-					</select>
-				</span>
-			</div>
--->
-
 			<div id='heading_container' style='border: 0px solid red;'>
 
 				<div id='heading_container_left' style='display: none; float: left; margin-left: 200px; border: 0px solid orange;'>
@@ -204,31 +185,7 @@ span.open_close:hover {
 						</select>
 					</span>
 				</div>
-
-
-
 			</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 		    <div id="box1">
@@ -280,22 +237,6 @@ span.open_close:hover {
 				        <tr>  <td>Zip/Postal Code</td>          <td><input type='text' id='Contacts_zip' name='Contacts[zip]' readonly='readonly' > </td> </tr>
 				        <tr>  <td>Country</td>                  <td><input type='text' id='Contacts_country_id' name='Contacts[country_id]' readonly='readonly' > </td> </tr>
 			    </table>
-		    </div>
-
-		   <!--  <div style='margin-bottom: 20px;'>
-		    	<span style='padding-left: 0px; font-weight: bold;'><span class='required'> * </span>Contact Source
-					<select name='Quotes[source_id]' id='Quotes_source_id'>
-						< ?php
-							echo "<option value='0'></option>";
-							foreach( $data['sources'] as $c ) {
-								echo "<option value='".$c->id."'>".$c->name."</option>";
-							}
-						?>
-					</select>
-				</span>
-			</div> -->
-
-
 		</div>
 	</div>
 

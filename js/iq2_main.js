@@ -298,6 +298,8 @@ $('#Contacts_state_id').replaceWith('<select                  name="Contacts[sta
                             $('#quoteForm_Terms_QuoteID').val(quoteId); // for Terms form...
 
     		            	console.log('quoteId=['+quoteId+'], quoteNo=['+quoteNo+']');
+                            alert('New quote created - no. '+quoteNo);
+
     		            	$('#form_QuoteID').val(quoteId);
     		            	continueQuote(quoteNo);
                         }
@@ -311,7 +313,7 @@ $('#Contacts_state_id').replaceWith('<select                  name="Contacts[sta
 
 
 
-     $('#quoteForm_Terms').submit(function( event ) {           //  click "Save Changes" 
+     $('#quoteForm_Terms').submit(function( event ) {           //  click "Save Quote" 
         event.preventDefault();
         // var postData = $(this).serialize();
 
@@ -326,6 +328,7 @@ $('#Contacts_state_id').replaceWith('<select                  name="Contacts[sta
             success: function(results)  {
                 if ( results == SUCCESS ) {
                     console.log('Quote terms updated.');
+                    alert('Quote has been updated.');
                 }
                 else {
                     console.log('Quote terms NOT updated...');

@@ -226,6 +226,10 @@
 					            
 					            	<input id="parts_Searchfield" class="parts_Searchfield" type="text"  />  
 							   	    <input id="parts_Searchbutton" class="parts_Searchbutton" type="button" value="Find" />
+							   	    <span id='ajax_loading_image' style='display: none;'>
+						   	      	  <img src='<?php echo Yii::app()->baseUrl; ?>/images/ajax_loading.gif' width='48' height='48' title='Waiting to load...'>
+						   	    	</span>
+
 						   	    </td>
 					   	    </tr>
 						</table>
