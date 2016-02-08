@@ -29,9 +29,10 @@ class PartsController extends Controller {
 		if ( isset($_GET['item']) ) {
 			$item       = urlencode($_GET['item']);
 			$url        = 'http://mongoa/parts/*/500/?q='.$item;	  // mongoa for my local use
+			$tmp        = file_get_contents($url);
 
-			//$tmp        = file_get_contents($url);
-			$tmp = file_get_contents('/Users/len/www/iq2/Docs/mongo_sample_records_1.inc');
+			// $tmp = file_get_contents('/Users/len/www/iq2/Docs/mongo_sample_records_3333.inc');
+			// pDebug('tmp=', $tmp);
 			/*
 				In the event that http://mongoa is not available, use the files in Docs as a temp solution for testing purposes;
 
