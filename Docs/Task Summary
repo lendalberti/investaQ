@@ -10,8 +10,6 @@
 
 	[x] on create quote, terms don't get saved
 
-	[ ] detect duplicates when creating new customer/contact
-
 	[x] when editing a 'Rejected' quote, it goes back to 'Pending'
 
 
@@ -20,7 +18,7 @@
 |  Customers / Contacts / Users  |
 +--------------------------------+
 
-	[ ] CRUD form
+	[ ] CRUD forms
 	
 
 +------------------------------+
