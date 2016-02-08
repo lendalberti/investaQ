@@ -265,7 +265,7 @@ $('#Contacts_state_id').replaceWith('<select                  name="Contacts[sta
                         console.log('results from quote update=['+results+']');
 
                         if ( results == SUCCESS ) { // update succeeded
-                            //alert('Update succeeded');
+                            alert('Quote updated...');
                             window.location = myURL + 'quotes/view/'+quoteID;
                         }
                         else {
