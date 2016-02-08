@@ -619,11 +619,13 @@ $('#Contacts_state_id').replaceWith('<select                  name="Contacts[sta
         console.log('url=' + url);    
 
   		if ( searchFor.trim() && searchBy ) {
-  			$.ajax({
+  			$('#ajax_loading_image').show();
+            $.ajax({
 	                type: 'GET',
 	                url: url,
 	                success: function (results) {
 	                	displayPartLookupResults(results);
+                        $('#ajax_loading_image').hide();
 	                }
             });
   		}
