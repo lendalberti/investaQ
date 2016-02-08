@@ -6,6 +6,9 @@ $(document).ready(function() {
     var myURL           = '/iq2/index.php/';
     var searchURL       = myURL + 'quotes/search';
 
+    var dialog_PartPricing = '';
+    var QuotesTable        = '';
+
     var SUCCESS      = '0';
     var FAILURE      = '1';
 
@@ -25,14 +28,16 @@ $(document).ready(function() {
     // -----------------------------------------------
 	// ---------- set up UI Dialogs ------------------
 	// -----------------------------------------------
-	var dialog_PartPricing = $( "#form_PartPricing" ).dialog({
-		autoOpen: false,
-		height: 1100,
-		width: 500,
-		modal: true,
-		resizable: false,
-		close: function() { }
-	});
+	if ($("#form_PartPricing").length == 1) {
+        dialog_PartPricing = $( "#form_PartPricing" ).dialog({
+    		autoOpen: false,
+    		height: 1100,
+    		width: 500,
+    		modal: true,
+    		resizable: false,
+    		close: function() { }
+    	});
+    }
 
     $('#reset_form').on('click', function() {
         location.reload();
@@ -43,8 +48,11 @@ $(document).ready(function() {
     });
 
     // set up DataTable
-    var QuotesTable  = $('#quotes_table').DataTable({"iDisplayLength": 10 }); 
-    var ResultsTable = null;
+    if ($("#quotes_table").length == 1) {
+        QuotesTable  = $('#quotes_table').DataTable({"iDisplayLength": 10 }); 
+        var ResultsTable = null;
+    }
+
 	
 	//---------------------------------------------------------------------------------------------------------------------
     //-------- Event Handlers  --------------------------------------------------------------------------------------------    
@@ -56,37 +64,38 @@ $(document).ready(function() {
         dialog_status.dialog( "open" );
     });
 
+    if ( $("#dialog_status_form").length == 1 ) {
+        dialog_status = $( "#dialog_status_form" ).dialog({
+            autoOpen: false,
+            height: 160,
+            width: 350,
+            modal: true,
+            buttons: {
+                "Change": function() {
+                    var newStatus =  $('#newQuoteStatus').val();
+                    console.log( "new status = " + newStatus + ", form: " + $('#new_status_form').serialize() );
+                    var postData = $('#new_status_form').serialize();
+                    var quoteID = $('#Quotes_id').val();
 
-    dialog_status = $( "#dialog_status_form" ).dialog({
-        autoOpen: false,
-        height: 160,
-        width: 350,
-        modal: true,
-        buttons: {
-            "Change": function() {
-                var newStatus =  $('#newQuoteStatus').val();
-                console.log( "new status = " + newStatus + ", form: " + $('#new_status_form').serialize() );
-                var postData = $('#new_status_form').serialize();
-                var quoteID = $('#Quotes_id').val();
+                    $.ajax({
+                            type: "POST",
+                            url: myURL + 'quotes/update/' + quoteID,
+                            data: postData,
+                            success: function(results)  {
+                                console.log('results from quote update=['+results+']');
+                                location.reload();
+                            }
+                    });
 
-                $.ajax({
-                        type: "POST",
-                        url: myURL + 'quotes/update/' + quoteID,
-                        data: postData,
-                        success: function(results)  {
-                            console.log('results from quote update=['+results+']');
-                            location.reload();
-                        }
-                });
-
-                dialog_status.dialog( "close" );
-                return false;
-            },
-            Cancel: function() {
-                dialog_status.dialog( "close" );
+                    dialog_status.dialog( "close" );
+                    return false;
+                },
+                Cancel: function() {
+                    dialog_status.dialog( "close" );
+                }
             }
-        }
-    });
+        });
+    }
 
     $('#addPartToQuote').on('click', function() {
         $('#div_PartsLookup').show();
@@ -835,68 +844,69 @@ $('#Contacts_state_id').replaceWith('<select                  name="Contacts[sta
             return tmp; 
     }
 
+    if ( $("#search_typeahead").length == 1 ) {
+        $(function() {  // Search for either Customer or Contact using typeahead, autocompletion 
+            $( "#search_typeahead" ).autocomplete({
+                source: searchURL,
+                minLength: 4, 
+                close: function() {
+                    $('#search_typeahead').val(""); 
+                },
+                select: function(event,ui) {
+                    var selectID = ui.item.value;
+                    
+                    if ( ui.item.label.match(/\(\d+\)/) === null ) {   // found a contact 
+                        resetContactForm();
 
-    $(function() {  // Search for either Customer or Contact using typeahead, autocompletion 
-        $( "#search_typeahead" ).autocomplete({
-            source: searchURL,
-            minLength: 4, 
-            close: function() {
-                $('#search_typeahead').val(""); 
-            },
-            select: function(event,ui) {
-                var selectID = ui.item.value;
-                
-                if ( ui.item.label.match(/\(\d+\)/) === null ) {   // found a contact 
-                    resetContactForm();
+                        $.ajax({
+                            type: 'GET',
+                            url: myURL + 'contacts/find?id='+selectID ,
+                            success: function (contact_details) {
+                            	$('[id^=Customers_]').val('');
+                            	display_Contact(contact_details);
 
-                    $.ajax({
-                        type: 'GET',
-                        url: myURL + 'contacts/find?id='+selectID ,
-                        success: function (contact_details) {
-                        	$('[id^=Customers_]').val('');
-                        	display_Contact(contact_details);
+                                $.ajax({
+                                    type: 'GET',
+                                    url: myURL + 'customers/findbycontact?id='+selectID ,
+                                    success: function (customer_list) {
+                                       display_CustomerSelect(customer_list);
+                                    }
+                                });
+                            },
+                            error: function (jqXHR, textStatus, errorThrown)  {
+                                console.log('Error in searching for contact id: '+selectID+', msg= '+errorThrown);
+                            } 
+                        });
+                    }
+                    else {     //  found a customer
+                        resetCustomerForm();
 
-                            $.ajax({
-                                type: 'GET',
-                                url: myURL + 'customers/findbycontact?id='+selectID ,
-                                success: function (customer_list) {
-                                   display_CustomerSelect(customer_list);
-                                }
-                            });
-                        },
-                        error: function (jqXHR, textStatus, errorThrown)  {
-                            console.log('Error in searching for contact id: '+selectID+', msg= '+errorThrown);
-                        } 
-                    });
+                        $.ajax({
+                            type: 'GET',
+                            url:  myURL + 'customers/find?id='+selectID ,
+                            success: function (customer_details) {
+                            	$('[id^=Contacts_]').val('');
+                            	display_Customer(customer_details);
+
+                                $.ajax({
+                                    type: 'GET',
+                                    url: myURL + 'contacts/findbycust?id='+selectID ,
+                                    success: function (contact_list) {
+                                        display_ContactSelect(contact_list);
+                                    }
+                                });
+                            },
+                            error: function (jqXHR, textStatus, errorThrown)  {
+                                console.log('Error in searching for customer id: '+selectID+', msg= '+errorThrown);
+                            } 
+                        });
+                    }
+
+
                 }
-                else {     //  found a customer
-                    resetCustomerForm();
-
-                    $.ajax({
-                        type: 'GET',
-                        url:  myURL + 'customers/find?id='+selectID ,
-                        success: function (customer_details) {
-                        	$('[id^=Contacts_]').val('');
-                        	display_Customer(customer_details);
-
-                            $.ajax({
-                                type: 'GET',
-                                url: myURL + 'contacts/findbycust?id='+selectID ,
-                                success: function (contact_list) {
-                                    display_ContactSelect(contact_list);
-                                }
-                            });
-                        },
-                        error: function (jqXHR, textStatus, errorThrown)  {
-                            console.log('Error in searching for customer id: '+selectID+', msg= '+errorThrown);
-                        } 
-                    });
-                }
-
-
-            }
+            });
         });
-    });
+    }
 
 
 	function nothingToQuote() {
