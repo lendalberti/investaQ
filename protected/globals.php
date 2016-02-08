@@ -294,23 +294,6 @@
 
     // -----------------------------------------------------------------------------------
     function notifySalespersonStatusChange( $model ) {
-        pDebug( "notifySalespersonStatusChange() - start..." );
-        return true;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
 
         $subject           = "Quote " . $model->status->name;
         $salesperson_name  = $model->owner->fullname;

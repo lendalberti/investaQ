@@ -1263,6 +1263,8 @@ $('#Contacts_state_id').replaceWith('<select                  name="Contacts[sta
         $('#section_CustomerContact > div.quote_section_heading > span.open_close').show()
         $('#section_TermsConditions > div.quote_section_heading > span.open_close').show()
 		$('#section_PartsLookup     > div.quote_section_heading > span.open_close').show()
+
+        $('#section_CustomerContact > div.quote_section_heading > span.open_close').trigger('click');    // close it for now
     }
 
 
