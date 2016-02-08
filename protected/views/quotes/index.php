@@ -57,3 +57,5 @@
 </div>
 
 <div class='print' id="form_ViewQuoteDetails" style='display: none'> quote details content goes here </div>
+<div class='print' id="form_PartPricing" style='display: none'> pricing details content goes here </div>
+
