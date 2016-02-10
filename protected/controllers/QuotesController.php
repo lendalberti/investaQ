@@ -362,6 +362,7 @@ class QuotesController extends Controller
 			Debug("actionPartsUpdate() - Exception: ", $e->errorInfo );
 		}
 
+      pDebug('Sending json:', json_encode($arr) );
 		echo json_encode($arr);
 	}
 

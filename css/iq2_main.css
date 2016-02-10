@@ -1,4 +1,45 @@
 
+
+
+
+
+
+
+
+span.checkbox_sameAddress {
+	font-weight: normal; 
+	font-size: .9em; color: red;/* #3a89de;*/
+	display: none;
+}
+
+
+
+#heading_container_left {
+	padding: 10px; 
+	display: none; 
+	float: left; 
+	margin-left: 200px; 
+	border: 0px solid orange;
+}
+
+
+#section_CustomerContact {
+    margin-top: 20px;
+}
+
+
+#quoteViewForm,
+#quoteAddForm,
+#quoteUpdateForm {
+	margin-top: 40px;
+}
+
+
+#ajax_loading_image {
+	display:none;
+	/*margin-left: 10px;*/
+}
+
 #iq2_title {
 	float: right;
 	text-align: right;
@@ -248,6 +289,10 @@ span.required {
  	text-align: center;
  	background-color: white;
  	padding: 10px;
+}
+
+.quote_section_heading_View {
+	/*text-align: center;*/
 }
 
 .quote_section_heading_View,
@@ -586,15 +631,16 @@ span[id^='edit_quote_'] {
 
 
 
-/************ from view.php  -- TODO: check for duplicates *******************/
+/************ from _form.php  -- TODO: check for duplicates (eventually remove _form.php) *******************/
 
 
 div.my_container {
 	padding: 5px;
-	border: 1px solid lightgray;
+	border-top: 1px solid lightgray;
 	height: 100%; 
 	overflow: auto;
 }
+
 
 
 div.my_container > div {
@@ -649,6 +695,7 @@ div.my_container > div > table > tbody > tr > td:nth-child(odd) {
 	float: left;  
 	width: 100%; 
 	font-weight: bold; 
+	padding: 20px;
 }
 
 #customer_heading {
@@ -685,6 +732,7 @@ span.open_close {
 	padding-left: 10px;
 }
 
+
 #section_PartsLookup {
 	display: none;
 }
@@ -711,9 +759,6 @@ span.terms {
 	color: black;
 }
 
-div.quote_section_heading_View {
-	text-align: center;
-}
 
 #div_ActionButtons > input {
 	background-color: lightgray;
@@ -765,7 +810,7 @@ span.volume {
 }
 
 
-#quoteForm {
+#quoteAddForm {
 	margin-top: 20px;
 }
 

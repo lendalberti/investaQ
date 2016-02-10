@@ -1,3 +1,27 @@
+	
+New UI
+-------
+
+	[x] use Tabs in UI
+
+	[x] on New Cust/Contact
+		[x] show checkbox for using same address for both cust/contact
+		[x] create js event
+
+	[ ] View
+		[ ] Quote Terms - boxes need css fixed
+
+	[ ] Update
+		[ ] Quote Terms - boxes need css fixed
+		[ ] Inventory Parts - edit items - in popup dialog
+
+	[ ] New
+		[ ] Customer Info - Search box, table need css fixed
+		[ ] Terms - boxes need css fixed
+		[ ] Inventory: css redone (follow update page)
+
+	[ ] set blank as first option in select boxes on form
+
 
 
 +---------------------+

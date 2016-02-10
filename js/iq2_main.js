@@ -24,6 +24,12 @@ $(document).ready(function() {
         return text.substr(0,max-1)+(text.length>max?'&hellip;':''); 
     }
 
+    $(function() {
+        $( "#QuoteView_Tabs" ).tabs({  // event: "mouseover"
+            collapsible: true
+        });
+    });
+
 
     // -----------------------------------------------
 	// ---------- set up UI Dialogs ------------------
@@ -52,6 +58,13 @@ $(document).ready(function() {
         QuotesTable  = $('#quotes_table').DataTable({"iDisplayLength": 10 }); 
         var ResultsTable = null;
     }
+
+
+    if ( window.location.href.match(/quotes\/create$/ ) ) {
+        $('#QuoteView_Tabs > ul > li:nth-child(2)').hide();
+        $('#QuoteView_Tabs > ul > li:nth-child(3)').hide();
+    }
+
 
 	
 	//---------------------------------------------------------------------------------------------------------------------
@@ -105,7 +118,13 @@ $(document).ready(function() {
         $('[id^=Contacts_]').val('');
         $('[id^=Contacts_]').removeAttr('readOnly');
 
-$('#Contacts_state_id').replaceWith('<select                  name="Contacts[state_id]" id="Contacts_state_id"></select>');
+
+        if ( $('#Customer_name').val() != '' ) {
+            $('#check_SameAsCustomer').show();
+            $('#check_SameAsCustomer > input[type="checkbox"]').removeAttr('checked');
+        }
+
+        $('#Contacts_state_id').replaceWith('<select                  name="Contacts[state_id]" id="Contacts_state_id"></select>');
         $.ajax({
             type: 'GET',
             url: myURL + 'quotes/select?q=us_states',
@@ -135,6 +154,13 @@ $('#Contacts_state_id').replaceWith('<select                  name="Contacts[sta
     $('#span_NewCustomer').on('click', function() {
         $('[id^=Customers_]').val('');
         $('[id^=Customers_]').removeAttr('readOnly');
+        
+        if ( $('#Contacts_first_name').val() != '' ) {
+            $('#check_SameAsContact').show();
+            $('#check_SameAsContact > input[type="checkbox"]').removeAttr('checked');
+
+        }
+
 
         $('#Customers_state_id').replaceWith('<select                 name="Customers[state_id]" id="Customers_state_id"></select>');
         $.ajax({
@@ -290,7 +316,9 @@ $('#Contacts_state_id').replaceWith('<select                  name="Contacts[sta
     });
 
 
-    $('#quoteForm').submit(function( e ) {                          //  click "Continue" 
+    $('#quoteAddForm').submit(function( e ) {                          //  click "Continue" 
+        console.log('Clicked Continue button...');
+
     	e.preventDefault();
         var postData = $(this).serialize();
 
@@ -309,8 +337,12 @@ $('#Contacts_state_id').replaceWith('<select                  name="Contacts[sta
     		            	console.log('quoteId=['+quoteId+'], quoteNo=['+quoteNo+']');
                             alert('New quote created - no. '+quoteNo);
 
+                            $('#QuoteView_Tabs > ul > li:nth-child(2)').show();
+                            $('#QuoteView_Tabs > ul > li:nth-child(3)').show();
+
     		            	$('#form_QuoteID').val(quoteId);
-    		            	continueQuote(quoteNo);
+                            //continueQuote(quoteNo);
+                            window.location.href = myURL + 'quotes/update/' + quoteId;
                         }
 		            }
 	        });
@@ -632,55 +664,63 @@ $('#Contacts_state_id').replaceWith('<select                  name="Contacts[sta
 
   		if ( searchFor.trim() && searchBy ) {
   			$('#ajax_loading_image').show();
+            $('#results_table').hide();
+            $('#results_table_wrapper').hide();
             $.ajax({
 	                type: 'GET',
 	                url: url,
 	                success: function (results) {
 	                	displayPartLookupResults(results);
                         $('#ajax_loading_image').hide();
+                        $('#results_table').show();
+                        $('#results_table_wrapper').show();
+
 	                }
             });
   		}
   	});
 
+    $('#check_SameAsCustomer > input[type="checkbox"]').on('click', function() {
+        var address1 = $('#Customers_address1').val();
+        var address2 = $('#Customers_address2').val();
+        var city     = $('#Customers_city').val();
+        var zip      = $('#Customers_zip').val();
 
+        var state   = $('#Customers_state_id').val();
+        var country = $('#Customers_country_id').val();
+      
+        $('#Contacts_address1').val( address1 );
+        $('#Contacts_address2').val( address2 );
+        $('#Contacts_city').val( city );
+        $('#Contacts_zip').val( zip );
 
+        $("#Contacts_state_id option:contains('"+state+"')").attr('selected', 'selected');
+        $("#Contacts_country_id option:contains('"+country+"')").attr('selected', 'selected');
+    });
 
+    $('#check_SameAsContact > input[type="checkbox"]').on('click', function() {
+        var address1 = $('#Contacts_address1').val();
+        var address2 = $('#Contacts_address2').val();
+        var city     = $('#Contacts_city').val();
+        var zip      = $('#Contacts_zip').val();
 
+        var state   = $('#Contacts_state_id').val();
+        var country = $('#Contacts_country_id').val();
+      
+        $('#Customers_address1').val( address1 );
+        $('#Customers_address2').val( address2 );
+        $('#Customers_city').val( city );
+        $('#Customers_zip').val( zip );
 
-
-    $('#section_Parts > div.quote_section_heading > span.open_close').on('click', function() {  // toggle  section
-        if ( $(this).html() == '+') {
-            $(this).html('−'); 
-        }
-        else {
-            $(this).html('+');
-        }
-        $('#section_Parts > div.my_container').fadeToggle(250);   // toggle();
+        $("#Customers_state_id option:contains('"+state+"')").attr('selected', 'selected');
+        $("#Customers_country_id option:contains('"+country+"')").attr('selected', 'selected');
     });
 
 
-    $('#section_CustomerContact > div.quote_section_heading > span.open_close').on('click', function() {  // toggle  section
-		if ( $(this).html() == '+') {
-			$(this).html('−'); 
-		}
-		else {
-			$(this).html('+');
-		}
-		$('#section_CustomerContact > div.my_container').fadeToggle(250);   // toggle();
-   	});
 
-    $('#section_TermsConditions > div.quote_section_heading > span.open_close').on('click', function() {  // toggle  section
-        if ( $(this).html() == '+') {
-            $(this).html('−'); 
-        }
-        else {
-            $(this).html('+');
-        }
-        $('#section_TermsConditions > div.my_container').fadeToggle(250);   // toggle();
-    });
 
-   // $('#section_TermsConditions > div.quote_section_heading > span.open_close').trigger('click'); // default=closed
+
+// #QuoteView_Tabs > ul > li:nth-child(3)
 
 
 
@@ -711,6 +751,12 @@ $('#Contacts_state_id').replaceWith('<select                  name="Contacts[sta
 
         $('[id^=Customers_]').val('');
         $('[id^=Customers_]').attr('readOnly', 'readonly');
+
+        $('#check_SameAsCustomer > input[type="checkbox"]').removeAttr('checked');
+        $('#check_SameAsContact > input[type="checkbox"]').removeAttr('checked');
+
+        $('#check_SameAsCustomer').hide();
+        $('#check_SameAsContact').hide();
     }
 
     function resetContactForm() {
@@ -719,6 +765,9 @@ $('#Contacts_state_id').replaceWith('<select                  name="Contacts[sta
 
         $('[id^=Contacts_]').val('');
         $('[id^=Contacts_]').attr('readOnly', 'readonly');
+
+        $('#check_SameAsCustomer').hide();
+        $('#check_SameAsContact').hide();
     }
 
 
@@ -1246,10 +1295,11 @@ $('#Contacts_state_id').replaceWith('<select                  name="Contacts[sta
 		    }
 		});
 
-        $('#section_TermsConditions').show();
+        //$('#section_TermsConditions').show();
     }
 
-    function continueQuote( quote_no ) {
+
+    function continueQuote_OLD( quote_no ) {
     	$('#header_PageTitle').html('Quote No. ');
     	$('#header_QuoteNo').html(quote_no);
 
@@ -1260,11 +1310,11 @@ $('#Contacts_state_id').replaceWith('<select                  name="Contacts[sta
 
         $('#div_SubmitDone').show();
 
-        $('#section_CustomerContact > div.quote_section_heading > span.open_close').show()
-        $('#section_TermsConditions > div.quote_section_heading > span.open_close').show()
-		$('#section_PartsLookup     > div.quote_section_heading > span.open_close').show()
+  //       $('#section_CustomerContact > div.quote_section_heading > span.open_close').show()
+  //       $('#section_TermsConditions > div.quote_section_heading > span.open_close').show()
+		// $('#section_PartsLookup     > div.quote_section_heading > span.open_close').show()
 
-        $('#section_CustomerContact > div.quote_section_heading > span.open_close').trigger('click');    // close it for now
+  //       $('#section_CustomerContact > div.quote_section_heading > span.open_close').trigger('click');    // close it for now
     }
 
 
@@ -1279,7 +1329,7 @@ $('#Contacts_state_id').replaceWith('<select                  name="Contacts[sta
 
 
     function formValidated() {
-        consoleDisplayFormFields($('#quoteForm'));
+        consoleDisplayFormFields($('#quoteAddForm'));
 
     	if (   $('#Customers_name').val()       != '' && 
                $('#Customers_address1').val()   != '' && 
