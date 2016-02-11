@@ -5,8 +5,7 @@
 </div>
 
 
-<div style='width:906px; margin-top: 30px;'>
-
+<div>
 	<table id='quotes_table'>
 				<thead>
 					<tr>

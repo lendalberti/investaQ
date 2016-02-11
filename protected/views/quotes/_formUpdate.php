@@ -52,6 +52,7 @@
 			<li><a href="#section_CustomerContact">Customer Information</a></li>
 			<li><a href="#section_TermsConditions">Quote Terms</a></li>
 			<li><a href="#section_Parts">Inventory Items</a></li>
+			<!-- <li><a href="#section_EditPart">Edit Item</a></li> -->
 		</ul>
 	
 		<div id='section_CustomerContact'>
@@ -170,8 +171,8 @@
 									<tr>
 										<th></th>
 										<th >Part Number</th>
-										<th >Manufacturer</th>
-										<th >Quantity</th>
+										<th >Mfg</th>
+										<th >Qty</th>
 										<th >Price</th>
 										<th >Total</th>
 										<th >Comments</th>
@@ -198,6 +199,96 @@
 										?>
 								</tbody>
 							</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+							<div id='div_EditItem' style='padding-left: 20px; border: 0px solid lightblue; display: none;' >
+
+								<div id='div_ItemContent' style='margin-bottom: 20px; padding: 0px 20px 0px 20px; border: 0px solid pink;'>
+									
+									<!--  to be filled out by an ajax call  -->
+									<span style='font-size: 1.5em;'>Updating Part No. AD5555CRUZ</span><span style='font-size: 1.1em'> (Lifecycle: Obsolete)</span>
+
+									<table style='border: 0px solid green; margin-top: 10px;'>
+										<tr>
+											<th>Volume</th>   			<th>Price </th>  <th>Quantity</th> 		<th>Total</th> 			<th>Comments</th> 		
+										</tr>
+
+										<tr>	<td>1-24</td>   		<td>$ 5.87</td>   <td><input id='item_qty_1_24'        name='item_qty_1_24' ></td>   	        <td>$ 0.00</td>  <td><input id='item_comments_qty_1_24' name='item_qcomments_ty_1_24' ></td>  </tr>  
+										<tr>	<td>25-99</td>   		<td>$ 5.25</td>   <td><input id='item_qty_25_99'       name='item_qty_25_99' ></td>   			<td>$ 0.00</td>  <td><input id='item_comments_qty_1_24' name='item_comments_qty_1_24' ></td>  </tr>
+										<tr>	<td>100-499</td>   		<td>$ 4.56</td>   <td><input id='item_qty_100_499'     name='item_qty_100_499' ></td>   		<td>$ 0.00</td>  <td><input id='item_comments_qty_1_24' name='item_comments_qty_1_24' ></td>  </tr>
+										<tr>	<td>500-999</td>   		<td>$ 4.19</td>   <td><input id='item_qty_500_999'     name='item_qty_500_999' ></td>   		<td>$ 0.00</td>  <td><input id='item_comments_qty_1_24' name='item_comments_qty_1_24' ></td>  </tr> 
+										<tr>	<td>1000+</td>   		<td>$ 3.95</td>   <td><input id='item_qty_1000_plus'   name='item_qty_1000_plus' ></td>   		<td>$ 0.00</td>  <td><input id='item_comments_qty_1_24' name='item_comments_qty_1_24' ></td>  </tr> 
+										<tr>	<td>Distributor</td>   	<td>$ 3.50</td>   <td><input id='item_qty_distributor' name='item_qty_distributor' ></td> 		<td>$ 0.00</td>  <td><input id='item_comments_qty_1_24' name='item_comments_qty_1_24' ></td>  </tr>  
+										<tr>	<td>Custom</td>   		<td></td>         <td><input id='item_qty_custom'      name='item_qty_custom' ></td>   			<td>$ 0.00</td>  <td><input id='item_comments_qty_1_24' name='item_comments_qty_1_24' ></td>  </tr>  
+									</table>
+
+
+									<div style='padding: 5px 0px 5px 5px; background-color: pink;' > 
+										<span style='padding: 0px 5px 0px 0px; font-weight: bold;'>REMINDER:</span> <span style='font-weight: normal;'>Since this part is Obsolete, approval is needed if custom price is less than <span id='min_custom_price' style='color: blue;'><?php echo $min_custom_price; ?></span>  (<?php echo $dpf*100; ?>% of Distributor Price) </span> 
+
+										<br />
+
+										<span style='padding: 0px 5px 0px 0px; font-weight: bold;'>REMINDER:</span> <span style='font-weight: normal;'>Since this part is Active, approval is needed if custom price is less than the distributor price of $ 3.50</span> 
+										 <!-- <span id='min_custom_price' style='color: blue;'>< ?php echo $min_custom_price; ?></span>  (< ?php echo $dpf*100; ?>% of Distributor Price) </span>  -->
+									</div>
+							
+
+
+								</div>
+		
+								<input id='button_SaveItemChanges' type='button' value='Update Item'> 
+								<input id='button_CancelItemChanges' type='button' value='Cancel'> 
+
+							</div>
+							
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 							<span id='addPartToQuote'>Add item(s) to this quote</span>
 						</div>
 
@@ -246,6 +337,7 @@
 				</div>
 			</div>
 		</div>
+
 	</div>  <!-- end of QuoteView_Tabs -->
 
 	<div id='div_ActionButtons'> 

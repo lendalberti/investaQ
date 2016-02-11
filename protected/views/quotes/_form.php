@@ -130,7 +130,7 @@ span.open_close:hover {
 </script>
 
 
-<div style='height: 120px; border: 0px solid gray;'>
+<div style='height: 100px; border: 0px solid gray;'>
 	<div style='color: #2C6371;  font-size: 2em; border: 0px solid green; float: left; padding-right: 10px;' id='header_PageTitle'>Start a New Quote</div>
 	
 	<!-- <div style='color: #a31128;  font-size: 1.8em; border: 0px solid red; float: right;' id='header_QuoteNo'> </div> -->

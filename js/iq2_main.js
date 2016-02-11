@@ -8,6 +8,7 @@ $(document).ready(function() {
 
     var dialog_PartPricing = '';
     var QuotesTable        = '';
+    var tabs               = '';
 
     var SUCCESS      = '0';
     var FAILURE      = '1';
@@ -130,6 +131,7 @@ $(document).ready(function() {
             url: myURL + 'quotes/select?q=us_states',
             success: function (data) {
                 var o = JSON.parse(data); 
+                $('#Contacts_state_id').append( $('<option></option>' ).val(0).html('') );
                 $.each( o, function(k,v) {
                     $('#Contacts_state_id').append( $('<option></option>' ).val(v.id).html(v.label) );
                 });
@@ -142,6 +144,7 @@ $(document).ready(function() {
             url: myURL + 'quotes/select?q=countries',
             success: function (data) {
                 var o = JSON.parse(data); 
+                $('#Contacts_country_id').append( $('<option></option>' ).val(0).html('') );
                 $.each( o, function(k,v) {
                     $('#Contacts_country_id').append( $('<option></option>' ).val(v.id).html(v.label) );
                 });
@@ -168,6 +171,7 @@ $(document).ready(function() {
             url: myURL + 'quotes/select?q=us_states',
             success: function (data) {
                 var o = JSON.parse(data); 
+                $('#Customers_state_id').append( $('<option></option>' ).val(0).html('') );
                 $.each( o, function(k,v) {
                     $('#Customers_state_id').append( $('<option></option>' ).val(v.id).html(v.label) );
                 });
@@ -180,7 +184,8 @@ $(document).ready(function() {
             type: 'GET',
             url: myURL + 'quotes/select?q=countries',
             success: function (data) {
-                var o = JSON.parse(data); 
+                var o = JSON.parse(data);
+                $('#Customers_country_id').append( $('<option></option>' ).val(0).html('') ); 
                 $.each( o, function(k,v) {
                     $('#Customers_country_id').append( $('<option></option>' ).val(v.id).html(v.label) );
                 });
@@ -193,6 +198,7 @@ $(document).ready(function() {
             url: myURL + 'quotes/select?q=regions',
             success: function (data) {
                 var o = JSON.parse(data); 
+                $('#Customers_region_id').append( $('<option></option>' ).val(0).html('') ); 
                 $.each( o, function(k,v) {
                     $('#Customers_region_id').append( $('<option></option>' ).val(v.id).html(v.label) );
                 });
@@ -205,6 +211,7 @@ $(document).ready(function() {
             url: myURL + 'quotes/select?q=customer_types',
             success: function (data) {
                 var o = JSON.parse(data); 
+                $('#Customers_customer_type_id').append( $('<option></option>' ).val(0).html('') ); 
                 $.each( o, function(k,v) {
                     $('#Customers_customer_type_id').append( $('<option></option>' ).val(v.id).html(v.label) );
                 });
@@ -218,6 +225,8 @@ $(document).ready(function() {
             url: myURL + 'quotes/select?q=users',
             success: function (data) {
                 var o = JSON.parse(data); 
+                $('#Customers_inside_salesperson_id').append( $('<option></option>' ).val(0).html('') ); 
+                $('#Customers_outside_salesperson_id').append( $('<option></option>' ).val(0).html('') ); 
                 $.each( o, function(k,v) {
                     $('#Customers_inside_salesperson_id').append( $('<option></option>' ).val(v.id).html(v.label) );
                     $('#Customers_outside_salesperson_id').append( $('<option></option>' ).val(v.id).html(v.label) );
@@ -231,6 +240,7 @@ $(document).ready(function() {
             url: myURL + 'quotes/select?q=customers',
             success: function (data) {
                 var o = JSON.parse(data); 
+                $('#Customers_parent_id').append( $('<option></option>' ).val(0).html('') ); 
                 $.each( o, function(k,v) {
                     $('#Customers_parent_id').append( $('<option></option>' ).val(v.id).html(v.label) );
                 });
@@ -243,6 +253,7 @@ $(document).ready(function() {
             url: myURL + 'quotes/select?q=tiers',
             success: function (data) {
                 var o = JSON.parse(data); 
+                $('#Customers_tier_id').append( $('<option></option>' ).val(0).html('') ); 
                 $.each( o, function(k,v) {
                     $('#Customers_tier_id').append( $('<option></option>' ).val(v.id).html(v.label) );
                 });
@@ -255,6 +266,7 @@ $(document).ready(function() {
             url: myURL + 'quotes/select?q=territories',
             success: function (data) {
                 var o = JSON.parse(data); 
+                $('#Customers_territory_id').append( $('<option></option>' ).val(0).html('') ); 
                 $.each( o, function(k,v) {
                     $('#Customers_territory_id').append( $('<option></option>' ).val(v.id).html(v.label) );
                 });
@@ -496,6 +508,7 @@ $(document).ready(function() {
 
     // ----------------------------------------------------- delete item
     $('[id^=item_trash_]').on('click', function() {
+        console.log('clicked on item delete...');
         var itemID = getID($(this));
         if ( confirm("Are you sure you want to delete this item?" ) ) {
             $.ajax({
@@ -512,18 +525,54 @@ $(document).ready(function() {
         return false;
     });
 
-
-
+    $('#div_ItemContent > table > tbody > tr').on('click', function() {
+        $('#div_ItemContent > table > tbody > tr').css('background-color', '');
+        $(this).css('background-color', '#FEF5CA');
+    });
 
     // ----------------------------------------------------- edit item
     $('[id^=item_edit_]').on('click', function() {
-        var itemID = getID($(this));  
+        
+        $(this).closest('tr').css('background-color', '#FEF5CA');
 
-        var returnUrl = $('#returnUrl').val();
-        var u = myURL + "stockItems/update/" + itemID + '?returnUrl=' + returnUrl ;
+        var itemID = getID($(this));
+        console.log('Editing item: ' + itemID);
 
-        console.log('url=' +  u);
-        window.location.replace(u);
+        $('#div_EditItem').show();
+        $('[id^=item_edit_]').hide();
+        $('[id^=item_trash_]').hide();
+
+        $('#div_PartsLookup').hide();
+        $('#addPartToQuote').hide();
+
+        $('#button_SaveQuoteChanges').hide();
+        $('#button_CancelQuoteChanges').hide();
+    });
+
+
+     // ----------------------------------------------------- save editing changes
+    $('#button_SaveItemChanges').on('click', function() {
+
+        // do ajax save of item and screen update
+        console.log('item has been updated...');
+
+
+        $('#button_CancelItemChanges').trigger('click'); // reset form
+    });
+
+    // ----------------------------------------------------- cancel editing
+    $('#button_CancelItemChanges').on('click', function() {
+        // reset elements back to what they were
+        $('#div_EditItem').hide();
+        $('[id^=item_edit_]').show();
+        $('[id^=item_trash_]').show();
+
+        $('#addPartToQuote').show();
+        $('#button_SaveQuoteChanges').show();
+        $('#button_CancelQuoteChanges').show();
+
+        $('#table_CurrentParts > tbody > tr').css('background-color', '');
+
     });
 
 
@@ -681,39 +730,62 @@ $(document).ready(function() {
   	});
 
     $('#check_SameAsCustomer > input[type="checkbox"]').on('click', function() {
-        var address1 = $('#Customers_address1').val();
-        var address2 = $('#Customers_address2').val();
-        var city     = $('#Customers_city').val();
-        var zip      = $('#Customers_zip').val();
+        console.log('check clicked...');
 
-        var state   = $('#Customers_state_id').val();
-        var country = $('#Customers_country_id').val();
-      
-        $('#Contacts_address1').val( address1 );
-        $('#Contacts_address2').val( address2 );
-        $('#Contacts_city').val( city );
-        $('#Contacts_zip').val( zip );
+        if ( $(this).is(":checked") ) {
+            var address1 = $('#Customers_address1').val();
+            var address2 = $('#Customers_address2').val();
+            var city     = $('#Customers_city').val();
+            var zip      = $('#Customers_zip').val();
 
-        $("#Contacts_state_id option:contains('"+state+"')").attr('selected', 'selected');
-        $("#Contacts_country_id option:contains('"+country+"')").attr('selected', 'selected');
+            var state   = $('#Customers_state_id').val();
+            var country = $('#Customers_country_id').val();
+          
+            $('#Contacts_address1').val( address1 );
+            $('#Contacts_address2').val( address2 );
+            $('#Contacts_city').val( city );
+            $('#Contacts_zip').val( zip );
+
+            $("#Contacts_state_id option:contains('"+state+"')").attr('selected', 'selected');
+            $("#Contacts_country_id option:contains('"+country+"')").attr('selected', 'selected');
+        }
+        else {
+            $('#Contacts_address1').val( '' );
+            $('#Contacts_address2').val( '' );
+            $('#Contacts_city').val( '' );
+            $('#Contacts_zip').val( '' );
+            $("#Contacts_state_id option:first").attr('selected','selected');
+            $("#Contacts_country_id option:first").attr('selected','selected');
+        }
     });
 
     $('#check_SameAsContact > input[type="checkbox"]').on('click', function() {
-        var address1 = $('#Contacts_address1').val();
-        var address2 = $('#Contacts_address2').val();
-        var city     = $('#Contacts_city').val();
-        var zip      = $('#Contacts_zip').val();
 
-        var state   = $('#Contacts_state_id').val();
-        var country = $('#Contacts_country_id').val();
-      
-        $('#Customers_address1').val( address1 );
-        $('#Customers_address2').val( address2 );
-        $('#Customers_city').val( city );
-        $('#Customers_zip').val( zip );
+        if ( $(this).is(":checked") ) {
+            var address1 = $('#Contacts_address1').val();
+            var address2 = $('#Contacts_address2').val();
+            var city     = $('#Contacts_city').val();
+            var zip      = $('#Contacts_zip').val();
 
-        $("#Customers_state_id option:contains('"+state+"')").attr('selected', 'selected');
-        $("#Customers_country_id option:contains('"+country+"')").attr('selected', 'selected');
+            var state   = $('#Contacts_state_id').val();
+            var country = $('#Contacts_country_id').val();
+          
+            $('#Customers_address1').val( address1 );
+            $('#Customers_address2').val( address2 );
+            $('#Customers_city').val( city );
+            $('#Customers_zip').val( zip );
+
+            $("#Customers_state_id option:contains('"+state+"')").attr('selected', 'selected');
+            $("#Customers_country_id option:contains('"+country+"')").attr('selected', 'selected');
+        }
+        else {
+            $('#Customers_address1').val( '' );
+            $('#Customers_address2').val( '' );
+            $('#Customers_city').val( '' );
+            $('#Customers_zip').val( '' );
+            $("#Customers_state_id option:first").attr('selected','selected');
+            $("#Customers_country_id option:first").attr('selected','selected');
+        }
     });
 
 
@@ -1009,38 +1081,8 @@ $(document).ready(function() {
         if ( info.qty_Custom > 0 ) {
             $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td><td>"+info.qty_Custom+"</td><td><span class='volume'>Custom</span>$ "+info.price_Custom+"</td><td>$ "+(info.qty_Custom*info.price_Custom).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
         }
-
-        // ----------------------------------------------------- delete item
-        $('[id^=item_trash_]').on('click', function() {
-            var itemID = getID($(this));
-            if ( confirm("Are you sure you want to delete this item?" ) ) {
-                $.ajax({
-                      url: myURL + 'stockItems/delete/' + itemID ,
-                      type: 'POST',
-                      success: function(data, textStatus, jqXHR) {
-                        location.reload(true);
-                      },
-                      error: function (jqXHR, textStatus, errorThrown)  {
-                        alert("Couldn't delete item " + itemID + " from this quote; error=\n\n" + errorThrown);
-                      }
-                });
-            }
-            return false;
-        });
-
-        // ----------------------------------------------------- edit item
-        $('[id^=item_edit_]').on('click', function() {
-            var itemID = getID($(this));  
-
-            var returnUrl = $('#returnUrl').val();
-            var u = myURL + "stockItems/update/" + itemID + '?returnUrl=' + returnUrl ;
-
-            console.log('url=' +  u);
-            window.location.replace(u);
-        });
-
-
     }
+
 
 
 	function openQuoteDialog(results) {
@@ -1383,6 +1425,7 @@ $(document).ready(function() {
     	$('#Customers_select').append( $('<option></option>' ).val(0).html('') );;
 
     	var o = JSON.parse(data); 
+        $('#Customers_select').append( $('<option></option>' ).val(0).html('') );
     	$.each( o, function(k,v) {
             $('#Customers_select').append( $('<option></option>' ).val(v.id).html(v.label) );
             // console.log("display_CustomerSelect() - id=["+ v.id + "], label=[" + v.label + "]");
@@ -1402,6 +1445,7 @@ $(document).ready(function() {
  		$('#Contacts_select').append( $('<option></option>' ).val(0).html('') );
 
  		var o = JSON.parse(data); 
+        $('#Contacts_select').append( $('<option></option>' ).val(0).html('') );
     	$.each( o, function(k,v) {
             $('#Contacts_select').append( $('<option></option>' ).val(v.id).html(v.label) );
             // console.log("display_ContactSelect() - id=["+ v.id + "], label=[" + v.label + "]");

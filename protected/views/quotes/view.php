@@ -174,8 +174,8 @@
 								<tr>
 									<th></th>
 									<th>Part Number</th>
-									<th>Manufacturer</th>
-									<th>Quantity</th>
+									<th>Mfg</th>
+									<th>Qty</th>
 									<th>Price</th>
 									<th>Total</th>
 									<th>Comments</th>

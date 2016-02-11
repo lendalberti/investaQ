@@ -7,21 +7,26 @@ New UI
 	[x] on New Cust/Contact
 		[x] show checkbox for using same address for both cust/contact
 		[x] create js event
-		[ ] should toggle fill/clear
+		[x] should toggle fill/clear
 
 	[x] View
 		[x] Quote Terms - boxes need css fixed
 
 	[ ] Update
 		[x] Quote Terms - boxes need css fixed
-		[ ] Inventory Parts - edit items - in popup dialog
+		[ ] Inventory Parts - edit items - not in popup dialog
 
 	[x] New
 		[x] Customer Info - Search box, table need css fixed
 		[x] Terms - boxes need css fixed
 		[x] Inventory: css redone (follow update page)
 
-	[ ] set blank as first option in select boxes on form
+	[x] set blank as first option in select boxes on form
+
+	[ ] on table_CurrentParts include column for 'LifeCycle' (obsolete, active, etc.)
+		[ ] need this for determining whether approval is needed
+				- if Active, needs approval if less than distributor price
+				- otherwise, need approval if less than 75% of distributor price
 
 
 

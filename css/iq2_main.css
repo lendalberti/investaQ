@@ -1,6 +1,8 @@
 
 
-
+.dataTables_wrapper {
+	padding-top: 50px;
+}
 
 
 
@@ -31,7 +33,7 @@ span.checkbox_sameAddress {
 #quoteViewForm,
 #quoteAddForm,
 #quoteUpdateForm {
-	margin-top: 50px;
+	margin-top: 120px;
 }
 
 
@@ -420,7 +422,7 @@ div.form {
    background: #FBF5E6;
 }*/
 
-#table_CurrentParts tbody > tr:hover {
+#table_CurrentParts > tbody > tr:hover {
 	background: #FEF5CA;
 }
 
@@ -831,11 +833,6 @@ span.volume {
 }
 
 
-#quoteAddForm {
-	margin-top: 20px;
-}
-
-
 #span_NewCustomer {
 	padding-left: 135px;
 
@@ -883,7 +880,54 @@ span#clearContactFields:hover {
 */
 
 
+#div_ItemContent > table {
+	border: 1px solif lightgray;
+}
 
+#div_ItemContent > table > tbody > tr:hover {
+	background-color: #FEF5CA;
+}
+
+
+#div_ItemContent > table > tbody > tr > th {
+	text-align: center;
+	background-color: #E6E6E6;
+}
+
+#div_ItemContent > table > tbody > tr > td {
+	font-size: .8em;
+	text-align: center;
+	
+	border-left: 0px solid lightgray;
+	border-top: 0px solid lightgray;
+}
+
+input[id^='item_qty_'] {
+	width: 50px;
+}
+input[id^='item_comments_qty_'] {
+	width: 400px;
+}
+
+#div_ItemContent > table > tbody > tr > td:nth-child(1) { 
+	color: green;
+	text-align: right;
+	width: 60px;
+}
+#div_ItemContent > table > tbody > tr > td:nth-child(2) { 
+	width: 50px;
+}
+#div_ItemContent > table > tbody > tr > td:nth-child(3) { 
+	width: 50px;
+	text-align: center;
+}
+#div_ItemContent > table > tbody > tr > td:nth-child(4) { 
+	width: 60px;
+}
+
+#div_ItemContent > table > tbody > tr > td:nth-child(5) { 
+	/*width: 250px;*/
+}
 
 
 
