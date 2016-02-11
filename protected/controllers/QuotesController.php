@@ -329,9 +329,11 @@ class QuotesController extends Controller
 		$arr = array();
 
 		try {
+			pDebug( "actionPartsUpdate() - _POST=", $_POST ); 
+
 			$modelStockItem = new StockItems;
 			$modelStockItem->attributes = $_POST;
-			//pDebug( "actionPartsUpdate() - saving StockItems model with the following attributes: ", $modelStockItem->attributes );
+			pDebug( "actionPartsUpdate() - updating StockItems model with the following attributes: ", $modelStockItem->attributes );
 
 			if ( !$modelStockItem->save() ) {
 				pDebug("actionPartsUpdate() - item NOT saved; error=", $modelStockItem->errors);

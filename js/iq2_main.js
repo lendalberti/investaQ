@@ -850,7 +850,7 @@ $(document).ready(function() {
         var msg = '';
         var quoteID = $('#form_QuoteID').val();
 
-        console.log('** dialog.js:checkCustomPrice() - distributor_price_floor=' + $('#distributor_price_floor').val() );
+        console.log('** iq2_main.js:checkCustomPrice() - distributor_price_floor=' + $('#distributor_price_floor').val() );
 
         var min_custom_price = $('#min_custom_price').html().substring(1).trim(); // ignore first character of '$' and leading spaces...
         var diff =  parseFloat(min_custom_price) - parseFloat(cp);
@@ -895,7 +895,8 @@ $(document).ready(function() {
                                     part_no:            $('#part_no').text(),
                                     approval_needed:    approvalNeeded,
 
-                                    manufacturer:       $('#manufacturer').val(),   
+                                    lifecycle:          'lifecycle_in_iq2_main', //$('#lifeCycle').text(),
+                                    manufacturer_IQ2:       $('#manufacturer').val(),   
                                     qty_Available:      $('#total_qty_for_part').val(),
 
                                     qty_1_24:           $('#qty_1_24').val(),       // val == inputs
@@ -1119,7 +1120,8 @@ $(document).ready(function() {
         									part_no: 			$('#part_no').text(),
         									approval_needed: 	null,
 
-        									manufacturer: 		$('#manufacturer').val(),	
+        									manufacturer: 		$('#manufacturer').val(),
+                                            lifecycle:          $('#lifeCycle').text(),	
         									qty_Available:      $('#total_qty_for_part').val(),
 
         									qty_1_24: 			$('#qty_1_24').val(),		// val == inputs
@@ -1302,7 +1304,7 @@ $(document).ready(function() {
     	var partsCount = a.parts.length; 
 
     	// if ( partsCount == 0 ) {
-    	// 	alert('Part not found; \n\nWant to create a Manufacturing Quote?');
+    	// 	alert('Part not found; \n\nWant to create a NoBid Quote?');  // TODO
     	// }
 
   		if ( ResultsTable ) {
@@ -1313,10 +1315,13 @@ $(document).ready(function() {
     	var rows       = '';
     	for( var i=0; i<partsCount; i++ ) {
     		rows += "<tr id='rowID_"+a.parts[i].part_number+"'>";
+
     		rows += "<td>"+ a.parts[i].part_number + "</td>";
     		rows += "<td>"+ ( a.parts[i].manufacturer ? a.parts[i].manufacturer : 'n/a' )+"</td>";
     		rows += "<td>"+ ( a.parts[i].supplier ? a.parts[i].supplier : 'n/a' )+"</td>";
-	   		rows += "<td>"+ ( a.parts[i].se_data.Lifecycle ? a.parts[i].se_data.Lifecycle : 'n/a' )+"</td>";
+	   		
+            rows += "<td>"+ ( a.parts[i].se_data.Lifecycle ? a.parts[i].se_data.Lifecycle : 'n/a' )+"</td>";
+
     		rows += "<td>"+ ( a.parts[i].drawing ? a.parts[i].drawing : 'n/a' )+"</td>";
     		rows += "<td>"+ ( a.parts[i].carrier_type ? a.parts[i].carrier_type : 'n/a' )+"</td>";
     		rows += "<td>"+ ( a.parts[i].mpq ? a.parts[i].mpq : 'n/a' )+"</td>";
@@ -1332,32 +1337,13 @@ $(document).ready(function() {
 		        var api = this.api();
 		        api.$('#results_table > tbody > tr').click(function() {
 		        	console.log( "Ready to display part details: ", $(this) );
-		            displayPartDetails( $(this) );  //alert('from displayPartLookupResults: parts row click...');
+		            displayPartDetails( $(this) ); 
 		        });
 		    }
 		});
 
-        //$('#section_TermsConditions').show();
     }
 
-
-    function continueQuote_OLD( quote_no ) {
-    	$('#header_PageTitle').html('Quote No. ');
-    	$('#header_QuoteNo').html(quote_no);
-
-    	$('#heading_container_left').hide();
-    	$('#selection_container').hide();
-    	$('#div_ContinueReset').hide();
-        $('#section_PartsLookup').show();
-
-        $('#div_SubmitDone').show();
-
-  //       $('#section_CustomerContact > div.quote_section_heading > span.open_close').show()
-  //       $('#section_TermsConditions > div.quote_section_heading > span.open_close').show()
-		// $('#section_PartsLookup     > div.quote_section_heading > span.open_close').show()
-
-  //       $('#section_CustomerContact > div.quote_section_heading > span.open_close').trigger('click');    // close it for now
-    }
 
 
     function consoleDisplayFormFields(f) {

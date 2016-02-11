@@ -142,8 +142,10 @@ $(document).ready(function() {
 									part_no: 			$('#part_no').text(),
 									approval_needed: 	approvalNeeded,
 
-									manufacturer: 		$('#manufacturer').val(),	
+									manufacturer_DIALOG: 		$('#manufacturer').val(),	
 									qty_Available:      $('#total_qty_for_part').val(),
+
+									lifecycle:          'lifecycle_in_dialog', //$('#lifeCycle').text(),
 
 									qty_1_24: 			$('#qty_1_24').val(),		// val == inputs
 									qty_25_99: 			$('#qty_25_99').val(),

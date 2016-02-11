@@ -28,6 +28,9 @@ New UI
 				- if Active, needs approval if less than distributor price
 				- otherwise, need approval if less than 75% of distributor price
 
+	[ ] use fullname of manufacturer
+		- ANA = Analog Devices ( use se_data['manufacturerName'] )
+
 
 
 +---------------------+

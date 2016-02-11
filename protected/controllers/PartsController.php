@@ -31,8 +31,10 @@ class PartsController extends Controller {
 			$url        = 'http://mongoa/parts/*/500/?q='.$item;	  // mongoa for my local use
 			$tmp        = file_get_contents($url);
 
+			//pDebug('actionSearch() - mongo record=', $tmp);
 			// $tmp = file_get_contents('/Users/len/www/iq2/Docs/mongo_sample_records_3333.inc');
-			// pDebug('tmp=', $tmp);
+			
+
 			/*
 				In the event that http://mongoa is not available, use the files in Docs as a temp solution for testing purposes;
 
@@ -128,7 +130,7 @@ class PartsController extends Controller {
 		$rohs   = $se_data->RoHS;
 		$href   = " href='" . $se_data->Datasheet . "'";
 		$target = " target='_blank'";
-		$lifeCycle = trim($se_data->Lifecycle) ? "<span id='lifeCycle'>" . trim($se_data->Lifecycle) . "</span>" : "<span class='tbd'>n/a</span>";
+		$lifeCycle = "<span id='lifeCycle'>" . (trim($se_data->Lifecycle) ? trim($se_data->Lifecycle) : "n/a" ) . '</span>';
 
 
 		// --------------------------------------------- Links, Misc
@@ -140,7 +142,9 @@ class PartsController extends Controller {
 		$tEnd = "</table>";
 		$rows = '';
 		$rows .= "<tr> <td>Tech Note:</td><td><span id='tech_note_span' class='tn'>"     . $tech_note      . "</span></td> </tr>";		
+		
 		$rows .= "<tr> <td>Lifecycle:</td><td>"     . $lifeCycle      . "</td> </tr>";
+
 		$rows .= "<tr> <td>Manufacturer:</td><td>"  . $p->parts[0]->manufacturer . "</td> </tr>";
 		$rows .= "<tr> <td>Supplier:</td><td>"      . $p->parts[0]->supplier     . "</td> </tr>";
 		$rows .= "<tr> <td>Drawing:</td><td>"       . $drawing        . "</td> </tr>";				

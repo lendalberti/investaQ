@@ -239,12 +239,13 @@
 
 
 									<div style='padding: 5px 0px 5px 5px; background-color: pink;' > 
-										<span style='padding: 0px 5px 0px 0px; font-weight: bold;'>REMINDER:</span> <span style='font-weight: normal;'>Since this part is Obsolete, approval is needed if custom price is less than <span id='min_custom_price' style='color: blue;'><?php echo $min_custom_price; ?></span>  (<?php echo $dpf*100; ?>% of Distributor Price) </span> 
+										<span style='padding: 0px 5px 0px 0px; font-weight: bold;'>REMINDER:</span> 
+										<span style='font-weight: normal;'>Since this part is Obsolete, approval is needed if custom price is less than <span id='min_custom_price' style='color: blue;'><?php echo $min_custom_price; ?></span>  (<?php echo $dpf*100; ?>% of Distributor Price) </span> 
 
 										<br />
 
-										<span style='padding: 0px 5px 0px 0px; font-weight: bold;'>REMINDER:</span> <span style='font-weight: normal;'>Since this part is Active, approval is needed if custom price is less than the distributor price of $ 3.50</span> 
-										 <!-- <span id='min_custom_price' style='color: blue;'>< ?php echo $min_custom_price; ?></span>  (< ?php echo $dpf*100; ?>% of Distributor Price) </span>  -->
+										<span style='padding: 0px 5px 0px 0px; font-weight: bold;'>REMINDER:</span> 
+										<span style='font-weight: normal;'>Since this part is Active, approval is needed if custom price is less than the distributor price of $ 3.50</span> 
 									</div>
 							
 

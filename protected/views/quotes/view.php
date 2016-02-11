@@ -175,6 +175,7 @@
 									<th></th>
 									<th>Part Number</th>
 									<th>Mfg</th>
+									<th>LifeCycle</th>
 									<th>Qty</th>
 									<th>Price</th>
 									<th>Total</th>
@@ -189,6 +190,7 @@
 											echo '<td>' . $i['part_no'] . '</td>';
 											echo '<td>' . $i['manufacturer'] . '</td>';
 											echo '<td>' . $i['qty'] . '</td>';
+											echo '<td>' . $i['lifecycle'] . '</td>';     // TODO: get real key
 											echo '<td>' . $i['price'] . '</td>';
 											echo '<td>' . $i['total'] . '</td>';
 											echo '<td>' . $i['comments'] . '</td>';
