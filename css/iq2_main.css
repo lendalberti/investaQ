@@ -24,20 +24,25 @@ span.checkbox_sameAddress {
 
 
 #section_CustomerContact {
-    margin-top: 20px;
+    /*margin-top: 20px;*/
 }
 
 
 #quoteViewForm,
 #quoteAddForm,
 #quoteUpdateForm {
-	margin-top: 40px;
+	margin-top: 50px;
 }
 
-#ui-id-2 {
+
+/*#ui-id-1,
+#ui-id-2,
+#ui-id-3,
+#ui-id-4 */
+a[id^='ui-id-'] {
 	font-variant: small-caps;
 	font-weight: bold;
-	color: #a31128;
+	color: #2e3b4e;   /*  #a31128;*/
 }
 
 
@@ -233,7 +238,7 @@ table.dataTable thead th.sorting_desc:after {
 }
 
 #quotes_table > tbody > tr:nth-child(odd) {
-   background: #ECF1EF; 
+   background: #E6E6E6; /* #ECF1EF; */
 }
 
 
@@ -695,13 +700,23 @@ div.my_container > div > table > tbody > tr > td:nth-child(odd) {
 	/*display: none;*/
 }
 
+#span_SelectCustomer,
+#span_SelectContact {
+	display:none;
+	padding-left: 30px;
+	font-weight: bold;
+	font-size: .8em;
+}
+
+
 #heading_container {
 	border: 0px solid purple;
 	text-align: center; 
 	float: left;  
 	width: 100%; 
-	font-weight: bold; 
-	padding: 20px;
+	font-weight: normal; 
+	padding: 5px 0px 20px 0px;
+	font-size: .9em;
 }
 
 #customer_heading {
@@ -797,7 +812,7 @@ span.volume {
 
 
 #addPartToQuote {
-	color: blue; 
+	color: #2e3b4e; 
 	text-decoration: underline; 
 	font-size: .9em;
 }

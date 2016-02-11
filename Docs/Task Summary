@@ -9,17 +9,17 @@ New UI
 		[x] create js event
 		[ ] should toggle fill/clear
 
-	[ ] View
-		[ ] Quote Terms - boxes need css fixed
+	[x] View
+		[x] Quote Terms - boxes need css fixed
 
 	[ ] Update
-		[ ] Quote Terms - boxes need css fixed
+		[x] Quote Terms - boxes need css fixed
 		[ ] Inventory Parts - edit items - in popup dialog
 
-	[ ] New
-		[ ] Customer Info - Search box, table need css fixed
-		[ ] Terms - boxes need css fixed
-		[ ] Inventory: css redone (follow update page)
+	[x] New
+		[x] Customer Info - Search box, table need css fixed
+		[x] Terms - boxes need css fixed
+		[x] Inventory: css redone (follow update page)
 
 	[ ] set blank as first option in select boxes on form
 

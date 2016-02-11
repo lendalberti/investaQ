@@ -140,19 +140,19 @@
 			<div  class='my_container'>
 				
 				<div id="box5" style='border: 0px solid green; width: 45%; margin: 5px;'>
-					<span class='terms'>Terms &amp; Conditions<br /></span><textarea rows="4" cols="50" name="quote_Terms" id="quote_Terms" readonly='readonly'><?php echo $q->terms_conditions; ?></textarea>
+					<span class='terms'>Terms &amp; Conditions<br /></span><textarea rows="4" cols="40" name="quote_Terms" id="quote_Terms" readonly='readonly'><?php echo $q->terms_conditions; ?></textarea>
 				</div>
 
 				<div id="box6" style='border: 0px solid blue; width: 45%; margin: 5px'>
-					<span class='terms'>Customer Ackowledgment<br /></span><textarea rows="4" cols="50" name="quote_CustAck" id="quote_CustAck" readonly='readonly'><?php echo $q->customer_acknowledgment; ?></textarea>
+					<span class='terms'>Customer Ackowledgment<br /></span><textarea rows="4" cols="40" name="quote_CustAck" id="quote_CustAck" readonly='readonly'><?php echo $q->customer_acknowledgment; ?></textarea>
 				</div>
 
 				<div id="box7" style='border: 0px solid orange; width: 45%; margin: 5px;'>
-					<span class='terms'>Risl</span><br /><textarea rows="4" cols="50" name="quote_RISL" id="quote_RISL" readonly='readonly' ><?php echo $q->risl; ?></textarea>
+					<span class='terms'>Risl</span><br /><textarea rows="4" cols="40" name="quote_RISL" id="quote_RISL" readonly='readonly' ><?php echo $q->risl; ?></textarea>
 				</div>
 
 				<div id="box8" style='border: 0px solid red; width: 45%; margin: 5px;'>
-					<span class='terms'>Manufacturing Lead Time<br /></span><textarea rows="4" cols="50" name="quote_MfgLeadTime" id="quote_MfgLeadTime" readonly='readonly' ><?php echo $q->manufacturing_lead_time; ?></textarea>
+					<span class='terms'>Manufacturing Lead Time<br /></span><textarea rows="4" cols="40" name="quote_MfgLeadTime" id="quote_MfgLeadTime" readonly='readonly' ><?php echo $q->manufacturing_lead_time; ?></textarea>
 				</div>
 				
 				<div id="box9" style='border: 0px solid cyan; width: 95%; margin: 5px;'>

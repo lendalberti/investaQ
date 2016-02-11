@@ -12,20 +12,12 @@
 ?>
 
 
-<div style='height: 80px; border: 0px solid gray;'>
+<div style='height: 100px; border: 0px solid gray;'>
 	
 	<div style='color: #2C6371;  font-size: 2em; border: 0px solid green; float: left; padding-right: 10px;' id='header_PageTitle'>Updating Stock Quote No.</div>
 	<div style='color: #a31128;  font-size: 1.5em; border: 0px solid red; font-family: courier.;padding-top:  5px; font-family: courier.;padding-top:  5px;' id='header_QuoteNo'><?php echo $data['model']->quote_no; ?> 
 		<span style='color: #2C6371;  font-size: .7em; border: 0px solid red; '> [  <?php echo $status_link; ?>  ]</span>
 	</div>
-
-<!-- 
-
-	<div style='color: #2C6371;  font-size: 2em; border: 0px solid green; float: left; padding-right: 10px;' id='header_PageTitle'>Updating Stock Quote No. <br />
-		
-	</div>
-	<div style='color: #a31128;  font-size: 1.5em; border: 0px solid red; font-family: courier.;padding-top:  5px; font-family: courier.;padding-top:  5px;' id='header_QuoteNo'>< ?php echo $data['model']->quote_no; ?> 
-		</div> -->
 
 	
 	<?php 
@@ -48,7 +40,7 @@
  	?>
 </div>
 
-<span style='color: #555; font-size: 14px;'>Fields with <span class="required">*</span> are required.</span>
+
 
 <form id='quoteUpdateForm' name='quoteUpdateForm' method='post'>
 
@@ -66,6 +58,8 @@
 			<input type='hidden' id='returnUrl'       value='<?php echo Yii::app()->request->baseUrl . '/index.php/quotes/update/' . $quote_id  ?>'>
 			<input type='hidden' id='Quotes_source_id' name='Quotes[source_id]' value='<?php echo $source_id; ?>'>
 			<input type='hidden' id='Quotes_status_id' name='Quotes[status_id]' value='<?php echo $quote_status_id; ?>'>
+
+			<span style='color: #555; font-size: 14px;'>Fields with <span class="required">*</span> are required.</span>
 				
 			<div class='my_container'>
 			    <div id="box1">
@@ -143,19 +137,19 @@
 			<div  class='my_container'>
 
 				<div id="box5" style='border: 0px solid green; width: 45%; margin: 5px;'>
-					<span class='terms'>Terms &amp; Conditions</span><textarea rows="4" cols="50"  name="Quotes[terms_conditions]"         id="Quotes_terms_conditions" ><?php echo $q->terms_conditions; ?></textarea>
+					<span class='terms'>Terms &amp; Conditions</span><textarea rows="4" cols="40"  name="Quotes[terms_conditions]"         id="Quotes_terms_conditions" ><?php echo $q->terms_conditions; ?></textarea>
 				</div>
 
 				<div id="box6" style='border: 0px solid blue; width: 45%; margin: 5px'>
-					<span class='terms'>Customer Ackowledgment</span><textarea rows="4" cols="50"  name="Quotes[customer_acknowledgment]" id="Quotes_customer_acknowledgment" ><?php echo $q->customer_acknowledgment; ?></textarea>
+					<span class='terms'>Customer Ackowledgment</span><textarea rows="4" cols="40"  name="Quotes[customer_acknowledgment]" id="Quotes_customer_acknowledgment" ><?php echo $q->customer_acknowledgment; ?></textarea>
 				</div>
 
 				<div id="box7" style='border: 0px solid orange; width: 45%; margin: 5px;'>
-					<span class='terms'>Risl</span><textarea rows="4" cols="50"                    name="Quotes[risl]"                    d="Quotes_risl"  ><?php echo $q->risl; ?></textarea>
+					<span class='terms'>Risl</span><textarea rows="4" cols="40"                    name="Quotes[risl]"                    d="Quotes_risl"  ><?php echo $q->risl; ?></textarea>
 				</div>
 
 				<div id="box8" style='border: 0px solid red; width: 45%; margin: 5px;'>
-					<span class='terms'>Manufacturing Lead Time</span><textarea rows="4" cols="50" name="Quotes[manufacturing_lead_time]" id="Quotes_manufacturing_lead_time"  ><?php echo $q->manufacturing_lead_time; ?></textarea>
+					<span class='terms'>Manufacturing Lead Time</span><textarea rows="4" cols="40" name="Quotes[manufacturing_lead_time]" id="Quotes_manufacturing_lead_time"  ><?php echo $q->manufacturing_lead_time; ?></textarea>
 				</div>
 				
 				<div id="box9" style='border: 0px solid cyan; width: 95%; margin: 5px;'>
@@ -207,7 +201,7 @@
 							<span id='addPartToQuote'>Add item(s) to this quote</span>
 						</div>
 
-						<div id='div_PartsLookup'>  <!-- display: none; -->
+						<div id='div_PartsLookup' style='display: none'>
 							<table id='parts_lookup' >
 								<tr>  
 									<td style='text-align: center;' colspan='2'>Lookup by:
