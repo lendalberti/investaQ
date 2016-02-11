@@ -269,19 +269,19 @@ verify what to do with the old section ids:     selection_container,     class=m
 
 					<div class='my_container'>
 						<div id="box5" style='border: 0px solid green; width: 45%; margin: 5px;'>
-							<span class='terms'>Terms & Conditions</span><textarea rows="4" cols="50" name="quote_Terms" id="quote_Terms"></textarea>
+							<span class='terms'>Terms & Conditions</span><textarea rows="4" cols="45" name="quote_Terms" id="quote_Terms"></textarea>
 						</div>
 
 						<div id="box6" style='border: 0px solid blue; width: 45%; margin: 5px'>
-							<span class='terms'>Customer Ackowledgment<textarea rows="4" cols="50" name="quote_CustAck" id="quote_CustAck"></textarea>
+							<span class='terms'>Customer Ackowledgment<textarea rows="4" cols="45" name="quote_CustAck" id="quote_CustAck"></textarea>
 						</div>
 
 						<div id="box7" style='border: 0px solid orange; width: 45%; margin: 5px;'>
-							<span class='terms'>Risl<textarea rows="4" cols="50" name="quote_RISL" id="quote_RISL"></textarea>
+							<span class='terms'>Risl<textarea rows="4" cols="45" name="quote_RISL" id="quote_RISL"></textarea>
 						</div>
 
 						<div id="box8" style='border: 0px solid red; width: 45%; margin: 5px;'>
-							<span class='terms'>Manufacturing Lead Time<textarea rows="4" cols="50" name="quote_MfgLeadTime" id="quote_MfgLeadTime"></textarea>
+							<span class='terms'>Manufacturing Lead Time<textarea rows="4" cols="45" name="quote_MfgLeadTime" id="quote_MfgLeadTime"></textarea>
 						</div>
 						
 						<div id="box9" style='border: 0px solid cyan; width: 95%; margin: 5px;'>

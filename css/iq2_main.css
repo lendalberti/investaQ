@@ -34,6 +34,12 @@ span.checkbox_sameAddress {
 	margin-top: 40px;
 }
 
+#ui-id-2 {
+	font-variant: small-caps;
+	font-weight: bold;
+	color: #a31128;
+}
+
 
 #ajax_loading_image {
 	display:none;

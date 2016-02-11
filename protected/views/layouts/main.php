@@ -55,8 +55,13 @@
 
 	<div id="header">
 		<div id="logo">
-			<?php echo CHtml::image(Yii::app()->request->baseUrl . "/images/rei_logo.png"); ?>
-			<span id='iq2_title'><?php echo Yii::app()->params['app_title']; ?></span>
+			<?php 
+				$title_image = Yii::app()->request->baseUrl . "/images/New/Quoth_the_raven.png";
+				echo CHtml::image(Yii::app()->request->baseUrl . "/images/rei_logo.png"); 
+				echo "<span id='iq2_title'><img src='$title_image' ></span>";
+			?>
+			<!-- <span id='iq2_title'>< ?php echo Yii::app()->params['app_title']; ?></span> -->
+			<!-- <span id='iq2_title'> </span> -->
 	</div>
 
 
@@ -74,6 +79,8 @@
 			else if (Yii::app()->user->isApprover) {
 				$user_type = ' (Approver)';
 			}
+
+			
 
 			if ( Yii::app()->user->isLoggedIn ) {
 				$menuItems = array();
