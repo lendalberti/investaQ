@@ -265,7 +265,7 @@ span[id^='quote_view_'] > img:hover {
 }
 
 #add_quote > img {
-	padding-left: 30px;
+	/*padding-left: 30px;*/
 	cursor: pointer;
 }
 
@@ -385,10 +385,10 @@ div.form {
 #table_CurrentParts > thead > tr > th {
 	background: #E6E6E6;
 	color: black;
-	font-size: .9em;
+	font-size: .8em;
 	padding: 5px;
 	height: 20px;
-	text-align: right;
+	text-align: center;
 }
 
 
@@ -399,21 +399,21 @@ div.form {
 }*/
 
 #table_CurrentParts > tbody > tr > td {
-	font-size: .9em; 
+	font-size: .8em; 
 	padding: 0px;
-	text-align: right;
+	text-align: center;
 }
 
 
 #table_CurrentParts > tbody > tr > td:nth-last-child(1) {
 	padding-left: 20px;
-	width: 300px;
+	width: 200px;
 	text-align: left;
 	padding-top: 5px;
 }
 
 #table_CurrentParts > tbody > tr  {
-	height: 20px;
+	height: 30px;
 }
 
 
@@ -423,7 +423,7 @@ div.form {
 }*/
 
 #table_CurrentParts > tbody > tr:hover {
-	background: #FEF5CA;
+	background: #ECF1EF;
 }
 
 
@@ -885,7 +885,7 @@ span#clearContactFields:hover {
 }
 
 #div_ItemContent > table > tbody > tr:hover {
-	background-color: #FEF5CA;
+	/*background-color: #FEF5CA;*/
 }
 
 
@@ -902,10 +902,11 @@ span#clearContactFields:hover {
 	border-top: 0px solid lightgray;
 }
 
-input[id^='item_qty_'] {
+input[id^='item_price'],
+input[id^='item_qty'] {
 	width: 50px;
 }
-input[id^='item_comments_qty_'] {
+input[id$='_comments'] {
 	width: 400px;
 }
 
@@ -929,8 +930,21 @@ input[id^='item_comments_qty_'] {
 	/*width: 250px;*/
 }
 
+span#witty_saying {
+   position: relative; 
+   top: 150px; 
+   left: 550px; 
+   width: 100%; 
+   color: #5E6E78; /* #393941;*/
+   font-size: 1.1em;
+   font-weight: normal;
+   font-style: italic;
+   z-index: 9;
+}
 
-
+#quotes_table_length > label {
+	color: white;
+}
 
 
 

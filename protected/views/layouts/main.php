@@ -62,9 +62,7 @@
 			?>
 			<!-- <span id='iq2_title'>< ?php echo Yii::app()->params['app_title']; ?></span> -->
 			<!-- <span id='iq2_title'> </span> -->
-	</div>
-
-
+		</div>
 	</div><!-- header -->
 
 
@@ -87,8 +85,12 @@
 				// $menuItems[] = array('label'=>'Home', 'url'=>array('/site/index') );
 				$menuItems[] = array('label'=>'Home', 'url'=>array('/quotes/index') );
 
+				if (Yii::app()->user->isAdmin) {
+					$menuItems[] = array('label'=>'Config', 'url'=>array('/quotes/config') );
+				}
+
 				if (Yii::app()->user->isApprover) {
-					$menuItems[] = array('label'=>'Approval Queue ', 'url'=>array('/quotes/index?a=1') );
+					$menuItems[] = array('label'=>'Approval Queue ', 'url'=>array('/quotes/indexApproval') );
 				}
 
 				//$menuItems[] = array('label'=>'My Quotes', 'url'=>array('/quotes/index') ); 
@@ -128,8 +130,6 @@
 			$this->widget( 'zii.widgets.CMenu', array( 'items' => $menuItems ) );
 
 		?>  
-
-
 	</div>  <!--  mainmenu -->
 
 	<?php
@@ -154,6 +154,9 @@
 			</div>
 	<?php } ?>
 		
+
+	<span id='witty_saying'>... will I be content with mediocrity.</span>
+
 	<?php echo $content; ?>
 
 	<div class="clear"></div>

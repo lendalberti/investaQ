@@ -5,7 +5,7 @@ class PartsController extends Controller {
 	public function accessRules() 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'search' actions
-				'actions'=>array('index','search'),
+				'actions'=>array('index','search', 'lookup'),
 				'expression' => '$user->isLoggedIn'
 			),
 		
@@ -16,12 +16,29 @@ class PartsController extends Controller {
 	}
 
 	public function actionIndex() 	{
-		
-
-
-
 		$this->render('index');
 	}
+
+
+
+	public function actionLookup($id) 	{
+		pDebug("Parts::actionLookup() _GET", $_GET);
+
+		$item_id = $id;
+		// TODO: check for build or stock
+
+		$model = StockItems::model()->findByPk($item_id);
+		echo json_encode($model->attributes);
+
+	}
+
+
+
+
+
+
+
+
 
 	public function actionSearch() 	{
 		pDebug("Parts::actionSearch() _GET", $_GET);

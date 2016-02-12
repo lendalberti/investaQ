@@ -28,27 +28,27 @@
  		$print  = Yii::app()->request->baseUrl . "/images/New/print.png";
  		$attach = Yii::app()->request->baseUrl . "/images/New/attachment.png";
  		$email  = Yii::app()->request->baseUrl . "/images/New/mail.png";
- 		$contact  = Yii::app()->request->baseUrl . "/images/New/mail.png";
+ 		$contact = Yii::app()->request->baseUrl . "/images/New/contact.png";
  		
  		$thumbs_up   = Yii::app()->request->baseUrl . "/images/New/thumbs_up.png";
  		$thumbs_down = Yii::app()->request->baseUrl . "/images/New/thumbs_down.png";
 
- 		if ( Yii::app()->user->isAdmin ) { // allow all for Admin
+ 		if ( Yii::app()->user->isAdmin || Yii::app()->user->isApprover ) { // allow all for Admin
  			echo "<img id='quote_edit_"  .$data['model']['id']."' title='Edit this quote'   src='$edit' />";
- 			echo "<img id='quote_approve_" .$data['model']['id']."' title='Approve this quote' src='$thumbs_up' />";
-			echo "<img id='quote_reject_" .$data['model']['id']."' title='Reject this quote' src='$thumbs_down' />";
+ 		// 	echo "<img id='quote_approve_" .$data['model']['id']."' title='Approve this quote' src='$thumbs_up' />";
+			// echo "<img id='quote_reject_" .$data['model']['id']."' title='Reject this quote' src='$thumbs_down' />";
 	 		echo "<img id='quote_contact_" .$data['model']['id']."' title='Contact Salesperson'  src='$contact' />";
 			echo "<img id='quote_print_" .$data['model']['id']."' title='Print this quote'  src='$print' />";
 			echo "<img id='quote_attach_".$data['model']['id']."' title='Attach a file'     src='$attach' />";
 			echo "<img id='quote_email_" .$data['model']['id']."' title='Email this quote'  src='$email' />";
 			echo "<img id='quote_trash_" .$data['model']['id']."' title='Delete this quote' src='$trash' />";
  		}
- 		else if ( Yii::app()->user->isApprover && $data['model']->status->id == Status::PENDING ) {
-			echo "<img id='quote_approve_" .$data['model']['id']."' title='Approve this quote' src='$thumbs_up' />";
-			echo "<img id='quote_reject_" .$data['model']['id']."' title='Reject this quote' src='$thumbs_down' />";
-	 		echo "<img id='quote_contact_" .$data['model']['id']."' title='Contact Salesperson'  src='$contact' />";
-			echo "<img id='quote_print_" .$data['model']['id']."' title='Print this quote'  src='$print' />";
- 		}
+ 		// else if ( Yii::app()->user->isApprover && $data['model']->status->id == Status::PENDING ) {
+			// // echo "<img id='quote_approve_" .$data['model']['id']."' title='Approve this quote' src='$thumbs_up' />";
+			// // echo "<img id='quote_reject_" .$data['model']['id']."' title='Reject this quote' src='$thumbs_down' />";
+	 	// 	echo "<img id='quote_contact_" .$data['model']['id']."' title='Contact Salesperson'  src='$contact' />";
+			// echo "<img id='quote_print_" .$data['model']['id']."' title='Print this quote'  src='$print' />";
+ 		// }
  		else {
  			if ( $data['model']->status_id == Status::DRAFT || $data['model']->status_id == Status::REJECTED ) { // edits allowed only for draft,rejected quotes
  				echo "<img id='quote_edit_"  .$data['model']['id']."' title='Edit this quote'   src='$edit' />";
@@ -156,7 +156,7 @@
 				</div>
 				
 				<div id="box9" style='border: 0px solid cyan; width: 95%; margin: 5px;'>
-					<span class='terms'>Additional Notes<br /></span><textarea rows="4" cols="100" name="quote_Notes" id="quote_Notes" readonly='readonly' ><?php echo $q->additional_notes; ?></textarea>
+					<span class='terms'>Additional Notes<br /></span><textarea rows="4" cols="90" name="quote_Notes" id="quote_Notes" readonly='readonly' ><?php echo $q->additional_notes; ?></textarea>
 				</div>
 
 			</div>
@@ -172,14 +172,26 @@
 							<table id='table_CurrentParts' style='width: 100%; border: 1px solid gray;margin-top: 5px;'>
 							<thead>
 								<tr>
-									<th></th>
+									<!-- <th></th>
 									<th>Part Number</th>
 									<th>Mfg</th>
 									<th>LifeCycle</th>
 									<th>Qty</th>
 									<th>Price</th>
 									<th>Total</th>
-									<th>Comments</th>
+									<th>Comments</th> -->
+
+									<th></th>
+									<th >Part Number</th>
+									<th >Mfg</th>
+									<th >LifeCycle</th>
+									<th >Max<br />Available</th>
+									<th >Qty<br />Ordered</th>
+									<th >volume</th>
+									<th >Price</th>
+									<th >Total</th>
+									<th >Comments</th>
+
 								</tr>
 							</thead>
 							<tbody>
@@ -189,8 +201,12 @@
 											echo '<td></td>';
 											echo '<td>' . $i['part_no'] . '</td>';
 											echo '<td>' . $i['manufacturer'] . '</td>';
+											
+											echo '<td>' . 'Active' . '</td>';  // echo '<td>' . $i['lifecycle'] . '</td>';
+											echo '<td>' . '999999' . '</td>';  // echo '<td>' . $i['max'] . '</td>';
+
 											echo '<td>' . $i['qty'] . '</td>';
-											echo '<td>' . $i['lifecycle'] . '</td>';     // TODO: get real key
+											echo '<td>' . $i['lifecycle'] . '</td>';    
 											echo '<td>' . $i['price'] . '</td>';
 											echo '<td>' . $i['total'] . '</td>';
 											echo '<td>' . $i['comments'] . '</td>';

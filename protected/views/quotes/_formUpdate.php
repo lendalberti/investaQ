@@ -154,7 +154,7 @@
 				</div>
 				
 				<div id="box9" style='border: 0px solid cyan; width: 95%; margin: 5px;'>
-					<span class='terms'>Additional Notes</span><textarea rows="4" cols="100"       name="Quotes[additional_notes]"         id="Quotes_additional_notes"  ><?php echo $q->additional_notes; ?></textarea>
+					<span class='terms'>Additional Notes</span><textarea rows="4" cols="90"       name="Quotes[additional_notes]"         id="Quotes_additional_notes"  ><?php echo $q->additional_notes; ?></textarea>
 				</div>
 
 			</div>
@@ -172,7 +172,10 @@
 										<th></th>
 										<th >Part Number</th>
 										<th >Mfg</th>
-										<th >Qty</th>
+										<th >LifeCycle</th>
+										<th >Max<br />Available</th>
+										<th >Qty<br />Ordered</th>
+										<th >volume</th>
 										<th >Price</th>
 										<th >Total</th>
 										<th >Comments</th>
@@ -189,7 +192,11 @@
 												echo '<td>' . $i['part_no'] . '</td>';
 												echo '<td>' . $i['manufacturer'] . '</td>';
 
+												echo '<td>' . 'Active' . '</td>';  // echo '<td>' . $i['lifecycle'] . '</td>';
+												echo '<td>' . '999999' . '</td>';  // echo '<td>' . $i['max'] . '</td>';
+
 												echo '<td>' . $i['qty'] . '</td>';
+												echo '<td><span class="volume">' . $i['volume'] . '</span></td>';
 												echo '<td>' . $i['price'] . '</td>';
 												echo '<td>' . $i['total'] . '</td>';
 												echo '<td style="text-align:left:">' . $i['comments'] . '</td>';
@@ -200,95 +207,65 @@
 								</tbody>
 							</table>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 							<div id='div_EditItem' style='padding-left: 20px; border: 0px solid lightblue; display: none;' >
-
-								<div id='div_ItemContent' style='margin-bottom: 20px; padding: 0px 20px 0px 20px; border: 0px solid pink;'>
+								<div id='div_ItemContent' style='margin-bottom: 20px; padding: 20px 20px 0px 20px; border: 0px solid pink;'>
 									
-									<!--  to be filled out by an ajax call  -->
-									<span style='font-size: 1.5em;'>Updating Part No. AD5555CRUZ</span><span style='font-size: 1.1em'> (Lifecycle: Obsolete)</span>
+								<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  -->
+								<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  -->
+								<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  -->
 
-									<table style='border: 0px solid green; margin-top: 10px;'>
-										<tr>
-											<th>Volume</th>   			<th>Price </th>  <th>Quantity</th> 		<th>Total</th> 			<th>Comments</th> 		
-										</tr>
+								<!--  to be filled out by an ajax call  -->
+								<span style='font-size: 1.2em;' >Part No.</span> <span id='span_PartNo' style='font-size: 1.2em; color: #a31128' ></span> 
 
-										<tr>	<td>1-24</td>   		<td>$ 5.87</td>   <td><input id='item_qty_1_24'        name='item_qty_1_24' ></td>   	        <td>$ 0.00</td>  <td><input id='item_comments_qty_1_24' name='item_qcomments_ty_1_24' ></td>  </tr>  
-										<tr>	<td>25-99</td>   		<td>$ 5.25</td>   <td><input id='item_qty_25_99'       name='item_qty_25_99' ></td>   			<td>$ 0.00</td>  <td><input id='item_comments_qty_1_24' name='item_comments_qty_1_24' ></td>  </tr>
-										<tr>	<td>100-499</td>   		<td>$ 4.56</td>   <td><input id='item_qty_100_499'     name='item_qty_100_499' ></td>   		<td>$ 0.00</td>  <td><input id='item_comments_qty_1_24' name='item_comments_qty_1_24' ></td>  </tr>
-										<tr>	<td>500-999</td>   		<td>$ 4.19</td>   <td><input id='item_qty_500_999'     name='item_qty_500_999' ></td>   		<td>$ 0.00</td>  <td><input id='item_comments_qty_1_24' name='item_comments_qty_1_24' ></td>  </tr> 
-										<tr>	<td>1000+</td>   		<td>$ 3.95</td>   <td><input id='item_qty_1000_plus'   name='item_qty_1000_plus' ></td>   		<td>$ 0.00</td>  <td><input id='item_comments_qty_1_24' name='item_comments_qty_1_24' ></td>  </tr> 
-										<tr>	<td>Distributor</td>   	<td>$ 3.50</td>   <td><input id='item_qty_distributor' name='item_qty_distributor' ></td> 		<td>$ 0.00</td>  <td><input id='item_comments_qty_1_24' name='item_comments_qty_1_24' ></td>  </tr>  
-										<tr>	<td>Custom</td>   		<td></td>         <td><input id='item_qty_custom'      name='item_qty_custom' ></td>   			<td>$ 0.00</td>  <td><input id='item_comments_qty_1_24' name='item_comments_qty_1_24' ></td>  </tr>  
-									</table>
+								<table style='border: 0px solid green; margin-top: 10px;'>
+									<tr><th>Quantity</th>  <th>Volume </th> <th>Price</th> 	<th>Total</th> 	<th>Comments</th> 		</tr>
+									<tr>
+										<td><input id='item_qty' name='item_qty' ></td>   	   
+										<td>
+											<select id='item_SelectVolume'>
+												<option value=0></option>
+												<option value='item_price_1_24'>1 - 24</option>
+												<option value='item_price_25_99'>25 - 99</option>
+												<option value='item_price_100_499'>100 - 499</option>
+												<option value='item_price_500_999'>500 - 999</option>
+												<option value='item_price_1000_plus'>1000+</option>
+												<option value='item_price_distributor'>Distributor</option>
+												<option value='item_price_custom'>Custom</option>
+
+											</select>
+										</td>   	 
+
+										<td><span id='item_price'>$ 0.00</span></td>   
+										<td><span id='item_total'>$ 0.00</span></td>   
+										<td><input id='item_comments' name='item_comments' ></td>  
+
+									</tr>  
+									
+								</table>
 
 
-									<div style='padding: 5px 0px 5px 5px; background-color: pink;' > 
-										<span style='padding: 0px 5px 0px 0px; font-weight: bold;'>REMINDER:</span> 
-										<span style='font-weight: normal;'>Since this part is Obsolete, approval is needed if custom price is less than <span id='min_custom_price' style='color: blue;'><?php echo $min_custom_price; ?></span>  (<?php echo $dpf*100; ?>% of Distributor Price) </span> 
+								<div style='display: none; padding: 5px 0px 5px 5px; background-color: pink;' > 
+									<span style='padding: 0px 5px 0px 0px; font-weight: bold;'>REMINDER:</span> 
+									<span style='font-weight: normal;'>Since this part is Obsolete, approval is needed if custom price is less than <span id='min_custom_price' style='color: blue;'><?php echo $min_custom_price; ?></span>  (<?php echo $dpf*100; ?>% of Distributor Price) </span> 
+								</div>
 
-										<br />
 
-										<span style='padding: 0px 5px 0px 0px; font-weight: bold;'>REMINDER:</span> 
-										<span style='font-weight: normal;'>Since this part is Active, approval is needed if custom price is less than the distributor price of $ 3.50</span> 
-									</div>
-							
+								<div style='display: none; padding: 5px 0px 5px 5px; background-color: pink;' > 
+									<span style='padding: 0px 5px 0px 0px; font-weight: bold;'>REMINDER:</span> 
+									<span style='font-weight: normal;'>Since this part is Active, approval is needed if custom price is less than the Distributor Price of $ 3.50</span> 
+								</div>
 
+								<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  -->
+								<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  -->
+								<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  -->
 
 								</div>
 		
-								<input id='button_SaveItemChanges' type='button' value='Update Item'> 
-								<input id='button_CancelItemChanges' type='button' value='Cancel'> 
-
+								<div style='margin-top: 100px;'>
+									<input id='button_SaveItemChanges' type='button' value='Update Item'> 
+									<input id='button_CancelItemChanges' type='button' value='Cancel'> 
+								</div>
 							</div>
-							
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 							<span id='addPartToQuote'>Add item(s) to this quote</span>
 						</div>
@@ -332,8 +309,8 @@
 										
 								</tbody>
 							</table>
-
 						</div>
+						
 					</div>  <!--  box4  -->
 				</div>
 			</div>

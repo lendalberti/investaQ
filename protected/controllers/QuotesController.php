@@ -28,12 +28,12 @@ class QuotesController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view','create','update', 'search', 'partsUpdate', 'delete', 'select'),
+				'actions'=>array('index', 'indexApproval', 'view','create','update', 'search', 'partsUpdate', 'delete', 'select'),
 				'expression' => '$user->isLoggedIn'
 			),
 		
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin'),
+				'actions'=>array('admin', 'config'),
 				'expression' => '$user->isAdmin'
 			),
 
@@ -46,6 +46,15 @@ class QuotesController extends Controller
 				'users'=>array('*'),
 			),
 		);
+	}
+
+	public function actionConfig() {
+		pDebug("actionConfig() - _GET=", $_GET);
+
+		$model = new Quotes;
+		$this->render('config',array(
+			'model'=>$model,
+		));
 	}
 
 
@@ -217,7 +226,8 @@ class QuotesController extends Controller
 			foreach( array('1_24', '25_99', '100_499', '500_999', '1000_Plus', 'Base', 'Custom') as $v ) {
 				if ( fq($i['qty_'.$v]) != '0' ) {
 		 			//$data .=  "  <tr>  <td> ".fq($i['qty_'.$v])."</td>        <td><span class='volume'>$v</span>"      .fp($i['price_'.$v])."</td>          <td> ".fp(calc($i,$v))."</td>   </tr>"; 
-		 			$data['items'][] = array( 'id' => $i['id'],  'part_no' => $i['part_no'], 'manufacturer'=>$i['manufacturer'], 'date_code'=>$i['date_code'], "qty" => fq($i["qty_$v"]), "price" => "<span class='volume'>$v</span>". fp($i["price_$v"]), "total" => fp(calc($i,$v)), "comments" => mb_strimwidth($i['comments'],0,150, '...')  );
+		 			//$data['items'][] = array( 'id' => $i['id'],  'part_no' => $i['part_no'], 'manufacturer'=>$i['manufacturer'], 'date_code'=>$i['date_code'], "qty" => fq($i["qty_$v"]), "price" => "<span class='volume'>$v</span>". fp($i["price_$v"]), "total" => fp(calc($i,$v)), "comments" => mb_strimwidth($i['comments'],0,150, '...')  );
+		 			$data['items'][] = array( 'id' => $i['id'],  'part_no' => $i['part_no'], 'manufacturer'=>$i['manufacturer'], 'date_code'=>$i['date_code'], "qty" => fq($i["qty_$v"]), "volume" => $v,   "price" => fp($i["price_$v"]), "total" => fp(calc($i,$v)), "comments" => mb_strimwidth($i['comments'],0,150, '...')  );
 		 		}
 			}
 		}  //  mb_strimwidth("Hello World", 0, 10, "...");
@@ -532,8 +542,8 @@ class QuotesController extends Controller
 			foreach( $results as $i ) {
 				foreach( array('1_24', '25_99', '100_499', '500_999', '1000_Plus', 'Base', 'Custom') as $v ) {
 					if ( fq($i['qty_'.$v]) != '0' ) {
-			 			//$data .=  "  <tr>  <td> ".fq($i['qty_'.$v])."</td>        <td><span class='volume'>$v</span>"      .fp($i['price_'.$v])."</td>          <td> ".fp(calc($i,$v))."</td>   </tr>"; 
-			 			$data['items'][] = array( 'id' => $i['id'],  'part_no' => $i['part_no'], 'manufacturer'=>$i['manufacturer'], 'date_code'=>$i['date_code'], "qty" => fq($i["qty_$v"]), "price" => "<span class='volume'>$v</span>". fp($i["price_$v"]), "total" => fp(calc($i,$v)), "comments" => mb_strimwidth($i['comments'],0,150, '...')  );
+			 			//$data['items'][] = array( 'id' => $i['id'],  'part_no' => $i['part_no'], 'manufacturer'=>$i['manufacturer'], 'date_code'=>$i['date_code'], "qty" => fq($i["qty_$v"]), "price" => "<span class='volume'>$v</span>". fp($i["price_$v"]), "total" => fp(calc($i,$v)), "comments" => mb_strimwidth($i['comments'],0,150, '...')  );
+			 			$data['items'][] = array( 'id' => $i['id'],  'part_no' => $i['part_no'], 'manufacturer'=>$i['manufacturer'], 'date_code'=>$i['date_code'], "qty" => fq($i["qty_$v"]), "volume" => $v, "price" => fp($i["price_$v"]), "total" => fp(calc($i,$v)), "comments" => mb_strimwidth($i['comments'],0,150, '...')  );
 			 		}
 				}
 			}
@@ -575,36 +585,46 @@ class QuotesController extends Controller
 		return;
 	}
 
+	public function actionIndexApproval() 	{
+		pTrace( __METHOD__ );
+		pDebug('actionIndexApproval() - _GET=', $_GET);
 
+		$criteria = new CDbCriteria();
+
+		if ( Yii::app()->user->isApprover || Yii::app()->user->isAdmin ) {
+			$page_title = "Quotes Needing Approval";
+			$criteria->addCondition("status_id = " . Status::PENDING);
+
+			$criteria->order = 'id DESC';
+			$model = Quotes::model()->findAll( $criteria );
+
+			$this->render( 'index', array(
+				'model' => $model,
+				'page_title' => $page_title,
+			));
+		}
+		else {
+
+		}
+	}
 
 	public function actionIndex() 	{
 		pTrace( __METHOD__ );
 		pDebug('actionIndex() - _GET=', $_GET);
 
 		$criteria = new CDbCriteria();
-
-		if ( isset($_GET['a']) && Yii::app()->user->isApprover ) {
-			$page_title = "Quotes Needing Approval";
-			$criteria->addCondition("status_id = " . Status::PENDING);
-		}
-		else if ( Yii::app()->user->isAdmin || Yii::app()->user->isApprover ) {
-			$page_title = "All Sales Quotes";
-		} 
-		else {
+		if ( !Yii::app()->user->isAdmin ) {
 			$criteria->addCondition("owner_id = " . Yii::app()->user->id);
-			$page_title = "My Quotes";
 		}
 
 		$criteria->order = 'id DESC';
+		
 		$model = Quotes::model()->findAll( $criteria );
 
 		$this->render( 'index', array(
 			'model' => $model,
-			'page_title' => $page_title,
+			'page_title' => "My Quotes",
 		));
-
-
-
 	}
 
 

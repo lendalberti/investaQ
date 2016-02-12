@@ -32,6 +32,15 @@ New UI
 		- ANA = Analog Devices ( use se_data['manufacturerName'] )
 
 
+	[x] use button for 'new quote'
+
+	[x] add stub config page
+
+	[x] add stub help page 
+
+	[ ] review icons - Colin prefers colorful ones 
+
+
 
 +---------------------+
 |      Need fixes     |
