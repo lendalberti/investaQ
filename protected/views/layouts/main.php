@@ -16,9 +16,9 @@
 	<script type="text/javascript" charset="utf8" src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 
 
-
 	<script type="text/javascript" charset="utf8" src="<?php echo Yii::app()->request->baseUrl; ?>/js/iq2_main.js"></script>
 	<script type='text/javascript' charset="utf8" src="<?php echo Yii::app()->request->baseUrl; ?>/js/accounting.min.js"></script>   
+	<script type='text/javascript' charset="utf8" src="<?php echo Yii::app()->request->baseUrl; ?>/js/js.cookie.js"></script>   
 	<!-- <script type="text/javascript" charset="utf8" src="< ?php echo Yii::app()->request->baseUrl; ?>/js/iq2_quote.js"></script> -->
 
 

@@ -46,6 +46,7 @@
 
 	<input type='hidden' id='Quotes_id'  name='Quotes[id]' value='<?php echo $quote_id; ?>'>
 	<input type='hidden' id='form_QuoteID' name='form_QuoteID' value='<?php echo $quote_id; ?>'>
+	<input type='hidden' id='item_id' name='item_id' value=''>
 
 	<div id="QuoteView_Tabs">
 		<ul>
@@ -167,6 +168,7 @@
 
 						<div style='margin: 10px 0px 50px 10px; '>
 							<table id='table_CurrentParts' style='width: 100%; border: 1px solid lightgray; margin-top: 5px;'>
+								<caption>Item updated.</caption>
 								<thead>
 									<tr>
 										<th></th>
@@ -175,8 +177,8 @@
 										<th >LifeCycle</th>
 										<th >Max<br />Available</th>
 										<th >Qty<br />Ordered</th>
-										<th >volume</th>
 										<th >Price</th>
+										<th > </th>
 										<th >Total</th>
 										<th >Comments</th>
 									</tr>
@@ -184,7 +186,7 @@
 								<tbody>
 										<?php
 											foreach( $data['items'] as $i ) {
-												echo '<tr>';
+												echo '<tr id="item_row_'.$i['id'].'">';
 												echo '<td style="font-size: .9em; padding: 2px;">';
 												echo "<img id='item_edit_"  . $i['id'] . "' title='Edit this item'    src='$edit' width='16' height='16' />";
 												echo "<img id='item_trash_" . $i['id'] . "' title='Delete this item'  src='$trash' width='16' height='16' />";
@@ -196,8 +198,8 @@
 												echo '<td>' . '999999' . '</td>';  // echo '<td>' . $i['max'] . '</td>';
 
 												echo '<td>' . $i['qty'] . '</td>';
-												echo '<td><span class="volume">' . $i['volume'] . '</span></td>';
 												echo '<td>' . $i['price'] . '</td>';
+												echo '<td><span class="volume">' . $i['volume'] . '</span></td>';
 												echo '<td>' . $i['total'] . '</td>';
 												echo '<td style="text-align:left:">' . $i['comments'] . '</td>';
 												
@@ -228,9 +230,9 @@
 												<option value='item_price_25_99'>25 - 99</option>
 												<option value='item_price_100_499'>100 - 499</option>
 												<option value='item_price_500_999'>500 - 999</option>
-												<option value='item_price_1000_plus'>1000+</option>
-												<option value='item_price_distributor'>Distributor</option>
-												<option value='item_price_custom'>Custom</option>
+												<option value='item_price_1000_Plus'>1000+</option>
+												<option value='item_price_Base'>Distributor</option>
+												<option value='item_price_Custom'>Custom</option>
 
 											</select>
 										</td>   	 

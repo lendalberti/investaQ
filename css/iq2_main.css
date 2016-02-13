@@ -378,6 +378,15 @@ div.form {
 	padding-bottom: 5px;
 }
 
+#table_CurrentParts > caption {
+	text-align: left;
+	font-weight: normal;
+	font-size: .8em;
+	color: red;
+	padding: 5px;
+	background-color: white;
+	display: none;
+}
 
 #table_CurrentParts > thead > tr > th:nth-child(7) {
 	text-align: center;
@@ -799,8 +808,8 @@ span.terms {
 
 span.volume {
 	font-size: .7em;
-    padding-right: 5px;
-    color: green;
+ 	font-weight: bold;
+    color: blue;
 }
 
 #results_table > tbody > tr > td:nth-child(4) > table > tbody > tr > td {

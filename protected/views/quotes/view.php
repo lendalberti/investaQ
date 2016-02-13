@@ -187,8 +187,10 @@
 									<th >LifeCycle</th>
 									<th >Max<br />Available</th>
 									<th >Qty<br />Ordered</th>
-									<th >volume</th>
+									
 									<th >Price</th>
+									<th > </th>
+									
 									<th >Total</th>
 									<th >Comments</th>
 
@@ -201,13 +203,13 @@
 											echo '<td></td>';
 											echo '<td>' . $i['part_no'] . '</td>';
 											echo '<td>' . $i['manufacturer'] . '</td>';
-											
 											echo '<td>' . 'Active' . '</td>';  // echo '<td>' . $i['lifecycle'] . '</td>';
 											echo '<td>' . '999999' . '</td>';  // echo '<td>' . $i['max'] . '</td>';
-
 											echo '<td>' . $i['qty'] . '</td>';
-											echo '<td>' . $i['lifecycle'] . '</td>';    
+
 											echo '<td>' . $i['price'] . '</td>';
+											echo '<td><span class="volume">' . $i['volume'] . '</span></td>'; 
+
 											echo '<td>' . $i['total'] . '</td>';
 											echo '<td>' . $i['comments'] . '</td>';
 											echo '</tr>';

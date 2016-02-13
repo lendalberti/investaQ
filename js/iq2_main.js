@@ -28,6 +28,9 @@ $(document).ready(function() {
 
     console.log('myURL=['+myURL+']');
     console.log('returnUrl=[' + $('#returnUrl').val() + ']' );
+    console.log("current url:" + window.location.href );
+
+
 
     // quick and dirt funtion for truncating text with ellipses...
     String.prototype.trunc = function(n) { return this.substr(0,n-1)+(this.length>n?'&hellip;':''); };
@@ -39,6 +42,12 @@ $(document).ready(function() {
         $( "#QuoteView_Tabs" ).tabs({
             collapsible: true
         });
+    });
+
+    $('#QuoteView_Tabs').on('tabsactivate', function(event, ui) {
+        var newIndex = ui.newTab.index();
+        console.log('Switched to tab '+newIndex);
+        Cookies.set('current_tab', newIndex );
     });
 
 
@@ -77,12 +86,33 @@ $(document).ready(function() {
     }
 
 
+    if ( window.location.href.match(/quotes\/update/ ) ) {   // show original tab if cookie is set
+        if ( Cookies.get('current_tab') ) {
+            var tabIndex = Cookies.get('current_tab');
+            Cookies.remove('current_tab');
+
+            // select tab
+            $('#QuoteView_Tabs').tabs({ active: tabIndex });
+            
+        }
+
+        if ( Cookies.get('item_updated') ) {  // show Inventory Items tab if cookie is set
+            Cookies.remove('item_updated');
+
+            $('#QuoteView_Tabs').tabs({ active: 2 });
+            $('#table_CurrentParts > caption').show();
+        }
+    }
+
+
 	
 	//---------------------------------------------------------------------------------------------------------------------
     //-------- Event Handlers  --------------------------------------------------------------------------------------------    
     //---------------------------------------------------------------------------------------------------------------------
 
-
+    $('a[id^=section]').on('click', function() {
+        console.log('click on tab...');
+    })
 
     $('#changeStatus').on('click', function() {
         dialog_status.dialog( "open" );
@@ -123,6 +153,7 @@ $(document).ready(function() {
 
     $('#addPartToQuote').on('click', function() {
         $('#div_PartsLookup').show();
+        $('#table_CurrentParts > caption').hide();
     });
 
     $('#span_NewContact').on('click', function() {
@@ -518,7 +549,8 @@ $(document).ready(function() {
 
     // ----------------------------------------------------- delete item
     $('[id^=item_trash_]').on('click', function() {
-        console.log('clicked on item delete...');
+        $('#table_CurrentParts > caption').hide();
+
         var itemID = getID($(this));
         if ( confirm("Are you sure you want to delete this item?" ) ) {
             $.ajax({
@@ -539,6 +571,8 @@ $(document).ready(function() {
 
     // ----------------------------------------------------- edit item
     $('[id^=item_edit_]').on('click', function() {
+        $('#table_CurrentParts > caption').hide();
+        
         $(this).closest('tr').css('background-color', '#FEF1E9'); // hightlight row when clicked
 
         var itemID = getID($(this));
@@ -548,8 +582,8 @@ $(document).ready(function() {
         selected_ItemLifecycle    = $(this).closest('tr').find('td:nth-child(4)').text();
         selected_ItemMaxAvailable = $(this).closest('tr').find('td:nth-child(5)').text();
         selected_ItemQuantity     = $(this).closest('tr').find('td:nth-child(6)').text();
-        selected_ItemVolume       = $(this).closest('tr').find('td:nth-child(7)').text();
-        selected_ItemPrice        = $(this).closest('tr').find('td:nth-child(8)').text();
+        selected_ItemPrice        = $(this).closest('tr').find('td:nth-child(7)').text();
+        selected_ItemVolume       = $(this).closest('tr').find('td:nth-child(8)').text();
         selected_ItemTotal        = $(this).closest('tr').find('td:nth-child(9)').text();
         selected_ItemComments     = $(this).closest('tr').find('td:nth-child(10)').text();
 
@@ -597,8 +631,8 @@ $(document).ready(function() {
                     ItemPricing.item_price_25_99 = d.price_25_99;
                     ItemPricing.item_price_100_499 = d.price_100_499;
                     ItemPricing.item_price_500_999 = d.price_500_999;
-                    ItemPricing.item_price_1000_plus = d.price_1000_Plus;
-                    ItemPricing.item_price_distributor = d.price_Base;
+                    ItemPricing.item_price_1000_Plus = d.price_1000_Plus;
+                    ItemPricing.item_price_Base = d.price_Base;
 
                     $('#item_qty_1_24').val( d.qty_1_24 );
                     $('#item_qty_25_99').val( d.qty_25_99 );
@@ -661,14 +695,17 @@ $(document).ready(function() {
                 return;
             }
             else if ( new_qty < 25 ) {
+                console.log('less than 25');
                 $("#item_SelectVolume").val('item_price_1_24'); 
                 new_price = ItemPricing['item_price_1_24'];
             }
             else if ( new_qty < 100 )  {
+                console.log('less than 100');
                 $("#item_SelectVolume").val('item_price_25_99');
                 new_price = ItemPricing['item_price_25_99']; 
             }
             else if ( new_qty < 500 )  {
+                console.log('less than 500');
                 $("#item_SelectVolume").val('item_price_100_499');
                 new_price = ItemPricing['item_price_100_499'];
             }
@@ -678,8 +715,9 @@ $(document).ready(function() {
                 new_price = ItemPricing['item_price_500_999'];
             }
             else {
-                $("#item_SelectVolume").val('item_price_1000_plus');
-                new_price = ItemPricing['item_price_1000_plus']; 
+                console.log('MORE than 999');
+                $("#item_SelectVolume").val('item_price_1000_Plus');
+                new_price = ItemPricing['item_price_1000_Plus']; 
             }
         }
        
@@ -719,58 +757,51 @@ $(document).ready(function() {
 
 
 
-
      // ----------------------------------------------------- save editing changes
     $('#button_SaveItemChanges').on('click', function() {
 
+        var itemID =  $('#item_id').val();
+
         // do ajax save of item and screen update
         var info =  {
-                item_id:        $('#item_id').val(),
                 item_qty:       $('#item_qty').val(),
-
-                xxxxx:          $('#xxxxx').val(),
-
                 item_price:     $('#item_price').text(),
                 item_total:     $('#item_total').text(),
                 item_comments:  $('#item_comments').val(),
+                item_id:        itemID,
+                item_volume:    $('#item_SelectVolume').val(),
         };
 
+                                /*
+                                    Create a cookie, valid across the entire site:
+                                        Cookies.set('`', 1);
+
+                                    Read cookie:
+                                        Cookies.get('current_tab');     // => 'value'
+                                        Cookies.get('nothing');             // => undefined
+
+                                    Delete cookie:
+                                        Cookies.remove('current_tab');
+                                */
         $.ajax({
                 url: myURL + 'quotes/partsUpdate?from=iq2_main_js',
                 type: 'POST',
                 data: info, 
                 dataType: "json",
                 success: function(data) {
-                    console.log("iq2_main_js, AJAX Post: Success - item_id=" + data.item_id);
-                    alert("Your Customer Quote has been updated.");
+                    console.log("Inventory Item update success.");
+                    Cookies.set('item_updated', 1);
+                    location.reload();
                 },
                 error: function (jqXHR, textStatus, errorThrown)  {
                     console.log("iq2_main_js, AJAX Post: FAIL! error:"+errorThrown);
-                    alert("Your Customer Quote could NOT be updated - see Admin (iq2_main_js)\n\nERROR=" + errorThrown);
+                    alert("Your Inventory Item could NOT be updated - see Admin (iq2_main_js)\n\nERROR=" + errorThrown);
                 } 
         });
 
-
-
-
-
-
-
-
-        alert('Item has been updated...');
-        $('#button_CancelItemChanges').trigger('click'); // reset form
+       
     });
-
-
-
-
-
-
-
-
-
-
-
+                                
 
 
 
@@ -1021,14 +1052,6 @@ $(document).ready(function() {
             $("#Customers_country_id option:first").attr('selected','selected');
         }
     });
-
-
-
-
-
-// #QuoteView_Tabs > ul > li:nth-child(3)
-
-
 
 
 
@@ -1296,25 +1319,25 @@ $(document).ready(function() {
         var comments = truncateWithEllipses(info.comments,100);
 
         if ( info.qty_1_24 > 0 ) {
-            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td><td>"+info.qty_1_24+"</td><td><span class='volume'>1_24</span>$ "+info.price_1_24+"</td><td>$ "+(info.qty_1_24*info.price_1_24).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
+            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td>  <td>Active</td>  <td>999999</td>     <td>"+info.qty_1_24+"</td><td><span class='volume'>1_24</span>$ "+info.price_1_24+"</td><td>$ "+(info.qty_1_24*info.price_1_24).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
         }
         if ( info.qty_25_99 > 0 ) {
-            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td><td>"+info.qty_25_99+"</td><td><span class='volume'>25_99</span>$ "+info.price_25_99+"</td><td>$ "+(info.qty_25_99*info.price_25_99).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
+            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td>  <td>Active</td>  <td>999999</td>     <td>"+info.qty_25_99+"</td><td><span class='volume'>25_99</span>$ "+info.price_25_99+"</td><td>$ "+(info.qty_25_99*info.price_25_99).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
         }
         if ( info.qty_100_499 > 0 ) {
-            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td><td>"+info.qty_100_499+"</td><td><span class='volume'>100_499</span>$ "+info.price_100_499+"</td><td>$ "+(info.qty_100_499*info.price_100_499).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
+            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td>  <td>Active</td>  <td>999999</td>     <td>"+info.qty_100_499+"</td><td><span class='volume'>100_499</span>$ "+info.price_100_499+"</td><td>$ "+(info.qty_100_499*info.price_100_499).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
         }
         if ( info.qty_500_999 > 0 ) {
-            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td><td>"+info.qty_500_999+"</td><td><span class='volume'>500_999</span>$ "+info.price_500_999+"</td><td>$ "+(info.qty_500_999*info.price_500_999).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
+            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td>  <td>Active</td>  <td>999999</td>     <td>"+info.qty_500_999+"</td><td><span class='volume'>500_999</span>$ "+info.price_500_999+"</td><td>$ "+(info.qty_500_999*info.price_500_999).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
         }
         if ( info.qty_1000_Plus > 0 ) {
-            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td><td>"+info.qty_1000_Plus+"</td><td><span class='volume'>1000_Plus</span>$ "+info.price_1000_Plus+"</td><td>$ "+(info.qty_1000_Plus*info.price_1000_Plus).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
+            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td>  <td>Active</td>  <td>999999</td>     <td>"+info.qty_1000_Plus+"</td><td><span class='volume'>1000_Plus</span>$ "+info.price_1000_Plus+"</td><td>$ "+(info.qty_1000_Plus*info.price_1000_Plus).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
         }
         if ( info.qty_Base > 0 ) {
-            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td><td>"+info.qty_Base+"</td><td><span class='volume'>Base</span>$ "+info.price_Base+"</td><td>$ "+(info.qty_Base*info.price_Base).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
+            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td>  <td>Active</td>  <td>999999</td>     <td>"+info.qty_Base+"</td><td><span class='volume'>Base</span>$ "+info.price_Base+"</td><td>$ "+(info.qty_Base*info.price_Base).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
         }
         if ( info.qty_Custom > 0 ) {
-            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td><td>"+info.qty_Custom+"</td><td><span class='volume'>Custom</span>$ "+info.price_Custom+"</td><td>$ "+(info.qty_Custom*info.price_Custom).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
+            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td>  <td>Active</td>  <td>999999</td>     <td>"+info.qty_Custom+"</td><td><span class='volume'>Custom</span>$ "+info.price_Custom+"</td><td>$ "+(info.qty_Custom*info.price_Custom).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
         }
     }
 
