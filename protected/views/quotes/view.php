@@ -132,7 +132,23 @@
 					        <tr>  <td>Country</td>                  <td><input type='text' id='Contacts_country_id' name='Contacts[country_id]' readonly='readonly'  value='<?php echo $co->country->long_name; ?>'  > </td> </tr>
 				    </table>
 			    </div>
-			    <span style='padding-left: 50px; font-weight: bold;'>Contact Source: </span><span style='background-color: #E6E6E6; font-size: .8em; font-weight: bold; color: black; border: 1px solid lightgray; padding: 3px;'><?php echo $q->source->name; ?></span>
+
+			    <div style='width: 100%; border: 0px solid green; text-align: center;'>
+					<span id='span_SelectSource'><span class='required'> * </span>Opportunity Source
+						<span style='background-color: #E6E6E6; font-size: .8em; font-weight: bold; color: black; border: 1px solid lightgray; padding: 3px;'>
+			    			<?php echo $q->source->name; ?>
+			    		</span> 
+					</span>
+				</div>
+
+
+
+			    
+			   <!--  <span style='padding-left: 50px; font-weight: bold;'>Contact Source: </span>
+			    <span style='background-color: #E6E6E6; font-size: .8em; font-weight: bold; color: black; border: 1px solid lightgray; padding: 3px;'>
+			    	< ?php echo $q->source->name; ?>
+			    </span> -->
+
 			</div>
 		</div>
 
@@ -190,7 +206,7 @@
 									
 									<th >Price</th>
 									<th > </th>
-									
+
 									<th >Total</th>
 									<th >Comments</th>
 

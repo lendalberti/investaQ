@@ -148,6 +148,10 @@ table.items_table th {
 
 /*************************************/
 
+#table_AddToQuote > caption {
+	background-color: white;
+}
+
 #table_AddToQuote {
 	border: 1px solid gray;
 	margin-top: 20px;

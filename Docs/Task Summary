@@ -14,9 +14,9 @@ New UI
 	[x] View
 		[x] Quote Terms - boxes need css fixed
 
-	[ ] Update
+	[x] Update
 		[x] Quote Terms - boxes need css fixed
-		[ ] Inventory Parts - edit items - not in popup dialog
+		[x] Inventory Parts - edit items - not in popup dialog
 
 	[x] New
 		[x] Customer Info - Search box, table need css fixed
@@ -41,6 +41,23 @@ New UI
 	[x] add stub help page 
 
 	[ ] review icons - Colin prefers colorful ones 
+
+	[x] when part gets added to table from Dialog, table format is messed up
+	[x] duplicate messages of 'Updated...' when you click on 'Save Changes'
+		
+	[ ] if part needs to be approved, doesn't get added/displayed in items table
+		until page gets refreshed
+
+	[x] while in the process of adding an item, if you 'delete' another item, you get error (still deletes though)
+		
+	[x] after adding part, loses the item_edit event on that item
+
+	[x] when adding item, total missing commas - ok when updating item
+
+	[ ] need to show real max avail.
+		- check qty when doing updates not just on add
+
+
 
 
 

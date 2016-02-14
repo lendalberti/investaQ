@@ -437,6 +437,19 @@ div.form {
 
 
 
+#results_table > tbody > tr > td:nth-child(4) > table > tbody > tr > td {
+	text-align: right;
+}
+
+#results_table > tbody > tr:hover {
+	background-color: lightyellow;
+	cursor: pointer;
+}
+
+#results_table > tbody > tr > td {
+	text-align: center;
+	font-size: .8em;
+}
 
 /*  row striping */
 #results_table > tbody > tr:nth-child(odd)  {
@@ -526,18 +539,42 @@ span.select_replacement {
 	font-family: Courier;
 }
 
-#reset_form {
-	color: #a31128;
+#span_SelectSource {
+	/*padding-left: 50px; */
 	font-weight: bold;
-	font-variant: small-caps;
-	padding: 10px;
-	text-decoration: underline;
 }
 
+
+#reset_form  {
+	font-size: .8em;
+	color: #3a89de;
+	text-decoration: underline;
+	margin-left: 600px;
+	font-weight: bold;
+}
+
+#cancel_Start {
+	color: #a31128;
+	font-weight: bold;
+	margin-left: 10px;
+	text-decoration: underline;
+	font-size: .8em;
+}
+
+
+#cancel_Start:hover,
 #reset_form:hover {
 	cursor: pointer;
 }
 
+#div_ContinueReset > input[type="submit"] {
+	font-size: 1.4em;
+	background-color: lightgray;
+}
+
+#div_ContinueReset > input[type="submit"]:hover {
+	cursor: pointer;
+}
 
 #quote_level {
 	color: #a31128;
@@ -777,15 +814,6 @@ span.open_close:hover {
 	cursor: pointer;
 }
 
-#results_table > tbody > tr:hover {
-	background-color: lightyellow;
-	cursor: pointer;
-}
-
-#results_table > tbody > tr > td {
-	text-align: center;
-}
-
 span.terms {
 	font-variant: small-caps;
 	color: black;
@@ -812,9 +840,6 @@ span.volume {
     color: blue;
 }
 
-#results_table > tbody > tr > td:nth-child(4) > table > tbody > tr > td {
-	text-align: right;
-}
 
 
 #table_Parts {

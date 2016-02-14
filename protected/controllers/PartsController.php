@@ -48,7 +48,7 @@ class PartsController extends Controller {
 			$url        = 'http://mongoa/parts/*/500/?q='.$item;	  // mongoa for my local use
 			$tmp        = file_get_contents($url);
 
-			//pDebug('actionSearch() - mongo record=', $tmp);
+			// pDebug('actionSearch() - mongo record=', $tmp);
 			// $tmp = file_get_contents('/Users/len/www/iq2/Docs/mongo_sample_records_3333.inc');
 			
 
@@ -85,8 +85,24 @@ class PartsController extends Controller {
 		$prices  = $p->parts[0]->prices;
 		$sc_Arr  = $p->parts[0]->stock_codes;
 
+		if ( $p->parts[0]->build == 1 ) {
+			$part_status = 'Build to Order';
+			$_itemIsBuildToOrder = true;
+		}
+		else {
+			$part_status = 'Stock';
+			$_itemIsBuildToOrder = false;
+		}
+
+
+		$part_status = $p->parts[0]->build == 1 ? 'Build to Order' : 'Stock';
+
 		$css = '<style type="text/css">' . file_get_contents('http://localhost/iq2/css/dialog.css') . '</style>';
-		$js = '<script type="text/javascript">' . file_get_contents('http://localhost/iq2/js/dialog.js') . '</script>';
+		// $js  = '<script type="text/javascript">' . file_get_contents('http://localhost/iq2/js/dialog.js') . '</script>';
+
+
+		//$css = '<style type="text/css">' . file_get_contents('http://localhost/iq2/css/iq2_main.css') . '</style>';
+		$js  = '<script type="text/javascript">' . file_get_contents('http://localhost/iq2/js/iq2_main.js') . '</script>';
 
 		$se_data = $p->parts[0]->se_data; 
 
@@ -147,7 +163,9 @@ class PartsController extends Controller {
 		$rohs   = $se_data->RoHS;
 		$href   = " href='" . $se_data->Datasheet . "'";
 		$target = " target='_blank'";
-		$lifeCycle = "<span id='lifeCycle'>" . (trim($se_data->Lifecycle) ? trim($se_data->Lifecycle) : "n/a" ) . '</span>';
+		//$lifeCycle = "<span id='lifeCycle'>" . (trim($se_data->Lifecycle) ? trim($se_data->Lifecycle) : "n/a" ) . '</span>';
+
+		$lifeCycle = trim($se_data->Lifecycle) ? trim($se_data->Lifecycle) : "n/a";
 
 
 		// --------------------------------------------- Links, Misc
@@ -160,7 +178,7 @@ class PartsController extends Controller {
 		$rows = '';
 		$rows .= "<tr> <td>Tech Note:</td><td><span id='tech_note_span' class='tn'>"     . $tech_note      . "</span></td> </tr>";		
 		
-		$rows .= "<tr> <td>Lifecycle:</td><td>"     . $lifeCycle      . "</td> </tr>";
+		$rows .= "<tr> <td>Lifecycle:</td><td><span id='lifeCycle' >" . $lifeCycle  . "</span></td> </tr>";
 
 		$rows .= "<tr> <td>Manufacturer:</td><td>"  . $p->parts[0]->manufacturer . "</td> </tr>";
 		$rows .= "<tr> <td>Supplier:</td><td>"      . $p->parts[0]->supplier     . "</td> </tr>";
@@ -171,36 +189,50 @@ class PartsController extends Controller {
 		$rows .= "<tr> <td>Test Level:</td><td>"     . $test_level     . "</td> </tr>";	
 		$rows .= "<tr> <td>MPQ:</td><td>"            . $mpq            . "</td> </tr>";
 		$rows .= "<tr> <td>Carrier Type:</td><td>"   . $carrier        . "</td> </tr>";
+		$rows .= "<tr> <td>Item Status:</td><td>"    . $part_status    . "</td> </tr>";
 
 		$tableDetails = $tStart1 . $rows . $tEnd;
 
-		// ------------------------------------------------ Add to Quote
-		$caption = "<span style='color: black; font-size: .9em;'>Total Qty Available: </span><span style='font-size: .9em;color: red; font-weight: bold;'>" . number_format($p->parts[0]->total_qty_for_part) . "</span>";
+		if ( $_itemIsBuildToOrder ) {
+			pDebug('formatDialog() - item is Build to Order: ', $data);
+			$pricing_table = '';
+		}
+		else {
+			// ------------------------------------------------ Add to Quote
+			$caption = "<span style='color: black; font-size: .9em;'>Total Qty Available: </span><span style='font-size: .9em;color: red; font-weight: bold;'>" . number_format($p->parts[0]->total_qty_for_part) . "</span>";
 
-		$tStart2 = "<table id='table_AddToQuote'><caption style='text-align: right;'>$caption</caption>";
-		$pricingtHeader = "<tr><th>Volume</th><th>Unit Price</th><th>Quantity</th><th>SubTotal</th></tr>";
-		$tEnd = "</table>";
+			$tStart2 = "<table id='table_AddToQuote'><caption style='text-align: right;'>$caption</caption>";
+			$pricingtHeader = "<tr><th>Volume</th><th>Unit Price</th><th>Quantity</th><th>SubTotal</th></tr>";
+			$tEnd = "</table>";
 
-		$dpf = Yii::app()->params['DISTRIBUTOR_PRICE_FLOOR'];   // .75
-		$min_custom_price =  money_format("$%6.2n", $p->parts[0]->distributor_price * $dpf );  
-		
-		$pRows  = '';
-		$pRows .= "<tr style='font-size: .8em;' ><td>1-24</td>    <td><span id='price_1_24'>" .  money_format("$%6.2n", trim(floatval($p->parts[0]->prices->p1_24)))          .  "</span></td><td><input type='text' size='7' id='qty_1_24'>    </td><td><span id='subTotal_1_24'>    </span></td></tr>";	
-		$pRows .= "<tr style='font-size: .8em;' ><td>25-99</td>   <td><span id='price_25_99'>" .  money_format("$%6.2n", trim(floatval($p->parts[0]->prices->p25_99)))        .  "</span></td><td><input type='text'        size='7' id='qty_25_99'>   </td><td><span id='subTotal_25_99'>   </span></td></tr>";	
-		$pRows .= "<tr style='font-size: .8em;' ><td>100-499</td> <td><span id='price_100_499'>" .  money_format("$%6.2n", trim(floatval($p->parts[0]->prices->p100_499)))    .  "</span></td><td><input type='text'        size='7' id='qty_100_499'> </td><td><span id='subTotal_100_499'> </span></td></tr>";		
-		$pRows .= "<tr style='font-size: .8em;' ><td>500-999</td> <td><span id='price_500_999'>" .  money_format("$%6.2n", trim(floatval($p->parts[0]->prices->p500_999)))    .  "</span></td><td><input type='text'        size='7' id='qty_500_999'> </td><td><span id='subTotal_500_999'> </span></td></tr>";	
-		$pRows .= "<tr style='font-size: .8em;' ><td>1000+ </td>   <td><span id='price_1000_Plus'>" .  money_format("$%6.2n", trim(floatval($p->parts[0]->prices->over_1000)))   .  "</span></td><td><input type='text'        size='7' id='qty_1000_Plus'>   </td><td><span id='subTotal_1000_Plus'>   </span></td></tr>";	
-		$pRows .= "<tr style='font-size: .8em;' ><td style='font-weight: bold;'>Distributor</td>   <td><span id='price_Base'>" .  money_format("$%6.2n", trim(floatval($p->parts[0]->distributor_price)))          .  "</span></td><td><input type='text' size='7' id='qty_Base'>     </td><td><span id='subTotal_Base'>     </span></td></tr>";	
-		$pRows .= "<tr style='font-size: .8em;' ><td style='font-weight: bold;'>Custom</td>   <td> <input type='text' size='7' id='price_Custom'></td><td><input type='text' size='7' id='qty_Custom'> </td><td><span id='subTotal_Custom'>   </span></td></tr>";	
-		$pRows .= "<tr style='font-size: .8em;' ><td colspan='4' style='padding: 10px 0px 10px 0px; background-color: lightyellow; color: #a31128; font-weight: bold;'>NOTE: <span style='padding: 20px 0px 20px 0px;color: #a31128; font-weight: normal;'>Approval is needed if custom price is less than <span id='min_custom_price' style='color: blue;'>$min_custom_price</span> <br /> (".($dpf*100)."% of Distributor Price) </span></td></tr>";
-		$pRows .= "<tr style='font-size: .8em;' ><td colspan='4'><textarea rows='4' cols='45' name='comments' id='comments' placeholder='Add comments...'></textarea></td></tr>";
+			$dpf = Yii::app()->params['DISTRIBUTOR_PRICE_FLOOR'];   // .75
+			$min_custom_price =  money_format("$%6.2n", $p->parts[0]->distributor_price * $dpf );  
+			
+			$pRows  = '';
+			$pRows .= "<tr style='font-size: .8em;' ><td>1-24</td>    <td><span id='price_1_24'>" .  money_format("$%6.2n", trim(floatval($p->parts[0]->prices->p1_24)))          .  "</span></td><td><input type='text' size='7' id='qty_1_24'>    </td><td><span id='subTotal_1_24'>    </span></td></tr>";	
+			$pRows .= "<tr style='font-size: .8em;' ><td>25-99</td>   <td><span id='price_25_99'>" .  money_format("$%6.2n", trim(floatval($p->parts[0]->prices->p25_99)))        .  "</span></td><td><input type='text'        size='7' id='qty_25_99'>   </td><td><span id='subTotal_25_99'>   </span></td></tr>";	
+			$pRows .= "<tr style='font-size: .8em;' ><td>100-499</td> <td><span id='price_100_499'>" .  money_format("$%6.2n", trim(floatval($p->parts[0]->prices->p100_499)))    .  "</span></td><td><input type='text'        size='7' id='qty_100_499'> </td><td><span id='subTotal_100_499'> </span></td></tr>";		
+			$pRows .= "<tr style='font-size: .8em;' ><td>500-999</td> <td><span id='price_500_999'>" .  money_format("$%6.2n", trim(floatval($p->parts[0]->prices->p500_999)))    .  "</span></td><td><input type='text'        size='7' id='qty_500_999'> </td><td><span id='subTotal_500_999'> </span></td></tr>";	
+			$pRows .= "<tr style='font-size: .8em;' ><td>1000+ </td>   <td><span id='price_1000_Plus'>" .  money_format("$%6.2n", trim(floatval($p->parts[0]->prices->over_1000)))   .  "</span></td><td><input type='text'        size='7' id='qty_1000_Plus'>   </td><td><span id='subTotal_1000_Plus'>   </span></td></tr>";	
+			$pRows .= "<tr style='font-size: .8em;' ><td style='font-weight: bold;'>Distributor</td>   <td><span id='price_Base'>" .  money_format("$%6.2n", trim(floatval($p->parts[0]->distributor_price)))          .  "</span></td><td><input type='text' size='7' id='qty_Base'>     </td><td><span id='subTotal_Base'>     </span></td></tr>";	
+			$pRows .= "<tr style='font-size: .8em;' ><td style='font-weight: bold;'>Custom</td>   <td> <input type='text' size='7' id='price_Custom'></td><td><input type='text' size='7' id='qty_Custom'> </td><td><span id='subTotal_Custom'>   </span></td></tr>";	
+			
+			$pRows .= "<tr style='font-size: .8em;' ><td colspan='4' style='padding: 10px 0px 10px 0px; background-color: lightyellow; color: #a31128; font-weight: bold;'>NOTE: <span style='padding: 20px 0px 20px 0px;color: #a31128; font-weight: normal;'>Approval is needed if custom price is less than <span style='color: blue;'>$min_custom_price</span> <br /> (".($dpf*100)."% of Distributor Price) </span></td></tr>";
+
+			$pRows .= "<tr style='font-size: .8em;' ><td colspan='4'><textarea rows='4' cols='45' name='comments' id='comments' placeholder='Add comments...'></textarea></td></tr>";
+
+			$pricing_table = $tStart2  .  $pricingtHeader  .  $pRows  .  $tEnd ;
+		}
 
 		$hiddenValues  = '';
+		$hiddenValues .= "<input type='hidden' name='distributor_price' id='distributor_price' value='". $p->parts[0]->distributor_price  . "'  >";
+		$hiddenValues .= "<input type='hidden' name='lifeCycle'         id='lifeCycle'         value='". $lifeCycle                       . "'  >";
+
 		$hiddenValues .= "<input type='hidden' name='manufacturer' id='manufacturer' value='".$p->parts[0]->manufacturer."'  >";
 		$hiddenValues .= "<input type='hidden' name='total_qty_for_part' id='total_qty_for_part' value='".$p->parts[0]->total_qty_for_part."'  >";
 		$hiddenValues .= "<input type='hidden' name='distributor_price_floor' id='distributor_price_floor' value='".Yii::app()->params['DISTRIBUTOR_PRICE_FLOOR']."' >";
 		
-		$pricing_table = $tStart2  .  $pricingtHeader  .  $pRows  .  $tEnd ;
+		
 
 		// --------------------------------------------- Last piece
 		$html = $js . $css . $tHeader . $tableStockCodes .  $spacingDiv . $tableDetails . $hiddenValues . $pricing_table; 

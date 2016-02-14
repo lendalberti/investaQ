@@ -217,7 +217,8 @@ span.open_close:hover {
 					    </table>
 					</div>
 
-					<span id ='span_SelectSource' style='padding-left: 50px; font-weight: bold;'><span class='required'> * </span>Source
+					<div style='width: 100%; border: 0px solid green; text-align: center;'>
+						<span id='span_SelectSource'><span class='required'> * </span>Opportunity Source
 							<select name='Quotes[source_id]' id='Quotes_source_id'>
 								<?php
 									echo "<option value='0'></option>";
@@ -226,11 +227,15 @@ span.open_close:hover {
 									}
 								?>
 							</select>
-					</span>
+						</span>
+					</div>
 				</div>
 			</div>
 
-			<div id='div_ContinueReset' style='padding: 20px;'> <input type='submit' value='Continue'> <span id='reset_form'>Reset Form</span> </div>
+			<div id='div_ContinueReset' style='padding: 20px;'> 
+				<input type='submit' value='Continue'> 
+															<span id='cancel_Start'>Cancel</span> <span id='reset_form'>Reset Form</span> 
+			</div>
 											
 		</div>    <!-- end of QuoteView_Tabs -->
 

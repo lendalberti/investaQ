@@ -119,9 +119,23 @@
 				    </table>
 			    </div>
 
-			    <span style='padding-left: 50px; font-weight: bold;'><span class='required'> * </span>Contact Source
+			    <div style='width: 100%; border: 0px solid green; text-align: center;'>
+					<span id='span_SelectSource'><span class='required'> * </span>Opportunity Source
+						<select name='Quotes[source_id]' id='Quotes_source_id'>
+							<?php
+								echo "<option value='0'></option>";
+								foreach( $data['sources'] as $c ) {
+									echo "<option value='".$c->id."'>".$c->name."</option>";
+								}
+							?>
+						</select>
+					</span>
+				</div>
+
+
+			    <!-- <span style='padding-left: 50px; font-weight: bold;'><span class='required'> * </span>Contact Source
 					<select name='Quotes[source_id]' id='Quotes_source_id'>
-						<?php
+						< ?php
 							echo "<option value='0'></option>";
 							foreach( $data['sources'] as $c ) {
 								$selected = ($c->id == $source_id ? 'selected' : null );
@@ -129,7 +143,7 @@
 							}
 						?>
 					</select>
-				</span>
+				</span> -->
 
 			</div>
 		</div>
