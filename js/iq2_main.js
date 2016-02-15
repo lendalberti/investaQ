@@ -1270,8 +1270,10 @@ $(document).ready(function() {
                                         data: info, 
                                         dataType: "json",
                                         success: function(data) {
-                                            console.log("iq2_main_js, AJAX Post: Success - item_id=" + data.item_id);
-                                            alert("Your Customer Quote has been updated.");
+                                            console.log("openQuoteDialog() - AJAX Post: Success - item_id=[" + data.item_id + "] added to Quote.");
+                                            Cookies.set('item_added', 1);
+                                            location.reload();
+                                            
                                         },
                                         error: function (jqXHR, textStatus, errorThrown)  {
                                             console.log("iq2_main_js, AJAX Post: FAIL! error:"+errorThrown);

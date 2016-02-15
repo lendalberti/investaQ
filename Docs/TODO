@@ -1,12 +1,38 @@
 
 +---------------------+
+|  Mon Feb. 15, 2016  |
++---------------------+
+
+		
+	[x] if part needs to be approved, doesn't get added/displayed 
+		in items table until page gets refreshed
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
++---------------------+
 |  Fri Jan. 29, 2016  |
 +---------------------+
 
 	[ ] on quotes/view?id=xxx
-		[ ] - add link for 'add part(s)' to quote
+		[x] - add link for 'add part(s)' to quote
 		[x] - edit
-		[ ] - delete
+		[x] - delete
 
 	[ ] need to ?
    
@@ -211,7 +237,7 @@
 
 	[x] search on index page (dataTables) not working
 
-	[ ] fix My Quotes Board
+	[x] fix My Quotes Board
 
 
 	[x] define in 'types' table correct values for:

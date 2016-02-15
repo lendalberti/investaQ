@@ -216,26 +216,28 @@
 							</thead>
 							<tbody>
 									<?php
-										foreach( $data['items'] as $i ) {
-											echo '<tr>';
-											echo '<td>' . $i['part_no'] . '</td>';
-											echo '<td>' . $i['manufacturer'] . '</td>';
-											echo '<td>' . $i['lifecycle'] . '</td>'; 
-											echo '<td>' . $i['available'] . '</td>'; 
-											echo '<td>' . $i['qty'] . '</td>';
+										if ( $data['items'] ) {
+											foreach( $data['items'] as $i ) {
+												echo '<tr>';
+												echo '<td>' . $i['part_no'] . '</td>';
+												echo '<td>' . $i['manufacturer'] . '</td>';
+												echo '<td>' . $i['lifecycle'] . '</td>'; 
+												echo '<td>' . $i['available'] . '</td>'; 
+												echo '<td>' . $i['qty'] . '</td>';
 
-											echo '<td>' . $i['price'] . '</td>';
-											echo '<td><span class="volume">' . $i['volume'] . '</span></td>'; 
+												echo '<td>' . $i['price'] . '</td>';
+												echo '<td><span class="volume">' . $i['volume'] . '</span></td>'; 
 
-											echo '<td>' . $i['total'] . '</td>';
-											if ( $i['approval_needed'] == 1 ) {
-												echo "<td><img id='item_approve_" . $i['id'] . "' title='Approve this item'  src='$exclamation' width='20' height='20' /></td>";
+												echo '<td>' . $i['total'] . '</td>';
+												if ( $i['approval_needed'] == 1 ) {
+													echo "<td><img id='item_approve_" . $i['id'] . "' title='Approve this item'  src='$exclamation' width='20' height='20' /></td>";
+												}
+												else {
+													echo '<td></td>';
+												}
+												echo '<td>' . $i['comments'] . '</td>';
+												echo '</tr>';
 											}
-											else {
-												echo '<td></td>';
-											}
-											echo '<td>' . $i['comments'] . '</td>';
-											echo '</tr>';
 										}
 									?>
 							</tbody>

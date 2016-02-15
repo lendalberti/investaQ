@@ -189,38 +189,40 @@
 								</thead>
 								<tbody>
 										<?php
-											foreach( $data['items'] as $i ) {
-												echo '<tr id="item_row_'.$i['id'].'">';
-												
-												if ( Yii::app()->user->isAdmin || $i['approval_needed'] == 0 ) {
-													echo "<td style='font-size: .9em; padding: 2px;'><img id='item_edit_"  . $i['id'] . "' title='Edit this item'    src='$edit' width='16' height='16' />";
-													echo "<img id='item_trash_" . $i['id'] . "' title='Delete this item'  src='$trash' width='16' height='16' /></td>";
-												}
-												else {
-													echo '<td></td>';
-												}
+											if ( $data['items'] ) {
+												foreach( $data['items'] as $i ) {
+													echo '<tr id="item_row_'.$i['id'].'">';
+													
+													if ( Yii::app()->user->isAdmin || $i['approval_needed'] == 0 ) {
+														echo "<td style='font-size: .9em; padding: 2px;'><img id='item_edit_"  . $i['id'] . "' title='Edit this item'    src='$edit' width='16' height='16' />";
+														echo "<img id='item_trash_" . $i['id'] . "' title='Delete this item'  src='$trash' width='16' height='16' /></td>";
+													}
+													else {
+														echo '<td></td>';
+													}
 
-												echo '<td>' . $i['part_no'] . '</td>';
-												echo '<td>' . $i['manufacturer'] . '</td>';
+													echo '<td>' . $i['part_no'] . '</td>';
+													echo '<td>' . $i['manufacturer'] . '</td>';
 
-												echo '<td>' . $i['lifecycle'] . '</td>'; 
-												echo '<td>' . $i['available'] . '</td>';  
+													echo '<td>' . $i['lifecycle'] . '</td>'; 
+													echo '<td>' . $i['available'] . '</td>';  
 
-												echo '<td>' . $i['qty'] . '</td>';
-												echo '<td>' . $i['price'] . '</td>';
-												echo '<td><span class="volume">' . $i['volume'] . '</span></td>';
-												echo '<td>' . $i['total'] . '</td>';
+													echo '<td>' . $i['qty'] . '</td>';
+													echo '<td>' . $i['price'] . '</td>';
+													echo '<td><span class="volume">' . $i['volume'] . '</span></td>';
+													echo '<td>' . $i['total'] . '</td>';
 
-												if ( $i['approval_needed'] == 1 ) {
-													echo "<td ><img id='item_approve_" . $i['id'] . "' title='Waiting for approval'  src='$exclamation' width='20' height='20' /></td>";
+													if ( $i['approval_needed'] == 1 ) {
+														echo "<td ><img id='item_approve_" . $i['id'] . "' title='Waiting for approval'  src='$exclamation' width='20' height='20' /></td>";
+													}
+													else {
+														echo '<td></td>';
+													}
+													
+													echo '<td style="text-align:left:">' . $i['comments'] . '</td>';
+													
+													echo '</tr>';
 												}
-												else {
-													echo '<td></td>';
-												}
-												
-												echo '<td style="text-align:left:">' . $i['comments'] . '</td>';
-												
-												echo '</tr>';
 											}
 										?>
 								</tbody>

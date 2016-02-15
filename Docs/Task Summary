@@ -25,8 +25,8 @@ New UI
 
 	[x] set blank as first option in select boxes on form
 
-	[ ] on table_CurrentParts include column for 'LifeCycle' (obsolete, active, etc.)
-		[ ] need this for determining whether approval is needed
+	[x] on table_CurrentParts include column for 'LifeCycle' (obsolete, active, etc.)
+		[x] need this for determining whether approval is needed
 				- if Active, needs approval if less than distributor price
 				- otherwise, need approval if less than 75% of distributor price
 
@@ -46,10 +46,7 @@ New UI
 
 	[x] when part gets added to table from Dialog, table format is messed up
 	[x] duplicate messages of 'Updated...' when you click on 'Save Changes'
-		
-	[ ] if part needs to be approved, doesn't get added/displayed in items table
-		until page gets refreshed
-
+	
 	[x] while in the process of adding an item, if you 'delete' another item, you get error (still deletes though)
 		
 	[x] after adding part, loses the item_edit event on that item
@@ -61,9 +58,9 @@ New UI
 
 	[ ] verify that Quote No. is getting generated properly
 
-	[ ] Opportunity Source not getting set on 'edit' click... (name changed?)
+	[x] Opportunity Source not getting set on 'edit' click... (name changed?)
 
-	[ ] add 'needs_approval' column in stock_items
+	[x] add 'needs_approval' column in stock_items
 
 
 	 

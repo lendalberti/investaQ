@@ -155,7 +155,7 @@
 	<?php } ?>
 		
 
-	<span id='witty_saying'>... will I be content with mediocrity.</span>
+	<span id='witty_saying'>...will I allow my competitor to take care of my customer.</span>
 
 	<?php echo $content; ?>
 

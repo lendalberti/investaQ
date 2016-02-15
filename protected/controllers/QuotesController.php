@@ -577,6 +577,18 @@ class QuotesController extends Controller
 			$data['sources']  = Sources::model()->findAll( array('order' => 'name') );
 			$data['status']   = Status::model()->findAll();
 
+
+
+
+
+			pDebug('actionUpdate() - data[items]=', $data['items']);
+
+
+
+
+
+
+
 			$this->render('update',array(
 				'data'=>$data,
 			));
