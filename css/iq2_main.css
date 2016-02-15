@@ -1,4 +1,190 @@
 
+#containerDiv {
+  position: relative;
+  height: 25px; 
+  border: 0px solid blue;
+  margin-top: 15px;
+}
+
+#leftDiv {
+   position: absolute;
+   top: 5px;
+   left: 5px;
+   border: 0px solid green;
+}
+
+#leftDiv > span {
+	font-weight: bold; 
+	font-size: 1.2em;'
+}
+
+#leftDiv > span:nth-child(2)  {
+	color: red;
+	font-size: 1.2em;
+}
+
+#rightDiv {
+   position: absolute;
+   top: 10px;
+   right: 5px;
+   border: 0px solid orange;
+}
+
+#rightDiv > span {
+	font-weight: bold; 
+	font-size: .9em;
+
+}
+
+#rightDiv > span:nth-child(2) {
+ 	font-size: .9em;
+ 	color: red;
+ 	font-weight: normal; 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#details_right_comments {
+	margin: 10px 30px 0px 0px;
+	float: right;
+}
+
+
+
+#new_details_section {
+	margin-top: 10px;
+	width: 80%;
+	/*margin: 0 auto; */
+	height: auto;
+	border: 1px solid red;
+}
+
+
+
+#details_left > table > tbody > tr > td:nth-child(1) {
+	font-weight: bold;
+	text-align: right;
+}
+
+#item_details {
+	display: none;
+	margin-top: 10px;
+}
+
+#details_left > table > tbody > tr > th,
+#details_right > table > tbody > tr > th {
+	background-color: #eeeeee;
+	font-weight: normal;
+	font-size: .8em;
+}
+
+#details_left {
+	float: left;
+	width: 45%;
+	border: 1px solid lightgray;
+	margin-left: 30px;
+}
+
+
+#details_right {
+	float: right;
+	width: 45%;
+	border: 1px solid lightgray;
+	margin-right: 30px;
+	overflow-y: scroll;
+	height: 150px;
+}
+
+
+#link_QuoteHistory {
+	padding-left: 20px;
+}
+
+#link_SalesHistory {
+	padding-left: 70px;
+}
+
+#link_DataSheet {
+	 padding-left: 70px; 
+}
+
+
+#link_QuoteHistory > a, 
+#link_SalesHistory > a, 
+#link_DataSheet > a {
+	color: #12749D;
+	cursor: pointer;
+	font-size: .8em;
+	font-weight: bold;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .dataTables_wrapper {
 	padding-top: 50px;
 }
@@ -381,16 +567,15 @@ div.form {
 	display: none;
 }
 
-#table_CurrentParts > thead > tr > th:nth-child(7) {
-	text-align: center;
-}
+
 #table_CurrentParts > thead > tr > th {
-	background: #E6E6E6;
-	color: black;
+	background: #5e6e78;
+	color: white;
 	font-size: .8em;
 	padding: 5px;
 	height: 20px;
 	text-align: center;
+	font-variant: small-caps;
 }
 
 
@@ -406,13 +591,16 @@ div.form {
 	text-align: center;
 }
 
-
+/* this used to be for comments 
 #table_CurrentParts > tbody > tr > td:nth-last-child(1) {
 	padding-left: 20px;
-	width: 150px;
+	width: 150px; - 
 	text-align: left;
 	padding-top: 5px;
 }
+*/
+
+
 
 #table_CurrentParts > tbody > tr  {
 	height: 30px;

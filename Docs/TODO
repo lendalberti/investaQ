@@ -7,12 +7,20 @@
 	[x] if part needs to be approved, doesn't get added/displayed 
 		in items table until page gets refreshed
 
+	[ ] Quote status should depend on individual items
+		- as items get approved, change status if there are no more to be approved
 
+	[ ] should be able to edit other items on quote that
+		don't need approval
 
+    [ ] user needs to be able to edit custom price
 
+    [ ] when approver views items on a quote that needs approval, 
+    	- clicking on item brings up popup with part details
+    	- clicking on 'edit item' shows 'approve'/'reject' icon (thumbs up/down?)
 
-
-
+    [ ] on edit item page, change input to textarea and show previous comments, 
+        then append any new ones (prefix with name:)
 
 
 

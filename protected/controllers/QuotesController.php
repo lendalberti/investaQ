@@ -217,6 +217,8 @@ class QuotesController extends Controller
 		$data['items'] = array();
 		$data['items'] = $this->getItemsByQuote($quote_id);
 
+		pDebug('Quotes::actionView() - data[items]=', $data['items']);
+
 		$this->render('view',array(
 			'data'=>$data,
 		));
@@ -316,6 +318,16 @@ class QuotesController extends Controller
 		}
 	}
 
+	private function getTimeStamp() {
+
+		//  &#13;&#10;[2016-02-16 11:30:05] Len D'Alberti&#13;&#10;
+
+		$u = Yii::app()->user->fullname;
+		$t = Date('D Y-m-d h:i:s');
+
+		return "[$t] $u";
+	}
+
 
 	public function actionPartsUpdate() 	{
 		pTrace( __METHOD__ );
@@ -323,14 +335,10 @@ class QuotesController extends Controller
 
 		try {
 			
-			
 			if ( isset($_POST['item_id']) ) {   // editing Inventory Item
 				pDebug( "actionPartsUpdate() - editing Inventory item: _POST=", $_POST ); 
 				$modelStockItem = StockItems::model()->findByPk( $_POST['item_id']);
-
 				
-				$modelStockItem->setAttribute("comments",$_POST['item_comments']);
-
 				preg_match('/^item_price_(.+)$/', $_POST['item_volume'], $match); 
 				$volume = $match[1]; 
 				pDebug("volume=[$volume]");
@@ -343,8 +351,10 @@ class QuotesController extends Controller
 				$modelStockItem->setAttribute( 'qty_Base', '' );
 				$modelStockItem->setAttribute( 'qty_Custom', '' ); 
 
-				$modelStockItem->setAttribute( 'qty_'    .$volume, $_POST['item_qty'] );
-				$modelStockItem->setAttribute( 'comments',         $_POST['item_comments'] );
+				$modelStockItem->setAttribute( 'qty_'. $volume, $_POST['item_qty'] );
+
+				$old_comments = $modelStockItem->comments;
+				$modelStockItem->setAttribute( 'comments', $this->getTimeStamp() . "\n....." . $_POST['item_comments'] . "\n\n" . $old_comments );
 
 				pDebug( "actionPartsUpdate() - updating Inventory Item with the following attributes: ", $modelStockItem->attributes );
 
@@ -453,23 +463,25 @@ class QuotesController extends Controller
 				return;
 			}
 
-			if ( isset($_POST['newQuoteStatus']) && Yii::app()->user->isAdmin ) {  // should only be Admin updating status
-				$quoteModel = $this->loadModel($quote_id);
-				$oldQuoteStatus = $quoteModel->status->name;
+			// TODO - only way to change status is to approve ALL items on same quote
+			//
+			// if ( isset($_POST['newQuoteStatus']) && Yii::app()->user->isAdmin ) {  // should only be Admin updating status
+			// 	$quoteModel = $this->loadModel($quote_id);
+			// 	$oldQuoteStatus = $quoteModel->status->name;
 
-				$quoteModel->status_id = $_POST['newQuoteStatus'];
-				if ($quoteModel->save()) {
-					$new_quoteModel = $this->loadModel($quote_id);
-					pDebug("Changed quote status from [$oldQuoteStatus] to [" . $new_quoteModel->status->name . "]" );
-					notifySalespersonStatusChange($quoteModel);
-					echo Status::SUCCESS;
-				}
-				else {
-					pDebug("actionUpdate() - can't update quote status; error=", $quoteModel->errors );
-					echo Status::FAILURE;
-				}
-				return;
-			}
+			// 	$quoteModel->status_id = $_POST['newQuoteStatus'];
+			// 	if ($quoteModel->save()) {
+			// 		$new_quoteModel = $this->loadModel($quote_id);
+			// 		pDebug("Changed quote status from [$oldQuoteStatus] to [" . $new_quoteModel->status->name . "]" );
+			// 		notifySalespersonStatusChange($quoteModel);
+			// 		echo Status::SUCCESS;
+			// 	}
+			// 	else {
+			// 		pDebug("actionUpdate() - can't update quote status; error=", $quoteModel->errors );
+			// 		echo Status::FAILURE;
+			// 	}
+			// 	return;
+			// }
 
 			// validate source id > 0
 			if ( $_POST['Quotes']['source_id'] == 0 ) {
@@ -556,9 +568,12 @@ class QuotesController extends Controller
 		}
 		else {
 			$data['model'] = $this->loadModel($quote_id);
-			if ( $data['model']->status_id != Status::DRAFT && $data['model']->status_id != Status::REJECTED && !Yii::app()->user->isAdmin  ) { // allow for edits only for draft,rejected quotes
-				$this->redirect(array('index'));
-			}
+
+			// TODO - no longer needed; edits can be done on other items in quote
+			//
+			// if ( $data['model']->status_id != Status::DRAFT && $data['model']->status_id != Status::REJECTED && !Yii::app()->user->isAdmin  ) { // allow for edits only for draft,rejected quotes
+			// 	$this->redirect(array('index'));
+			// }
 			
 			$customer_id = $data['model']->customer_id;
 			$contact_id  = $data['model']->contact_id;
@@ -581,7 +596,7 @@ class QuotesController extends Controller
 
 
 
-			pDebug('actionUpdate() - data[items]=', $data['items']);
+			pDebug('Quotes::actionUpdate() - data[items]=', $data['items']);
 
 
 
@@ -593,7 +608,8 @@ class QuotesController extends Controller
 				'data'=>$data,
 			));
 		}
-	}
+	}  // END_OF_FUNCTION actionUpdate()
+
 
 
 	// -----------------------------------------------------------------------------
@@ -634,7 +650,7 @@ class QuotesController extends Controller
 			}
 		}
 
-		pDebug('Quotes:getItemsByQuote() - items:', $items );
+		pDebug('Quotes::getItemsByQuote() - items:', $items );
 		return $items;
 	}
 

@@ -5,7 +5,7 @@ class PartsController extends Controller {
 	public function accessRules() 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'search' actions
-				'actions'=>array('index','search', 'lookup'),
+				'actions'=>array('index','search', 'lookup', 'showDetails'),
 				'expression' => '$user->isLoggedIn'
 			),
 		
@@ -35,6 +35,291 @@ class PartsController extends Controller {
 
 
 
+	public function actionShowDetails( $id ) 	{
+		$model = StockItems::model()->findByPk($id);
+		$part_no = $model->part_no;
+
+		$item = urlencode($part_no);
+		$url  = 'http://mongoa/parts/*/500/?q='.$item;	  // mongoa for my local use
+		$tmp  = file_get_contents($url);
+
+		pDebug('actionShowDetails() - mongo record=', $tmp);
+		echo  $this->formatItemDetails($tmp);
+	}
+
+
+
+
+
+	private function formatItemDetails( $data ) {
+		$p = json_decode($data);
+
+		$se_data = $p->parts[0]->se_data; 
+
+		$new_details_section = "<div id='new_details_section'>"; 
+		$sectionLeft_Start = "<div id='details_left'>";
+		$sectionLeft_End   = "</div>";
+		$sectionRight_Start = "<div id='details_right'>";
+		$sectionRight_End   = "</div>";
+
+		$href   = " href='" . $se_data->Datasheet . "'";
+		$target = " target='_blank'";
+
+
+		$new_details = <<<EOT
+
+
+<div id='details_left'>
+	<table>
+		<caption>
+			<span id='link_QuoteHistory'><a href='#'>Quote History</a></span>
+			<span id='link_SalesHistory'><a href='#'>Sales History</a></span>
+			<span id='link_DataSheet'><a $href $target >DataSheet</a></span>
+		</caption>
+
+		<tr>  <td>Tech Note:</td>    	<td>n/a</td>    	</tr>
+		<tr>  <td>Lifecycle:</td>    	<td>Obsolete</td>   </tr>
+		<tr>  <td>Manufacturer:</td>    <td>ANA/td>    		</tr>
+		<tr>  <td>Supplier:</td>    	<td>ANA</td>   	 	</tr>
+		<tr>  <td>Drawing:</td>    		<td>TR 3000</td>    </tr>
+		<tr>  <td>Description:</td>    	<td>LDO Regulator Pos 2.5V 0.6A 8-Pin MSOP T/R</td>    </tr>
+		<tr>  <td>Product Family:</td>  <td>ADP3333</td>    </tr>
+		<tr>  <td>Test Level:</td>    	<td>n/a</td>    	</tr>
+		<tr>  <td>MPQ:</td>    			<td>3000</td>    	</tr>
+		<tr>  <td>Carrier Type:</td>    <td>REEL</td>    	</tr>
+		<tr>  <td>Item Status:</td>    	<td>Stock</td>   	</tr>
+	</table>
+</div>
+
+<div id='details_right'>
+	<table>
+		<tr>  <th>Stock Code</th>  <th>Warehouse</th>  <th>Date Code</th>  <th>Tech Notes</th>  <th>Qty Available</th> </tr>
+		<tr>  <td>1090245G</td>    <td>04</td>         <td>0604</td>       <td>n/a</td>         <td>3,000</td>   </tr>
+		<tr>  <td>1090245G</td>    <td>04</td>         <td>0604</td>       <td>n/a</td>         <td>3,000</td>   </tr>
+		<tr>  <td>1090245G</td>    <td>04</td>         <td>0604</td>       <td>n/a</td>         <td>3,000</td>   </tr>
+		<tr>  <td>1090245G</td>    <td>04</td>         <td>0604</td>       <td>n/a</td>         <td>3,000</td>   </tr>
+		<tr>  <td>1090245G</td>    <td>04</td>         <td>0604</td>       <td>n/a</td>         <td>3,000</td>   </tr>
+		<tr>  <td>1090245G</td>    <td>04</td>         <td>0604</td>       <td>n/a</td>         <td>3,000</td>   </tr>
+		<tr>  <td>1090245G</td>    <td>04</td>         <td>0604</td>       <td>n/a</td>         <td>3,000</td>   </tr>
+		<tr>  <td>1090245G</td>    <td>04</td>         <td>0604</td>       <td>n/a</td>         <td>3,000</td>   </tr>
+		<tr>  <td>1090245G</td>    <td>04</td>         <td>0604</td>       <td>n/a</td>         <td>3,000</td>   </tr>
+		<tr>  <td>1090245G</td>    <td>04</td>         <td>0604</td>       <td>n/a</td>         <td>3,000</td>   </tr>
+		<tr>  <td>1090245G</td>    <td>04</td>         <td>0604</td>       <td>n/a</td>         <td>3,000</td>   </tr>
+		<tr>  <td>1090245G</td>    <td>04</td>         <td>0604</td>       <td>n/a</td>         <td>3,000</td>   </tr>
+		<tr>  <td>1090245G</td>    <td>04</td>         <td>0604</td>       <td>n/a</td>         <td>3,000</td>   </tr>
+		<tr>  <td>1090245G</td>    <td>04</td>         <td>0604</td>       <td>n/a</td>         <td>3,000</td>   </tr>
+		<tr>  <td>1090245G</td>    <td>04</td>         <td>0604</td>       <td>n/a</td>         <td>3,000</td>   </tr>
+		<tr>  <td>1090245G</td>    <td>04</td>         <td>0604</td>       <td>n/a</td>         <td>3,000</td>   </tr>
+		<tr>  <td>1090245G</td>    <td>04</td>         <td>0604</td>       <td>n/a</td>         <td>3,000</td>   </tr>
+		<tr>  <td>1090245G</td>    <td>04</td>         <td>0604</td>       <td>n/a</td>         <td>3,000</td>   </tr>
+		<tr>  <td>1090245G</td>    <td>04</td>         <td>0604</td>       <td>n/a</td>         <td>3,000</td>   </tr>
+	</table>
+
+
+</div>
+
+
+	<div id='details_right_comments'>
+
+		<textarea rows="10" cols="49" name="comments" id="comments">
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+		</textarea>  
+
+	</div>
+
+
+
+EOT;
+
+		echo $new_details;
+
+		
+
+
+
+
+
+
+		// $fixedHeading = "<table id='table_fixedHeading'><tr>";
+		// $fixedHeading .= "<th>Stock Code</th> ";
+		// $fixedHeading .= "<th>Warehouse</th>"; 
+		// $fixedHeading .= "<th>Date Code</th>";
+		// $fixedHeading .= "<th>&#10004;</th>";
+		// $fixedHeading .= "<th>Tech Notes</th>";
+		// $fixedHeading .= "<th>Qty Available</th>";  
+		// $fixedHeading .= "</tr></table>";	
+
+		// $tStart0  = $fixedHeading . "<div id='div_StockCodes'><table id='table_StockCodes'>"; 
+		// $tEnd     = "</table></div>";
+
+		// foreach( $sc_Arr as $i => $v ) {
+		// 	foreach( $v->warehouses as $ii => $WH) {
+		// 		$display = ( $ii == 0 ? '' : 'style="color: lightgray;"' );
+		// 		$rows .= '<tr><td class="stock_code_selected" '. $display .'>'. $v->stock_code.'</td>';
+		// 		$rows .= '<td class="warehouse_selected">'.$WH->warehouse.'</td>';
+		// 		$rows .= '<td class="date_code_selected">'.$WH->date_code.'</td>';
+		// 		$rows .= '<td class="row_selected"></td>';
+				
+		// 		if ( $WH->notes == 'T' ) {
+		// 			$note = '<span class="view_tech_notes">view</span>';
+		// 			$techNotes = $v->tech_notes;
+		// 			$hiddenTechNotes .= "<input type='hidden' value='[StockCode=".$v->stock_code."]<br />".$techNotes."' id='tech_note_".$v->stock_code."' />";
+		// 		}
+		// 		else {
+		// 			$note = 'n/a';
+		// 		}
+		// 		$rows .= '<td class="notes_selected">'.$note.'</td>';
+		// 		$rows .= '<td class="qty_available_selected">'. $WH->qty_available .'</td></tr>';
+		// 	}
+		// };
+		// $tableStockCodes =  $tStart0 . $rows . $tEnd . $hiddenTechNotes;
+
+
+
+
+
+	}
+
+
+
+
+	// --------------------------------------------------------------------------
+	private function formatItemDetails_OLD( $data ) {
+		$p       = json_decode($data);
+
+		$sectionLeft_Start = "<div id='details_left'>";
+		$sectionLeft_End   = "</div>";
+		$sectionRight_Start = "<div id='details_right'>";
+		$sectionRight_End   = "</div>";
+
+
+		$sc_Arr  = $p->parts[0]->stock_codes;
+
+		if ( $p->parts[0]->build == 1 ) {
+			$part_status = 'Build to Order';
+			$_itemIsBuildToOrder = true;
+		}
+		else {
+			$part_status = 'Stock';
+			$_itemIsBuildToOrder = false;
+		}
+
+		$part_status = $p->parts[0]->build == 1 ? 'Build to Order' : 'Stock';
+
+		// TODO: try to eliminate need for dialog.css by combining it with iq2_main.css
+		//
+		$css = '<style type="text/css">' . file_get_contents('http://localhost/iq2/css/dialog.css') . '</style>';
+		//$css = '<style type="text/css">' . file_get_contents('http://localhost/iq2/css/iq2_main.css') . '</style>';
+
+		$se_data = $p->parts[0]->se_data; 
+		$hiddenTechNotes = '';
+		$spacingDiv      = "<div style='height: 20px; border: 0px solid lightblue;'></div>";
+		$techNotes       = 'n/a';
+
+		$tHeader  = "<div id='containerDiv'>";
+		$tHeader .= "<div id='leftDiv'><span>Part Number: </span><span id='part_no' name='part_no'>" .          $p->parts[0]->part_number . "</span><br /></div>";
+		$tHeader .= "<div id='rightDiv'><span style='color: black; font-size: .8em; font-weight: normal;'>Total Qty Available: </span><span style='font-size: .9em;color: red; font-weight: bold;'>" . number_format($p->parts[0]->total_qty_for_part) . "</span></div>";
+		$tHeader .= "</div>";
+
+		
+
+		$fixedHeading = "<table id='table_fixedHeading'><tr>";
+		$fixedHeading .= "<th>Stock Code</th> ";
+		$fixedHeading .= "<th>Warehouse</th>"; 
+		$fixedHeading .= "<th>Date Code</th>";
+		$fixedHeading .= "<th>&#10004;</th>";
+		$fixedHeading .= "<th>Tech Notes</th>";
+		$fixedHeading .= "<th>Qty Available</th>";  
+		$fixedHeading .= "</tr></table>";		
+		$tStart0 = $fixedHeading . "<div id='div_StockCodes'><table id='table_StockCodes'>"; 
+		$tEnd = "</table></div>";
+		$rows = '';
+
+		foreach( $sc_Arr as $i => $v ) {
+			foreach( $v->warehouses as $ii => $WH) {
+				$display = ( $ii == 0 ? '' : 'style="color: lightgray;"' );
+				$rows .= '<tr><td class="stock_code_selected" '. $display .'>'. $v->stock_code.'</td>';
+				$rows .= '<td class="warehouse_selected">'.$WH->warehouse.'</td>';
+				$rows .= '<td class="date_code_selected">'.$WH->date_code.'</td>';
+				$rows .= '<td class="row_selected"></td>';
+				
+				if ( $WH->notes == 'T' ) {
+					$note = '<span class="view_tech_notes">view</span>';
+					$techNotes = $v->tech_notes;
+					$hiddenTechNotes .= "<input type='hidden' value='[StockCode=".$v->stock_code."]<br />".$techNotes."' id='tech_note_".$v->stock_code."' />";
+				}
+				else {
+					$note = 'n/a';
+				}
+				$rows .= '<td class="notes_selected">'.$note.'</td>';
+				$rows .= '<td class="qty_available_selected">'. $WH->qty_available .'</td></tr>';
+			}
+		};
+		$tableStockCodes =  $tStart0 . $rows . $tEnd . $hiddenTechNotes;
+		
+		$drawing    = $p->parts[0]->drawing            ? $p->parts[0]->drawing              : "<span class='tbd'>n/a</span>";
+		$tech_note  = 'n/a';
+		$test_level = $se_data->test_level   ? $se_data->test_level   : "<span class='tbd'>n/a</span>";
+		$mpq        = $p->parts[0]->mpq                ? $p->parts[0]->mpq                  : "<span class='tbd'>n/a</span>";
+		$carrier    = $p->parts[0]->carrier_type       ? $p->parts[0]->carrier_type         : "<span class='tbd'>n/a</span>";
+
+
+		// --------------------------------------------- Details table 
+		$pack   = ( $se_data->StandardPackageName ?  $se_data->StandardPackageName->Value : "" );
+		$pins   = ( $se_data->PinCount            ?  $se_data->PinCount->Value            : "" );
+		$desc   = $se_data->Description; 
+		$fam    = $se_data->Family;
+		$rohs   = $se_data->RoHS;
+		$href   = " href='" . $se_data->Datasheet . "'";
+		$target = " target='_blank'";
+		//$lifeCycle = "<span id='lifeCycle'>" . (trim($se_data->Lifecycle) ? trim($se_data->Lifecycle) : "n/a" ) . '</span>';
+
+		$lifeCycle = trim($se_data->Lifecycle) ? trim($se_data->Lifecycle) : "n/a";
+
+
+		// --------------------------------------------- Links, Misc
+
+		
+
+		$links  = "<span id='link_QuoteHistory'><a href='#'>Quote History</a></span>";
+		$links .= "<span id='link_SalesHistory'><a href='#'>Sales History</a></span>";     
+		$links .= "<span id='link_DataSheet'><a " . $href . $target . " >DataSheet</a></span>"; 
+
+		$tStart1 = $links . "<table id='table_Details'>"; 
+		$tEnd = "</table>";
+		$rows = '';
+		$rows .= "<tr> <td>Tech Note:</td><td><span id='tech_note_span' class='tn'>"     . $tech_note      . "</span></td> </tr>";		
+		
+		$rows .= "<tr> <td>Lifecycle:</td><td><span id='lifeCycle' >" . $lifeCycle  . "</span></td> </tr>";
+
+		$rows .= "<tr> <td>Manufacturer:</td><td>"  . $p->parts[0]->manufacturer . "</td> </tr>";
+		$rows .= "<tr> <td>Supplier:</td><td>"      . $p->parts[0]->supplier     . "</td> </tr>";
+		$rows .= "<tr> <td>Drawing:</td><td>"       . $drawing        . "</td> </tr>";				
+		$rows .= "<tr> <td>Description:</td><td>"   . $desc           . "</td> </tr>";
+		
+		$rows .= "<tr> <td>Product Family:</td><td>" . $fam            . "</td> </tr>";
+		$rows .= "<tr> <td>Test Level:</td><td>"     . $test_level     . "</td> </tr>";	
+		$rows .= "<tr> <td>MPQ:</td><td>"            . $mpq            . "</td> </tr>";
+		$rows .= "<tr> <td>Carrier Type:</td><td>"   . $carrier        . "</td> </tr>";
+		$rows .= "<tr> <td>Item Status:</td><td>"    . $part_status    . "</td> </tr>";
+
+		$tableDetails = $tStart1 . $rows . $tEnd ;
+
+		if ( $_itemIsBuildToOrder ) {
+			pDebug('formatDialog() - item is Build to Order: ', $data);
+			$pricing_table = '';
+		}
+		
+		$html = $js . $css . $tHeader . $tableStockCodes .  $spacingDiv . $tableDetails . $hiddenValues;
+		return $html;
+
+
+	}  // END_OF_FUNCTION formatItemDetails()
+
+
 
 
 
@@ -48,7 +333,7 @@ class PartsController extends Controller {
 			$url        = 'http://mongoa/parts/*/500/?q='.$item;	  // mongoa for my local use
 			$tmp        = file_get_contents($url);
 
-			pDebug('actionSearch() - mongo record=', $tmp);
+			//pDebug('actionSearch() - mongo record=', $tmp);
 			// $tmp = file_get_contents('/Users/len/www/iq2/Docs/mongo_sample_records_3333.inc');
 			
 

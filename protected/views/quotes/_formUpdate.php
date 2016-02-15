@@ -3,12 +3,12 @@
 <input type='hidden' id='return_URL' name='return_URL' value='<?php echo $_SERVER['REQUEST_URI'];  ?>'>
 
 <?php
-	if ( Yii::app()->user->isAdmin ) {
-		$status_link = "<span id='changeStatus'>".$data['model']->status->name."</span>";
-	}
-	else {
-		$status_link = $data['model']->status->name;
-	}
+	// if ( Yii::app()->user->isAdmin ) {
+	// 	$status_link = "<span id='changeStatus'>".$data['model']->status->name."</span>";
+	// }
+	// else {
+	$status_link = $data['model']->status->name;
+	// }
 ?>
 
 
@@ -184,7 +184,7 @@
 										<th > </th>
 										<th >Total</th>
 										<th></th>
-										<th >Comments</th>
+										<!-- <th >Comments</th> -->
 									</tr>
 								</thead>
 								<tbody>
@@ -219,7 +219,7 @@
 														echo '<td></td>';
 													}
 													
-													echo '<td style="text-align:left:">' . $i['comments'] . '</td>';
+													// echo '<td style="text-align:left:">' . $i['comments'] . '</td>';
 													
 													echo '</tr>';
 												}
@@ -259,7 +259,10 @@
 										<td><span id='item_price'>$ 0.00</span></td>   
 										<td><span id='item_total'>$ 0.00</span></td>   
 										<td><input id='item_comments' name='item_comments' ></td>  
-
+									</tr> 
+									<tr>
+										<td></td>   <td></td>   <td></td>   <td></td>   
+										<td><textarea readonly='readonly' rows="10" cols="55"  name="previous_comments" id="previous_comments" ></textarea></td>
 									</tr>  
 									
 								</table>

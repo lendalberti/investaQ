@@ -28,6 +28,8 @@ $(document).ready(function() {
     var lifeCycle_OBSOLETE = 'Obsolete';
     var ResultsTable       = null;
 
+    var currentItem = '';
+
 
 
     console.log('myURL=['+myURL+']');
@@ -52,6 +54,7 @@ $(document).ready(function() {
         var newIndex = ui.newTab.index();
         console.log('Switched to tab '+newIndex);
         Cookies.set('current_tab', newIndex );
+        $('#item_details').hide();
     });
 
 
@@ -135,9 +138,41 @@ $(document).ready(function() {
 
 
 	
-	//---------------------------------------------------------------------------------------------------------------------
-    //-------- Event Handlers  --------------------------------------------------------------------------------------------    
-    //---------------------------------------------------------------------------------------------------------------------
+	// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    // -------- Event Handlers  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    // $('#table_CurrentParts > tbody > tr').on('click', function() {
+    $('[id^=item_row_]').on('click', function() {
+        // alert('click on item row - display item below...');
+        //$('#item_details').toggle();
+        var tmp    =  $(this).attr('id');
+        var match  = /^.+_(\d+)$/.exec(tmp);
+        var itemID = RegExp.$1;
+
+        console.log( Date() + "currentItem=["+currentItem+"], itemID=["+itemID+"]");
+
+        if ( currentItem == itemID ) {
+            $('#item_details').toggle();
+        }
+        else {
+             $('#item_details').show();
+            $.ajax({
+                type: 'GET',
+                url: myURL + 'parts/showDetails?id=' + itemID,
+                success: function (data) {
+                    $('#item_details').html(data);
+                    currentItem = itemID;
+
+                }
+            });
+        }
+        return false;
+    });
+
+
+
+
 
     $('#cancel_Start').on('click', function() {
         window.location = myURL + 'quotes/index';
@@ -374,11 +409,13 @@ $(document).ready(function() {
     $('#quoteUpdateForm').submit(function( e ) {  // click "Save Changes"
         e.preventDefault();
 
-        if ( $('#header_QuoteNo > span').text().match(/Rejected/) ) {
-            $('#Quotes_status_id').val(STATUS_PENDING);
-            consoleDisplayFormFields($('#quoteUpdateForm'));
-            console.log('Setting quote status to "Pending Approval"');
-        }
+        // TODO - not sure we need this now...
+        //
+        // if ( $('#header_QuoteNo > span').text().match(/Rejected/) ) {
+        //     $('#Quotes_status_id').val(STATUS_PENDING);
+        //     consoleDisplayFormFields($('#quoteUpdateForm'));
+        //     console.log('Setting quote status to "Pending Approval"');
+        // }
 
         var quoteID = $('#Quotes_id').val(); 
         var postData = $(this).serialize();
@@ -729,7 +766,7 @@ $(document).ready(function() {
                                         Cookies.remove('current_tab');
                                 */
         $.ajax({
-                url: myURL + 'quotes/partsUpdate?from=iq2_main_js',
+                url: myURL + 'quotes/partsUpdate',
                 type: 'POST',
                 data: info, 
                 dataType: "json",
@@ -1000,10 +1037,9 @@ $(document).ready(function() {
     addEventsToItems();
 
 
-    //---------------------------------------------------------------------------------------------------------------------
-    //-------- Functions --------------------------------------------------------------------------------------------------    
-    //---------------------------------------------------------------------------------------------------------------------
-
+    // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    // -------- Functions -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------    
+    // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     function addEventsToItems() {
         // ----------------------------------------------------- delete item
@@ -1100,6 +1136,8 @@ $(document).ready(function() {
                         $('#item_qty_500_999').val( d.qty_500_999 );
                         $('#item_qty_1000_Plus').val( d.qty_1000_Plus );
                         $('#item_qty_Base').val( d.qty_Base );
+
+                        $('#previous_comments').val( d.comments );
                     }
             });
 
@@ -1265,7 +1303,7 @@ $(document).ready(function() {
                                 };
 
                                 $.ajax({
-                                        url: myURL + 'quotes/partsUpdate?from=iq2_main_js',
+                                        url: myURL + 'quotes/partsUpdate',
                                         type: 'POST',
                                         data: info, 
                                         dataType: "json",
@@ -1273,7 +1311,7 @@ $(document).ready(function() {
                                             console.log("openQuoteDialog() - AJAX Post: Success - item_id=[" + data.item_id + "] added to Quote.");
                                             Cookies.set('item_added', 1);
                                             location.reload();
-                                            
+
                                         },
                                         error: function (jqXHR, textStatus, errorThrown)  {
                                             console.log("iq2_main_js, AJAX Post: FAIL! error:"+errorThrown);
@@ -1566,7 +1604,7 @@ $(document).ready(function() {
 
 								// iq2_main.js
 								$.ajax({ 
-										url: myURL + 'quotes/partsUpdate?from=iq2_main_js' ,
+										url: myURL + 'quotes/partsUpdate' ,
 										type: 'POST',
 										data: info, 
 										dataType: "json",

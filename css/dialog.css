@@ -478,7 +478,7 @@ img[id^='quote_'] {
 .tn {
 	color: red;
 }
-
+/*
 #link_QuoteHistory {
 	padding-left: 20px;
 }
@@ -499,7 +499,7 @@ img[id^='quote_'] {
 	cursor: pointer;
 	font-size: .9em;
 	font-weight: normal;
-}
+}*/
 
 table#stats {
 	border: 0px solid red;
