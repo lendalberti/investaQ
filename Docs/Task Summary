@@ -30,8 +30,10 @@ New UI
 				- if Active, needs approval if less than distributor price
 				- otherwise, need approval if less than 75% of distributor price
 
-	[ ] use fullname of manufacturer
-		- ANA = Analog Devices ( use se_data['manufacturerName'] )
+	[ ] use fullname of manufacturer?
+		- ANA = Analog Devices ( use se_data['manufacturerName'] ) 
+		- not always available in "se_data"
+		
 
 
 	[x] use button for 'new quote'
@@ -54,8 +56,13 @@ New UI
 
 	[x] when adding item, total missing commas - ok when updating item
 
-	[ ] need to show real max avail.
+	[x] need to show real max avail.
 		- check qty when doing updates not just on add
+
+	[ ] verify that Quote No. is getting generated properly
+
+
+	[ ] Opportunity Source not getting set on 'edit' click... (name changed?)
 
 
 

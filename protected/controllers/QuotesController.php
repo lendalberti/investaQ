@@ -198,10 +198,6 @@ class QuotesController extends Controller
 		pTrace( __METHOD__ );
 
 		$data['model'] = $this->loadModel($id);
-		//pDebug('quote model attributes: ', $data['model']->attributes );
-
-		$data['items'] = array();
-		$data['status'] = array();
 
 		$customer_id = $data['model']->customer_id;
 		$contact_id  = $data['model']->contact_id;
@@ -214,25 +210,12 @@ class QuotesController extends Controller
 		$data['contact']  = Contacts::model()->findByPk($contact_id);
 
 		// ------------------------------ get status
+		$data['status'] = array();
 		$data['status']  = Status::model()->findAll();
 
-
-		// ------------------------------ get stock_items
-		$sql = "SELECT * FROM stock_items WHERE  quote_id = $quote_id";
-		$command = Yii::app()->db->createCommand($sql);
-		$results = $command->queryAll();
-
-		foreach( $results as $i ) {
-			foreach( array('1_24', '25_99', '100_499', '500_999', '1000_Plus', 'Base', 'Custom') as $v ) {
-				if ( fq($i['qty_'.$v]) != '0' ) {
-		 			//$data .=  "  <tr>  <td> ".fq($i['qty_'.$v])."</td>        <td><span class='volume'>$v</span>"      .fp($i['price_'.$v])."</td>          <td> ".fp(calc($i,$v))."</td>   </tr>"; 
-		 			//$data['items'][] = array( 'id' => $i['id'],  'part_no' => $i['part_no'], 'manufacturer'=>$i['manufacturer'], 'date_code'=>$i['date_code'], "qty" => fq($i["qty_$v"]), "price" => "<span class='volume'>$v</span>". fp($i["price_$v"]), "total" => fp(calc($i,$v)), "comments" => mb_strimwidth($i['comments'],0,150, '...')  );
-		 			$data['items'][] = array( 'id' => $i['id'],  'part_no' => $i['part_no'], 'manufacturer'=>$i['manufacturer'], 'date_code'=>$i['date_code'], "qty" => fq($i["qty_$v"]), "volume" => $v,   "price" => fp($i["price_$v"]), "total" => fp(calc($i,$v)), "comments" => mb_strimwidth($i['comments'],0,150, '...')  );
-		 		}
-			}
-		}  //  mb_strimwidth("Hello World", 0, 10, "...");
-
-		//pDebug('actionView() - data[items]:', $data['items'] );
+		// ------------------------------ get items
+		$data['items'] = array();
+		$data['items'] = $this->getItemsByQuote($quote_id);
 
 		$this->render('view',array(
 			'data'=>$data,
@@ -340,7 +323,6 @@ class QuotesController extends Controller
 
 		try {
 			pDebug( "actionPartsUpdate() - _POST=", $_POST ); 
-
 			
 			if ( isset($_POST['item_id']) ) {   // editing Inventory Item
 				$modelStockItem = StockItems::model()->findByPk( $_POST['item_id']);
@@ -358,7 +340,7 @@ class QuotesController extends Controller
 				$modelStockItem->setAttribute( 'qty_500_999', '' );
 				$modelStockItem->setAttribute( 'qty_1000_Plus', '' );
 				$modelStockItem->setAttribute( 'qty_Base', '' );
-				$modelStockItem->setAttribute( 'qty_Custom', '' );
+				$modelStockItem->setAttribute( 'qty_Custom', '' ); 
 
 				$modelStockItem->setAttribute( 'qty_'    .$volume, $_POST['item_qty'] );
 				$modelStockItem->setAttribute( 'comments',         $_POST['item_comments'] );
@@ -373,34 +355,55 @@ class QuotesController extends Controller
 				}
 			}
 			else {
+
 				$modelStockItem = new StockItems;
 				$modelStockItem->attributes = $_POST;
+
+				// TODO - refactor this
+				if ( $_POST['lifecycle'] == 'Active' ) {
+					$lifecycle = Lifecycles::ACTIVE;
+				}
+				else if ( $_POST['lifecycle'] == 'Obsolete' ) {
+					$lifecycle = Lifecycles::OBSOLETE;
+				}
+				else {
+					$lifecycle = Lifecycles::N_A;
+				}
+
+				$modelStockItem->setAttribute( 'lifecycle_id', $lifecycle ); 
+
+
+
 				pDebug( "actionPartsUpdate() - updating StockItems model with the following attributes: ", $modelStockItem->attributes );
 
-				if ( !$modelStockItem->save() ) {
+				if ( $modelStockItem->save() ) {
+					pDebug("actionPartsUpdate() - item saved");
+
+					$stockItem_ID = $modelStockItem->getPrimaryKey();
+
+					$modelQuote = Quotes::model()->findByPk( $_POST['quote_id'] );
+					$modelQuote->quote_type_id = QuoteTypes::STOCK;   // update Quote type
+
+					if ( $_POST['approval_needed'] ) {
+						$modelQuote->status_id = Status::PENDING;
+						notifyApprovers($modelStockItem);
+					}
+					else {
+						$modelQuote->status_id = Status::DRAFT;
+					}
+
+					if ( $modelQuote->save() ) {
+						pDebug("actionPartsUpdate() - called from: ".$_GET['from']." - quote saved; new stock item id=" . $stockItem_ID );
+						$arr = array( 'item_id' => $stockItem_ID );
+					}
+					else {
+						pDebug("actionPartsUpdate() - quote NOT saved; error=", $modelQuote->errors);
+					}
+				}
+				else {
 					pDebug("actionPartsUpdate() - item NOT saved; error=", $modelStockItem->errors);
 				}
 
-				$stockItem_ID = $modelStockItem->getPrimaryKey();
-
-				$modelQuote = Quotes::model()->findByPk( $_POST['quote_id'] );
-				$modelQuote->quote_type_id = QuoteTypes::STOCK;   // update Quote type
-
-				if ( $_POST['approval_needed'] ) {
-					$modelQuote->status_id = Status::PENDING;
-					notifyApprovers($modelStockItem);
-				}
-				else {
-					$modelQuote->status_id = Status::DRAFT;
-				}
-
-				if ( $modelQuote->save() ) {
-					pDebug("actionPartsUpdate() - called from: ".$_GET['from']." - quote saved; new stock item id=" . $stockItem_ID );
-					$arr = array( 'item_id' => $stockItem_ID );
-				}
-				else {
-					pDebug("actionPartsUpdate() - quote NOT saved; error=", $modelQuote->errors);
-				}
 			}
 		}
 		catch (Exception $e) {
@@ -554,11 +557,7 @@ class QuotesController extends Controller
 			if ( $data['model']->status_id != Status::DRAFT && $data['model']->status_id != Status::REJECTED && !Yii::app()->user->isAdmin  ) { // allow for edits only for draft,rejected quotes
 				$this->redirect(array('index'));
 			}
-
-
-
-			$data['items'] = array();
-
+			
 			$customer_id = $data['model']->customer_id;
 			$contact_id  = $data['model']->contact_id;
 
@@ -568,18 +567,9 @@ class QuotesController extends Controller
 			// ------------------------------ get contact
 			$data['contact']  = Contacts::model()->findByPk($contact_id);
 
-			$sql = "SELECT * FROM stock_items WHERE  quote_id = $quote_id";
-			$command = Yii::app()->db->createCommand($sql);
-			$results = $command->queryAll();
-
-			foreach( $results as $i ) {
-				foreach( array('1_24', '25_99', '100_499', '500_999', '1000_Plus', 'Base', 'Custom') as $v ) {
-					if ( fq($i['qty_'.$v]) != '0' ) {
-			 			//$data['items'][] = array( 'id' => $i['id'],  'part_no' => $i['part_no'], 'manufacturer'=>$i['manufacturer'], 'date_code'=>$i['date_code'], "qty" => fq($i["qty_$v"]), "price" => "<span class='volume'>$v</span>". fp($i["price_$v"]), "total" => fp(calc($i,$v)), "comments" => mb_strimwidth($i['comments'],0,150, '...')  );
-			 			$data['items'][] = array( 'id' => $i['id'],  'part_no' => $i['part_no'], 'manufacturer'=>$i['manufacturer'], 'date_code'=>$i['date_code'], "qty" => fq($i["qty_$v"]), "volume" => $v, "price" => fp($i["price_$v"]), "total" => fp(calc($i,$v)), "comments" => mb_strimwidth($i['comments'],0,150, '...')  );
-			 		}
-				}
-			}
+			// ------------------------------ get items
+			$data['items'] = array();
+			$data['items'] = $this->getItemsByQuote($quote_id);
 
 			$data['model']    = $this->loadModel($quote_id);
 			$data['sources']  = Sources::model()->findAll( array('order' => 'name') );
@@ -592,6 +582,46 @@ class QuotesController extends Controller
 	}
 
 
+	// -----------------------------------------------------------------------------
+	private function getItemsByQuote( $quote_id ) {
+		$sql = "SELECT * FROM stock_items WHERE  quote_id = $quote_id";
+		$command = Yii::app()->db->createCommand($sql);
+		$results = $command->queryAll();
+
+		foreach( $results as $i ) {
+			pDebug('Quotes:actionView() - results:', $i );
+			foreach( array('1_24', '25_99', '100_499', '500_999', '1000_Plus', 'Base', 'Custom') as $v ) {
+				if ( fq($i['qty_'.$v]) != '0' ) {
+
+					// TODO - refactor
+					if ( $i['lifecycle_id'] == Lifecycles::ACTIVE ) {
+						$lifecycle = 'Active';
+					}
+					else if ( $i['lifecycle_id'] == Lifecycles::OBSOLETE ) {
+						$lifecycle = 'Obsolete';
+					} 
+					else {
+						$lifecycle = 'n/a';
+					}
+		 			
+		 			$items[] = array( 	"id"            => $i['id'], 
+ 										"available"     => $i['qty_Available'], 
+ 										"part_no"       => $i['part_no'], 
+ 										"lifecycle"     => $lifecycle,
+ 										"manufacturer"  => $i['manufacturer'], 
+ 										"date_code"     => $i['date_code'], 
+ 										"qty"           => fq($i["qty_$v"]), 
+ 										"volume"        => $v, 
+ 										"price"         => fp($i["price_$v"]), 
+ 										"total"         => fp(calc($i,$v)), 
+ 										"comments"      => mb_strimwidth($i['comments'],0,150, '...')  );
+		 		}
+			}
+		}
+
+		pDebug('Quotes:getItemsByQuote() - items:', $items );
+		return $items;
+	}
 
 
 

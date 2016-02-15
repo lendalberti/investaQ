@@ -1,4 +1,5 @@
 source /Users/len/www/iq2/protected/data/create_db_iq2.sql
+source /Users/len/www/iq2/protected/data/scripts/insert_lifecycles.sql
 source /Users/len/www/iq2/protected/data/scripts/insert_us_states.sql
 source /Users/len/www/iq2/protected/data/scripts/insert_countries.sql
 source /Users/len/www/iq2/protected/data/scripts/insert_regions.sql

@@ -48,7 +48,7 @@ class PartsController extends Controller {
 			$url        = 'http://mongoa/parts/*/500/?q='.$item;	  // mongoa for my local use
 			$tmp        = file_get_contents($url);
 
-			// pDebug('actionSearch() - mongo record=', $tmp);
+			pDebug('actionSearch() - mongo record=', $tmp);
 			// $tmp = file_get_contents('/Users/len/www/iq2/Docs/mongo_sample_records_3333.inc');
 			
 
@@ -205,8 +205,8 @@ class PartsController extends Controller {
 			$pricingtHeader = "<tr><th>Volume</th><th>Unit Price</th><th>Quantity</th><th>SubTotal</th></tr>";
 			$tEnd = "</table>";
 
-			$dpf = Yii::app()->params['DISTRIBUTOR_PRICE_FLOOR'];   // .75
-			$min_custom_price =  money_format("$%6.2n", $p->parts[0]->distributor_price * $dpf );  
+			// $dpf = Yii::app()->params['DISTRIBUTOR_PRICE_FLOOR'];   // .75
+			// $min_custom_price =  money_format("$%6.2n", $p->parts[0]->distributor_price * $dpf );  
 			
 			$pRows  = '';
 			$pRows .= "<tr style='font-size: .8em;' ><td>1-24</td>    <td><span id='price_1_24'>" .  money_format("$%6.2n", trim(floatval($p->parts[0]->prices->p1_24)))          .  "</span></td><td><input type='text' size='7' id='qty_1_24'>    </td><td><span id='subTotal_1_24'>    </span></td></tr>";	
@@ -217,7 +217,7 @@ class PartsController extends Controller {
 			$pRows .= "<tr style='font-size: .8em;' ><td style='font-weight: bold;'>Distributor</td>   <td><span id='price_Base'>" .  money_format("$%6.2n", trim(floatval($p->parts[0]->distributor_price)))          .  "</span></td><td><input type='text' size='7' id='qty_Base'>     </td><td><span id='subTotal_Base'>     </span></td></tr>";	
 			$pRows .= "<tr style='font-size: .8em;' ><td style='font-weight: bold;'>Custom</td>   <td> <input type='text' size='7' id='price_Custom'></td><td><input type='text' size='7' id='qty_Custom'> </td><td><span id='subTotal_Custom'>   </span></td></tr>";	
 			
-			$pRows .= "<tr style='font-size: .8em;' ><td colspan='4' style='padding: 10px 0px 10px 0px; background-color: lightyellow; color: #a31128; font-weight: bold;'>NOTE: <span style='padding: 20px 0px 20px 0px;color: #a31128; font-weight: normal;'>Approval is needed if custom price is less than <span style='color: blue;'>$min_custom_price</span> <br /> (".($dpf*100)."% of Distributor Price) </span></td></tr>";
+			$pRows .= "<tr style='font-size: .8em;' id='special_note' ><td colspan='4' style='padding: 10px 0px 10px 0px; background-color: lightyellow; color: #a31128; font-weight: bold;'>NOTE: <span style='padding: 20px 0px 20px 0px;color: #a31128; font-weight: normal;'>Approval is needed if custom price is less than <span style='color: blue;' id='dialog_min_custom_price' >0</span> <br />" . "<span id='dialog_min_custom_price_comment'>comment</span> </span></td></tr>";
 
 			$pRows .= "<tr style='font-size: .8em;' ><td colspan='4'><textarea rows='4' cols='45' name='comments' id='comments' placeholder='Add comments...'></textarea></td></tr>";
 
@@ -226,7 +226,7 @@ class PartsController extends Controller {
 
 		$hiddenValues  = '';
 		$hiddenValues .= "<input type='hidden' name='distributor_price' id='distributor_price' value='". $p->parts[0]->distributor_price  . "'  >";
-		$hiddenValues .= "<input type='hidden' name='lifeCycle'         id='lifeCycle'         value='". $lifeCycle                       . "'  >";
+		// $hiddenValues .= "<input type='hidden' name='lifeCycle'         id='lifeCycle'         value='". $lifeCycle                       . "'  >";  
 
 		$hiddenValues .= "<input type='hidden' name='manufacturer' id='manufacturer' value='".$p->parts[0]->manufacturer."'  >";
 		$hiddenValues .= "<input type='hidden' name='total_qty_for_part' id='total_qty_for_part' value='".$p->parts[0]->total_qty_for_part."'  >";

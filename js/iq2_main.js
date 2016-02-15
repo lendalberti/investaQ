@@ -24,8 +24,9 @@ $(document).ready(function() {
     var selected_ItemPartNo       = '';
     var selected_ItemMaxAvailable = '';
 
-    var lifeCycle_ACTIVE = 'Active';
-    var ResultsTable     = null;
+    var lifeCycle_ACTIVE   = 'Active';
+    var lifeCycle_OBSOLETE = 'Obsolete';
+    var ResultsTable       = null;
 
 
 
@@ -1170,26 +1171,33 @@ $(document).ready(function() {
         var quoteID                 = $('#form_QuoteID').val();
         var distributor_price       = $('#distributor_price').val();
         var distributor_price_floor = $('#distributor_price_floor').val();  // 75% usually - make this configurable
-        var lifeCycle               = $('#lifeCycle').val();
+        var lifeCycle               = $('#lifeCycle').text();
         var approvalNeeded          = false;
 
-        console.log('cp=['+cp+'], distributor_price=['+distributor_price+']');
+        console.log('cp=['+cp+'], distributor_price=['+distributor_price+'], lifecycle=['+lifeCycle+']');
         /*
             if item is "Active", needs Approval if "cp" less than 'distributor_price'
             if item is 'Obsolete', needs Approval if "cp" less than 75% of 'distributor_price'
         */
 
         if ( lifeCycle == lifeCycle_ACTIVE )  {
-            if ( cp < distributor_price ) {
+            if ( parseFloat(cp) < parseFloat(distributor_price) ) {
+                approvalNeeded = true;
+            }
+        }
+        else if ( lifeCycle == lifeCycle_OBSOLETE )  {
+            if ( parseFloat(cp) < (parseFloat(distributor_price) * parseFloat(distributor_price_floor)) ) {
                 approvalNeeded = true;
             }
         }
         else {
-            if ( cp < distributor_price * distributor_price_floor ) {
-                approvalNeeded = true;
-            }
+            // nothing defined here...
+
         }
         console.log('Approval needed? ' + approvalNeeded);
+
+      
+
 
         // var min_custom_price = $('#min_custom_price').html().substring(1).trim(); // ignore first character of '$' and leading spaces...
         // var diff =  parseFloat(min_custom_price) - parseFloat(cp);
@@ -1220,7 +1228,7 @@ $(document).ready(function() {
                         }, 
                         {
                             text: buttonText,
-                            id: "button_AddToQuote",
+                            id: "button_AddToQuote",   // checkCustomPrice
                             click: function(){
                                 // alert(msg);
                                 if ( nothingToQuote() ) {
@@ -1463,11 +1471,43 @@ $(document).ready(function() {
 	function openQuoteDialog(results) {
 		$('#form_PartPricing').html(results);
 
-		var quoteID = $('#form_QuoteID').val();
-		var msg     = 'Adding this part to Quote No. [' + quoteID + ']';
-        var info    = '';
+		var quoteID    = $('#form_QuoteID').val();
+		var msg        = 'Adding this part to Quote No. [' + quoteID + ']';
+        var info       = '';
+        var lifeCycle  = $('#lifeCycle').text();
+        var dist_price = $('#price_Base').text(); 
 
-        console.log('** iq2_main.js:openQuoteDialog() - distributor_price_floor=' + $('#distributor_price_floor').val() );
+        var floor      = $('#distributor_price_floor').val();  // 75% usually - make this configurable
+
+        console.log('** openQuoteDialog() - lifeCycle=['+lifeCycle+'], floor=['+floor+'],  dist_price=['+dist_price+']');
+
+
+
+        // var min_custom_price = $('#min_custom_price').html().substring(1).trim(); // ignore first character of '$' and leading spaces...
+        // var diff =  parseFloat(min_custom_price) - parseFloat(cp);
+        // console.log('checking diff between: [ ' + min_custom_price + ' ] and [ ' + parseFloat(cp) + ' ]');
+        // var approvalNeeded =  ( diff > 0 ? 1 : 0 );
+
+
+        /*
+            if item is "Active", needs Approval if "cp" less than 'distributor_price'
+            if item is 'Obsolete', needs Approval if "cp" less than 75% of 'distributor_price'
+        */
+
+        if ( lifeCycle == lifeCycle_ACTIVE )  {
+            console.log('Part is Active');
+            $('#dialog_min_custom_price').text( dist_price ); 
+            $('#dialog_min_custom_price_comment').text( '(Distributor Price)' );
+        }
+        else if ( lifeCycle == lifeCycle_OBSOLETE )  {
+            var new_min = parseFloat(floor) * parseFloat(dist_price.substring(1).trim());
+            console.log('Part is Obsolete');
+            $('#dialog_min_custom_price').text( toCurrency(new_min) );
+            $('#dialog_min_custom_price_comment').text(  '(' + floor*100  + '% of Distributor Price)'  );
+        }
+        else {
+             $('#special_note').hide(); 
+        }
 
 		dialog_PartPricing.dialog('option', 'title', 'Inventory Part Pricing Details'); 
 		dialog_PartPricing.dialog({
@@ -1475,15 +1515,15 @@ $(document).ready(function() {
 							text: "Cancel",
 							id: "button_Cancel",
 							click: function(){
-                                Cookies.set('item_cancel', 1);
-                                location.reload();
-								// dialog_PartPricing.dialog( "close" );  
-			 				// 	return false; 
+                                // Cookies.set('item_cancel', 1);
+                                // location.reload();
+								dialog_PartPricing.dialog( "close" );  
+			 				   	return false; 
 							}
 						}, 
 						{
 							text: "Add to Quote",
-							id: "button_AddToQuote",
+							id: "button_AddToQuote",  // openQuoteDialog
 							click: function(){
 								//alert(msg);
 								if ( nothingToQuote() ) {
