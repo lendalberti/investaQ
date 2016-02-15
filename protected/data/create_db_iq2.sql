@@ -513,6 +513,7 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`stock_items` (
   `price_Custom` DOUBLE NULL ,
   `last_updated` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
   `comments` TEXT NULL ,
+  `approval_needed` TINYINT(1) NULL DEFAULT 0 ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_quote_pn_1_idx` (`quote_id` ASC) ,
   INDEX `fk_stock_items_1_idx` (`lifecycle_id` ASC) ,

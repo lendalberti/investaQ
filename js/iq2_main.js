@@ -1172,7 +1172,7 @@ $(document).ready(function() {
         var distributor_price       = $('#distributor_price').val();
         var distributor_price_floor = $('#distributor_price_floor').val();  // 75% usually - make this configurable
         var lifeCycle               = $('#lifeCycle').text();
-        var approvalNeeded          = false;
+        var approvalNeeded          = 0;
 
         console.log('cp=['+cp+'], distributor_price=['+distributor_price+'], lifecycle=['+lifeCycle+']');
         /*
@@ -1182,12 +1182,12 @@ $(document).ready(function() {
 
         if ( lifeCycle == lifeCycle_ACTIVE )  {
             if ( parseFloat(cp) < parseFloat(distributor_price) ) {
-                approvalNeeded = true;
+                approvalNeeded = 1;
             }
         }
         else if ( lifeCycle == lifeCycle_OBSOLETE )  {
             if ( parseFloat(cp) < (parseFloat(distributor_price) * parseFloat(distributor_price_floor)) ) {
-                approvalNeeded = true;
+                approvalNeeded = 1;
             }
         }
         else {
@@ -1534,7 +1534,7 @@ $(document).ready(function() {
 								info = {
         									quote_id:			quoteID,
         									part_no: 			$('#part_no').text(),
-        									approval_needed: 	null,
+        									approval_needed: 	0,
 
         									manufacturer: 		$('#manufacturer').val(),
                                             lifecycle:          $('#lifeCycle').text(),	

@@ -61,8 +61,12 @@ New UI
 
 	[ ] verify that Quote No. is getting generated properly
 
-
 	[ ] Opportunity Source not getting set on 'edit' click... (name changed?)
+
+	[ ] add 'needs_approval' column in stock_items
+
+
+	 
 
 
 
@@ -98,6 +102,7 @@ New UI
 	[x] create quote
 	[x] delete quote
 	[x] lookup parts
+
 	[ ] print quote
 	[ ] email quote
 	[ ] attachments
@@ -125,6 +130,7 @@ New UI
 
 	[x] approve quote
 	[x] reject quote
+
 	[ ] contact salesperson
 	
 

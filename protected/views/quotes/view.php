@@ -29,6 +29,7 @@
  		$attach = Yii::app()->request->baseUrl . "/images/New/attachment.png";
  		$email  = Yii::app()->request->baseUrl . "/images/New/mail.png";
  		$contact = Yii::app()->request->baseUrl . "/images/New/contact.png";
+ 		$exclamation = Yii::app()->request->baseUrl . "/images/New/exclamation.png";
  		
  		$thumbs_up   = Yii::app()->request->baseUrl . "/images/New/thumbs_up.png";
  		$thumbs_down = Yii::app()->request->baseUrl . "/images/New/thumbs_down.png";
@@ -197,7 +198,7 @@
 									<th>Total</th>
 									<th>Comments</th> -->
 
-									<th></th>
+									
 									<th >Part Number</th>
 									<th >Mfg</th>
 									<th >LifeCycle</th>
@@ -208,6 +209,7 @@
 									<th > </th>
 
 									<th >Total</th>
+									<th></th>
 									<th >Comments</th>
 
 								</tr>
@@ -216,7 +218,6 @@
 									<?php
 										foreach( $data['items'] as $i ) {
 											echo '<tr>';
-											echo '<td></td>';
 											echo '<td>' . $i['part_no'] . '</td>';
 											echo '<td>' . $i['manufacturer'] . '</td>';
 											echo '<td>' . $i['lifecycle'] . '</td>'; 
@@ -227,6 +228,12 @@
 											echo '<td><span class="volume">' . $i['volume'] . '</span></td>'; 
 
 											echo '<td>' . $i['total'] . '</td>';
+											if ( $i['approval_needed'] == 1 ) {
+												echo "<td><img id='item_approve_" . $i['id'] . "' title='Approve this item'  src='$exclamation' width='20' height='20' /></td>";
+											}
+											else {
+												echo '<td></td>';
+											}
 											echo '<td>' . $i['comments'] . '</td>';
 											echo '</tr>';
 										}

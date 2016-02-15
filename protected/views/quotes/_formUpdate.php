@@ -26,6 +26,7 @@
  		$print  = Yii::app()->request->baseUrl . "/images/New/print.png";
  		$email  = Yii::app()->request->baseUrl . "/images/New/mail.png";
  		$attach = Yii::app()->request->baseUrl . "/images/New/attachment.png";
+ 		$exclamation = Yii::app()->request->baseUrl . "/images/New/exclamation.png";
 
  		$q  = $data['model']; 
  		$cu = $data['customer'];
@@ -125,25 +126,13 @@
 							<?php
 								echo "<option value='0'></option>";
 								foreach( $data['sources'] as $c ) {
-									echo "<option value='".$c->id."'>".$c->name."</option>";
+									$selected = ($c->id == $source_id ? 'selected' : null );
+									echo "<option value='".$c->id."' $selected>".$c->name."</option>";
 								}
 							?>
 						</select>
 					</span>
 				</div>
-
-
-			    <!-- <span style='padding-left: 50px; font-weight: bold;'><span class='required'> * </span>Contact Source
-					<select name='Quotes[source_id]' id='Quotes_source_id'>
-						< ?php
-							echo "<option value='0'></option>";
-							foreach( $data['sources'] as $c ) {
-								$selected = ($c->id == $source_id ? 'selected' : null );
-								echo "<option value='".$c->id."' $selected>".$c->name."</option>";
-							}
-						?>
-					</select>
-				</span> -->
 
 			</div>
 		</div>
@@ -194,6 +183,7 @@
 										<th >Price</th>
 										<th > </th>
 										<th >Total</th>
+										<th></th>
 										<th >Comments</th>
 									</tr>
 								</thead>
@@ -201,10 +191,15 @@
 										<?php
 											foreach( $data['items'] as $i ) {
 												echo '<tr id="item_row_'.$i['id'].'">';
-												echo '<td style="font-size: .9em; padding: 2px;">';
-												echo "<img id='item_edit_"  . $i['id'] . "' title='Edit this item'    src='$edit' width='16' height='16' />";
-												echo "<img id='item_trash_" . $i['id'] . "' title='Delete this item'  src='$trash' width='16' height='16' />";
 												
+												if ( Yii::app()->user->isAdmin || $i['approval_needed'] == 0 ) {
+													echo "<td style='font-size: .9em; padding: 2px;'><img id='item_edit_"  . $i['id'] . "' title='Edit this item'    src='$edit' width='16' height='16' />";
+													echo "<img id='item_trash_" . $i['id'] . "' title='Delete this item'  src='$trash' width='16' height='16' /></td>";
+												}
+												else {
+													echo '<td></td>';
+												}
+
 												echo '<td>' . $i['part_no'] . '</td>';
 												echo '<td>' . $i['manufacturer'] . '</td>';
 
@@ -215,6 +210,14 @@
 												echo '<td>' . $i['price'] . '</td>';
 												echo '<td><span class="volume">' . $i['volume'] . '</span></td>';
 												echo '<td>' . $i['total'] . '</td>';
+
+												if ( $i['approval_needed'] == 1 ) {
+													echo "<td ><img id='item_approve_" . $i['id'] . "' title='Waiting for approval'  src='$exclamation' width='20' height='20' /></td>";
+												}
+												else {
+													echo '<td></td>';
+												}
+												
 												echo '<td style="text-align:left:">' . $i['comments'] . '</td>';
 												
 												echo '</tr>';

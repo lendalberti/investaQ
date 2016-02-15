@@ -322,9 +322,10 @@ class QuotesController extends Controller
 		$arr = array();
 
 		try {
-			pDebug( "actionPartsUpdate() - _POST=", $_POST ); 
+			
 			
 			if ( isset($_POST['item_id']) ) {   // editing Inventory Item
+				pDebug( "actionPartsUpdate() - editing Inventory item: _POST=", $_POST ); 
 				$modelStockItem = StockItems::model()->findByPk( $_POST['item_id']);
 
 				
@@ -356,6 +357,8 @@ class QuotesController extends Controller
 			}
 			else {
 
+				pDebug( "actionPartsUpdate() - adding inventory item: _POST=", $_POST ); 
+
 				$modelStockItem = new StockItems;
 				$modelStockItem->attributes = $_POST;
 
@@ -371,8 +374,7 @@ class QuotesController extends Controller
 				}
 
 				$modelStockItem->setAttribute( 'lifecycle_id', $lifecycle ); 
-
-
+				$modelStockItem->setAttribute( 'approval_needed', $_POST['approval_needed'] ); 
 
 				pDebug( "actionPartsUpdate() - updating StockItems model with the following attributes: ", $modelStockItem->attributes );
 
@@ -589,7 +591,7 @@ class QuotesController extends Controller
 		$results = $command->queryAll();
 
 		foreach( $results as $i ) {
-			pDebug('Quotes:actionView() - results:', $i );
+			pDebug('Quotes:getItemsByQuote() - results:', $i );
 			foreach( array('1_24', '25_99', '100_499', '500_999', '1000_Plus', 'Base', 'Custom') as $v ) {
 				if ( fq($i['qty_'.$v]) != '0' ) {
 
@@ -606,6 +608,7 @@ class QuotesController extends Controller
 		 			
 		 			$items[] = array( 	"id"            => $i['id'], 
  										"available"     => $i['qty_Available'], 
+ 										"approval_needed"       => $i['approval_needed'], 
  										"part_no"       => $i['part_no'], 
  										"lifecycle"     => $lifecycle,
  										"manufacturer"  => $i['manufacturer'], 
