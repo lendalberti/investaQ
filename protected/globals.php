@@ -2,8 +2,11 @@
 
     function fp($n) {
         setlocale(LC_MONETARY, 'en_US');
-        $res = money_format("%6.2n", trim($n) );
-        return $res;
+        if ( $n ) {
+            $res = money_format("%6.2n", trim($n) );
+            return $res;
+        }
+        return 'n/a';
     }
 
     function fq($n) {

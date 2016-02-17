@@ -148,7 +148,7 @@ class PartsController extends Controller {
 			$pricing .= "</table></div>";
 
 			$comments  = "<div class='clear'></div><div class='grid_10'>";  //<textarea rows='10' cols='49' name='comments' id='comments'>$com</textarea></div>";
-			$comments .= "<table><tr> <td><textarea readonly='readonly' rows='10' cols='140'  name='previous_comments' id='previous_comments' >$com</textarea></td></tr>";
+			$comments .= "<table><tr> <td><textarea readonly='readonly' rows='10' cols='105'  name='previous_comments' id='previous_comments' >$com</textarea></td></tr>";
 			$comments .= "</table></div>";
 
 		echo $container_start . $left_box . $pricing . $right_box .  $comments . $approve . $container_end;

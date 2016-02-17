@@ -373,8 +373,10 @@ class QuotesController extends Controller
 
 				$modelStockItem->setAttribute( 'qty_'. $volume, $_POST['item_qty'] );
 
-				$old_comments = $modelStockItem->comments;
-				$modelStockItem->setAttribute( 'comments', $this->getTimeStamp() . "\n....." . $_POST['item_comments'] . "\n\n" . $old_comments );
+				if  ( $_POST['item_comments'] ) {
+					$old_comments = $modelStockItem->comments;
+					$modelStockItem->setAttribute( 'comments', $this->getTimeStamp() . "\n....." . $_POST['item_comments'] . "\n\n" . $old_comments );
+				}
 
 				pDebug( "actionPartsUpdate() - updating Inventory Item with the following attributes: ", $modelStockItem->attributes );
 
@@ -405,7 +407,9 @@ class QuotesController extends Controller
 
 				$modelStockItem->setAttribute( 'lifecycle_id', $lifecycle ); 
 				$modelStockItem->setAttribute( 'status_id', $_POST['approval_needed'] == 1 ? Status::PENDING : Status::DRAFT ); 
-				$modelStockItem->setAttribute( 'comments', $this->getTimeStamp() . "\n....." . $_POST['comments'] );
+				if ( $_POST['item_comments'] ) {
+					$modelStockItem->setAttribute( 'comments', $this->getTimeStamp() . "\n....." . $_POST['comments'] );
+				}
 
 				pDebug( "actionPartsUpdate() - updating StockItems model with the following attributes: ", $modelStockItem->attributes );
 
