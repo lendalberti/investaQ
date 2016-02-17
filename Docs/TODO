@@ -11,6 +11,9 @@
 
 	[ ] finish up 'actionDisposition()' in QuotesController
 
+	[ ] on add item, if comment is empty - add default 'Added' or something
+	[ ] on add item, if needs approval, force comment entry
+
 
 
 +---------------------+
