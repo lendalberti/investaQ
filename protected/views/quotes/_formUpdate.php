@@ -26,7 +26,8 @@
  		$print  = Yii::app()->request->baseUrl . "/images/New/print.png";
  		$email  = Yii::app()->request->baseUrl . "/images/New/mail.png";
  		$attach = Yii::app()->request->baseUrl . "/images/New/attachment.png";
- 		$exclamation = Yii::app()->request->baseUrl . "/images/New/exclamation.png";
+ 		$pending = Yii::app()->request->baseUrl . "/images/New/gear_yellow.png";
+ 		$rejected = Yii::app()->request->baseUrl . "/images/New/gear_yellow_x.png";
 
  		$q  = $data['model']; 
  		$cu = $data['customer'];
@@ -193,7 +194,8 @@
 												foreach( $data['items'] as $i ) {
 													echo '<tr id="item_row_'.$i['id'].'">';
 													
-													if ( Yii::app()->user->isAdmin || $i['status_id'] != Status::PENDING ) {
+													//if ( Yii::app()->user->isAdmin || $i['status_id'] != Status::PENDING ) {
+													if ( $i['status_id'] != Status::PENDING ) {
 														echo "<td style='font-size: .9em; padding: 2px;'><img id='item_edit_"  . $i['id'] . "' title='Edit this item'    src='$edit' width='16' height='16' />";
 														echo "<img id='item_trash_" . $i['id'] . "' title='Delete this item'  src='$trash' width='16' height='16' /></td>";
 													}
@@ -213,13 +215,14 @@
 													echo '<td>' . $i['total'] . '</td>';
 
 													if ( $i['status_id'] == Status::PENDING ) {
-														echo "<td ><img id='item_approve_" . $i['id'] . "' title='Waiting for approval'  src='$exclamation' width='20' height='20' /></td>";
+														echo "<td ><img id='item_status_" . $i['id'] . "' title='Item waiting for approval'  src='$pending' width='20' height='20' /></td>";
+													}
+													else if ($i['status_id'] == Status::REJECTED ) {
+														echo "<td ><img id='item_status_" . $i['id'] . "' title='Item has been rejected'  src='$rejected' width='20' height='20' /></td>";
 													}
 													else {
 														echo '<td></td>';
 													}
-													
-													// echo '<td style="text-align:left:">' . $i['comments'] . '</td>';
 													
 													echo '</tr>';
 												}
@@ -251,7 +254,7 @@
 												<option value='item_price_500_999'>500 - 999</option>
 												<option value='item_price_1000_Plus'>1000+</option>
 												<option value='item_price_Base'>Distributor</option>
-												<option value='item_price_Custom'>Custom</option>
+												<!-- <option value='item_price_Custom'>Custom</option> ** TODO: SAVE THIS FOR LATER SINCE IT INVOLVES A LOT MORE WORK    --> 
 
 											</select>
 										</td>   	 

@@ -29,7 +29,8 @@
  		$attach = Yii::app()->request->baseUrl . "/images/New/attachment.png";
  		$email  = Yii::app()->request->baseUrl . "/images/New/mail.png";
  		$contact = Yii::app()->request->baseUrl . "/images/New/contact.png";
- 		$exclamation = Yii::app()->request->baseUrl . "/images/New/exclamation.png";
+ 		$pending = Yii::app()->request->baseUrl . "/images/New/gear_yellow.png";
+ 		$rejected = Yii::app()->request->baseUrl . "/images/New/gear_yellow_x.png";
 
  		if ( Yii::app()->user->isAdmin || Yii::app()->user->isApprover ) { // allow all for Admin
  			echo "<img id='quote_edit_"  .$data['model']['id']."' title='Edit this quote'   src='$edit' />";
@@ -219,7 +220,10 @@
 
 												echo '<td>' . $i['total'] . '</td>';
 												if ( $i['status_id'] == Status::PENDING ) {
-													echo "<td><img id='item_approve_" . $i['id'] . "' title='Item needs approval'  src='$exclamation' width='20' height='20' /></td>";
+													echo "<td><img id='item_status_" . $i['id'] . "' title='Item waiting for approval'  src='$pending' width='20' height='20' /></td>";
+												}
+												else if ($i['status_id'] == Status::REJECTED ) {
+													echo "<td><img id='item_status_" . $i['id'] . "' title='Item has been rejected'  src='$rejected' width='20' height='20' /></td>";
 												}
 												else {
 													echo '<td></td>';
@@ -232,9 +236,10 @@
 							</table>
 
 							<?php if ( Yii::app()->user->isAdmin ) { ?>
-								<span id='button_ApproveItem' style='display: none;'>Approve this Item</span>
-								<span id='button_RejectItem' style='display: none;'>Reject this Item</span>
-							<?php } ?> 
+								<span style='display:none;' id='button_ApproveItem'>Approve this Item</span>
+								<span style='display:none;' id='button_RejectItem'>Reject this Item</span>
+							<?php } ?>  
+
 
 						</div>
 					</div>  <!--  box4  -->

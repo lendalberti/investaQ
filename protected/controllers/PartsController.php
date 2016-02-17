@@ -66,7 +66,7 @@ class PartsController extends Controller {
 		$com     = $model->comments;
 		$item_id = $model->id;
 
-		pDebug( "formatItemDetails() item: " , $p);
+		//pDebug( "formatItemDetails() item: " , $p);
 
 		$href   = " href='" . $se_data->Datasheet . "'";
 		$target = " target='_blank'";

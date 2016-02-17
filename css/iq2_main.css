@@ -28,6 +28,7 @@ span#button_ApproveItem {
     display: inline-block;
     font-size: 16px;
     border-radius: 12px;
+    margin-left:  440px;
 }
 
 span#button_RejectItem:hover,

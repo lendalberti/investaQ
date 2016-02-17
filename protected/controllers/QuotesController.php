@@ -126,7 +126,9 @@ class QuotesController extends Controller
 
 	}     
 
-	public function actionDisposition()     { 
+
+
+	public function actionDisposition($id)     { 
 		pTrace( __METHOD__ );
 		pDebug('actionDisposition() = _POST:', $_POST);
 
@@ -134,60 +136,75 @@ class QuotesController extends Controller
 		$item_id          = $_POST['item_id'];
 		$item_disposition = $_POST['item_disposition'];
 
-		$model = StockItems::model()->findByPk($item_id);
+		$modelStockItems = StockItems::model()->findByPk($item_id);
 
 		// 2. update item status
-		$model->status_id = Status::APPROVED;
+		if ( $item_disposition == 'Approve' ) {
+			$modelStockItems->status_id = Status::APPROVED;
+
+			if ( $modelStockItems->save() ) {
+				// 3. check for other items in same quote
+				$pending_items = getPendingItemCount($id);
+				pDebug('Any more items still pending? ' . $pending_items );
+
+				if ( $pending_items == 0 ) {
+					// 4. if no more items neeed approval, change quote status to Approved
+					$model = $this->loadModel($id);
+			    	$model->status_id = Status::APPROVED;
+
+			    	if ( $model->save() ) {
+			    		pDebug('actionDisposition() - quote ' . $model->quote_no . ' approved');
+			    		notifySalespersonStatusChange($model);
+			    		echo Status::SUCCESS;
+			    	}
+			    	else {
+			    		pDebug('actionDisposition() - ERROR approving quote: ', $model->errors);
+			    		echo Status::FAILURE;
+			    	}
+				}
+				else {
+					pDebug("actionDisposition() - can't approve quote yet; still pending items.");
+					echo Status::SUCCESS;
+				}
+
+			}
+			else {
+				pDebug("actionDisposition() - couldn't save new model; errors: ", $modelStockItems->errors);
+				echo Status::FAILURE;
+			}
+		}
+		else if ( $item_disposition == 'Reject' ) {
+			$modelStockItems->status_id = Status::REJECTED;
+			if ( $modelStockItems->save() ) {
+				pDebug("actionDisposition() - item [$item_id] in quote [$id] rejected.");
+			}
+			else {
+				pDebug("actionDisposition() - couldn't save new model; errors: ", $modelStockItems->errors);
+				echo Status::FAILURE;
+			}
 
 
-	
-	
-	// 3. check for other items in same quote
-	// 4. if no more items neeed approval, change quote status to Approved
-	// 5. if item rejected, change quote status to Rejected
 
+
+
+			// 5. if item rejected, change quote status to Rejected
+			$model = $this->loadModel($id);
+	    	$model->status_id = Status::REJECTED;
+
+	    	if ( $model->save() ) {
+	    		pDebug('actionDisposition() - quote ' . $model->quote_no . ' rejected');
+	    		notifySalespersonStatusChange($model);
+	    		echo Status::SUCCESS;
+	    	}
+	    	else {
+	    		pDebug('actionDisposition() - ERROR rejecting quote: ', $model->errors);
+	    		echo Status::FAILURE;
+	    	}
+		}
 
 
 	}
 
-
-	// ------------------------------------- Approve Quote...  TODO:  combine these 2 ( actionDisposition() with POST variable? )
-    public function actionApprove($id)     { 
-		pTrace( __METHOD__ );
-    	
-    	$model = $this->loadModel($id);
-    	$model->status_id = Status::APPROVED;
-
-    	if ( $model->save() ) {
-    		pDebug('actionApprove() - quote ' . $model->quote_no . ' approved');
-    		notifySalespersonStatusChange($model);
-    		echo Status::SUCCESS;
-    	}
-    	else {
-    		pDebug('actionApprove() - ERROR approving quote: ', $model->errors);
-    		echo Status::FAILURE;
-    	}
-    	return;
-    }
-    // ------------------------------------- Reject Quote...
-    public function actionReject($id)     { 
-		pTrace( __METHOD__ );
-
-    	$model = $this->loadModel($id);
-    	$model->status_id = Status::REJECTED;
-    	if ( $model->save() ) {
-    		pDebug('actionReject() - quote ' . $model->quote_no . ' rejected');
-    		notifySalespersonStatusChange($model);
-    		echo Status::SUCCESS;
-    	}
-    	else {
-    		pDebug('actionReject() - ERROR rejecting quote: ', $model->errors);
-    		echo Status::FAILURE;
-    	}
-    	return;
-    }
-
-	
 
 
 
@@ -351,13 +368,48 @@ class QuotesController extends Controller
 
 	public function actionPartsUpdate() 	{
 		pTrace( __METHOD__ );
+		pDebug( "actionPartsUpdate() - _POST=", $_POST );
+
+
 		$arr = array();
 
 		try {
 			
 			if ( isset($_POST['item_id']) ) {   												// editing Inventory Item
 				pDebug( "actionPartsUpdate() - editing Inventory item: _POST=", $_POST ); 
+
+				$quote_id       = $_POST['quote_id'];
 				$modelStockItem = StockItems::model()->findByPk( $_POST['item_id']);
+
+				/*
+					if editing an item that has been rejected, then set it back to 'DRAFT';
+					then, check to see if there are any more Rejected or Pending items
+					- if neither, change status respectively
+				*/
+
+				if ( $modelStockItem->status_id == Status::REJECTED ) {
+					$modelStockItem->setAttribute( 'status_id', Status::DRAFT );
+
+					// any more Rejected items?
+					$rejected_items = getRejectedItemCount($quote_id);
+
+					// any more Pending items?
+					$pending_items = getPendingItemCount($quote_id);
+
+					if ( !$rejected_items && !$pending_items ) {
+						// set back to Draft
+						$new_quote_status = Status::DRAFT;
+					}
+					else if ($pending_items) {
+						// set back to Pending
+						$new_quote_status = Status::PENDING;
+					}
+					else if ($rejected_items) {
+						// set back to Rejected
+						$new_quote_status = Status::REJECTED;
+					}
+				}
+
 				
 				preg_match('/^item_price_(.+)$/', $_POST['item_volume'], $match); 
 				$volume = $match[1]; 
@@ -382,6 +434,16 @@ class QuotesController extends Controller
 
 				if ( $modelStockItem->save() ) {
 					pDebug("actionPartsUpdate() - Inventory Item updated.");
+
+					$quoteModel = $this->loadModel($quote_id);
+					$quoteModel->status_id = $new_quote_status;
+
+					if ( $quoteModel->save() ) {
+						pDebug("actionPartsUpdate() - Quote status updated to: " . $new_quote_status );
+					}
+					else {
+						pDebug("actionPartsUpdate() - Coun't update Quote status: ", $quoteModel->errors );
+					}
 				}
 				else {
 					pDebug("actionPartsUpdate() - Inventory Item NOT updated; error=", $modelStockItem->errors);
@@ -444,7 +506,7 @@ class QuotesController extends Controller
 			}
 		}
 		catch (Exception $e) {
-			Debug("actionPartsUpdate() - Exception: ", $e->errorInfo );
+			pDebug("actionPartsUpdate() - Exception: ", $e->errorInfo );
 		}
 
         pDebug('Sending json:', json_encode($arr) );
@@ -467,8 +529,7 @@ class QuotesController extends Controller
 		$quote_id = $id;
 
 		if ( $_POST ) {
-			
-			if ( isset( $_POST['quoteForm_Terms_QuoteID'] ) ) {   // updating just terms from Create page
+			if ( isset( $_POST['quoteForm_Terms_QuoteID'] ) ) {  					 // updating just terms from Create page
 				$quoteModel = $this->loadModel( $_POST['quoteForm_Terms_QuoteID'] );
 
 				$quoteModel->terms_conditions =  $_POST['quote_Terms'];
@@ -488,25 +549,25 @@ class QuotesController extends Controller
 				return;
 			}
 
-			// TODO - only way to change status is to approve ALL items on same quote
-			//
-			// if ( isset($_POST['newQuoteStatus']) && Yii::app()->user->isAdmin ) {  // should only be Admin updating status
-			// 	$quoteModel = $this->loadModel($quote_id);
-			// 	$oldQuoteStatus = $quoteModel->status->name;
+				// TODO - only way to change status is to approve ALL items on same quote
+				//
+				// if ( isset($_POST['newQuoteStatus']) && Yii::app()->user->isAdmin ) {  // should only be Admin updating status
+				// 	$quoteModel = $this->loadModel($quote_id);
+				// 	$oldQuoteStatus = $quoteModel->status->name;
 
-			// 	$quoteModel->status_id = $_POST['newQuoteStatus'];
-			// 	if ($quoteModel->save()) {
-			// 		$new_quoteModel = $this->loadModel($quote_id);
-			// 		pDebug("Changed quote status from [$oldQuoteStatus] to [" . $new_quoteModel->status->name . "]" );
-			// 		notifySalespersonStatusChange($quoteModel);
-			// 		echo Status::SUCCESS;
-			// 	}
-			// 	else {
-			// 		pDebug("actionUpdate() - can't update quote status; error=", $quoteModel->errors );
-			// 		echo Status::FAILURE;
-			// 	}
-			// 	return;
-			// }
+				// 	$quoteModel->status_id = $_POST['newQuoteStatus'];
+				// 	if ($quoteModel->save()) {
+				// 		$new_quoteModel = $this->loadModel($quote_id);
+				// 		pDebug("Changed quote status from [$oldQuoteStatus] to [" . $new_quoteModel->status->name . "]" );
+				// 		notifySalespersonStatusChange($quoteModel);
+				// 		echo Status::SUCCESS;
+				// 	}
+				// 	else {
+				// 		pDebug("actionUpdate() - can't update quote status; error=", $quoteModel->errors );
+				// 		echo Status::FAILURE;
+				// 	}
+				// 	return;
+				// }
 
 			// validate source id > 0
 			if ( $_POST['Quotes']['source_id'] == 0 ) {
@@ -540,7 +601,7 @@ class QuotesController extends Controller
 				}
 			}
 
-			// validate contact - if missing id, then assume it's a new customer, check for required fields
+			// validate contact - if missing id, then assume it's a new contact, check for required fields
 			if ( $_POST['Contacts']['id'] ) {
 				$contact_id =  $_POST['Contacts']['id'];
 			}
@@ -661,7 +722,7 @@ class QuotesController extends Controller
 		 			
 		 			$items[] = array( 	"id"            	=> $i['id'], 
  										"available"     	=> $i['qty_Available'], 
- 										"item_status"       => $i['status_id'], 
+ 										"status_id"         => $i['status_id'], 
  										"part_no"       	=> $i['part_no'], 
  										"lifecycle"     	=> $lifecycle,
  										"manufacturer"  	=> $i['manufacturer'], 

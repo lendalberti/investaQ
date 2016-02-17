@@ -73,6 +73,27 @@
 
 
 
+    function getPendingItemCount( $quote_id ) {
+        $pending =  Status::PENDING;
+        
+        $sql = "SELECT COUNT(*) FROM stock_items WHERE quote_id = $quote_id AND status_id = $pending";
+        pDebug("sql=[$sql]");
+
+        $count = Yii::app()->db->createCommand($sql)->queryScalar();
+        return $count;
+    }
+
+    function getRejectedItemCount( $quote_id ) {
+        $rejected =  Status::REJECTED;
+        
+        $sql = "SELECT COUNT(*) FROM stock_items WHERE quote_id = $quote_id AND status_id = $rejected";
+        pDebug("sql=[$sql]");
+        
+        $count = Yii::app()->db->createCommand($sql)->queryScalar();
+        return $count;
+    }
+
+
 
 
    // function getQuotesAttachmentList( $id ) {
@@ -303,7 +324,7 @@
         $salesperson_email = $model->owner->email;
         $cc                = Yii::app()->user->email;   // always CC me for now if NOT in Debug
         
-        $link    = "<a href='http://http://www.wcvb.com'>".$model->quote_no."</a>";
+        $link    = "<a href='http://www.wcvb.com'>".$model->quote_no."</a>";
         $message = "This is to inform you the status for your quote " . $link . " has been changed to: " . $model->status->name;
 
         if ( Yii::app()->params['DEBUG'] ) {

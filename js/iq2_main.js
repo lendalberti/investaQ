@@ -31,6 +31,7 @@ $(document).ready(function() {
 
 
 
+
     console.log('myURL=['+myURL+']');
     console.log('returnUrl=[' + $('#returnUrl').val() + ']' );
     console.log("current url:" + window.location.href );
@@ -64,7 +65,7 @@ $(document).ready(function() {
 	if ($("#form_PartPricing").length == 1) {
         dialog_PartPricing = $( "#form_PartPricing" ).dialog({
     		autoOpen: false,
-    		height: 1100,
+    		// height: 1100,
     		width: 500,
     		modal: true,
     		resizable: false,
@@ -142,8 +143,8 @@ $(document).ready(function() {
     // -------- Event Handlers  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------    
     // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
     $('#button_ApproveItem').on('click', function() {
+        var quoteID = $('#Quotes_id').val(); 
         if ( confirm( "Are you sure you want to approve this item?") ) {
             var postData = {
                     item_id:           currentItemID,
@@ -152,20 +153,22 @@ $(document).ready(function() {
 
             $.ajax({
                     type: "POST",
-                    url: myURL + 'quotes/disposition',
+                    url: myURL + 'quotes/disposition?id=' + quoteID,
                     data: postData,
                     success: function(results)  {
-                        alert('results from quote disposition=['+results+']');
-                        // location.reload();
+                        console.log('results from quote disposition=['+results+']');
+                        location.reload();
                     }
             });
-
         }
 
         return false;
     });
 
-     $('#button_RejectItem').on('click', function() {
+
+
+    $('#button_RejectItem').on('click', function() {
+        var quoteID = $('#Quotes_id').val(); 
         if ( confirm( "Are you sure you want to reject this item?") ) {
            var postData = {
                     item_id:           currentItemID,
@@ -174,11 +177,11 @@ $(document).ready(function() {
 
             $.ajax({
                     type: "POST",
-                    url: myURL + 'quotes/disposition',
+                    url: myURL + 'quotes/disposition?id=' + quoteID,
                     data: postData,
                     success: function(results)  {
-                        alert('results from quote disposition=['+results+']');
-                        // location.reload();
+                        console.log('results from quote disposition=['+results+']');
+                        location.reload();
                     }
             });
         }
@@ -226,13 +229,13 @@ $(document).ready(function() {
 
                     $('#ajax_loading_image').hide();
                     // check if item needs approval; if so, display 'button_ApproveItem' and 'button_RejectItem'
-                    if ( $( "#item_approve_"+itemID ).length ) {
+                    if ( $( "#item_status_"+itemID ).length ) {
                         $('#button_ApproveItem').show();
                         $('#button_RejectItem').show();
                     }
                     else {
-                        $('#button_ApproveItem').hide();
-                        $('#button_RejectItem').hide();
+                       $('#button_ApproveItem').hide();
+                       $('#button_RejectItem').hide();
                     }
                 }
             });
@@ -534,7 +537,7 @@ $(document).ready(function() {
                             $('#quoteForm_Terms_QuoteID').val(quoteId); // for Terms form...
 
     		            	console.log('quoteId=['+quoteId+'], quoteNo=['+quoteNo+']');
-                            alert('New quote created - no. '+quoteNo);
+                            alert('New quote created - No. '+quoteNo);
 
                             $('#QuoteView_Tabs > ul > li:nth-child(2)').show();
                             $('#QuoteView_Tabs > ul > li:nth-child(3)').show();
@@ -812,7 +815,10 @@ $(document).ready(function() {
      // ----------------------------------------------------- save editing changes
     $('#button_SaveItemChanges').on('click', function() {
 
-        var itemID =  $('#item_id').val();
+        var itemID  = $('#item_id').val();
+        var quoteID = $('#Quotes_id').val();
+        var URL     = myURL + 'quotes/partsUpdate';
+        console.log('quoteID=' + quoteID + ", URL=" + URL);
 
         // do ajax save of item and screen update
         var info =  {
@@ -822,6 +828,7 @@ $(document).ready(function() {
                 item_comments:  $('#item_comments').val(),
                 item_id:        itemID,
                 item_volume:    $('#item_SelectVolume').val(),
+                quote_id:       quoteID
         };
 
                                 /*
@@ -836,7 +843,7 @@ $(document).ready(function() {
                                         Cookies.remove('current_tab');
                                 */
         $.ajax({
-                url: myURL + 'quotes/partsUpdate',
+                url: URL,
                 type: 'POST',
                 data: info, 
                 dataType: "json",
@@ -1531,50 +1538,50 @@ $(document).ready(function() {
 
 
 
-    function appendTable_CurrentParts( info, data ) {
-        var images        = '';
-        var itemID        = data.item_id;
-        var updatingQuote =  window.location.href.match(/update/);
+    // function appendTable_CurrentParts( info, data ) {
+    //     var images        = '';
+    //     var itemID        = data.item_id;
+    //     var updatingQuote =  window.location.href.match(/update/);
 
-        // if ( updatingQuote ) {
-        //    images =  "<td style='font-size: .9em; padding: 2px;'><img id='item_edit_"+itemID+"' title='Edit this item' src='/iq2/images/New/edit.png' width='16' height='16' /><img id='item_trash_"+itemID+"' title='Delete this item'  src='/iq2/images/New/trash.png' width='16' height='16' />";
-        // }
-        // else {
-        //     images = "<td style='font-size: .9em; padding: 2px;'><img src='/iq2/images/New/blank_20x20.png' width='16' height='16' /><img src='/iq2/images/New/blank_20x20.png' width='16' height='16' />";
-        // }
+    //     // if ( updatingQuote ) {
+    //     //    images =  "<td style='font-size: .9em; padding: 2px;'><img id='item_edit_"+itemID+"' title='Edit this item' src='/iq2/images/New/edit.png' width='16' height='16' /><img id='item_trash_"+itemID+"' title='Delete this item'  src='/iq2/images/New/trash.png' width='16' height='16' />";
+    //     // }
+    //     // else {
+    //     //     images = "<td style='font-size: .9em; padding: 2px;'><img src='/iq2/images/New/blank_20x20.png' width='16' height='16' /><img src='/iq2/images/New/blank_20x20.png' width='16' height='16' />";
+    //     // }
 
-       images = "<td style='font-size: .9em; padding: 2px;'><img id='item_edit_"+itemID+"' title='Edit this item' src='/iq2/images/New/edit.png' width='16' height='16' /><img id='item_trash_"+itemID+"' title='Delete this item'  src='/iq2/images/New/trash.png' width='16' height='16' />";
-       //images = "<td style='font-size: .9em; padding: 2px;'><img src='/iq2/images/New/blank_20x20.png' width='16' height='16' /><img src='/iq2/images/New/blank_20x20.png' width='16' height='16' />";
+    //    images = "<td style='font-size: .9em; padding: 2px;'><img id='item_edit_"+itemID+"' title='Edit this item' src='/iq2/images/New/edit.png' width='16' height='16' /><img id='item_trash_"+itemID+"' title='Delete this item'  src='/iq2/images/New/trash.png' width='16' height='16' />";
+    //    //images = "<td style='font-size: .9em; padding: 2px;'><img src='/iq2/images/New/blank_20x20.png' width='16' height='16' /><img src='/iq2/images/New/blank_20x20.png' width='16' height='16' />";
 
-        var quantity = 0;
-        var volume   = 0;
-        var price    = 0; 
-        var total    = 0;  // num.toFixed(2)
+    //     var quantity = 0;
+    //     var volume   = 0;
+    //     var price    = 0; 
+    //     var total    = 0;  // num.toFixed(2)
 
-        var comments = truncateWithEllipses(info.comments,100);
+    //     var comments = truncateWithEllipses(info.comments,100);
 
-        if ( info.qty_1_24 > 0 ) {
-            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td>  <td>Active</td>  <td>999999</td>     <td>"+info.qty_1_24+"</td><td>$ "+info.price_1_24+"</td>     <td><span class='volume'>1_24</span></td>       <td>$ "+(info.qty_1_24*info.price_1_24).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
-        }
-        if ( info.qty_25_99 > 0 ) {
-            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td>  <td>Active</td>  <td>999999</td>     <td>"+info.qty_25_99+"</td><td>$ "+info.price_25_99+"</td>    <td><span class='volume'>25_99</span></td>     <td>$ "+(info.qty_25_99*info.price_25_99).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
-        }
-        if ( info.qty_100_499 > 0 ) {
-            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td>  <td>Active</td>  <td>999999</td>     <td>"+info.qty_100_499+"</td><td>$ "+info.price_100_499+"</td>    <td><span class='volume'>100_499</span></td>     <td>$ "+(info.qty_100_499*info.price_100_499).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
-        }
-        if ( info.qty_500_999 > 0 ) {
-            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td>  <td>Active</td>  <td>999999</td>     <td>"+info.qty_500_999+"</td><td>$ "+info.price_500_999+"</td>    <td><span class='volume'>500_999</span></td>     <td>$ "+(info.qty_500_999*info.price_500_999).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
-        }
-        if ( info.qty_1000_Plus > 0 ) {
-            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td>  <td>Active</td>  <td>999999</td>     <td>"+info.qty_1000_Plus+"</td><td>$ "+info.price_1000_Plus+"</td>    <td><span class='volume'>1000_Plus</span></td>     <td>$ "+(info.qty_1000_Plus*info.price_1000_Plus).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
-        }
-        if ( info.qty_Base > 0 ) {
-            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td>  <td>Active</td>  <td>999999</td>     <td>"+info.qty_Base+"</td><td>$ "+info.price_Base+"</td>    <td><span class='volume'>Base</span></td>     <td>$ "+(info.qty_Base*info.price_Base).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
-        }
-        if ( info.qty_Custom > 0 ) {
-            $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td>  <td>Active</td>  <td>999999</td>     <td>"+info.qty_Custom+"</td><td>$ "+info.price_Custom+"</td>    <td><span class='volume'>Custom</span></td>     <td>$ "+(info.qty_Custom*info.price_Custom).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
-        }
-    }
+    //     if ( info.qty_1_24 > 0 ) {
+    //         $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td>  <td>Active</td>  <td>999999</td>     <td>"+info.qty_1_24+"</td><td>$ "+info.price_1_24+"</td>     <td><span class='volume'>1_24</span></td>       <td>$ "+(info.qty_1_24*info.price_1_24).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
+    //     }
+    //     if ( info.qty_25_99 > 0 ) {
+    //         $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td>  <td>Active</td>  <td>999999</td>     <td>"+info.qty_25_99+"</td><td>$ "+info.price_25_99+"</td>    <td><span class='volume'>25_99</span></td>     <td>$ "+(info.qty_25_99*info.price_25_99).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
+    //     }
+    //     if ( info.qty_100_499 > 0 ) {
+    //         $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td>  <td>Active</td>  <td>999999</td>     <td>"+info.qty_100_499+"</td><td>$ "+info.price_100_499+"</td>    <td><span class='volume'>100_499</span></td>     <td>$ "+(info.qty_100_499*info.price_100_499).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
+    //     }
+    //     if ( info.qty_500_999 > 0 ) {
+    //         $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td>  <td>Active</td>  <td>999999</td>     <td>"+info.qty_500_999+"</td><td>$ "+info.price_500_999+"</td>    <td><span class='volume'>500_999</span></td>     <td>$ "+(info.qty_500_999*info.price_500_999).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
+    //     }
+    //     if ( info.qty_1000_Plus > 0 ) {
+    //         $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td>  <td>Active</td>  <td>999999</td>     <td>"+info.qty_1000_Plus+"</td><td>$ "+info.price_1000_Plus+"</td>    <td><span class='volume'>1000_Plus</span></td>     <td>$ "+(info.qty_1000_Plus*info.price_1000_Plus).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
+    //     }
+    //     if ( info.qty_Base > 0 ) {
+    //         $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td>  <td>Active</td>  <td>999999</td>     <td>"+info.qty_Base+"</td><td>$ "+info.price_Base+"</td>    <td><span class='volume'>Base</span></td>     <td>$ "+(info.qty_Base*info.price_Base).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
+    //     }
+    //     if ( info.qty_Custom > 0 ) {
+    //         $('#table_CurrentParts').append( "<tr>"+images+"<td>"+info.part_no+"</td><td>"+info.manufacturer+"</td>  <td>Active</td>  <td>999999</td>     <td>"+info.qty_Custom+"</td><td>$ "+info.price_Custom+"</td>    <td><span class='volume'>Custom</span></td>     <td>$ "+(info.qty_Custom*info.price_Custom).toFixed(2).toString()+"</td><td>"+comments+"</td></tr>" );
+    //     }
+    // }
 
 
 
