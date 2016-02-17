@@ -15,7 +15,7 @@ class QuotesController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-			'postOnly + delete', // we only allow deletion via POST request
+			'postOnly + delete, disposition', // we only allow deletion via POST request
 		);
 	}
 
@@ -33,12 +33,12 @@ class QuotesController extends Controller
 			),
 		
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin', 'config'),
+				'actions'=>array('admin', 'config', 'disposition'),
 				'expression' => '$user->isAdmin'
 			),
 
-			array('allow', // allow approvers  to perform 'approval' 
-				'actions'=>array('approve', 'reject'),
+			array('allow', // allow approvers  to perform 'disposition' 
+				'actions'=>array('disposition'),
 				'expression' => '$user->isApprover'
 			),
 			
@@ -126,7 +126,29 @@ class QuotesController extends Controller
 
 	}     
 
+	public function actionDisposition()     { 
+		pTrace( __METHOD__ );
+		pDebug('actionDisposition() = _POST:', $_POST);
 
+		// 1. get item id, disposition
+		$item_id          = $_POST['item_id'];
+		$item_disposition = $_POST['item_disposition'];
+
+		$model = StockItems::model()->findByPk($item_id);
+
+		// 2. update item status
+		$model->status_id = Status::APPROVED;
+
+
+	
+	
+	// 3. check for other items in same quote
+	// 4. if no more items neeed approval, change quote status to Approved
+	// 5. if item rejected, change quote status to Rejected
+
+
+
+	}
 
 
 	// ------------------------------------- Approve Quote...  TODO:  combine these 2 ( actionDisposition() with POST variable? )
@@ -150,6 +172,7 @@ class QuotesController extends Controller
     // ------------------------------------- Reject Quote...
     public function actionReject($id)     { 
 		pTrace( __METHOD__ );
+
     	$model = $this->loadModel($id);
     	$model->status_id = Status::REJECTED;
     	if ( $model->save() ) {
@@ -319,9 +342,6 @@ class QuotesController extends Controller
 	}
 
 	private function getTimeStamp() {
-
-		//  &#13;&#10;[2016-02-16 11:30:05] Len D'Alberti&#13;&#10;
-
 		$u = Yii::app()->user->fullname;
 		$t = Date('D Y-m-d h:i:s');
 
@@ -335,7 +355,7 @@ class QuotesController extends Controller
 
 		try {
 			
-			if ( isset($_POST['item_id']) ) {   // editing Inventory Item
+			if ( isset($_POST['item_id']) ) {   												// editing Inventory Item
 				pDebug( "actionPartsUpdate() - editing Inventory item: _POST=", $_POST ); 
 				$modelStockItem = StockItems::model()->findByPk( $_POST['item_id']);
 				
@@ -365,7 +385,7 @@ class QuotesController extends Controller
 					pDebug("actionPartsUpdate() - Inventory Item NOT updated; error=", $modelStockItem->errors);
 				}
 			}
-			else {
+			else {  																			// adding Inventory Item
 
 				pDebug( "actionPartsUpdate() - adding inventory item: _POST=", $_POST ); 
 
@@ -384,7 +404,8 @@ class QuotesController extends Controller
 				}
 
 				$modelStockItem->setAttribute( 'lifecycle_id', $lifecycle ); 
-				$modelStockItem->setAttribute( 'approval_needed', $_POST['approval_needed'] ); 
+				$modelStockItem->setAttribute( 'status_id', $_POST['approval_needed'] == 1 ? Status::PENDING : Status::DRAFT ); 
+				$modelStockItem->setAttribute( 'comments', $this->getTimeStamp() . "\n....." . $_POST['comments'] );
 
 				pDebug( "actionPartsUpdate() - updating StockItems model with the following attributes: ", $modelStockItem->attributes );
 
@@ -394,7 +415,7 @@ class QuotesController extends Controller
 					$stockItem_ID = $modelStockItem->getPrimaryKey();
 
 					$modelQuote = Quotes::model()->findByPk( $_POST['quote_id'] );
-					$modelQuote->quote_type_id = QuoteTypes::STOCK;   // update Quote type
+					$modelQuote->quote_type_id = QuoteTypes::STOCK;   					// update Quote type
 
 					if ( $_POST['approval_needed'] ) {
 						$modelQuote->status_id = Status::PENDING;
@@ -634,18 +655,18 @@ class QuotesController extends Controller
 						$lifecycle = 'n/a';
 					}
 		 			
-		 			$items[] = array( 	"id"            => $i['id'], 
- 										"available"     => $i['qty_Available'], 
- 										"approval_needed"       => $i['approval_needed'], 
- 										"part_no"       => $i['part_no'], 
- 										"lifecycle"     => $lifecycle,
- 										"manufacturer"  => $i['manufacturer'], 
- 										"date_code"     => $i['date_code'], 
- 										"qty"           => fq($i["qty_$v"]), 
- 										"volume"        => $v, 
- 										"price"         => fp($i["price_$v"]), 
- 										"total"         => fp(calc($i,$v)), 
- 										"comments"      => mb_strimwidth($i['comments'],0,150, '...')  );
+		 			$items[] = array( 	"id"            	=> $i['id'], 
+ 										"available"     	=> $i['qty_Available'], 
+ 										"item_status"       => $i['status_id'], 
+ 										"part_no"       	=> $i['part_no'], 
+ 										"lifecycle"     	=> $lifecycle,
+ 										"manufacturer"  	=> $i['manufacturer'], 
+ 										"date_code"     	=> $i['date_code'], 
+ 										"qty"           	=> fq($i["qty_$v"]), 
+ 										"volume"        	=> $v, 
+ 										"price"         	=> fp($i["price_$v"]), 
+ 										"total"         	=> fp(calc($i,$v)), 
+ 										"comments"      	=> mb_strimwidth($i['comments'],0,150, '...')  );
 		 		}
 			}
 		}

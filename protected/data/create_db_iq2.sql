@@ -491,8 +491,9 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`stock_items` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `quote_id` INT NOT NULL ,
   `part_no` VARCHAR(45) NOT NULL ,
-  `manufacturer` VARCHAR(45) NULL ,
   `lifecycle_id` INT NOT NULL ,
+  `status_id` INT NOT NULL ,
+  `manufacturer` VARCHAR(45) NULL ,
   `line_note` TEXT NULL ,
   `date_code` VARCHAR(45) NULL ,
   `qty_1_24` INT NULL ,
@@ -513,10 +514,10 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`stock_items` (
   `price_Custom` DOUBLE NULL ,
   `last_updated` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
   `comments` TEXT NULL ,
-  `approval_needed` TINYINT(1) NULL DEFAULT 0 ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_quote_pn_1_idx` (`quote_id` ASC) ,
   INDEX `fk_stock_items_1_idx` (`lifecycle_id` ASC) ,
+  INDEX `fk_stock_items_3_idx` (`status_id` ASC) ,
   CONSTRAINT `fk_stock_items_1`
     FOREIGN KEY (`quote_id` )
     REFERENCES `iq2`.`quotes` (`id` )
@@ -525,6 +526,11 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`stock_items` (
   CONSTRAINT `fk_stock_items_2`
     FOREIGN KEY (`lifecycle_id` )
     REFERENCES `iq2`.`lifecycles` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_stock_items_3`
+    FOREIGN KEY (`status_id` )
+    REFERENCES `iq2`.`status` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

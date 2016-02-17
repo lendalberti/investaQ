@@ -1,6 +1,5 @@
 $(document).ready(function() {
 
-   // var myURL           = getAbsolutePath();  
     var customerPrefill = true;
     var contactPrefill  = true;
     var myURL           = '/iq2/index.php/';
@@ -28,7 +27,7 @@ $(document).ready(function() {
     var lifeCycle_OBSOLETE = 'Obsolete';
     var ResultsTable       = null;
 
-    var currentItem = '';
+    var currentItemID = '';
 
 
 
@@ -55,6 +54,7 @@ $(document).ready(function() {
         console.log('Switched to tab '+newIndex);
         Cookies.set('current_tab', newIndex );
         $('#item_details').hide();
+        $('[id^=item_row_]').find('td').removeClass('highlight_row'); 
     });
 
 
@@ -142,28 +142,98 @@ $(document).ready(function() {
     // -------- Event Handlers  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------    
     // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
+    $('#button_ApproveItem').on('click', function() {
+        if ( confirm( "Are you sure you want to approve this item?") ) {
+            var postData = {
+                    item_id:           currentItemID,
+                    item_disposition:  'Approve'
+            };
+
+            $.ajax({
+                    type: "POST",
+                    url: myURL + 'quotes/disposition',
+                    data: postData,
+                    success: function(results)  {
+                        alert('results from quote disposition=['+results+']');
+                        // location.reload();
+                    }
+            });
+
+        }
+
+        return false;
+    });
+
+     $('#button_RejectItem').on('click', function() {
+        if ( confirm( "Are you sure you want to reject this item?") ) {
+           var postData = {
+                    item_id:           currentItemID,
+                    item_disposition:  'Reject'
+            };
+
+            $.ajax({
+                    type: "POST",
+                    url: myURL + 'quotes/disposition',
+                    data: postData,
+                    success: function(results)  {
+                        alert('results from quote disposition=['+results+']');
+                        // location.reload();
+                    }
+            });
+        }
+
+        return false;
+    });
+
+
     // $('#table_CurrentParts > tbody > tr').on('click', function() {
     $('[id^=item_row_]').on('click', function() {
-        // alert('click on item row - display item below...');
-        //$('#item_details').toggle();
+
+        if ( window.location.href.match(/quotes\/update/ ) ) {
+            return false;
+        }
+
+        $('#button_ApproveItem').hide();
+        $('#button_RejectItem').hide();
+
         var tmp    =  $(this).attr('id');
         var match  = /^.+_(\d+)$/.exec(tmp);
         var itemID = RegExp.$1;
 
-        console.log( Date() + "currentItem=["+currentItem+"], itemID=["+itemID+"]");
-
-        if ( currentItem == itemID ) {
+        if ( currentItemID == itemID ) {
             $('#item_details').toggle();
+            if ($(this).find('td').hasClass('highlight_row') ) {
+                $(this).find('td').removeClass('highlight_row'); 
+            }
+            else {
+                $(this).find('td').addClass('highlight_row'); 
+            }
         }
         else {
-             $('#item_details').show();
+            $('#item_details').show();
+            $('[id^=item_row_]').find('td').removeClass('highlight_row'); 
+            $(this).find('td').addClass('highlight_row'); 
+
+            $('#item_details').html('');
+            $('#ajax_loading_image').show();
             $.ajax({
                 type: 'GET',
                 url: myURL + 'parts/showDetails?id=' + itemID,
                 success: function (data) {
                     $('#item_details').html(data);
-                    currentItem = itemID;
+                    currentItemID = itemID;
 
+                    $('#ajax_loading_image').hide();
+                    // check if item needs approval; if so, display 'button_ApproveItem' and 'button_RejectItem'
+                    if ( $( "#item_approve_"+itemID ).length ) {
+                        $('#button_ApproveItem').show();
+                        $('#button_RejectItem').show();
+                    }
+                    else {
+                        $('#button_ApproveItem').hide();
+                        $('#button_RejectItem').hide();
+                    }
                 }
             });
         }
@@ -1743,12 +1813,6 @@ $(document).ready(function() {
             return true;
     	}
     	return false;
-    }
-
-    function getAbsolutePath() {
-        var loc = window.location;
-        var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf('/') + 1);
-        return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
     }
 
     function display_Customer(data) {

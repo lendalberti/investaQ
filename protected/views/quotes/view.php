@@ -218,19 +218,24 @@
 												echo '<td><span class="volume">' . $i['volume'] . '</span></td>'; 
 
 												echo '<td>' . $i['total'] . '</td>';
-												if ( $i['approval_needed'] == 1 ) {
-													echo "<td><img id='item_approve_" . $i['id'] . "' title='Approve this item'  src='$exclamation' width='20' height='20' /></td>";
+												if ( $i['status_id'] == Status::PENDING ) {
+													echo "<td><img id='item_approve_" . $i['id'] . "' title='Item needs approval'  src='$exclamation' width='20' height='20' /></td>";
 												}
 												else {
 													echo '<td></td>';
 												}
-												// echo '<td>' . $i['comments'] . '</td>';
 												echo '</tr>';
 											}
 										}
 									?>
 							</tbody>
 							</table>
+
+							<?php if ( Yii::app()->user->isAdmin ) { ?>
+								<span id='button_ApproveItem' style='display: none;'>Approve this Item</span>
+								<span id='button_RejectItem' style='display: none;'>Reject this Item</span>
+							<?php } ?> 
+
 						</div>
 					</div>  <!--  box4  -->
 				</div>
@@ -261,6 +266,10 @@
 					<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
 				</fieldset>
 			</form>
+		</div>
+
+		<div style='text-align: center;'>
+			<img id='ajax_loading_image' src='<?php echo Yii::app()->baseUrl; ?>/images/New/ajax_loading_image.gif' width='48' height='48' title='Waiting to load...'>
 		</div>
 
 		<div id='item_details'>Loading...</div>

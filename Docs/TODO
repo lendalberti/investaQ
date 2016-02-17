@@ -1,4 +1,18 @@
 
+
+
++---------------------+
+|  Tue Feb. 16, 2016  |
++---------------------+
+
+	[ ] need to redesign 'stock_items' db table
+		- each item to have its own row
+		- major refactor !?!?!?!
+
+	[ ] finish up 'actionDisposition()' in QuotesController
+
+
+
 +---------------------+
 |  Mon Feb. 15, 2016  |
 +---------------------+
@@ -19,7 +33,7 @@
     	- clicking on item brings up popup with part details
     	- clicking on 'edit item' shows 'approve'/'reject' icon (thumbs up/down?)
 
-    [ ] on edit item page, change input to textarea and show previous comments, 
+    [x] on edit item page, change input to textarea and show previous comments, 
         then append any new ones (prefix with name:)
 
 
@@ -42,7 +56,6 @@
 		[x] - edit
 		[x] - delete
 
-	[ ] need to ?
    
 
 +---------------------+

@@ -169,7 +169,7 @@
 				<div  class='my_container'>
 					<div id="box4">
 
-						<div style='margin: 10px 0px 50px 10px; '>
+						<div style='margin: 10px 0px 10px 10px; '>
 							<table id='table_CurrentParts' style='width: 100%; border: 1px solid lightgray; margin-top: 5px;'>
 								<caption>Item updated.</caption>
 								<thead>
@@ -193,7 +193,7 @@
 												foreach( $data['items'] as $i ) {
 													echo '<tr id="item_row_'.$i['id'].'">';
 													
-													if ( Yii::app()->user->isAdmin || $i['approval_needed'] == 0 ) {
+													if ( Yii::app()->user->isAdmin || $i['status_id'] != Status::PENDING ) {
 														echo "<td style='font-size: .9em; padding: 2px;'><img id='item_edit_"  . $i['id'] . "' title='Edit this item'    src='$edit' width='16' height='16' />";
 														echo "<img id='item_trash_" . $i['id'] . "' title='Delete this item'  src='$trash' width='16' height='16' /></td>";
 													}
@@ -212,7 +212,7 @@
 													echo '<td><span class="volume">' . $i['volume'] . '</span></td>';
 													echo '<td>' . $i['total'] . '</td>';
 
-													if ( $i['approval_needed'] == 1 ) {
+													if ( $i['status_id'] == Status::PENDING ) {
 														echo "<td ><img id='item_approve_" . $i['id'] . "' title='Waiting for approval'  src='$exclamation' width='20' height='20' /></td>";
 													}
 													else {
@@ -313,7 +313,7 @@
 							</table>
 
 							<div style='text-align: center;'>
-								<img id='ajax_loading_image' src='<?php echo Yii::app()->baseUrl; ?>/images/New/gears.gif' width='48' height='48' title='Waiting to load...'>
+								<img id='ajax_loading_image' src='<?php echo Yii::app()->baseUrl; ?>/images/New/ajax_loading_image.gif' width='48' height='48' title='Waiting to load...'>
 							</div>
 
 							<table id='results_table' style='margin-top: 5px;'>
