@@ -87,8 +87,11 @@ $(document).ready(function() {
         // ResultsTable = null;
     }
 
-
-    if ( window.location.href.match(/quotes\/create$/ ) ) {
+    if ( window.location.href.match(/bto$/ ) ) {
+        $('#QuoteView_Tabs > ul > li:nth-child(4)').hide();
+        $('#QuoteView_Tabs > ul > li:nth-child(5)').hide();
+    }
+    else {
         $('#QuoteView_Tabs > ul > li:nth-child(2)').hide();
         $('#QuoteView_Tabs > ul > li:nth-child(3)').hide();
     }
@@ -190,7 +193,7 @@ $(document).ready(function() {
     });
 
 
-    // $('#table_CurrentParts > tbody > tr').on('click', function() {
+    // in View mode, click on item
     $('[id^=item_row_]').on('click', function() {
 
         if ( window.location.href.match(/quotes\/update/ ) ) {
@@ -544,7 +547,12 @@ $(document).ready(function() {
 
     		            	$('#form_QuoteID').val(quoteId);
                             //continueQuote(quoteNo);
-                            window.location.href = myURL + 'quotes/update/' + quoteId;
+
+                            // window.location.href = myURL + 'quotes/update/' + quoteId;
+                            window.location.href = myURL + 'quotes/update?id=' + quoteId + '&n=' + Math.floor((Math.random() * 100000000) + 1);
+
+
+
                         }
 		            }
 	        });
@@ -815,6 +823,13 @@ $(document).ready(function() {
      // ----------------------------------------------------- save editing changes
     $('#button_SaveItemChanges').on('click', function() {
 
+        console.log( $('#item_SelectVolume').val() );
+
+        if ( $('#item_SelectVolume').val() == 0 ) {
+            alert('Missing required field(s)...');
+            return false;
+        }
+
         var itemID  = $('#item_id').val();
         var quoteID = $('#Quotes_id').val();
         var URL     = myURL + 'quotes/partsUpdate';
@@ -830,7 +845,6 @@ $(document).ready(function() {
                 item_volume:    $('#item_SelectVolume').val(),
                 quote_id:       quoteID
         };
-
                                 /*
                                     Create a cookie, valid across the entire site:
                                         Cookies.set('`', 1);
@@ -854,11 +868,9 @@ $(document).ready(function() {
                 },
                 error: function (jqXHR, textStatus, errorThrown)  {
                     console.log("iq2_main_js, AJAX Post: FAIL! error:"+errorThrown);
-                    alert("Your Inventory Item could NOT be updated - see Admin (iq2_main_js)\n\nERROR=" + errorThrown);
+                    alert("Your Inventory Item could NOT be updated - see Admin (button_SaveItemChanges)\n\nERROR=" + errorThrown);
                 } 
         });
-
-       
     });
                                 
 
@@ -1388,11 +1400,17 @@ $(document).ready(function() {
                                             console.log("openQuoteDialog() - AJAX Post: Success - item_id=[" + data.item_id + "] added to Quote.");
                                             Cookies.set('item_added', 1);
                                             location.reload();
-
                                         },
                                         error: function (jqXHR, textStatus, errorThrown)  {
-                                            console.log("iq2_main_js, AJAX Post: FAIL! error:"+errorThrown);
-                                            alert("Your Customer Quote could NOT be updated - see Admin (iq2_main_js)\n\nERROR=" + errorThrown);
+
+                                            // for some reason we always come here... doesn't sweem to like the ajax data 
+                                            // coming back (see actionPartsUpdate() in QuotesController) - but it's working
+                                            // so, we'll just ignore it for now... TODO
+
+                                            console.log("Your Customer Quote could NOT be updated - see Admin (checkCustomPrice)\n\nERROR=" + errorThrown);
+                                            console.log("jqXHR" + JSON.stringify(jqXHR) );
+                                            Cookies.set('item_added', 1);
+                                            location.reload();
                                         } 
                                 });
 
@@ -1585,6 +1603,56 @@ $(document).ready(function() {
 
 
 
+    // -------------------------------------------
+    // set up quote history click on paginate
+    // -------------------------------------------
+    function setupOnQuoteHistoryClick() {
+        $('#link_DataSheet > a').on('click', function() {
+            var href = $(this).attr('href');
+            if ( href == '#' ) {
+                alert('No datasheet available for this part');
+            }
+        });
+
+        $('#link_QuoteHistory').on('click', function() {
+            $.ajax({
+                  url: '../quotes/history?ajax=1&pn=' + selected_part_number,
+                  type: 'GET',
+                  success: function(jData, textStatus, jqXHR) {
+                        console.log('data=' + jData);
+                        //return false;
+                        
+                        var data = JSON.parse(jData);
+                        console.log('data=' + data);
+
+                        $('#form_QuoteHistory').html( data );
+
+                        dialog_QuoteHistory.dialog('option', 'title', 'Quote History for Part No. ' + selected_part_number ); 
+
+                        var buttons = { 
+                          "Done": function() { 
+                             dialog_QuoteHistory.dialog( "close" );  
+                             return false; 
+                          },
+                        }
+
+                        dialog_QuoteHistory.dialog("option", "buttons", buttons);
+                        dialog_QuoteHistory.dialog( "open" );
+                        return false; 
+
+                  },
+                  error: function (jqXHR, textStatus, errorThrown)  {
+                        console.log("Couldn't retrieve quote history for this part; error=" + errorThrown);
+                        alert("Couldn't retrieve quote history for this part; error=" + errorThrown);
+                  } 
+            });
+            return false;
+        });
+    }
+
+
+
+
 	function openQuoteDialog(results) {
 		$('#form_PartPricing').html(results);
 
@@ -1627,6 +1695,8 @@ $(document).ready(function() {
         }
 
 		dialog_PartPricing.dialog('option', 'title', 'Inventory Part Pricing Details'); 
+        setupOnQuoteHistoryClick();
+
 		dialog_PartPricing.dialog({
 			buttons :  [{
 							text: "Cancel",
@@ -1708,7 +1778,7 @@ $(document).ready(function() {
 										},
 										error: function (data, textStatus, errorThrown)  {
 											console.log("AJAX Post: FAIL! error:"+errorThrown);
-                                            alert("Your Customer Quote could NOT be updated ("+data.item_id+") - see Admin (iq2_main_js)\n\nERROR=" + errorThrown);
+                                            alert("Your Customer Quote could NOT be updated ("+data.item_id+") - see Admin (openQuoteDialog)\n\nERROR=" + errorThrown);
 										} 
 								});
 
@@ -1740,24 +1810,13 @@ $(document).ready(function() {
     function displayPartLookupResults(res) {
     	var a          = JSON.parse(res);
     	var partsCount = a.parts.length; 
-
-    	// if ( partsCount == 0 ) {
-    	// 	alert('Part not found; \n\nWant to create a NoBid Quote?');  // TODO
-    	// }
-
-    //     console.log('********** BEFORE: ResultsTable.destroy() - displayPartLookupResults() - ' + ResultsTable);
-  		// if ( ResultsTable ) { ResultsTable.clear(); ResultsTable.draw(); ResultsTable.destroy();  }
-    //     console.log('********** AFTER:  ResultsTable.destroy() - displayPartLookupResults() - ' + ResultsTable);
-
-
-    	// $('#results_table tbody').empty();
-
-
     	var rows       = '';
+
     	for( var i=0; i<partsCount; i++ ) {
     		rows += "<tr id='rowID_"+a.parts[i].part_number+"'>";
 
-    		rows += "<td>"+ a.parts[i].part_number + "</td>";
+            rows += "<td>"+ a.parts[i].part_number + "</td>";
+            rows += "<td>"+ ( a.parts[i].build == 1 ? 'Build to Order' : 'Stock') + "</td>"; 
     		rows += "<td>"+ ( a.parts[i].manufacturer ? a.parts[i].manufacturer : 'n/a' )+"</td>";
     		rows += "<td>"+ ( a.parts[i].supplier ? a.parts[i].supplier : 'n/a' )+"</td>";
 	   		
@@ -1773,24 +1832,40 @@ $(document).ready(function() {
         // this is where a click on 'rowID_' is detected...
     	$('#results_table thead').after('<tbody>'+rows+'</tbody>');
 
-
-        if ( ResultsTable == null ) {  // don't reinitilaize more than once - is this right????
-            console.log('**********  displayPartLookupResults() - ' + ResultsTable);
-
+        if ( ResultsTable == null ) {  // don't reinitilaize more than once 
             // set up DataTable on Results table - from parts lookup
         	ResultsTable = $('#results_table').DataTable({
     			"iDisplayLength": 10,
     			drawCallback: function() {
     		        var api = this.api();
     		        api.$('#results_table > tbody > tr').click(function() {
-    		        	console.log( "Ready to display part details: ", $(this) );
-    		            displayPartDetails( $(this) ); 
+                        var inventoryStatus = $(this).find('td:nth-child(2)').text();
+                        console.log('Inventory Status: ' + inventoryStatus );
+                        if ( inventoryStatus === 'Build to Order' ) {
+                            var partNo = $(this).find('td:nth-child(1)').text();
+
+                            if ( confirm("Part No. "+partNo+" is Build to Order.\n\nWant to continue processing this as a Manufacturing Quote?") ) {
+                                $('#QuoteView_Tabs > ul > li:nth-child(2)').hide();
+                                $('#QuoteView_Tabs > ul > li:nth-child(3)').hide();
+                                $('#QuoteView_Tabs > ul > li:nth-child(4)').show();
+                                $('#QuoteView_Tabs > ul > li:nth-child(5)').show();
+                                $('#header_PageTitle').text('Updating Manufacturing Quote No.');
+                                console.log('current url: ' + window.location.href);
+                                
+                                window.location = window.location.href + '?i=' + Math.floor((Math.random() * 100000000) + 1) + '&bto';
+                            }
+
+                        }
+                        else {
+                            displayPartDetails( $(this) ); 
+                        }
     		        });
     		    }
     		});
         }
+    }    // END_OF_FUNCTION displayPartLookupResults()
 
-    }
+
 
 
 

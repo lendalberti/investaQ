@@ -88,7 +88,7 @@
         
         $sql = "SELECT COUNT(*) FROM stock_items WHERE quote_id = $quote_id AND status_id = $rejected";
         pDebug("sql=[$sql]");
-        
+
         $count = Yii::app()->db->createCommand($sql)->queryScalar();
         return $count;
     }
@@ -242,18 +242,9 @@
     // -----------------------------------------------------------------------------------
     function notifyApprovers( $model_StockItem) {
 
-        if ( Yii::app()->params['DEBUG'] ) {   // no emails when working from home
-            return true;
-        }
-
-
-
-
-
-
-
-
-
+        // if ( Yii::app()->params['DEBUG'] ) {   // no emails when working from home
+        //     return true;
+        // }
 
 
         $quote_id = $model_StockItem->quote_id;
@@ -317,19 +308,24 @@
 
 
     // -----------------------------------------------------------------------------------
-    function notifySalespersonStatusChange( $model ) {
+    function notifySalespersonStatusChange( $quoteModel, $itemModel ) {
 
-        $subject           = "Quote " . $model->status->name;
+        $item_status  = $itemModel->status->name;
+        $quote_status = $quoteModel->status->name;
+        $part_no      = $ $itemModel->part_no;
+        
+        $subject           = "Item $item_status";
         $salesperson_name  = $model->owner->fullname;
         $salesperson_email = $model->owner->email;
         $cc                = Yii::app()->user->email;   // always CC me for now if NOT in Debug
-        
+       
         $link    = "<a href='http://www.wcvb.com'>".$model->quote_no."</a>";
-        $message = "This is to inform you the status for your quote " . $link . " has been changed to: " . $model->status->name;
+       // $message = "This is to inform you the status for your quote " . $link . " has been changed to: " . $quote_status;
+        $message = "One of the items on your quote $link, Part No. $part_no, has been $item_status";
 
         if ( Yii::app()->params['DEBUG'] ) {
             $salesperson_email = 'LDAlberti@rocelec.com';               // all to me in Debug
-            $subject .= " (email meant for " . $salesperson_name . ")";
+            $subject .= " (email meant for " . $salesperson_name . ")";                            // remove this after tesing
             $cc = null; 
         }
        

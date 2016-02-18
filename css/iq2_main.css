@@ -968,6 +968,26 @@ span[id^='edit_quote_'] {
 /************ from _form.php  -- TODO: check for duplicates (eventually remove _form.php) *******************/
 
 
+#div_SubmitDone {
+	margin-top: 20px;
+	display: none;
+}
+
+#div_SubmitDone > input {
+	background-color: lightgray;
+    font-size: 1.2em;
+}
+
+
+
+#section_Details,
+#section_Approvals,
+#section_PartsLookup,
+#section_TermsConditions {
+	display: none;
+}
+
+
 div.my_container {
 	padding: 5px;
 	border-top: 0px solid lightgray;
@@ -1069,11 +1089,6 @@ div.my_container > div > table > tbody > tr > td:nth-child(odd) {
 
 #selection_container {
 	padding: 10px 0px 10px 0px;
-}
-
-span.open_close {
-	/*display: none;*/
-	padding-left: 10px;
 }
 
 

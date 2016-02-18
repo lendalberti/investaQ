@@ -68,8 +68,7 @@ class PartsController extends Controller {
 
 		//pDebug( "formatItemDetails() item: " , $p);
 
-		$href   = " href='" . $se_data->Datasheet . "'";
-		$target = " target='_blank'";
+		$href   = $se_data->Datasheet ? $se_data->Datasheet : '#';
 
 		$tech_note            = 'n/a';
 		$lifeCycle            = trim($se_data->Lifecycle) ? trim($se_data->Lifecycle) : "n/a";
@@ -102,7 +101,10 @@ class PartsController extends Controller {
 				$t .= "<tr> <td colspan='2'>";
 				$t .= "<span id='link_QuoteHistory'><a href='#'>Quote History</a></span>"; 
 				$t .= "<span id='link_SalesHistory'><a href='#'>Sales History</a></span>"; 
-				$t .= "<span id='link_DataSheet'><a " . $href . $target . " >DataSheet</a></span>"; 
+				//$t .= "<span id='link_DataSheet'><a " . $href . $target . " >DataSheet</a></span>"; 
+
+				$t .= "<span id='link_DataSheet'><a href='$href' target='_blank' >DataSheet</a></span>"; 
+				
 				$t .= "</td></tr>";
 				$t .= "</table></div>";
 			$left_box .= $t ; 

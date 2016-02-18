@@ -132,6 +132,12 @@ class QuotesController extends Controller
 		pTrace( __METHOD__ );
 		pDebug('actionDisposition() = _POST:', $_POST);
 
+		$quote_id = $id;
+
+
+		// TODO: refactor all this...
+
+
 		// 1. get item id, disposition
 		$item_id          = $_POST['item_id'];
 		$item_disposition = $_POST['item_disposition'];
@@ -143,29 +149,44 @@ class QuotesController extends Controller
 			$modelStockItems->status_id = Status::APPROVED;
 
 			if ( $modelStockItems->save() ) {
-				// 3. check for other items in same quote
-				$pending_items = getPendingItemCount($id);
-				pDebug('Any more items still pending? ' . $pending_items );
+				// update quote status
+				$quoteModel = $this->loadModel($quote_id);
+				$quoteModel->status_id = $this->getUpdatedQuoteStatus($quote_id);
 
-				if ( $pending_items == 0 ) {
-					// 4. if no more items neeed approval, change quote status to Approved
-					$model = $this->loadModel($id);
-			    	$model->status_id = Status::APPROVED;
+				if ( $quoteModel->save() ) {
+					pDebug("actionDisposition() - Quote status updated to: " . $quoteModel->status->name . "; calling notifySalespersonStatusChange()...");
+					//notifySalespersonStatusChange($quoteModel,$modelStockItems );
 
-			    	if ( $model->save() ) {
-			    		pDebug('actionDisposition() - quote ' . $model->quote_no . ' approved');
-			    		notifySalespersonStatusChange($model);
-			    		echo Status::SUCCESS;
-			    	}
-			    	else {
-			    		pDebug('actionDisposition() - ERROR approving quote: ', $model->errors);
-			    		echo Status::FAILURE;
-			    	}
-				}
-				else {
-					pDebug("actionDisposition() - can't approve quote yet; still pending items.");
 					echo Status::SUCCESS;
 				}
+				else {
+					pDebug("actionDisposition() - Couldn't update Quote status: ", $quoteModel->errors );
+					echo Status::FAILURE;
+				}
+
+				// // 3. check for other items in same quote
+				// $pending_items = getPendingItemCount($id);
+				// pDebug('Any more items still pending? ' . $pending_items );
+
+				// if ( $pending_items == 0 ) {
+				// 	// 4. if no more items neeed approval, change quote status to Approved
+				// 	$model = $this->loadModel($id);
+			 //    	$model->status_id = Status::APPROVED;
+
+			 //    	if ( $model->save() ) {
+			 //    		pDebug('actionDisposition() - quote ' . $model->quote_no . ' approved');
+			 //    		notifySalespersonStatusChange($model);
+			 //    		echo Status::SUCCESS;
+			 //    	}
+			 //    	else {
+			 //    		pDebug('actionDisposition() - ERROR approving quote: ', $model->errors);
+			 //    		echo Status::FAILURE;
+			 //    	}
+				// }
+				// else {
+				// 	pDebug("actionDisposition() - can't approve quote yet; still pending items.");
+				// 	echo Status::SUCCESS;
+				// }
 
 			}
 			else {
@@ -177,29 +198,37 @@ class QuotesController extends Controller
 			$modelStockItems->status_id = Status::REJECTED;
 			if ( $modelStockItems->save() ) {
 				pDebug("actionDisposition() - item [$item_id] in quote [$id] rejected.");
+				// update 
+				$quoteModel = $this->loadModel($quote_id);
+				$quoteModel->status_id = $this->getUpdatedQuoteStatus($quote_id);
+
+				if ( $quoteModel->save() ) {
+					pDebug("actionDisposition() - Quote status updated to: " . $quoteModel->status->name . "; calling notifySalespersonStatusChange()...");
+					//notifySalespersonStatusChange($quoteModel, $modelStockItems);
+					echo Status::SUCCESS;
+				}
+				else {
+					pDebug("actionPartsUpdate() - Couldn't update Quote status: ", $quoteModel->errors );
+					echo Status::FAILURE;
+				}
 			}
 			else {
 				pDebug("actionDisposition() - couldn't save new model; errors: ", $modelStockItems->errors);
 				echo Status::FAILURE;
 			}
+			// // 5. if item rejected, change quote status to Rejected
+			// $model = $this->loadModel($id);
+	  //   	$model->status_id = Status::REJECTED;
 
-
-
-
-
-			// 5. if item rejected, change quote status to Rejected
-			$model = $this->loadModel($id);
-	    	$model->status_id = Status::REJECTED;
-
-	    	if ( $model->save() ) {
-	    		pDebug('actionDisposition() - quote ' . $model->quote_no . ' rejected');
-	    		notifySalespersonStatusChange($model);
-	    		echo Status::SUCCESS;
-	    	}
-	    	else {
-	    		pDebug('actionDisposition() - ERROR rejecting quote: ', $model->errors);
-	    		echo Status::FAILURE;
-	    	}
+	  //   	if ( $model->save() ) {
+	  //   		pDebug('actionDisposition() - quote ' . $model->quote_no . ' rejected');
+	  //   		notifySalespersonStatusChange($model);
+	  //   		echo Status::SUCCESS;
+	  //   	}
+	  //   	else {
+	  //   		pDebug('actionDisposition() - ERROR rejecting quote: ', $model->errors);
+	  //   		echo Status::FAILURE;
+	  //   	}
 		}
 
 
@@ -257,8 +286,7 @@ class QuotesController extends Controller
 		$data['items'] = array();
 		$data['items'] = $this->getItemsByQuote($quote_id);
 
-		pDebug('Quotes::actionView() - data[items]=', $data['items']);
-
+		//pDebug('Quotes::actionView() - data[items]=', $data['items']);
 		$this->render('view',array(
 			'data'=>$data,
 		));
@@ -269,14 +297,8 @@ class QuotesController extends Controller
 	public function actionCreate() {
 		pTrace( __METHOD__ );
 		
-		// if ( count($_POST) > 0 ) {
-		// 	pDebug('Quotes:actionCreate() - _POST=', $_POST);
-		// 	echo '0';
-		// 	return;
-		// }
-
 		if ( isset($_POST['Customers']) && isset($_POST['Contacts']) && isset($_POST['Quotes'])   ) {
-			pDebug("Quotes::actionCreate() - _POST values from serialzed form values:", $_POST);
+			pDebug("Quotes::actionCreate() - _POST values from serialized form values:", $_POST);
 
 			$customer_id = $_POST['Customers']['id'];
 			$contact_id  = $_POST['Contacts']['id'];
@@ -365,6 +387,39 @@ class QuotesController extends Controller
 		return "[$t] $u";
 	}
 
+	private function getUpdatedQuoteStatus( $quote_id ) {
+		// any Rejected items?
+		$rejected_items = getRejectedItemCount($quote_id);
+
+		// any Pending items?
+		$pending_items = getPendingItemCount($quote_id);
+
+		if ( !$rejected_items && !$pending_items ) {  // set back to Draft
+			$new_quote_status = Status::DRAFT;
+		}
+		
+		if ($pending_items) { 						 // set back to Pending
+			$new_quote_status = Status::PENDING;
+		}
+		
+		// this 'trumps' any Pending...  // set back to Rejected
+		if ($rejected_items) {
+			$new_quote_status = Status::REJECTED;
+		}
+
+		return $new_quote_status;
+
+		// $quoteModel = $this->loadModel($quote_id);
+		// $quoteModel->status_id = $new_quote_status;
+
+		// if ( $quoteModel->save() ) {
+		// 	pDebug("actionPartsUpdate() - Quote status updated to: " . $new_quote_status );
+		// }
+		// else {
+		// 	pDebug("actionPartsUpdate() - Couldn't update Quote status: ", $quoteModel->errors );
+		// }
+	}
+
 
 	public function actionPartsUpdate() 	{
 		pTrace( __METHOD__ );
@@ -389,28 +444,9 @@ class QuotesController extends Controller
 
 				if ( $modelStockItem->status_id == Status::REJECTED ) {
 					$modelStockItem->setAttribute( 'status_id', Status::DRAFT );
-
-					// any more Rejected items?
-					$rejected_items = getRejectedItemCount($quote_id);
-
-					// any more Pending items?
-					$pending_items = getPendingItemCount($quote_id);
-
-					if ( !$rejected_items && !$pending_items ) {
-						// set back to Draft
-						$new_quote_status = Status::DRAFT;
-					}
-					else if ($pending_items) {
-						// set back to Pending
-						$new_quote_status = Status::PENDING;
-					}
-					else if ($rejected_items) {
-						// set back to Rejected
-						$new_quote_status = Status::REJECTED;
-					}
 				}
 
-				
+
 				preg_match('/^item_price_(.+)$/', $_POST['item_volume'], $match); 
 				$volume = $match[1]; 
 				pDebug("volume=[$volume]");
@@ -436,13 +472,13 @@ class QuotesController extends Controller
 					pDebug("actionPartsUpdate() - Inventory Item updated.");
 
 					$quoteModel = $this->loadModel($quote_id);
-					$quoteModel->status_id = $new_quote_status;
+					$quoteModel->status_id = $this->getUpdatedQuoteStatus($quote_id);
 
 					if ( $quoteModel->save() ) {
-						pDebug("actionPartsUpdate() - Quote status updated to: " . $new_quote_status );
+						pDebug("actionPartsUpdate() - Quote status updated to: " . $quoteModel->status_id );
 					}
 					else {
-						pDebug("actionPartsUpdate() - Coun't update Quote status: ", $quoteModel->errors );
+						pDebug("actionPartsUpdate() - Couldn't update Quote status: ", $quoteModel->errors );
 					}
 				}
 				else {
@@ -469,7 +505,8 @@ class QuotesController extends Controller
 
 				$modelStockItem->setAttribute( 'lifecycle_id', $lifecycle ); 
 				$modelStockItem->setAttribute( 'status_id', $_POST['approval_needed'] == 1 ? Status::PENDING : Status::DRAFT ); 
-				if ( $_POST['item_comments'] ) {
+
+				if ( $_POST['comments'] ) {
 					$modelStockItem->setAttribute( 'comments', $this->getTimeStamp() . "\n....." . $_POST['comments'] );
 				}
 
@@ -493,7 +530,31 @@ class QuotesController extends Controller
 
 					if ( $modelQuote->save() ) {
 						pDebug("actionPartsUpdate() - called from: ".$_GET['from']." - quote saved; new stock item id=" . $stockItem_ID );
-						$arr = array( 'item_id' => $stockItem_ID );
+						$arr[] = array( 'item_id' => $stockItem_ID );
+
+
+						/*
+							TODO: check out why this is causing an error in function checkCustomPrice() - see iq2_main.js
+						
+									Sending json: (Len D'Alberti)
+									[{"item_id":"51"}]
+
+									Your Customer Quote could NOT be updated - see Admin (checkCustomPrice)
+
+									ERROR=SyntaxError: Unexpected token I
+									VM2125:1394 jqXHR{"readyState":4,"responseText":"Invalid address: [{\"item_id\":\"50\"}]","status":200,"statusText":"OK"}
+									Navigated to http://lenscentos/iq2/index.php/quotes/update/7
+
+						*/
+
+							// 	$list[] = array( 'id' => $r['id'], 'label' => $r['name'] );
+							// }
+							// // pDebug("actionSelect() - list:", $list); 
+							// echo json_encode($list);
+						
+							// pDebug('Sending json:', json_encode($arr) );
+							// echo json_encode($arr);
+
 					}
 					else {
 						pDebug("actionPartsUpdate() - quote NOT saved; error=", $modelQuote->errors);
@@ -509,8 +570,10 @@ class QuotesController extends Controller
 			pDebug("actionPartsUpdate() - Exception: ", $e->errorInfo );
 		}
 
-        pDebug('Sending json:', json_encode($arr) );
+		pDebug('Sending json:', json_encode($arr) );  //  [{"item_id":"51"}]
 		echo json_encode($arr);
+		return;
+
 	}
 
 
@@ -537,6 +600,8 @@ class QuotesController extends Controller
 				$quoteModel->risl =  $_POST['quote_RISL'];
 				$quoteModel->manufacturing_lead_time =  $_POST['quote_MfgLeadTime'];
 				$quoteModel->additional_notes =  $_POST['quote_Notes'];
+
+				$quoteModel->status_id = $this->getUpdatedQuoteStatus($quote_id);
 
 				if ($quoteModel->save()) {
 					pDebug( "actionUpdate() -  Terms saved for quote no. " . $_POST['quoteForm_Terms_QuoteID'] );
@@ -635,12 +700,14 @@ class QuotesController extends Controller
 			$quoteModel->customer_id             = $customer_id;
 			$quoteModel->contact_id              = $contact_id;
 			$quoteModel->source_id               = $_POST['Quotes']['source_id'];
-			$quoteModel->status_id               = $_POST['Quotes']['status_id'];
     		$quoteModel->additional_notes        = $_POST['Quotes']['additional_notes'];
     		$quoteModel->terms_conditions        = $_POST['Quotes']['terms_conditions'];
     		$quoteModel->customer_acknowledgment = $_POST['Quotes']['customer_acknowledgment'];
     		$quoteModel->risl                    = $_POST['Quotes']['risl'];
     		$quoteModel->manufacturing_lead_time = $_POST['Quotes']['manufacturing_lead_time'];
+
+			// $quoteModel->status_id               =  $_POST['Quotes']['status_id'];  
+			$quoteModel->status_id               =  $this->getUpdatedQuoteStatus($quote_id);   //  TODO: verify this is correct
 
          	if ($quoteModel->save()) {
 				pDebug('Saved quote changes: ', $quoteModel->attributes);
@@ -669,7 +736,7 @@ class QuotesController extends Controller
 			
 			// ------------------------------ get contact
 			$data['contact']  = Contacts::model()->findByPk($contact_id);
-
+			
 			// ------------------------------ get items
 			$data['items'] = array();
 			$data['items'] = $this->getItemsByQuote($quote_id);
@@ -678,17 +745,12 @@ class QuotesController extends Controller
 			$data['sources']  = Sources::model()->findAll( array('order' => 'name') );
 			$data['status']   = Status::model()->findAll();
 
-
-
-
-
 			pDebug('Quotes::actionUpdate() - data[items]=', $data['items']);
 
-
-
-
-
-
+			if ( isset($_GET['bto']) && $data['model']->quote_type_id == QuoteTypes::TBD ) {
+				$data['model']->quote_type_id = QuoteTypes::MANUFACTURING;
+				$data['model']->save();  // TODO: check for errors
+			}
 
 			$this->render('update',array(
 				'data'=>$data,
@@ -705,7 +767,7 @@ class QuotesController extends Controller
 		$results = $command->queryAll();
 
 		foreach( $results as $i ) {
-			pDebug('Quotes:getItemsByQuote() - results:', $i );
+			// pDebug('Quotes:getItemsByQuote() - results from stock_items:', $i );
 			foreach( array('1_24', '25_99', '100_499', '500_999', '1000_Plus', 'Base', 'Custom') as $v ) {
 				if ( fq($i['qty_'.$v]) != '0' ) {
 
@@ -736,7 +798,7 @@ class QuotesController extends Controller
 			}
 		}
 
-		pDebug('Quotes::getItemsByQuote() - items:', $items );
+		pDebug('Quotes::getItemsByQuote() - final items:', $items );
 		return $items;
 	}
 

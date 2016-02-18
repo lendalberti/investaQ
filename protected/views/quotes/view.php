@@ -62,11 +62,19 @@
 
 	<div id="QuoteView_Tabs">
 	
-		<ul>
-			<li><a href="#section_CustomerContact">Customer Information</a></li>
-			<li><a href="#section_TermsConditions">Quote Terms</a></li>
-			<li><a href="#section_Parts">Inventory Items</a></li>
-		</ul>
+		<?php if ( $data['quote_type'] === 'Manufacturing' ) { ?>
+			<ul>
+				<li><a href="#section_CustomerContact">Customer & Contact Information</a></li>
+				<li><a href="#section_Details">Details</a></li>
+				<li><a href="#section_Approvals">Procee Approvals</a></li>
+			</ul>
+		<?php  } else { ?>
+			<ul>
+				<li><a href="#section_CustomerContact">Customer & Contact Information</a></li>
+				<li><a href="#section_TermsConditions">Quote Terms</a></li>
+				<li><a href="#section_Parts">Inventory Items</a></li>
+			</ul>
+		<?php } ?>
 
 		<div id='section_CustomerContact'>
 			<div class='my_container'>

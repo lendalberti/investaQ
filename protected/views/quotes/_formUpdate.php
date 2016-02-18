@@ -51,13 +51,16 @@
 	<input type='hidden' id='item_id' name='item_id' value=''>
 
 	<div id="QuoteView_Tabs">
+
 		<ul>
-			<li><a href="#section_CustomerContact">Customer Information</a></li>
+			<li><a href="#section_CustomerContact">Customer & Contact Information</a></li>
+			<li><a href="#section_Details">Details</a></li>
+			<li><a href="#section_Approvals">Process Approvals</a></li>
 			<li><a href="#section_TermsConditions">Quote Terms</a></li>
 			<li><a href="#section_Parts">Inventory Items</a></li>
-			<!-- <li><a href="#section_EditPart">Edit Item</a></li> -->
 		</ul>
-	
+
+		<!--  for Stock Quotes -->
 		<div id='section_CustomerContact'>
 			<input type='hidden' id='returnUrl'       value='<?php echo Yii::app()->request->baseUrl . '/index.php/quotes/update/' . $quote_id  ?>'>
 			<input type='hidden' id='Quotes_source_id' name='Quotes[source_id]' value='<?php echo $source_id; ?>'>
@@ -323,6 +326,7 @@
 								<thead>
 									<tr>
 										<th>Part Number</th>
+										<th>Status</th>
 										<th>Mfg</th>
 										<th>Supplier</th>
 										<th>Lifecycle</th>
@@ -342,6 +346,19 @@
 				</div>
 			</div>
 		</div>
+
+		<!--  for Manufacturing Quotes -->
+		<!-- < ?php if ( $data['quote_type'] === 'Manufacturing' ) { ?>  -->
+			<div id='section_Details'>
+				 manufacturing quote details go here...
+			</div>
+
+			<div id='section_Approvals'>
+				manufacturing quote approvals go here...
+			</div>
+		<!-- < ?php } ?> -->
+
+
 
 	</div>  <!-- end of QuoteView_Tabs -->
 
