@@ -82,8 +82,9 @@ $(document).ready(function() {
         $('#QuoteView_Tabs > ul > li:nth-child(5)').show();     // "Process Approvals"
     }
 
-    var quoteTypeID = $('#quoteTypeID').val();
-    console.log('quoteTypeID=' + quoteTypeID);
+    var quoteTypeID   = $('#quoteTypeID').val();
+    var quoteTypeName = $('#quoteTypeName').val();
+    console.log('quoteTypeID=' + quoteTypeID + ', quoteTypeName=' + quoteTypeName);
 
     if ( quoteTypeID == MANUFACTURING_QUOTE ) {
         showManufacturingTabs();
@@ -1890,37 +1891,56 @@ $(document).ready(function() {
     		        api.$('#results_table > tbody > tr').click(function() {
                         var inventoryStatus = $(this).find('td:nth-child(2)').text();
                         console.log('Inventory Status: ' + inventoryStatus );
+                        var partNo = $(this).find('td:nth-child(1)').text();
+
                         if ( inventoryStatus === 'Build to Order' ) {
-                            var partNo = $(this).find('td:nth-child(1)').text();
-
-                            if ( confirm("Part No. "+partNo+" is Build to Order - continue processing this as a Manufacturing Quote?") ) {
-                                Cookies.remove('item_added');
+                            if ( confirm("Part No. "+partNo+" is Build to Order only.\nContinue processing as a Manufacturing Quote?") ) {
                                 showManufacturingTabs();
-                               
                                 $('#header_PageTitle').text('Updating Manufacturing Quote No.');
-                                console.log('current url: ' + window.location.href);
-                                //window.location = window.location.href + '?i=' + Math.floor((Math.random() * 100000000) + 1) + '&bto';
 
-                                // update quote type to 'Manufacturing'
                                 var postData = {
                                         newQuoteTypeID: MANUFACTURING_QUOTE,
                                 };
-
-                                $.ajax({
+                                 $.ajax({
                                         type: "POST",
                                         url: myURL + 'quotes/update?id=' + quoteID,
                                         data: postData,
                                         success: function(results)  {
-                                            console.log('results from update quote status: ['+results+']');
-                                            Cookies.set('current_tab', 0); 
-                                            location.reload();
+                                            console.log('results from update quote type: ['+results+']');
+                                            $('#mfg_quote_details').html("results from update quote type: " + results);
                                         }
                                 });
-
-
-
+                            }
+                            else {
+                                location.reload();
                             }
 
+                                                // var partNo = $(this).find('td:nth-child(1)').text();
+
+                                                // if ( confirm("Part No. "+partNo+" is Build to Order only.\nContinue processing as a Manufacturing Quote?") ) {
+                                                //     Cookies.remove('item_added');
+                                                //     showManufacturingTabs();
+                                                   
+                                                //     $('#header_PageTitle').text('Updating Manufacturing Quote No.');
+                                                //     console.log('current url: ' + window.location.href);
+                                                //     //window.location = window.location.href + '?i=' + Math.floor((Math.random() * 100000000) + 1) + '&bto';
+
+                                                //     // update quote type to 'Manufacturing'
+                                                //     var postData = {
+                                                //             newQuoteTypeID: MANUFACTURING_QUOTE,
+                                                //     };
+
+                                                //     $.ajax({
+                                                //             type: "POST",
+                                                //             url: myURL + 'quotes/update?id=' + quoteID,
+                                                //             data: postData,
+                                                //             success: function(results)  {
+                                                //                 console.log('results from update quote status: ['+results+']');
+                                                //                 Cookies.set('current_tab', 0); 
+                                                //                 location.reload();
+                                                //             }
+                                                //     });
+                                                // }
                         }
                         else {
                             displayPartDetails( $(this) ); 

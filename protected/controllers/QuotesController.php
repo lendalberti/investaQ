@@ -267,6 +267,7 @@ class QuotesController extends Controller
 		pTrace( __METHOD__ );
 
 		$data['model'] = $this->loadModel($id);
+		pDebug('actionView() - Viewing quote model:', $data['model']->attributes );
 
 		$customer_id = $data['model']->customer_id;
 		$contact_id  = $data['model']->contact_id;
@@ -286,7 +287,6 @@ class QuotesController extends Controller
 		$data['items'] = array();
 		$data['items'] = $this->getItemsByQuote($quote_id);
 
-		//pDebug('Quotes::actionView() - data[items]=', $data['items']);
 		$this->render('view',array(
 			'data'=>$data,
 		));
@@ -423,9 +423,6 @@ class QuotesController extends Controller
 
 	public function actionPartsUpdate() 	{
 		pTrace( __METHOD__ );
-		pDebug( "actionPartsUpdate() - _POST=", $_POST );
-
-
 		$arr = array();
 
 		try {
@@ -486,9 +483,6 @@ class QuotesController extends Controller
 				}
 			}
 			else {  																			// adding Inventory Item
-
-				pDebug( "actionPartsUpdate() - adding inventory item: _POST=", $_POST ); 
-
 				$modelStockItem = new StockItems;
 				$modelStockItem->attributes = $_POST;
 
@@ -513,10 +507,7 @@ class QuotesController extends Controller
 				pDebug( "actionPartsUpdate() - updating StockItems model with the following attributes: ", $modelStockItem->attributes );
 
 				if ( $modelStockItem->save() ) {
-					pDebug("actionPartsUpdate() - item saved");
-
 					$stockItem_ID = $modelStockItem->getPrimaryKey();
-
 					$modelQuote = Quotes::model()->findByPk( $_POST['quote_id'] );
 					$modelQuote->quote_type_id = QuoteTypes::STOCK;   					// update Quote type
 
@@ -529,9 +520,7 @@ class QuotesController extends Controller
 					}
 
 					if ( $modelQuote->save() ) {
-						pDebug("actionPartsUpdate() - called from: ".$_GET['from']." - quote saved; new stock item id=" . $stockItem_ID );
 						$arr[] = array( 'item_id' => $stockItem_ID );
-
 
 						/*
 							TODO: check out why this is causing an error in function checkCustomPrice() - see iq2_main.js
@@ -594,11 +583,16 @@ class QuotesController extends Controller
 		if ( $_POST ) {
 
 			if ( isset( $_POST['newQuoteTypeID'] ) ) {  	 // updating just quote type from update/inventory lookup page
+				pDebug( "actionUpdate() - _POST:", $_POST);
+
 				$quoteModel = $this->loadModel($id);
+				pDebug( "actionUpdate() -  BEFORE: quote model:", $quoteModel->attributes );
 
 				$quoteModel->quote_type_id = $_POST['newQuoteTypeID'];
+
 				if ($quoteModel->save()) {
 					pDebug( "actionUpdate() -  Quote type changed to [".$quoteModel->quoteType->name."] for quote no. " . $quoteModel->quote_no );
+					pDebug( "actionUpdate() -  AFTER: quote model:", $quoteModel->attributes );
 					echo Status::SUCCESS;
 				}
 				else {
@@ -610,6 +604,8 @@ class QuotesController extends Controller
 
 
 			if ( isset( $_POST['quoteForm_Terms_QuoteID'] ) ) {  					 // updating just terms from Create page
+				pDebug( "actionUpdate() - _POST:", $_POST);
+
 				$quoteModel = $this->loadModel( $_POST['quoteForm_Terms_QuoteID'] );
 
 				$quoteModel->terms_conditions =  $_POST['quote_Terms'];
@@ -737,6 +733,8 @@ class QuotesController extends Controller
 			return;
 		}
 		else {
+			pDebug("actionUpdate() - _GET=", $_GET);
+
 			$data['model'] = $this->loadModel($quote_id);
 
 			// TODO - no longer needed; edits can be done on other items in quote
@@ -762,12 +760,10 @@ class QuotesController extends Controller
 			$data['sources']  = Sources::model()->findAll( array('order' => 'name') );
 			$data['status']   = Status::model()->findAll();
 
-			pDebug('Quotes::actionUpdate() - data[items]=', $data['items']);
-
-			if ( isset($_GET['bto']) && $data['model']->quote_type_id == QuoteTypes::TBD ) {
-				$data['model']->quote_type_id = QuoteTypes::MANUFACTURING;
-				$data['model']->save();  // TODO: check for errors
-			}
+			// if ( isset($_GET['bto']) && $data['model']->quote_type_id == QuoteTypes::TBD ) {
+			// 	$data['model']->quote_type_id = QuoteTypes::MANUFACTURING;
+			// 	$data['model']->save();  // TODO: check for errors
+			// }
 
 			$this->render('update',array(
 				'data'=>$data,

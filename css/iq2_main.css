@@ -1,4 +1,14 @@
 
+#mfg_details > tbody > tr > td { 
+	font-size: .8em;
+}
+
+#mfg_details > tbody > tr > td:nth-child(1) { 
+	text-align: right;
+	font-weight: bold;
+	width: 20%;
+}
+
 
 #ajax_loading_image,
 #loading_item_icon {
@@ -105,6 +115,22 @@ span#button_ApproveItem:hover {
 	background-color: #FFC1C1;
 	color: black;
 	padding: 3px 5px 3px 5px;
+	border-radius: 10px;
+	border: solid 1px gray;
+}
+
+#lifeCycle.Aftermarket {
+	background-color: #FFA500;
+	color: black;
+	padding: 3px 5px 3px 5px;
+	border-radius: 10px;
+	border: solid 1px gray;
+}
+
+#lifeCycle.Other {
+	background-color: purple;
+	color: white;
+	padding: 3px 15px 3px 15px;
 	border-radius: 10px;
 	border: solid 1px gray;
 }

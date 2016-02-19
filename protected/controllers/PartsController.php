@@ -81,7 +81,14 @@ class PartsController extends Controller {
 		$mpq                  = $p->parts[0]->mpq                ? $p->parts[0]->mpq                  : "<span class='tbd'>n/a</span>";
 		$carrier              = $p->parts[0]->carrier_type       ? $p->parts[0]->carrier_type         : "<span class='tbd'>n/a</span>";
 		$part_status          = $p->parts[0]->build == 1 ? 'Build to Order' : 'Stock';
-		$life_class           = $lifeCycle;
+
+		if ( $fileCycle == 'Active' || $fileCycle == 'Obsolete' || $fileCycle == 'Aftermarket' ) {
+			$life_class = $lifeCycle;
+		}
+		else {
+			$life_class = 'Other';
+		}
+	
 
 		$container_start = "<div class='container_11'>";
 		$container_end = "</div>";
@@ -170,7 +177,7 @@ class PartsController extends Controller {
 			$url        = 'http://mongoa/parts/*/500/?q='.$item;	  // mongoa for my local use
 			$tmp        = file_get_contents($url);
 
-			//pDebug('actionSearch() - mongo record=', $tmp);
+			pDebug('actionSearch() - mongo record=', $tmp);
 			// $tmp = file_get_contents('/Users/len/www/iq2/Docs/mongo_sample_records_3333.inc');
 			
 
@@ -317,11 +324,11 @@ class PartsController extends Controller {
 
 		$tableDetails = $tStart1 . $rows . $tEnd;
 
-		if ( $_itemIsBuildToOrder ) {
-			pDebug('formatDialog() - item is Build to Order: ', $data);
-			$pricing_table = '';
-		}
-		else {
+		// if ( $_itemIsBuildToOrder ) {
+		// 	pDebug('formatDialog() - item is Build to Order: ', $data);
+		// 	$pricing_table = '';
+		// }
+		// else {
 			// ------------------------------------------------ Add to Quote
 			$caption = "<span style='color: black; font-size: .9em;'>Total Qty Available: </span><span style='font-size: .9em;color: red; font-weight: bold;'>" . number_format($p->parts[0]->total_qty_for_part) . "</span>";
 
@@ -346,7 +353,7 @@ class PartsController extends Controller {
 			$pRows .= "<tr style='font-size: .8em;' ><td colspan='4'><textarea rows='4' cols='45' name='comments' id='comments' placeholder='Add comments...'></textarea></td></tr>";
 
 			$pricing_table = $tStart2  .  $pricingtHeader  .  $pRows  .  $tEnd ;
-		}
+		// }
 
 		$hiddenValues  = '';
 		$hiddenValues .= "<input type='hidden' name='distributor_price' id='distributor_price' value='". $p->parts[0]->distributor_price  . "'  >";

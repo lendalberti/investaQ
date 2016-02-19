@@ -1,17 +1,19 @@
 <?php 
 	$this->layout = '//layouts/column1';
 	$status       = $data['model']->status->name;
+	$quote_no     = $data['model']->quote_no;
 	$quoteType    = $data['model']->quoteType->name;
 ?>
 
-<input type='hidden' id='return_URL' name='return_URL' value='<?php echo $_SERVER['REQUEST_URI'];  ?>'>
-<input type='hidden' id='quoteTypeID' name='quoteTypeID' value='<?php echo $data['model']->quote_type_id ?>'>
+<input type='hidden' id='return_URL' name='return_URL' value="<?php echo $_SERVER['REQUEST_URI'];  ?> ">
+<input type='hidden' id='quoteTypeID' name='quoteTypeID' value="<?php echo $data['model']->quote_type_id; ?>">
+<input type='hidden' id='quoteTypeName' name='quoteTypeName' value="<?php echo $data['model']->quoteType->name; ?>">
 
 
 <div style='height: 100px; border: 0px solid gray;'>
-	<div style='color: #2C6371;  font-size: 2em; border: 0px solid green; float: left; padding-right: 10px;' id='header_PageTitle'>Viewing <?php echo $quoteType; ?> Quote No.</div>
-	<div style='color: #a31128;  font-size: 1.5em; border: 0px solid red; font-family: courier.;padding-top:  5px; font-family: courier.;padding-top:  5px;' id='header_QuoteNo'><?php echo $data['model']->quote_no; ?> 
-		<!-- <span style='color: #2C6371;  font-size: .7em; border: 0px solid red; '> [ < ?php echo $status . ', ' . $quoteType ; ?> ]</span> -->
+	<div style='color: #2C6371;  font-size: 2em; border: 0px solid green; float: left; padding-right: 10px;' id='header_PageTitle'>Viewing Quote No.</div>
+	<div style='color: #a31128;  font-size: 1.5em; border: 0px solid red; font-family: courier.;padding-top:  5px; font-family: courier.;padding-top:  5px;' id='header_QuoteNo'><?php echo $quote_no; ?> 
+		<span style='color: #2C6371;  font-size: .7em; border: 0px solid red; '> [ <?php echo $status; ?> ]</span>
 	</div>
 
 	<br />
@@ -246,21 +248,11 @@
 
 		<!--  for Manufacturing Quotes--> 
 		<div id='section_Manufacturing'>
-			 
-
-
-
-			 manufacturing quote details go here...
+			<?php require '_mfg_details.php';    ?>
 		</div>
 
 		<div id='section_Approvals'>
-
-
-
-
-
-
-			manufacturing quote approvals go here...
+			<?php require '_mfg_approvals.php';    ?>
 		</div>
 
 
