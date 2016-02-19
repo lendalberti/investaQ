@@ -592,6 +592,23 @@ class QuotesController extends Controller
 		$quote_id = $id;
 
 		if ( $_POST ) {
+
+			if ( isset( $_POST['newQuoteTypeID'] ) ) {  	 // updating just quote type from update/inventory lookup page
+				$quoteModel = $this->loadModel($id);
+
+				$quoteModel->quote_type_id = $_POST['newQuoteTypeID'];
+				if ($quoteModel->save()) {
+					pDebug( "actionUpdate() -  Quote type changed to [".$quoteModel->quoteType->name."] for quote no. " . $quoteModel->quote_no );
+					echo Status::SUCCESS;
+				}
+				else {
+					pDebug( "actionUpdate() -  Error in changing quote type: ", $quoteModel->errors );
+					echo Status::FAILURE;
+				}
+				return;
+			}
+
+
 			if ( isset( $_POST['quoteForm_Terms_QuoteID'] ) ) {  					 // updating just terms from Create page
 				$quoteModel = $this->loadModel( $_POST['quoteForm_Terms_QuoteID'] );
 

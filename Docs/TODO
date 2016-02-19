@@ -1,4 +1,20 @@
 
++--------------------------------+
+| 19 February 2016 (Friday)      |
++--------------------------------+
+
+	[x] finish up mechanics of goind between Stock and Manufacturing quote
+		- verify tab navigation
+
+	[x] ajax call to change quote status dynamically
+
+	[x] unified cancel button looks
+
+	[x] add 'Done' button to pages when viewing a quote
+
+
+
+
 
 +--------------------------------+
 |  18 February 2016 (Thursday)   |
@@ -18,7 +34,6 @@
 
 	[x] go back and make quote 'Pending' if any one item needs approval
 
-	[ ] add 'Back' button to pages when viewing a quote
 
 
 

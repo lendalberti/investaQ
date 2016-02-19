@@ -1,24 +1,17 @@
-<?php $this->layout = '//layouts/column1'; ?>
-
-
-<input type='hidden' id='return_URL' name='return_URL' value='<?php echo $_SERVER['REQUEST_URI'];  ?>'>
-
-<?php
-
-	// if ( Yii::app()->user->isAdmin ) {
-	// 	$status_link = "<span id='changeStatus'>".$data['model']->status->name."</span>";
-	// }
-	// else {
-		$status_link = $data['model']->status->name;
-	// }
-
-
+<?php 
+	$this->layout = '//layouts/column1';
+	$status       = $data['model']->status->name;
+	$quoteType    = $data['model']->quoteType->name;
 ?>
 
+<input type='hidden' id='return_URL' name='return_URL' value='<?php echo $_SERVER['REQUEST_URI'];  ?>'>
+<input type='hidden' id='quoteTypeID' name='quoteTypeID' value='<?php echo $data['model']->quote_type_id ?>'>
+
+
 <div style='height: 100px; border: 0px solid gray;'>
-	<div style='color: #2C6371;  font-size: 2em; border: 0px solid green; float: left; padding-right: 10px;' id='header_PageTitle'>Viewing Stock Quote No.</div>
+	<div style='color: #2C6371;  font-size: 2em; border: 0px solid green; float: left; padding-right: 10px;' id='header_PageTitle'>Viewing <?php echo $quoteType; ?> Quote No.</div>
 	<div style='color: #a31128;  font-size: 1.5em; border: 0px solid red; font-family: courier.;padding-top:  5px; font-family: courier.;padding-top:  5px;' id='header_QuoteNo'><?php echo $data['model']->quote_no; ?> 
-		<span style='color: #2C6371;  font-size: .7em; border: 0px solid red; '> [ <?php echo $status_link; ?> ]</span>
+		<!-- <span style='color: #2C6371;  font-size: .7em; border: 0px solid red; '> [ < ?php echo $status . ', ' . $quoteType ; ?> ]</span> -->
 	</div>
 
 	<br />
@@ -61,20 +54,15 @@
  <div id='quoteViewForm' name='quoteViewForm'>
 
 	<div id="QuoteView_Tabs">
-	
-		<?php if ( $data['quote_type'] === 'Manufacturing' ) { ?>
-			<ul>
-				<li><a href="#section_CustomerContact">Customer & Contact Information</a></li>
-				<li><a href="#section_Details">Details</a></li>
-				<li><a href="#section_Approvals">Procee Approvals</a></li>
-			</ul>
-		<?php  } else { ?>
-			<ul>
-				<li><a href="#section_CustomerContact">Customer & Contact Information</a></li>
-				<li><a href="#section_TermsConditions">Quote Terms</a></li>
-				<li><a href="#section_Parts">Inventory Items</a></li>
-			</ul>
-		<?php } ?>
+
+		<ul>
+			<li><a href="#section_CustomerContact">Customer &amp; Contact Information</a></li>
+			<li><a href="#section_TermsConditions">Quote Terms</a></li>
+			<li><a href="#section_Parts">Inventory Items</a></li>
+			<!--  Manufacturing : hide (3), show (4),(5)-->
+			<li><a href="#section_Manufacturing">Manufacturing Details</a></li>
+			<li><a href="#section_Approvals">Process Approvals</a></li>
+		</ul>
 
 		<div id='section_CustomerContact'>
 			<div class='my_container'>
@@ -255,6 +243,29 @@
 			</div>
 		</div>
 
+
+		<!--  for Manufacturing Quotes--> 
+		<div id='section_Manufacturing'>
+			 
+
+
+
+			 manufacturing quote details go here...
+		</div>
+
+		<div id='section_Approvals'>
+
+
+
+
+
+
+			manufacturing quote approvals go here...
+		</div>
+
+
+
+
 	</div>  <!-- end of QuoteView_Tabs -->
 	
 
@@ -289,5 +300,7 @@
 
 
 </div>
+
+<div style='margin: 20px 20px 20px 10px;'> <input type='button' id='back_to_index' value='Done' /> </div>
 
 <!--  fini --> 

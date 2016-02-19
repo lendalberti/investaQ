@@ -1,10 +1,17 @@
-<?php $this->layout = '//layouts/column1'; ?>
+<?php 
+	$this->layout = '//layouts/column1'; 
+	$status     = $data['model']->status->name;
+	$quoteType  = $data['model']->quoteType->name;
+?>
 
+<input type='hidden' id='form_QuoteID' name='form_QuoteID' value=''>
+<input type='hidden' id='quoteTypeID' name='quoteTypeID' value='<?php echo $data['model']->quote_type_id; ?>'>
 
 <div style='height: 100px; border: 0px solid gray;'>
 	<div style='color: #2C6371;  font-size: 2em; border: 0px solid green; float: left; padding-right: 10px;' id='header_PageTitle'>Start a New<?php echo $data['quote_type']; ?>Quote</div>
-	<div style='color: #a31128;  font-size: 1.5em; border: 0px solid red; font-family: courier.;padding-top:  5px; font-family: courier.;padding-top:  5px;' id='header_QuoteNo'> </div>
-	<input type='hidden' id='form_QuoteID' name='form_QuoteID' value=''>
+	<div style='color: #a31128;  font-size: 1.5em; border: 0px solid red; font-family: courier.;padding-top:  5px; font-family: courier.;padding-top:  5px;' id='header_QuoteNo'> 
+			<!-- <span style='color: #2C6371;  font-size: .7em; border: 0px solid red; '> [ <?php echo $status . ', ' . $quoteType ; ?> ]</span> -->
+	</div>
 </div>
 
 

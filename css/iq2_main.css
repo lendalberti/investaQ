@@ -826,7 +826,7 @@ span.select_replacement {
 	font-weight: bold;
 }
 
-#cancel_Start {
+.cancel_Start {
 	color: #a31128;
 	font-weight: bold;
 	margin-left: 10px;
@@ -835,11 +835,12 @@ span.select_replacement {
 }
 
 
-#cancel_Start:hover,
+.cancel_Start:hover,
 #reset_form:hover {
 	cursor: pointer;
 }
 
+#back_to_index,
 #div_ContinueReset > input[type="submit"] {
 	font-size: 1.4em;
 	background-color: lightgray;
