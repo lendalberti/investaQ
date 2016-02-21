@@ -82,7 +82,7 @@ class PartsController extends Controller {
 		$carrier              = $p->parts[0]->carrier_type       ? $p->parts[0]->carrier_type         : "<span class='tbd'>n/a</span>";
 		$part_status          = $p->parts[0]->build == 1 ? 'Build to Order' : 'Stock';
 
-		if ( $fileCycle == 'Active' || $fileCycle == 'Obsolete' || $fileCycle == 'Aftermarket' ) {
+		if ( $lifeCycle == 'Active' || $lifeCycle == 'Obsolete' || $lifeCycle == 'Aftermarket' ) {
 			$life_class = $lifeCycle;
 		}
 		else {

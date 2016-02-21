@@ -1,9 +1,23 @@
 
+
++--------------------------------+
+| 20 February 2016 (Saturday)    |
++--------------------------------+
+
+	[ ] when opting to create a Mfg Quote, save some
+		info, e.g. part no, dir mfg, package type, 
+		lead count, etc - whatever is available from mongo
+
+
+
+
+
+
 +--------------------------------+
 | 19 February 2016 (Friday)      |
 +--------------------------------+
 
-	[x] finish up mechanics of goind between Stock and Manufacturing quote
+	[x] finish up mechanics of going between Stock and Manufacturing quote
 		- verify tab navigation
 
 	[x] ajax call to change quote status dynamically

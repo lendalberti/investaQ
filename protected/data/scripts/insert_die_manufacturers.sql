@@ -1,4 +1,7 @@
 
+--
+-- does not appear to be complete; see /data/mfgs.inc
+--
 insert into die_manufacturers(short_name,long_name) values( 'ADG', 'Analog Devices' );
 insert into die_manufacturers(short_name,long_name) values( 'AGE', 'Agere Systems' );
 insert into die_manufacturers(short_name,long_name) values( 'AGT', 'Agilent Technologies' );

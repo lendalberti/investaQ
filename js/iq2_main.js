@@ -34,9 +34,9 @@ $(document).ready(function() {
     var MANUFACTURING_QUOTE    = 3;
     var SUPPLIER_REQUEST_FORM  = 4;
 
-    console.log('myURL=['+myURL+']');
-    console.log('returnUrl=[' + $('#returnUrl').val() + ']' );
-    console.log("current url:" + window.location.href );
+    console.log('*** myURL=['+myURL+']');
+    console.log('*** returnUrl=[' + $('#returnUrl').val() + ']' );
+    console.log("*** current url:" + window.location.href );
 
 
 
@@ -70,14 +70,14 @@ $(document).ready(function() {
         $('#QuoteView_Tabs > ul > li:nth-child(1)').show();     // "Customer & Contact Information"
         $('#QuoteView_Tabs > ul > li:nth-child(2)').show();     // "Quote Terms"
         $('#QuoteView_Tabs > ul > li:nth-child(3)').show();     // "Inventory Items"
-        $('#QuoteView_Tabs > ul > li:nth-child(4)').hide();     // --------
-        $('#QuoteView_Tabs > ul > li:nth-child(5)').hide();     // --------
+        $('#QuoteView_Tabs > ul > li:nth-child(4)').hide();     //  --------
+        $('#QuoteView_Tabs > ul > li:nth-child(5)').hide();     //  --------
     }
 
     function showManufacturingTabs() {
         $('#QuoteView_Tabs > ul > li:nth-child(1)').show();     // "Customer & Contact Information"
         $('#QuoteView_Tabs > ul > li:nth-child(2)').show();     // "Quote Terms"
-        $('#QuoteView_Tabs > ul > li:nth-child(3)').hide();     // --------
+        $('#QuoteView_Tabs > ul > li:nth-child(3)').hide();     //  --------
         $('#QuoteView_Tabs > ul > li:nth-child(4)').show();     // "Manufacturing Details"
         $('#QuoteView_Tabs > ul > li:nth-child(5)').show();     // "Process Approvals"
     }
@@ -88,12 +88,9 @@ $(document).ready(function() {
 
     if ( quoteTypeID == MANUFACTURING_QUOTE ) {
         showManufacturingTabs();
-        // $('#QuoteView_Tabs').tabs({ active: 1 });
     }
     else {
         showStockTabs();
-        // $('#QuoteView_Tabs > ul > li:nth-child(1) > a').trigger('click'); 
-        // $('#QuoteView_Tabs').tabs({ active: 1 }); 
     }
 
 
@@ -1655,7 +1652,7 @@ $(document).ready(function() {
     // -------------------------------------------
     // set up quote history click on paginate
     // -------------------------------------------
-    function setupOnQuoteHistoryClick() {
+    function setupOnQuoteHistoryClick( pn ) {
         $('#link_DataSheet > a').on('click', function() {
             var href = $(this).attr('href');
             if ( href == '#' ) {
@@ -1665,7 +1662,7 @@ $(document).ready(function() {
 
         $('#link_QuoteHistory').on('click', function() {
             $.ajax({
-                  url: '../quotes/history?ajax=1&pn=' + selected_part_number,
+                  url: '../quotes/history?ajax=1&pn=' + pn,
                   type: 'GET',
                   success: function(jData, textStatus, jqXHR) {
                         console.log('data=' + jData);
@@ -1676,7 +1673,7 @@ $(document).ready(function() {
 
                         $('#form_QuoteHistory').html( data );
 
-                        dialog_QuoteHistory.dialog('option', 'title', 'Quote History for Part No. ' + selected_part_number ); 
+                        dialog_QuoteHistory.dialog('option', 'title', 'Quote History for Part No. ' + pn ); 
 
                         var buttons = { 
                           "Done": function() { 
@@ -1710,6 +1707,7 @@ $(document).ready(function() {
         var info       = '';
         var lifeCycle  = $('#lifeCycle').text();
         var dist_price = $('#price_Base').text(); 
+        var partNo     = $('#part_no').text();
 
         var floor      = $('#distributor_price_floor').val();  // 75% usually - make this configurable
 
@@ -1744,7 +1742,7 @@ $(document).ready(function() {
         }
 
 		dialog_PartPricing.dialog('option', 'title', 'Inventory Part Pricing Details'); 
-        setupOnQuoteHistoryClick();
+        setupOnQuoteHistoryClick( partNo );
 
 		dialog_PartPricing.dialog({
 			buttons :  [{
@@ -1769,7 +1767,7 @@ $(document).ready(function() {
 								
 								info = {
         									quote_id:			quoteID,
-        									part_no: 			$('#part_no').text(),
+        									part_no: 			partNo,
         									approval_needed: 	0,
 
         									manufacturer: 		$('#manufacturer').val(),
@@ -1892,11 +1890,18 @@ $(document).ready(function() {
                         var inventoryStatus = $(this).find('td:nth-child(2)').text();
                         console.log('Inventory Status: ' + inventoryStatus );
                         var partNo = $(this).find('td:nth-child(1)').text();
+                        var quoteTypeID = $('#quoteTypeID').val();
 
                         if ( inventoryStatus === 'Build to Order' ) {
-                            if ( confirm("Part No. "+partNo+" is Build to Order only.\nContinue processing as a Manufacturing Quote?") ) {
+                            if ( quoteTypeID == STOCK_QUOTE ) {
+                                alert("Part No. "+partNo+" is Build to Order only; you cannot add this to a Stock Quote.");
+                                location.reload();
+                                return false;
+                            }
+                            else if ( confirm("Part No. "+partNo+" is Build to Order only (quote type: "+quoteTypeID+").\nContinue processing as a Manufacturing Quote?") ) {
                                 showManufacturingTabs();
-                                $('#header_PageTitle').text('Updating Manufacturing Quote No.');
+                                $('#QuoteView_Tabs').tabs({ active: 3 });
+                                //$('#header_PageTitle').text('Updating Manufacturing Quote No.');
 
                                 var postData = {
                                         newQuoteTypeID: MANUFACTURING_QUOTE,
@@ -1907,7 +1912,8 @@ $(document).ready(function() {
                                         data: postData,
                                         success: function(results)  {
                                             console.log('results from update quote type: ['+results+']');
-                                            $('#mfg_quote_details').html("results from update quote type: " + results);
+                                            //$('#mfg_quote_details').html("results from update quote type: " + results);
+                                            location.reload();
                                         }
                                 });
                             }
