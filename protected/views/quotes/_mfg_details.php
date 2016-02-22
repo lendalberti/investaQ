@@ -1,7 +1,7 @@
 
 	<div style='border: 0px solid blue; height: 100%; overflow: auto; '>
 
-		<div style='border: 1px solid green; margin: 20px 0px 0px 60px; float: left; width: 40%;'>
+		<div style='border: 0px solid green; margin: 20px 0px 0px 60px; float: left; width: 40%;'>
 
 			<table id='mfg_details'>
 				<tr>   <td>Order Probability</td>     	
@@ -53,10 +53,9 @@
 							</td> </tr>
 				<tr>   <td>Lead Count</td>     			<td><input id='Quotes_lead_count' 			name='Quotes[lead_count]' /></td> </tr>
 			</table>
-
 		</div>
 
-		<div style='border: 1px solid orange; margin: 20px 60px 0px 0px; float: right; width: 40%;'>
+		<div style='border: 0px solid orange; margin: 20px 60px 0px 0px; float: right; width: 40%;'>
 
 			<table id='mfg_details'>
 				<tr>   <td>Temp Low</td>     	<td><input id='Quotes_temp_low'      name='Quotes[temp_low]' /></td> </tr>
@@ -101,6 +100,15 @@
 				<tr>   <td>Recreation</td>     	<td><select id='Quotes_recreation' name='Quotes[recreation]'> <option value='0'>No</option><option value='1'>Yes</option></select></td></tr>
 				<tr>   <td>Wip Product</td>     <td><select id='Quotes_wip'        name='Quotes[wip]' >		<option value='0'>No</option><option value='1'>Yes</option></select></td></tr>
 			</table>
+
+			<!--
+
+				TODO: if Proposal Manager hasn't been notified yet, show this checkbox; figure out how and where to put it...
+
+					<input type='checkbox' id='' name=''>Notify Proposal Manager
+
+
+			-->
 
 		</div>
 	</div>

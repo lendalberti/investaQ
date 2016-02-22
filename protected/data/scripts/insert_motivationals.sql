@@ -1,37 +1,11 @@
-
-INSERT INTO motivationals(name) VALUES('');
-INSERT INTO motivationals(name) VALUES('');
-INSERT INTO motivationals(name) VALUES('');
-INSERT INTO motivationals(name) VALUES('');
-INSERT INTO motivationals(name) VALUES('');
-INSERT INTO motivationals(name) VALUES('');
-INSERT INTO motivationals(name) VALUES('');
-INSERT INTO motivationals(name) VALUES('');
-INSERT INTO motivationals(name) VALUES('');
-INSERT INTO motivationals(name) VALUES('');
-INSERT INTO motivationals(name) VALUES('');
-INSERT INTO motivationals(name) VALUES('');
-INSERT INTO motivationals(name) VALUES('');
-INSERT INTO motivationals(name) VALUES('');
-
-
-... will I be afraid to give up the good to go for the great.
-
-... will I be content with mediocrity.
-
-... will I ignore the devil in the details.
-
-... will I assume that 'no' means 'no forever'
-
-... will I allow my competitor to take care of my customer
-
-... will I just talk about what I want to accomplish; I will make it happen.
-
-... will I settle for anything less than my best
-
-... will I be a 'crocodile' salesperson (big mouth, no ears)
-
-... will I let the past remind me of what I am not now
-
-... will I think inside the box
-
+INSERT INTO motivationals(saying) VALUES('...will I be afraid to give up the good to go for the great.');
+INSERT INTO motivationals(saying) VALUES('...will I be content with mediocrity.');
+INSERT INTO motivationals(saying) VALUES('...will I ignore the devil in the details.');
+INSERT INTO motivationals(saying) VALUES('...will I assume that "no" means "no forever"');
+INSERT INTO motivationals(saying) VALUES('...will I allow my competitor to take care of my customer');
+INSERT INTO motivationals(saying) VALUES('...will I just talk about what I want to accomplish; I will make it happen.');
+INSERT INTO motivationals(saying) VALUES('...will I settle for anything less than my best');
+INSERT INTO motivationals(saying) VALUES('...will I be a "crocodile" salesperson (big mouth, no ears)');
+INSERT INTO motivationals(saying) VALUES('...will I let the past remind me of what I am not now');
+INSERT INTO motivationals(saying) VALUES('...will I think only inside the box');
+INSERT INTO motivationals(saying) VALUES('...will I allow my competitor to take care of my customer.');

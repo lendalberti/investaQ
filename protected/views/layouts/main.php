@@ -6,21 +6,21 @@
 
 	<link rel="shortcut icon" href="<?php echo Yii::app()->request->baseUrl; ?>/favicon.ico" type="image/x-icon" />
 
-	<!-- Add jQuery-->
-	<!--<script type="text/javascript" charset="utf8" src="< ?php echo Yii::app()->request->baseUrl; ?>/js/CDN/jquery-1.11.3.min.js"></script>
-	 <script type="text/javascript" charset="utf8" src="< ?php echo Yii::app()->request->baseUrl; ?>/js/CDN/jquery-ui.min.js"></script>
-	 <script type="text/javascript" charset="utf8" src="< ?php echo Yii::app()->request->baseUrl; ?>/js/CDN/jquery.dataTables.min.js"></script> -->
+	<!--  Add jQuery  -->
+
+	<!--  mimic CDN if netowork goes down...
+		<script type="text/javascript" charset="utf8" src="< ?php echo Yii::app()->request->baseUrl; ?>/js/CDN/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript" charset="utf8" src="< ?php echo Yii::app()->request->baseUrl; ?>/js/CDN/jquery-ui.min.js"></script>
+		<script type="text/javascript" charset="utf8" src="< ?php echo Yii::app()->request->baseUrl; ?>/js/CDN/jquery.dataTables.min.js"></script> 
+	-->
 
 	<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script> 
 	<script type="text/javascript" src="https://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script> 
 	<script type="text/javascript" charset="utf8" src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 
-
 	<script type="text/javascript" charset="utf8" src="<?php echo Yii::app()->request->baseUrl; ?>/js/iq2_main.js"></script>
 	<script type='text/javascript' charset="utf8" src="<?php echo Yii::app()->request->baseUrl; ?>/js/accounting.min.js"></script>   
 	<script type='text/javascript' charset="utf8" src="<?php echo Yii::app()->request->baseUrl; ?>/js/js.cookie.js"></script>   
-	<!-- <script type="text/javascript" charset="utf8" src="< ?php echo Yii::app()->request->baseUrl; ?>/js/iq2_quote.js"></script> -->
-
 
 	<!-- blueprint CSS framework -->
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/screen.css" media="screen, projection" />
@@ -29,14 +29,9 @@
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie.css" media="screen, projection" />
 	<![endif]-->
 
-	<!-- <link rel="stylesheet" type="text/css" href="< ?php echo Yii::app()->request->baseUrl; ?>/css/CDN/jquery-ui.css" />
-	<link rel="stylesheet" type="text/css" href="< ?php echo Yii::app()->request->baseUrl; ?>/css/CDN/jquery.dataTables.min.css" />
-	<link rel="stylesheet" type="text/css" href="< ?php echo Yii::app()->request->baseUrl; ?>/css/CDN/font-awesome.min.css" /> -->
-
 	<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css" />
 	<link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.9/css/jquery.dataTables.min.css" />
 	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
-
 
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/main.css?version=<?php echo time(); ?>" />
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/form.css" />
@@ -44,8 +39,8 @@
 
 	<!--  960_Grid  -->
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/960_Grid/960.css" />
-	<!-- <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/960_Grid/reset.css" /> -->
-	<!-- <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/60_Grid/text.css" /> -->
+	<!-- <link rel="stylesheet" type="text/css" href="< ?php echo Yii::app()->request->baseUrl; ?>/css/960_Grid/reset.css" /> -->
+	<!-- <link rel="stylesheet" type="text/css" href="< ?php echo Yii::app()->request->baseUrl; ?>/css/60_Grid/text.css" /> -->
 	
 
 	<title><?php echo Yii::app()->params['app_title']; ?></title>
@@ -60,7 +55,7 @@
 		<div id="logo">
 			<?php 
 				$title_image = Yii::app()->request->baseUrl . "/images/New/Quoth_the_raven.png";
-				echo CHtml::image(Yii::app()->request->baseUrl . "/images/rei_logo.png"); 
+				echo CHtml::image(Yii::app()->request->baseUrl . "/images/New/rei_logo_new_flat.png"); 
 				echo "<span id='iq2_title'><img src='$title_image' ></span>";
 			?>
 			<!-- <span id='iq2_title'>< ?php echo Yii::app()->params['app_title']; ?></span> -->
@@ -165,7 +160,8 @@
 	<?php } ?>
 		
 
-	<span id='witty_saying'>...will I allow my competitor to take care of my customer.</span>
+	<!-- <span id='witty_saying'>...will I allow my competitor to take care of my customer.</span> -->
+	<span id='witty_saying'><?php echo Motivationals::model()->randomSaying(); ?></span>
 
 	<?php echo $content; ?>
 

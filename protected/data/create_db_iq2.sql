@@ -742,6 +742,18 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`user_roles` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+
+-- -----------------------------------------------------
+-- Table `iq2`.`motivationals`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `iq2`.`motivationals` ;
+
+CREATE  TABLE IF NOT EXISTS `iq2`.`motivationals` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `saying` VARCHAR(75) NOT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
 USE `iq2` ;
 
 

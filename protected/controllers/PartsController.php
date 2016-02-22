@@ -228,12 +228,8 @@ class PartsController extends Controller {
 
 		$part_status = $p->parts[0]->build == 1 ? 'Build to Order' : 'Stock';
 
-		$css = '<style type="text/css">' . file_get_contents('http://localhost/iq2/css/dialog.css') . '</style>';
-		// $js  = '<script type="text/javascript">' . file_get_contents('http://localhost/iq2/js/dialog.js') . '</script>';
-
-
-		//$css = '<style type="text/css">' . file_get_contents('http://localhost/iq2/css/iq2_main.css') . '</style>';
-		$js  = '<script type="text/javascript">' . file_get_contents('http://localhost/iq2/js/iq2_main.js') . '</script>';
+		$css = '<style type="text/css">' . file_get_contents('../../css/dialog.css') . '</style>';
+		$js  = '<script type="text/javascript">' . file_get_contents('../../js/iq2_main.js') . '</script>';
 
 		$se_data = $p->parts[0]->se_data; 
 

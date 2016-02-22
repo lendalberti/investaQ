@@ -1,4 +1,16 @@
 
++--------------------------------+
+| 22 February 2016 (Monday)      |
++--------------------------------+
+
+	[ ] make details view display just like update
+		- selects, etc.
+
+	[x] motivationals model - add inserts, db table
+
+	[ ] bto approvals page
+
+
 
 +--------------------------------+
 | 20 February 2016 (Saturday)    |
@@ -7,8 +19,6 @@
 	[ ] when opting to create a Mfg Quote, save some
 		info, e.g. part no, dir mfg, package type, 
 		lead count, etc - whatever is available from mongo
-
-
 
 
 
@@ -39,16 +49,11 @@
 
 
 
-
 +--------------------------------+
 |  17 February 2016 (Wednesday)  |
 +--------------------------------+
 
-	[ ] motivationals model - add inserts, db table
-
 	[x] go back and make quote 'Pending' if any one item needs approval
-
-
 
 
 
@@ -77,7 +82,7 @@
 	[x] should be able to edit other items on quote that
 		don't need approval
 
-    [ ] user needs to be able to edit custom price
+    [ ] user needs to be able to edit custom price on reject
 
     [x] when approver views items on a quote that needs approval, 
     	- clicking on item brings up popup with part details
