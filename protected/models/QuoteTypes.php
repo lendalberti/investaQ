@@ -12,7 +12,7 @@
  */
 class QuoteTypes extends CActiveRecord {
 
-	const   TBD                     = 1,   // QuoteTypes::TBD
+	const   TBD                     = 1,   // QuoteTypes::MANUFACTURING
 			STOCK                   = 2,   
             MANUFACTURING           = 3,  
             SUPPLIER_REQUEST_FORM   = 4;

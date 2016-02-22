@@ -37,6 +37,7 @@ $(document).ready(function() {
     console.log('*** myURL=['+myURL+']');
     console.log('*** returnUrl=[' + $('#returnUrl').val() + ']' );
     console.log("*** current url:" + window.location.href );
+    console.log( 'Cookies:' + JSON.stringify(Cookies.get()) );
 
 
 
@@ -123,8 +124,6 @@ $(document).ready(function() {
     }
 
     if ( window.location.href.match(/quotes\/update/ ) ) {   // show original tab if cookie is set
-
-        console.log( 'All cookies: ' + Cookies.get() );
 
         if ( Cookies.get('current_tab') ) {
             var tabIndex = Cookies.get('current_tab');
@@ -283,7 +282,7 @@ $(document).ready(function() {
 
 
 
-    $('#cancel_Start').on('click', function() {
+    $('#cancel_NewQuote').on('click', function() {
         window.location = myURL + 'quotes/index';
     });
 
@@ -515,7 +514,7 @@ $(document).ready(function() {
         window.location = myURL + 'quotes/view/' + $('#Quotes_id').val();
     });
 
-    $('#quoteUpdateForm').submit(function( e ) {  // click "Save Changes"
+    $('#quoteUpdateForm').submit(function( e ) {                        // click "Save Changes"
         e.preventDefault();
 
         // TODO - not sure we need this now...
@@ -551,12 +550,12 @@ $(document).ready(function() {
                     }
         });
 
+        Cookies.remove('current_tab');
+
     });
 
 
     $('#quoteAddForm').submit(function( e ) {                          //  click "Continue" 
-        console.log('Clicked Continue button...');
-
     	e.preventDefault();
         var postData = $(this).serialize();
 
@@ -606,39 +605,41 @@ $(document).ready(function() {
     	else {
     			alert("Client Validation: missing required field(s)...");
     	}
+
+        Cookies.remove('current_tab');
 	});
 
 
 
-     $('#quoteForm_Terms').submit(function( event ) {           //  click "Save Quote" 
-        event.preventDefault();
-        // var postData = $(this).serialize();
+    //  $('#quoteForm_Terms').submit(function( event ) {                   //  click "Save Quote" 
+    //     event.preventDefault();
+    //     // var postData = $(this).serialize();
 
-        var quoteID = $('#form_QuoteID').val();
-        var postData = $('#quoteForm_Terms').serialize();
-        console.log('quoteForm_Terms serialized: ' + postData);
+    //     var quoteID = $('#form_QuoteID').val();
+    //     var postData = $('#quoteForm_Terms').serialize();
+    //     console.log('quoteForm_Terms serialized: ' + postData);
 
-        $.ajax({
-        type: "POST",
-            url: myURL + 'quotes/update/' + quoteID ,
-            data: postData,
-            success: function(results)  {
-                if ( results == SUCCESS ) {
-                    console.log('Quote terms updated.');
-                    alert('Quote has been updated.');
-                }
-                else {
-                    console.log('Quote terms NOT updated...');
-                }
-            }
-        });
+    //     $.ajax({
+    //     type: "POST",
+    //         url: myURL + 'quotes/update/' + quoteID ,
+    //         data: postData,
+    //         success: function(results)  {
+    //             if ( results == SUCCESS ) {
+    //                 console.log('Quote terms updated.');
+    //                 alert('Quote has been updated.');
+    //             }
+    //             else {
+    //                 console.log('Quote terms NOT updated...');
+    //             }
+    //         }
+    //     });
 
-        window.location = myURL + 'quotes/index' ;
-
-
+    //     window.location = myURL + 'quotes/index' ;
 
 
-    });
+
+
+    // });
 
 
 

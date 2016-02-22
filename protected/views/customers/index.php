@@ -1,16 +1,5 @@
-<?php
-/* @var $this CustomersController */
-/* @var $dataProvider CActiveDataProvider */
+<?php $this->layout = '//layouts/column1'; ?>
 
-$this->breadcrumbs=array(
-	'Customers',
-);
-
-$this->menu=array(
-	array('label'=>'Create Customers', 'url'=>array('create')),
-	array('label'=>'Manage Customers', 'url'=>array('admin')),
-);
-?>
 
 <h1>Customers</h1>
 

@@ -103,7 +103,7 @@
 
 		<div id='div_ContinueReset' style='padding: 20px;'> 
 			<input type='submit' value='Continue'> 
-			<span id='cancel_Start'>Cancel</span> <span id='reset_form'>Reset Form</span> 
+			<span id='cancel_NewQuote' class='cancel_operation'>Cancel</span> <span id='reset_form'>Reset Form</span> 
 		</div>
 	</div>    <!-- end of QuoteView_Tabs -->
 

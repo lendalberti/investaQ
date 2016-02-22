@@ -1,16 +1,4 @@
-<?php
-/* @var $this ContactsController */
-/* @var $dataProvider CActiveDataProvider */
-
-$this->breadcrumbs=array(
-	'Contacts',
-);
-
-$this->menu=array(
-	array('label'=>'Create Contacts', 'url'=>array('create')),
-	array('label'=>'Manage Contacts', 'url'=>array('admin')),
-);
-?>
+<?php $this->layout = '//layouts/column1'; ?>
 
 <h1>Contacts</h1>
 

@@ -41,6 +41,11 @@ class QuotesController extends Controller
 				'actions'=>array('disposition'),
 				'expression' => '$user->isApprover'
 			),
+
+			array('allow', // allow Proposal Manager to initiate Manufacturing Quote 
+				'actions'=>array('manufacturing'),
+				'expression' => '$user->isProposalManager'
+			),
 			
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -581,7 +586,6 @@ class QuotesController extends Controller
 		$quote_id = $id;
 
 		if ( $_POST ) {
-
 			if ( isset( $_POST['newQuoteTypeID'] ) ) {  	 // updating just quote type from update/inventory lookup page
 				pDebug( "actionUpdate() - _POST:", $_POST);
 
@@ -709,15 +713,23 @@ class QuotesController extends Controller
 
 			// update quote with source_id, contact_id, terms
 			$quoteModel = $this->loadModel($quote_id);
+			$quoteModel->attributes = $_POST['Quotes'];
 
-			$quoteModel->customer_id             = $customer_id;
-			$quoteModel->contact_id              = $contact_id;
-			$quoteModel->source_id               = $_POST['Quotes']['source_id'];
-    		$quoteModel->additional_notes        = $_POST['Quotes']['additional_notes'];
-    		$quoteModel->terms_conditions        = $_POST['Quotes']['terms_conditions'];
-    		$quoteModel->customer_acknowledgment = $_POST['Quotes']['customer_acknowledgment'];
-    		$quoteModel->risl                    = $_POST['Quotes']['risl'];
-    		$quoteModel->manufacturing_lead_time = $_POST['Quotes']['manufacturing_lead_time'];
+			// -- shouldn't need to do this
+			//
+			//  $quoteModel->customer_id             = $customer_id;
+			//  $quoteModel->contact_id              = $contact_id;
+			//  $quoteModel->source_id               = $_POST['Quotes']['source_id'];
+		    //  $quoteModel->additional_notes        = $_POST['Quotes']['additional_notes'];
+		    //  $quoteModel->terms_conditions        = $_POST['Quotes']['terms_conditions'];
+		    //  $quoteModel->customer_acknowledgment = $_POST['Quotes']['customer_acknowledgment'];
+		    //  $quoteModel->risl                    = $_POST['Quotes']['risl'];
+		    //  $quoteModel->manufacturing_lead_time = $_POST['Quotes']['manufacturing_lead_time'];
+		    //  $quoteModel->lead_quality_id         = $_POST['Quotes']['lead_quality_id'];
+		    //  $quoteModel->package_type_id         = $_POST['Quotes']['package_type_id'];
+		    //  $quoteModel->process_flow_id         = $_POST['Quotes']['process_flow_id'];
+		    //  $quoteModel->testing_id              = $_POST['Quotes']['testing_id'];
+		    //  $quoteModel->die_manufacturer_id     = $_POST['Quotes']['die_manufacturer_id'];
 
 			// $quoteModel->status_id               =  $_POST['Quotes']['status_id'];  
 			$quoteModel->status_id               =  $this->getUpdatedQuoteStatus($quote_id);   //  TODO: verify this is correct
@@ -736,15 +748,8 @@ class QuotesController extends Controller
 			pDebug("actionUpdate() - _GET=", $_GET);
 
 			$data['model'] = $this->loadModel($quote_id);
-
-			// TODO - no longer needed; edits can be done on other items in quote
-			//
-			// if ( $data['model']->status_id != Status::DRAFT && $data['model']->status_id != Status::REJECTED && !Yii::app()->user->isAdmin  ) { // allow for edits only for draft,rejected quotes
-			// 	$this->redirect(array('index'));
-			// }
-			
-			$customer_id = $data['model']->customer_id;
-			$contact_id  = $data['model']->contact_id;
+			$customer_id   = $data['model']->customer_id;
+			$contact_id    = $data['model']->contact_id;
 
 			// ------------------------------ get customer
 			$data['customer'] = Customers::model()->findByPk($customer_id);
@@ -753,12 +758,12 @@ class QuotesController extends Controller
 			$data['contact']  = Contacts::model()->findByPk($contact_id);
 			
 			// ------------------------------ get items
-			$data['items'] = array();
-			$data['items'] = $this->getItemsByQuote($quote_id);
-
-			$data['model']    = $this->loadModel($quote_id);
-			$data['sources']  = Sources::model()->findAll( array('order' => 'name') );
-			$data['status']   = Status::model()->findAll();
+			$data['items']   = array();
+			$data['items']   = $this->getItemsByQuote($quote_id);
+			$data['selects'] = Quotes::model()->getAllSelects();
+			$data['model']   = $this->loadModel($quote_id);
+			$data['sources'] = Sources::model()->findAll( array('order' => 'name') );
+			$data['status']  = Status::model()->findAll();
 
 			// if ( isset($_GET['bto']) && $data['model']->quote_type_id == QuoteTypes::TBD ) {
 			// 	$data['model']->quote_type_id = QuoteTypes::MANUFACTURING;
@@ -867,6 +872,8 @@ class QuotesController extends Controller
 		pTrace( __METHOD__ );
 		pDebug('actionIndex() - _GET=', $_GET);
 
+		$quote_type = QuoteTypes::STOCK;
+
 		$criteria = new CDbCriteria();
 		if ( !Yii::app()->user->isAdmin ) {
 			$criteria->addCondition("owner_id = " . Yii::app()->user->id);
@@ -877,9 +884,37 @@ class QuotesController extends Controller
 		$model = Quotes::model()->findAll( $criteria );
 
 		$this->render( 'index', array(
+			'quote_type' => $quote_type,
 			'model' => $model,
 			'page_title' => "My Quotes",
 		));
+	}
+
+	public function actionManufacturing() {
+		pTrace( __METHOD__ );
+		pDebug('actionIndexApproval() - _GET=', $_GET);
+
+		$quote_type = QuoteTypes::MANUFACTURING;
+
+		$criteria = new CDbCriteria();
+
+		if ( Yii::app()->user->isProposalManager || Yii::app()->user->isAdmin ) {
+			$page_title = "Manufacturing Quotes";
+			$criteria->addCondition("quote_type_id = " . $quote_type );
+
+			$criteria->order = 'id DESC';
+			$model = Quotes::model()->findAll( $criteria );
+
+			$this->render( 'index', array(
+				'quote_type' => $quote_type,
+				'model' => $model,
+				'page_title' => $page_title,
+			));
+		}
+		else {
+
+		}
+
 	}
 
 

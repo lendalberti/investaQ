@@ -1,7 +1,13 @@
 <?php $this->layout = '//layouts/column1'; ?>
 <div>
 	<span style="display:inline-block; vertical-align:top" class='pageTitle'><?php echo $page_title;  ?></span>
-	<br /><span id='add_quote' href='#'><img src='<?php echo Yii::app()->baseUrl; ?>/images/New/new_quote_button.png' title='Add a New Quote'></span>
+	<br />
+
+	<?php 
+		if ( $quote_type != QuoteTypes::MANUFACTURING ) { ?>
+			<span id='add_quote' href='#'><img src='<?php echo Yii::app()->baseUrl; ?>/images/New/new_quote_button.png' title='Add a New Quote'></span>
+	<?php } ?>
+
 </div>
 
 

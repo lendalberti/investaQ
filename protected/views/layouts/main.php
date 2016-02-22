@@ -80,6 +80,9 @@
 			else if (Yii::app()->user->isApprover) {
 				$user_type = ' (Approver)';
 			}
+			else if (Yii::app()->user->isProposalManager) {
+				$user_type = ' (Proposal Manager)';
+			}
 
 			
 
@@ -95,11 +98,15 @@
 				if (Yii::app()->user->isApprover) {
 					$menuItems[] = array('label'=>'Approval Queue ', 'url'=>array('/quotes/indexApproval') );
 				}
+	
+				if (Yii::app()->user->isProposalManager ) {
+					$menuItems[] = array('label'=>'Manufacturing', 'url'=>array('/quotes/manufacturing') );
+				}
 
 				//$menuItems[] = array('label'=>'My Quotes', 'url'=>array('/quotes/index') ); 
 				// $menuItems[] = array('label'=>'Movements ', 'url'=>array('/PriceBook/movements') );
-				$menuItems[] = array('label'=>'Customers ', 'url'=>array('/Customers') );
-				$menuItems[] = array('label'=>'Contacts ', 'url'=>array('/Contacts') );
+				$menuItems[] = array('label'=>'Customers ', 'url'=>array('/customers/admin') );
+				$menuItems[] = array('label'=>'Contacts ', 'url'=>array('/contacts/admin') );
 				$menuItems[] = array('label'=>'My Profile', 'url'=>array('/Users/profile/'.Yii::app()->user->id) );
 				$menuItems[] = array('label'=>'Help',        'url'=>array('/site/help') );
 

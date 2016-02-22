@@ -361,7 +361,7 @@
 
 	<div id='div_ActionButtons'> 
 		<input id='button_SaveQuoteChanges' type='submit' value='Save Changes'> 
-		<span class='cancel_Start' id='cancelQuoteChanges' >Cancel</span>
+		<span class='cancel_operation' id='cancelQuoteChanges' >Cancel</span>
 	</div> 
 
 </form>

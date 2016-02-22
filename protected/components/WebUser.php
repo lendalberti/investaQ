@@ -12,6 +12,10 @@
             return ( $this->user &&  ( in_array(Roles::APPROVER, $this->roles) || in_array(Roles::ADMIN, $this->roles) ) );
         }
 
+        function getIsProposalManager() {
+            return ( $this->user &&  ( in_array(Roles::PROPOSAL_MGR, $this->roles) || in_array(Roles::ADMIN, $this->roles) ) );
+        }
+
 
        /**
        * @return  true if user is logged in;

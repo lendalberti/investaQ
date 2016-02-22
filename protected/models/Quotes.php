@@ -156,8 +156,8 @@ class Quotes extends CActiveRecord
 			'lost_reason_id' => 'Lost Reason',
 			'no_bid_reason_id' => 'No Bid Reason',
 			'ready_to_order' => 'Ready To Order',
-			'requested_part_number' => 'Requested Part Number',
-			'generic_part_number' => 'Generic Part Number',
+			'requested_part_number' => 'Requested Part No.',
+			'generic_part_number' => 'Generic Part No.',
 			'quantity1' => 'Quantity1',
 			'quantity2' => 'Quantity2',
 			'quantity3' => 'Quantity3',
@@ -230,5 +230,35 @@ class Quotes extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+
+		public function getAllSelects() {
+			$selects = array();
+
+			// lead_quality  package_types  process_flow  testing  die_manufacturers
+
+			foreach( array( 'lead_quality', 'package_types', 'process_flow', 'testing') as $t ) {
+				$order_by = ( $t=='lead_quality' ? 'id' : 'name');
+				$sql     = "SELECT * FROM $t ORDER BY $order_by";
+				$command = Yii::app()->db->createCommand($sql);
+				$results = $command->queryAll();
+
+				foreach( $results as $r ) {
+					$selects[$t][] = array( $r['id'] => $r['name'] );
+				}
+			}
+
+			$sql     = "SELECT * FROM die_manufacturers ORDER BY short_name";
+			$command = Yii::app()->db->createCommand($sql);
+			$results = $command->queryAll();
+			foreach( $results as $r ) {
+				$selects['die_manufacturers'][] = array( $r['id'] => $r['short_name'] . ' - ' . $r['long_name'] );
+			}
+
+			pDebug('getAllSelects() - selects:', $selects);
+			return $selects;
+		}
+
+
 
 }

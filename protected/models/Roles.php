@@ -16,7 +16,8 @@ class Roles extends CActiveRecord  {
 			USER         = 2,
 			MGR          = 3,
 			APPROVER     = 4,
-			BTO_APPROVER = 5;
+			BTO_APPROVER = 5,
+			PROPOSAL_MGR = 6;
 
 
 	/**
