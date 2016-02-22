@@ -67,19 +67,19 @@ $(document).ready(function() {
     });
 
     function showStockTabs() {
-        $('#QuoteView_Tabs > ul > li:nth-child(1)').show();     // "Customer & Contact Information"
-        $('#QuoteView_Tabs > ul > li:nth-child(2)').show();     // "Quote Terms"
-        $('#QuoteView_Tabs > ul > li:nth-child(3)').show();     // "Inventory Items"
+        $('#QuoteView_Tabs > ul > li:nth-child(1)').show();     // "Customer & Contact Information" 0
+        $('#QuoteView_Tabs > ul > li:nth-child(2)').show();     // "Quote Terms"                    1
+        $('#QuoteView_Tabs > ul > li:nth-child(3)').show();     // "Inventory Items"                2
         $('#QuoteView_Tabs > ul > li:nth-child(4)').hide();     // --------
         $('#QuoteView_Tabs > ul > li:nth-child(5)').hide();     // --------
     }
 
     function showManufacturingTabs() {
-        $('#QuoteView_Tabs > ul > li:nth-child(1)').show();     // "Customer & Contact Information"
-        $('#QuoteView_Tabs > ul > li:nth-child(2)').show();     // "Quote Terms"
+        $('#QuoteView_Tabs > ul > li:nth-child(1)').show();     // "Customer & Contact Information" 0
+        $('#QuoteView_Tabs > ul > li:nth-child(2)').show();     // "Quote Terms"                    1
         $('#QuoteView_Tabs > ul > li:nth-child(3)').hide();     // --------
-        $('#QuoteView_Tabs > ul > li:nth-child(4)').show();     // "Manufacturing Details"
-        $('#QuoteView_Tabs > ul > li:nth-child(5)').show();     // "Process Approvals"
+        $('#QuoteView_Tabs > ul > li:nth-child(4)').show();     // "Manufacturing Details"          3
+        $('#QuoteView_Tabs > ul > li:nth-child(5)').show();     // "Process Approvals"              4
     }
 
     var quoteTypeID   = $('#quoteTypeID').val();
