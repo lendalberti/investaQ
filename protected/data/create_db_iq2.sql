@@ -380,6 +380,8 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`quotes` (
   `itar` TINYINT(1) NULL ,
   `have_die` TINYINT(1) NULL ,
   `spa` TINYINT(1) NULL ,
+  `recreation` TINYINT(1) NULL ,
+  `wip_product` TINYINT(1) NULL ,
   PRIMARY KEY (`id`) ,
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
   INDEX `fk_quotes_2_idx` (`customer_id` ASC) ,

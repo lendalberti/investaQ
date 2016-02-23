@@ -26,6 +26,7 @@
  		$contact = Yii::app()->request->baseUrl . "/images/New/contact.png";
  		$pending = Yii::app()->request->baseUrl . "/images/New/gear_yellow.png";
  		$rejected = Yii::app()->request->baseUrl . "/images/New/gear_yellow_x.png";
+ 		$submit = Yii::app()->request->baseUrl . "/images/New/submit.png";
 
  		if ( Yii::app()->user->isAdmin || Yii::app()->user->isApprover ) { // allow all for Admin
  			echo "<img id='quote_edit_"  .$data['model']['id']."' title='Edit this quote'   src='$edit' />";
@@ -41,7 +42,7 @@
  			//}
 	 		echo "<img id='quote_attach_".$data['model']['id']."' title='Attach a file'     src='$attach' />";
 	 		echo "<img id='quote_print_" .$data['model']['id']."' title='Print this quote'  src='$print' />";
-	 		echo "<img id='quote_email_" .$data['model']['id']."' title='Email this quote'  src='$email' />";
+	 		echo "<img id='quote_email_" .$data['model']['id']."' title='Email this quote'  src='$submit' />";
 	 		echo "<img id='quote_trash_" .$data['model']['id']."' title='Delete this quote' src='$trash' />";
 	 	}
  	
@@ -54,8 +55,8 @@
 </div>
 
  <div id='quoteViewForm' name='quoteViewForm'>
-
-	<div id="QuoteView_Tabs">
+ 	<span style='padding-left: 670px;'><a href='#' id='submitProcessApproval'><span style='color: #a31128'>Submit Quote for Process Approval</span></a></span>
+	<div id="QuoteView_Tabs" style='margin-top: 5px;'>
 
 		<ul>
 			<li><a href="#section_CustomerContact">Customer &amp; Contact Information</a></li>
@@ -247,8 +248,17 @@
 
 
 		<!--  for Manufacturing Quotes--> 
-		<div id='section_Manufacturing'>
-			<?php require '_mfg_details.php';    ?>
+		<div id='section_Manufacturing'>  
+			<!-- create a readonly view of _mfg_details.php -->
+			<?php require '_mfg_details_RO.php';    ?>
+
+
+
+
+
+
+
+
 		</div>
 
 		<div id='section_Approvals'>

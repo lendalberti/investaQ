@@ -225,11 +225,9 @@ class PartsController extends Controller {
 			$_itemIsBuildToOrder = false;
 		}
 
-
 		$part_status = $p->parts[0]->build == 1 ? 'Build to Order' : 'Stock';
-
-		$css = '<style type="text/css">' . file_get_contents('../../css/dialog.css') . '</style>';
-		$js  = '<script type="text/javascript">' . file_get_contents('../../js/iq2_main.js') . '</script>';
+		$css = '<style type="text/css">' . file_get_contents('css/dialog.css') . '</style>';
+		$js  = '<script type="text/javascript">' . file_get_contents('js/iq2_main.js') . '</script>';
 
 		$se_data = $p->parts[0]->se_data; 
 
@@ -252,6 +250,7 @@ class PartsController extends Controller {
 		$tStart0 = $fixedHeading . "<div id='div_StockCodes'><table id='table_StockCodes'>"; 
 		$tEnd = "</table></div>";
 		$rows = '';
+
 
 		foreach( $sc_Arr as $i => $v ) {
 			foreach( $v->warehouses as $ii => $WH) {
@@ -320,11 +319,11 @@ class PartsController extends Controller {
 
 		$tableDetails = $tStart1 . $rows . $tEnd;
 
-		// if ( $_itemIsBuildToOrder ) {
-		// 	pDebug('formatDialog() - item is Build to Order: ', $data);
-		// 	$pricing_table = '';
-		// }
-		// else {
+		if ( $_itemIsBuildToOrder ) {
+			pDebug('formatDialog() - item is Build to Order: ', $data);
+			$pricing_table = '';
+		}
+		else {
 			// ------------------------------------------------ Add to Quote
 			$caption = "<span style='color: black; font-size: .9em;'>Total Qty Available: </span><span style='font-size: .9em;color: red; font-weight: bold;'>" . number_format($p->parts[0]->total_qty_for_part) . "</span>";
 
@@ -349,7 +348,7 @@ class PartsController extends Controller {
 			$pRows .= "<tr style='font-size: .8em;' ><td colspan='4'><textarea rows='4' cols='45' name='comments' id='comments' placeholder='Add comments...'></textarea></td></tr>";
 
 			$pricing_table = $tStart2  .  $pricingtHeader  .  $pRows  .  $tEnd ;
-		// }
+		}
 
 		$hiddenValues  = '';
 		$hiddenValues .= "<input type='hidden' name='distributor_price' id='distributor_price' value='". $p->parts[0]->distributor_price  . "'  >";
@@ -363,7 +362,6 @@ class PartsController extends Controller {
 
 		// --------------------------------------------- Last piece
 		$html = $js . $css . $tHeader . $tableStockCodes .  $spacingDiv . $tableDetails . $hiddenValues . $pricing_table; 
-		//$html = $css . $tHeader . $tableStockCodes .  $spacingDiv . $tableDetails . $hiddenValues . $pricing_table; 
 		//pDebug('formatDialog() - html:', $html);
 		return $html;
 	}

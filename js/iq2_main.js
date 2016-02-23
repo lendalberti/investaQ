@@ -34,10 +34,18 @@ $(document).ready(function() {
     var MANUFACTURING_QUOTE    = 3;
     var SUPPLIER_REQUEST_FORM  = 4;
 
+    var TAB_Customer  = 1;
+    var TAB_Terms     = 2;
+    var TAB_Items     = 3;
+    var TAB_Details   = 4;
+    var TAB_Approvals = 5;
+
+
+
     console.log('*** myURL=['+myURL+']');
     console.log('*** returnUrl=[' + $('#returnUrl').val() + ']' );
-    console.log("*** current url:" + window.location.href );
-    console.log( 'Cookies:' + JSON.stringify(Cookies.get()) );
+    console.log('*** current url:' + window.location.href );
+    console.log('*** Cookies:' + JSON.stringify(Cookies.get()) );
 
 
 
@@ -83,9 +91,39 @@ $(document).ready(function() {
         $('#QuoteView_Tabs > ul > li:nth-child(5)').show();     // "Process Approvals"              4
     }
 
+
+    function showTab( index ) {
+        $('#QuoteView_Tabs > ul > li:nth-child('+index+')').show(); 
+    }
+
+    function hideTab( index ) {
+        $('#QuoteView_Tabs > ul > li:nth-child('+index+')').hide(); 
+    }
+
+    function activateTab( index ) {
+        // activate is 0 based, so use index-1
+        $('#QuoteView_Tabs').tabs({ active: index-1 });
+    }
+
+
+    function hideAllTabs() {
+        $('#QuoteView_Tabs > ul > li:nth-child(1)').hide();
+        $('#QuoteView_Tabs > ul > li:nth-child(2)').hide();
+        $('#QuoteView_Tabs > ul > li:nth-child(3)').hide();
+        $('#QuoteView_Tabs > ul > li:nth-child(4)').hide();
+        $('#QuoteView_Tabs > ul > li:nth-child(5)').hide();
+    }
+   
+
+
+
+
+
     var quoteTypeID   = $('#quoteTypeID').val();
     var quoteTypeName = $('#quoteTypeName').val();
-    console.log('quoteTypeID=' + quoteTypeID + ', quoteTypeName=' + quoteTypeName);
+    console.log('*** quoteTypeID=' + quoteTypeID + ', quoteTypeName=' + quoteTypeName);
+
+    //hideAllTabs();
 
     if ( quoteTypeID == MANUFACTURING_QUOTE ) {
         showManufacturingTabs();
@@ -125,7 +163,14 @@ $(document).ready(function() {
 
     if ( window.location.href.match(/quotes\/update/ ) ) {   // show original tab if cookie is set
 
-        if ( Cookies.get('current_tab') ) {
+        if ( Cookies.get('quote_added') ) {
+            Cookies.remove('quote_added');
+            showTab(TAB_Customer);
+            showTab(TAB_Items);
+            hideTab(TAB_Terms);
+            activateTab(TAB_Items);
+        }
+        else if ( Cookies.get('current_tab') ) {
             var tabIndex = Cookies.get('current_tab');
             Cookies.remove('current_tab');
 
@@ -133,31 +178,27 @@ $(document).ready(function() {
             $('#QuoteView_Tabs').tabs({ active: tabIndex });
             
         }
-
-        if ( Cookies.get('item_updated') ) {  // show Inventory Items tab if cookie is set
+        else if ( Cookies.get('item_updated') ) {  // show Inventory Items tab if cookie is set
             Cookies.remove('item_updated');
 
             $('#QuoteView_Tabs').tabs({ active: 2 });
             $('#table_CurrentParts > caption').show();
         }
-
-        if ( Cookies.get('item_added') ) { 
+        else if ( Cookies.get('item_added') ) { 
             Cookies.remove('item_added');
 
             $('#QuoteView_Tabs').tabs({ active: 2 });
             $('#table_CurrentParts > caption').text('Item added.');
             $('#table_CurrentParts > caption').show();
         }
-
-        if ( Cookies.get('item_removed') ) { 
+        else if ( Cookies.get('item_removed') ) { 
             Cookies.remove('item_removed');
 
             $('#QuoteView_Tabs').tabs({ active: 2 });
             $('#table_CurrentParts > caption').text('Item removed.');
             $('#table_CurrentParts > caption').show();
         }
-
-        if ( Cookies.get('item_cancel') ) { 
+        else if ( Cookies.get('item_cancel') ) { 
             Cookies.remove('item_cancel');
 
             $('#QuoteView_Tabs').tabs({ active: 2 });
@@ -172,6 +213,33 @@ $(document).ready(function() {
 	// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     // -------- Event Handlers  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------    
     // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+    $('#submitProcessApproval').on('click', function() {
+        if ( confirm( "This manufacturng quote will be submitted for process approval; are you sure?") ) {
+            console.log('Submitting for process approval...');
+            /*
+
+                * change status to Status::BTO_PENDING
+                * notify Proposal Manager with link in email
+
+
+
+
+
+
+
+
+            */
+
+        }   
+        return false;
+    });
+
+
+
+
+
 
     $('#back_to_index').on('click', function () {
          window.location = myURL + 'quotes/index';
@@ -546,7 +614,7 @@ $(document).ready(function() {
                         }
                     },
                     error: function (jqXHR, textStatus, errorThrown)  {
-                        alert("Couldn't update quote " + quoteID + "; error=\n\n" + errorThrown);
+                        alert("Couldn't update quote " + quoteID + "; error=\n\n" + errorThrown + ", jqXHR="+jqXHR);
                     }
         });
 
@@ -574,10 +642,7 @@ $(document).ready(function() {
     		            	console.log('quoteId=['+quoteId+'], quoteNo=['+quoteNo+']');
                             alert('New quote created - No. '+quoteNo);
 
-                            showStockTabs();
-
-                            // $('#QuoteView_Tabs > ul > li:nth-child(2)').show();
-                            // $('#QuoteView_Tabs > ul > li:nth-child(3)').show();
+                            Cookies.set('quote_added', 1);
 
     		            	$('#form_QuoteID').val(quoteId);
                             window.location.href = myURL + 'quotes/update?id=' + quoteId + '&n=' + Math.floor((Math.random() * 100000000) + 1);
@@ -1844,7 +1909,8 @@ $(document).ready(function() {
 		var tmp = /^rowID_(.+)$/.exec( that[0].id);
 		var partNo = tmp[1];
         var item   = encodeURIComponent(partNo.trim().toUpperCase());       // >>>>>>>  THE ONLY PLACE WE NEED TO USE "encodeURIComponent()"
-        var url    = myURL + 'parts/search?item=' +  item + '&dialog=1';    
+        var url    = myURL + 'parts/search?item=' +  item + '&dialog=1';   
+        console.log('url=['+url+']'); 
 
 		$.ajax({
                 type: 'GET',
@@ -1881,16 +1947,18 @@ $(document).ready(function() {
         // this is where a click on 'rowID_' is detected...
     	$('#results_table thead').after('<tbody>'+rows+'</tbody>');
 
-        if ( ResultsTable == null ) {  // don't reinitilaize more than once 
+        if ( ResultsTable === null ) {  // don't reinitilaize more than once 
             // set up DataTable on Results table - from parts lookup
         	ResultsTable = $('#results_table').DataTable({
     			"iDisplayLength": 10,
     			drawCallback: function() {
     		        var api = this.api();
-    		        api.$('#results_table > tbody > tr').click(function() {
+    		        api.$('#results_table > tbody > tr').click(function() {                       // #rowID_55551\2f BXA
                         var inventoryStatus = $(this).find('td:nth-child(2)').text();
                         console.log('Inventory Status: ' + inventoryStatus );
-                        var partNo = $(this).find('td:nth-child(1)').text();
+
+                        var partNo      = $(this).find('td:nth-child(1)').text();
+                        var mfg         = $(this).find('td:nth-child(3)').text();
                         var quoteTypeID = $('#quoteTypeID').val();
 
                         if ( inventoryStatus === 'Build to Order' ) {
@@ -1899,13 +1967,15 @@ $(document).ready(function() {
                                 location.reload();
                                 return false;
                             }
-                            else if ( confirm("Part No. "+partNo+" is Build to Order only (quote type: "+quoteTypeID+").\nContinue processing as a Manufacturing Quote?") ) {
+                            else if ( confirm("Part No. "+partNo+" is Build to Order only.\n\nContinue processing as a Manufacturing Quote?") ) {
                                 showManufacturingTabs();
                                 $('#QuoteView_Tabs').tabs({ active: 3 });
                                 //$('#header_PageTitle').text('Updating Manufacturing Quote No.');
 
                                 var postData = {
-                                        newQuoteTypeID: MANUFACTURING_QUOTE,
+                                        newQuoteTypeID:         MANUFACTURING_QUOTE,
+                                        requested_part_number:  partNo,
+                                        mfg:                    mfg,
                                 };
                                  $.ajax({
                                         type: "POST",
@@ -1956,6 +2026,10 @@ $(document).ready(function() {
     		    }
     		});
         }
+        console.log('ResultsTable is NOT null...');
+
+
+
     }    // END_OF_FUNCTION displayPartLookupResults()
 
 

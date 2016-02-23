@@ -292,6 +292,8 @@ class QuotesController extends Controller
 		$data['items'] = array();
 		$data['items'] = $this->getItemsByQuote($quote_id);
 
+		$data['selects']  = Quotes::model()->getAllSelects();
+
 		$this->render('view',array(
 			'data'=>$data,
 		));
@@ -586,24 +588,41 @@ class QuotesController extends Controller
 		$quote_id = $id;
 
 		if ( $_POST ) {
+
+			pDebug( "actionUpdate() - _POST:", $_POST);
+
+
 			if ( isset( $_POST['newQuoteTypeID'] ) ) {  	 // updating just quote type from update/inventory lookup page
 				pDebug( "actionUpdate() - _POST:", $_POST);
+
+						// [newQuoteTypeID] => 3
+						// [requested_part_number] => 55551/BXA
+						// [mfg] => REI
 
 				$quoteModel = $this->loadModel($id);
 				pDebug( "actionUpdate() -  BEFORE: quote model:", $quoteModel->attributes );
 
-				$quoteModel->quote_type_id = $_POST['newQuoteTypeID'];
+				$quoteModel->quote_type_id         = $_POST['newQuoteTypeID'];
+				$quoteModel->requested_part_number = $_POST['requested_part_number'];
+				$quoteModel->die_manufacturer_id   = getMfgID($_POST['mfg']);
 
-				if ($quoteModel->save()) {
-					pDebug( "actionUpdate() -  Quote type changed to [".$quoteModel->quoteType->name."] for quote no. " . $quoteModel->quote_no );
-					pDebug( "actionUpdate() -  AFTER: quote model:", $quoteModel->attributes );
-					echo Status::SUCCESS;
+				try {
+					if ($quoteModel->save()) {
+						pDebug( "actionUpdate() -  Quote type changed to [".$quoteModel->quoteType->name."] for quote no. " . $quoteModel->quote_no );
+						pDebug( "actionUpdate() -  AFTER: quote model:", $quoteModel->attributes );
+						echo Status::SUCCESS;
+					}
+					else {
+						pDebug( "actionUpdate() -  Error in changing quote type: ", $quoteModel->errors );
+						echo Status::FAILURE;
+					}
+					return;
 				}
-				else {
-					pDebug( "actionUpdate() -  Error in changing quote type: ", $quoteModel->errors );
+				catch( Exception $e ) {
+					pDebug("actionUpdate() - Exception: ", $e->errorInfo );
 					echo Status::FAILURE;
+					return;
 				}
-				return;
 			}
 
 
@@ -734,15 +753,27 @@ class QuotesController extends Controller
 			// $quoteModel->status_id               =  $_POST['Quotes']['status_id'];  
 			$quoteModel->status_id               =  $this->getUpdatedQuoteStatus($quote_id);   //  TODO: verify this is correct
 
-         	if ($quoteModel->save()) {
-				pDebug('Saved quote changes: ', $quoteModel->attributes);
-				echo Status::SUCCESS;
+			try {
+				$res = $quoteModel->save();
 			}
-			else {
-				pDebug("actionUpdate() - can't save quote changes; error=", $quoteModel->errors );
+			catch (Exception $e) {
+				pDebug("actionPartsUpdate() - Exception: ", $e->errorInfo );
 				echo Status::FAILURE;
+				return;
 			}
+
+			echo Status::SUCCESS;
 			return;
+
+   //       	if ($quoteModel->save()) {
+			// 	pDebug('Saved quote changes: ', $quoteModel->attributes);
+			// 	echo Status::SUCCESS;
+			// }
+			// else {
+			// 	pDebug("actionUpdate() - can't save quote changes; error=", $quoteModel->errors );
+			// 	echo Status::FAILURE;
+			// }
+			// return;
 		}
 		else {
 			pDebug("actionUpdate() - _GET=", $_GET);

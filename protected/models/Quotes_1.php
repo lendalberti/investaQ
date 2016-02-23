@@ -42,8 +42,6 @@
  * @property integer $itar
  * @property integer $have_die
  * @property integer $spa
- * @property integer $recreation
- * @property integer $wip_product
  *
  * The followings are the available model relations:
  * @property Attachments[] $attachments
@@ -93,12 +91,12 @@ class Quotes extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('quote_no, quote_type_id, status_id, owner_id, customer_id, contact_id, created_date, updated_date, expiration_date, source_id', 'required'),
-			array('quote_type_id, status_id, owner_id, customer_id, contact_id, level_id, source_id, lead_quality_id, lost_reason_id, no_bid_reason_id, ready_to_order, quantity1, quantity2, quantity3, die_manufacturer_id, package_type_id, lead_count, process_flow_id, testing_id, priority_id, ncnr, itar, have_die, spa, recreation, wip_product', 'numerical', 'integerOnly'=>true),
+			array('quote_type_id, status_id, owner_id, customer_id, contact_id, level_id, source_id, lead_quality_id, lost_reason_id, no_bid_reason_id, ready_to_order, quantity1, quantity2, quantity3, die_manufacturer_id, package_type_id, lead_count, process_flow_id, testing_id, priority_id, ncnr, itar, have_die, spa', 'numerical', 'integerOnly'=>true),
 			array('quote_no, requested_part_number, generic_part_number, temp_low, temp_high', 'length', 'max'=>45),
 			array('additional_notes, terms_conditions, customer_acknowledgment, risl, manufacturing_lead_time', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, quote_no, quote_type_id, status_id, owner_id, customer_id, contact_id, created_date, updated_date, expiration_date, level_id, source_id, lead_quality_id, additional_notes, terms_conditions, customer_acknowledgment, risl, manufacturing_lead_time, lost_reason_id, no_bid_reason_id, ready_to_order, requested_part_number, generic_part_number, quantity1, quantity2, quantity3, die_manufacturer_id, package_type_id, lead_count, process_flow_id, testing_id, priority_id, temp_low, temp_high, ncnr, itar, have_die, spa, recreation, wip_product', 'safe', 'on'=>'search'),
+			array('id, quote_no, quote_type_id, status_id, owner_id, customer_id, contact_id, created_date, updated_date, expiration_date, level_id, source_id, lead_quality_id, additional_notes, terms_conditions, customer_acknowledgment, risl, manufacturing_lead_time, lost_reason_id, no_bid_reason_id, ready_to_order, requested_part_number, generic_part_number, quantity1, quantity2, quantity3, die_manufacturer_id, package_type_id, lead_count, process_flow_id, testing_id, priority_id, temp_low, temp_high, ncnr, itar, have_die, spa', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -158,8 +156,8 @@ class Quotes extends CActiveRecord
 			'lost_reason_id' => 'Lost Reason',
 			'no_bid_reason_id' => 'No Bid Reason',
 			'ready_to_order' => 'Ready To Order',
-			'requested_part_number' => 'Requested Part Number',
-			'generic_part_number' => 'Generic Part Number',
+			'requested_part_number' => 'Requested Part No.',
+			'generic_part_number' => 'Generic Part No.',
 			'quantity1' => 'Quantity1',
 			'quantity2' => 'Quantity2',
 			'quantity3' => 'Quantity3',
@@ -175,8 +173,6 @@ class Quotes extends CActiveRecord
 			'itar' => 'Itar',
 			'have_die' => 'Have Die',
 			'spa' => 'Spa',
-			'recreation' => 'Recreation',
-			'wip_product' => 'Wip Product',
 		);
 	}
 
@@ -229,8 +225,6 @@ class Quotes extends CActiveRecord
 		$criteria->compare('itar',$this->itar);
 		$criteria->compare('have_die',$this->have_die);
 		$criteria->compare('spa',$this->spa);
-		$criteria->compare('recreation',$this->recreation);
-		$criteria->compare('wip_product',$this->wip_product);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -238,31 +232,32 @@ class Quotes extends CActiveRecord
 	}
 
 
-	public function getAllSelects() {
-		$selects = array();
-		// lead_quality  package_types  process_flow  testing  die_manufacturers
+		public function getAllSelects() {
+			$selects = array();
 
-		foreach( array( 'lead_quality', 'package_types', 'process_flow', 'testing') as $t ) {
-			$order_by = ( $t=='lead_quality' ? 'id' : 'name');
-			$sql     = "SELECT * FROM $t ORDER BY $order_by";
+			// lead_quality  package_types  process_flow  testing  die_manufacturers
+
+			foreach( array( 'lead_quality', 'package_types', 'process_flow', 'testing') as $t ) {
+				$order_by = ( $t=='lead_quality' ? 'id' : 'name');
+				$sql     = "SELECT * FROM $t ORDER BY $order_by";
+				$command = Yii::app()->db->createCommand($sql);
+				$results = $command->queryAll();
+
+				foreach( $results as $r ) {
+					$selects[$t][] = array( $r['id'] => $r['name'] );
+				}
+			}
+
+			$sql     = "SELECT * FROM die_manufacturers ORDER BY short_name";
 			$command = Yii::app()->db->createCommand($sql);
 			$results = $command->queryAll();
-
 			foreach( $results as $r ) {
-				$selects[$t][] = array( $r['id'] => $r['name'] );
+				$selects['die_manufacturers'][] = array( $r['id'] => $r['short_name'] . ' - ' . $r['long_name'] );
 			}
-		}
 
-		$sql     = "SELECT * FROM die_manufacturers ORDER BY short_name";
-		$command = Yii::app()->db->createCommand($sql);
-		$results = $command->queryAll();
-		foreach( $results as $r ) {
-			$selects['die_manufacturers'][] = array( $r['id'] => $r['short_name'] . ' - ' . $r['long_name'] );
+			pDebug('getAllSelects() - selects:', $selects);
+			return $selects;
 		}
-
-		//pDebug('getAllSelects() - selects:', $selects);
-		return $selects;
-	}
 
 
 

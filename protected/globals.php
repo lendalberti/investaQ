@@ -1,5 +1,24 @@
 <?php
 
+
+
+    function getMfgID( $short_name ) {
+        $sql = "SELECT * FROM die_manufacturers WHERE short_name = '$short_name'";
+        $results = Yii::app()->db->createCommand($sql)->queryAll();
+
+        pDebug("getMfgID() - results count: ". count($results) );  //->attributes );
+        pDebug("getMfgID() - results: ",  $results );
+
+        return $results[0]['id'];
+
+
+
+        // pDebug("getMfgID() - short_name=[$short_name], id=[".$results['id']."]");
+
+        // return $results['id'];
+    }
+
+
     function fp($n) {
         setlocale(LC_MONETARY, 'en_US');
         if ( $n ) {

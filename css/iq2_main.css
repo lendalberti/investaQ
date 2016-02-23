@@ -1035,6 +1035,7 @@ div.my_container > div > table > tbody > tr > td {
 	font-size: .8em;
 }
 
+table#mfg_details  > tbody > tr > td > input,
 div.my_container > div > table > tbody > tr > td > input {
 	background-color: #f0f0f0;
 	font-family: Courier;
