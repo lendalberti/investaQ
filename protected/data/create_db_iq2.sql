@@ -264,67 +264,6 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `iq2`.`die_manufacturers`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `iq2`.`die_manufacturers` ;
-
-CREATE  TABLE IF NOT EXISTS `iq2`.`die_manufacturers` (
-  `id` INT NOT NULL AUTO_INCREMENT ,
-  `short_name` VARCHAR(45) NOT NULL ,
-  `long_name` VARCHAR(45) NOT NULL ,
-  PRIMARY KEY (`id`) )
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `iq2`.`package_types`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `iq2`.`package_types` ;
-
-CREATE  TABLE IF NOT EXISTS `iq2`.`package_types` (
-  `id` INT NOT NULL AUTO_INCREMENT ,
-  `name` VARCHAR(45) NOT NULL ,
-  PRIMARY KEY (`id`) )
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `iq2`.`process_flow`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `iq2`.`process_flow` ;
-
-CREATE  TABLE IF NOT EXISTS `iq2`.`process_flow` (
-  `id` INT NOT NULL AUTO_INCREMENT ,
-  `name` VARCHAR(45) NOT NULL ,
-  PRIMARY KEY (`id`) )
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `iq2`.`testing`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `iq2`.`testing` ;
-
-CREATE  TABLE IF NOT EXISTS `iq2`.`testing` (
-  `id` INT NOT NULL AUTO_INCREMENT ,
-  `name` VARCHAR(45) NULL ,
-  PRIMARY KEY (`id`) )
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `iq2`.`priority`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `iq2`.`priority` ;
-
-CREATE  TABLE IF NOT EXISTS `iq2`.`priority` (
-  `id` INT NOT NULL AUTO_INCREMENT ,
-  `name` VARCHAR(255) NOT NULL ,
-  PRIMARY KEY (`id`) )
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `iq2`.`lead_quality`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `iq2`.`lead_quality` ;
@@ -349,7 +288,7 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`quotes` (
   `owner_id` INT NOT NULL ,
   `customer_id` INT NOT NULL ,
   `contact_id` INT NOT NULL ,
-  `created_date` TIMESTAMP NOT NULL DEFAULT NOW() ,
+  `created_date` TIMESTAMP NULL DEFAULT NOW() ,
   `updated_date` DATETIME NOT NULL ,
   `expiration_date` DATETIME NOT NULL ,
   `level_id` INT NOT NULL DEFAULT 1 ,
@@ -363,25 +302,6 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`quotes` (
   `lost_reason_id` INT NULL ,
   `no_bid_reason_id` INT NULL ,
   `ready_to_order` INT NULL ,
-  `requested_part_number` VARCHAR(45) NULL ,
-  `generic_part_number` VARCHAR(45) NULL ,
-  `quantity1` INT NULL ,
-  `quantity2` INT NULL ,
-  `quantity3` INT NULL ,
-  `die_manufacturer_id` INT NULL ,
-  `package_type_id` INT NULL ,
-  `lead_count` INT NULL ,
-  `process_flow_id` INT NULL ,
-  `testing_id` INT NULL ,
-  `priority_id` INT NULL ,
-  `temp_low` VARCHAR(45) NULL ,
-  `temp_high` VARCHAR(45) NULL ,
-  `ncnr` TINYINT(1) NULL ,
-  `itar` TINYINT(1) NULL ,
-  `have_die` TINYINT(1) NULL ,
-  `spa` TINYINT(1) NULL ,
-  `recreation` TINYINT(1) NULL ,
-  `wip_product` TINYINT(1) NULL ,
   `salesperson_notes` TEXT NULL ,
   PRIMARY KEY (`id`) ,
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
@@ -394,11 +314,6 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`quotes` (
   UNIQUE INDEX `quote_no_UNIQUE` (`quote_no` ASC) ,
   INDEX `fk_quotes_7_idx` (`level_id` ASC) ,
   INDEX `fk_quotes_8_idx` (`source_id` ASC) ,
-  INDEX `fk_quotes_9_idx` (`die_manufacturer_id` ASC) ,
-  INDEX `fk_quotes_10_idx` (`package_type_id` ASC) ,
-  INDEX `fk_quotes_11_idx` (`process_flow_id` ASC) ,
-  INDEX `fk_quotes_12_idx` (`testing_id` ASC) ,
-  INDEX `fk_quotes_13_idx` (`priority_id` ASC) ,
   INDEX `fk_quotes_14_idx` (`lead_quality_id` ASC) ,
   CONSTRAINT `fk_quotes_2`
     FOREIGN KEY (`customer_id` )
@@ -438,31 +353,6 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`quotes` (
   CONSTRAINT `fk_quotes_8`
     FOREIGN KEY (`source_id` )
     REFERENCES `iq2`.`sources` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_quotes_9`
-    FOREIGN KEY (`die_manufacturer_id` )
-    REFERENCES `iq2`.`die_manufacturers` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_quotes_10`
-    FOREIGN KEY (`package_type_id` )
-    REFERENCES `iq2`.`package_types` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_quotes_11`
-    FOREIGN KEY (`process_flow_id` )
-    REFERENCES `iq2`.`process_flow` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_quotes_12`
-    FOREIGN KEY (`testing_id` )
-    REFERENCES `iq2`.`testing` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_quotes_13`
-    FOREIGN KEY (`priority_id` )
-    REFERENCES `iq2`.`priority` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_quotes_14`
@@ -657,7 +547,7 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`attachments` (
   `content_type` VARCHAR(45) NOT NULL ,
   `size` INT NOT NULL ,
   `md5` VARCHAR(45) NOT NULL ,
-  `uploaded_date` TIMESTAMP NOT NULL DEFAULT now() ,
+  `uploaded_date` TIMESTAMP NULL DEFAULT now() ,
   `uploaded_by` INT NOT NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_attachments_1_idx` (`quote_id` ASC) ,
@@ -672,6 +562,67 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`attachments` (
     REFERENCES `iq2`.`users` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `iq2`.`package_types`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `iq2`.`package_types` ;
+
+CREATE  TABLE IF NOT EXISTS `iq2`.`package_types` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(45) NOT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `iq2`.`process_flow`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `iq2`.`process_flow` ;
+
+CREATE  TABLE IF NOT EXISTS `iq2`.`process_flow` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(45) NOT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `iq2`.`priority`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `iq2`.`priority` ;
+
+CREATE  TABLE IF NOT EXISTS `iq2`.`priority` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `iq2`.`testing`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `iq2`.`testing` ;
+
+CREATE  TABLE IF NOT EXISTS `iq2`.`testing` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(45) NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `iq2`.`die_manufacturers`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `iq2`.`die_manufacturers` ;
+
+CREATE  TABLE IF NOT EXISTS `iq2`.`die_manufacturers` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `short_name` VARCHAR(45) NOT NULL ,
+  `long_name` VARCHAR(45) NOT NULL ,
+  PRIMARY KEY (`id`) )
 ENGINE = InnoDB;
 
 
@@ -755,6 +706,140 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`motivationals` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `saying` VARCHAR(75) NOT NULL ,
   PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `iq2`.`bto_items`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `iq2`.`bto_items` ;
+
+CREATE  TABLE IF NOT EXISTS `iq2`.`bto_items` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `quote_id` INT NOT NULL ,
+  `requested_part_number` VARCHAR(45) NOT NULL ,
+  `generic_part_number` VARCHAR(45) NULL ,
+  `quantity1` INT NULL ,
+  `quantity2` INT NULL ,
+  `quantity3` INT NULL ,
+  `die_manufacturer_id` INT NULL ,
+  `package_type_id` INT NULL ,
+  `lead_count` INT NULL ,
+  `process_flow_id` INT NULL ,
+  `testing_id` INT NULL ,
+  `priority_id` INT NULL ,
+  `temp_low` VARCHAR(45) NULL ,
+  `temp_high` VARCHAR(45) NULL ,
+  `ncnr` TINYINT(1) NULL ,
+  `itar` TINYINT(1) NULL ,
+  `have_die` TINYINT(1) NULL ,
+  `spa` TINYINT(1) NULL ,
+  `recreation` TINYINT(1) NULL ,
+  `wip_product` TINYINT(1) NULL ,
+  `created_date` TIMESTAMP NULL DEFAULT now() ,
+  `updated_date` DATETIME NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_bto_items_1_idx` (`die_manufacturer_id` ASC) ,
+  INDEX `fk_bto_items_2_idx` (`package_type_id` ASC) ,
+  INDEX `fk_bto_items_3_idx` (`process_flow_id` ASC) ,
+  INDEX `fk_bto_items_4_idx` (`testing_id` ASC) ,
+  INDEX `fk_bto_items_5_idx` (`quote_id` ASC) ,
+  INDEX `fk_bto_items_6_idx` (`priority_id` ASC) ,
+  CONSTRAINT `fk_bto_items_1`
+    FOREIGN KEY (`die_manufacturer_id` )
+    REFERENCES `iq2`.`die_manufacturers` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_bto_items_2`
+    FOREIGN KEY (`package_type_id` )
+    REFERENCES `iq2`.`package_types` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_bto_items_3`
+    FOREIGN KEY (`process_flow_id` )
+    REFERENCES `iq2`.`process_flow` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_bto_items_4`
+    FOREIGN KEY (`testing_id` )
+    REFERENCES `iq2`.`testing` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_bto_items_5`
+    FOREIGN KEY (`quote_id` )
+    REFERENCES `iq2`.`quotes` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_bto_items_6`
+    FOREIGN KEY (`priority_id` )
+    REFERENCES `iq2`.`priority` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `iq2`.`bto_comments`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `iq2`.`bto_comments` ;
+
+CREATE  TABLE IF NOT EXISTS `iq2`.`bto_comments` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `bto_item_id` INT NOT NULL ,
+  `quote_id` INT NOT NULL ,
+  `user_id` INT NOT NULL ,
+  `group_id` INT NOT NULL ,
+  `comment` TEXT NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_bto_comments_1_idx` (`quote_id` ASC) ,
+  INDEX `fk_bto_comments_2_idx` (`user_id` ASC) ,
+  INDEX `fk_bto_comments_3_idx` (`group_id` ASC) ,
+  INDEX `fk_bto_comments_4_idx` (`bto_item_id` ASC) ,
+  CONSTRAINT `fk_bto_comments_1`
+    FOREIGN KEY (`quote_id` )
+    REFERENCES `iq2`.`quotes` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_bto_comments_2`
+    FOREIGN KEY (`user_id` )
+    REFERENCES `iq2`.`users` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_bto_comments_3`
+    FOREIGN KEY (`group_id` )
+    REFERENCES `iq2`.`bto_groups` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_bto_comments_4`
+    FOREIGN KEY (`bto_item_id` )
+    REFERENCES `iq2`.`bto_items` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `iq2`.`bto_status`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `iq2`.`bto_status` ;
+
+CREATE  TABLE IF NOT EXISTS `iq2`.`bto_status` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `bto_item_id` INT NOT NULL ,
+  `status_id` INT NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_bto_status_1_idx` (`status_id` ASC) ,
+  INDEX `fk_bto_status_2_idx` (`bto_item_id` ASC) ,
+  CONSTRAINT `fk_bto_status_1`
+    FOREIGN KEY (`status_id` )
+    REFERENCES `iq2`.`status` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_bto_status_2`
+    FOREIGN KEY (`bto_item_id` )
+    REFERENCES `iq2`.`bto_items` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 USE `iq2` ;
