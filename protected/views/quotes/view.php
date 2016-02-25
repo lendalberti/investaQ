@@ -24,9 +24,14 @@
  		$attach = Yii::app()->request->baseUrl . "/images/New/attachment.png";
  		$email  = Yii::app()->request->baseUrl . "/images/New/mail.png";
  		$contact = Yii::app()->request->baseUrl . "/images/New/contact.png";
- 		$pending = Yii::app()->request->baseUrl . "/images/New/gear_yellow.png";
- 		$rejected = Yii::app()->request->baseUrl . "/images/New/gear_yellow_x.png";
+ 		// $pending = Yii::app()->request->baseUrl . "/images/New/gear_yellow.png";
+ 		//$rejected = Yii::app()->request->baseUrl . "/images/New/gear_yellow_x.png";
  		$submit = Yii::app()->request->baseUrl . "/images/New/submit.png";
+ 		$draft = Yii::app()->request->baseUrl . "/images/New/draft.png";
+
+ 		$approved = Yii::app()->request->baseUrl . "/images/New/button_green.png";
+ 		$rejected = Yii::app()->request->baseUrl . "/images/New/button_red.png";
+ 		$pending = Yii::app()->request->baseUrl . "/images/New/button_yellow.png";
 
  		if ( Yii::app()->user->isAdmin || Yii::app()->user->isApprover ) { // allow all for Admin
  			echo "<img id='quote_edit_"  .$data['model']['id']."' title='Edit this quote'   src='$edit' />";
@@ -38,11 +43,16 @@
  		}
  		else {
  			//if ( $data['model']->status_id == Status::DRAFT || $data['model']->status_id == Status::REJECTED ) { // edits allowed only for draft,rejected quotes
- 			echo "<img id='quote_edit_"  .$data['model']['id']."' title='Edit this quote'   src='$edit' />";
+
+ 			if ( $data['model']->status_id != Status::BTO_PENDING ) {
+ 				echo "<img id='quote_edit_"  .$data['model']['id']."' title='Edit this quote'   src='$edit' />";
+ 			}
+ 			
+
  			//}
 	 		echo "<img id='quote_attach_".$data['model']['id']."' title='Attach a file'     src='$attach' />";
 	 		echo "<img id='quote_print_" .$data['model']['id']."' title='Print this quote'  src='$print' />";
-	 		echo "<img id='quote_email_" .$data['model']['id']."' title='Email this quote'  src='$submit' />";
+	 		echo "<img id='quote_email_" .$data['model']['id']."' title='Email this quote'  src='$email' />";
 	 		echo "<img id='quote_trash_" .$data['model']['id']."' title='Delete this quote' src='$trash' />";
 	 	}
  	
@@ -55,7 +65,11 @@
 </div>
 
  <div id='quoteViewForm' name='quoteViewForm'>
- 	<span style='padding-left: 670px;'><a href='#' id='submitProcessApproval'><span style='color: #a31128'>Submit Quote for Process Approval</span></a></span>
+
+ 	<?php if ( $data['model']->quote_type_id == QuoteTypes::MANUFACTURING &&  $data['model']->status_id == Status::DRAFT ) { ?>  <!--  Manufacturing, Draft          -->
+ 		<span style='padding-left: 670px;'><a href='#' id='submitProcessApproval'><span style='color: #a31128'>Submit Quote for Process Approval</span></a></span>
+	<?php } ?>
+
 	<div id="QuoteView_Tabs" style='margin-top: 5px;'>
 
 		<ul>
@@ -64,7 +78,7 @@
 			<li><a href="#section_Parts">Inventory Items</a></li>
 			<!--  Manufacturing : hide (3), show (4),(5)-->
 			<li><a href="#section_Manufacturing">Manufacturing Details</a></li>
-			<li><a href="#section_Approvals">Process Approvals</a></li>
+			<li><a href="#section_Approvals">Process Approval Status</a></li>
 		</ul>
 
 		<div id='section_CustomerContact'>
@@ -219,10 +233,16 @@
 
 												echo '<td>' . $i['total'] . '</td>';
 												if ( $i['status_id'] == Status::PENDING ) {
-													echo "<td><img id='item_status_" . $i['id'] . "' title='Item waiting for approval'  src='$pending' width='20' height='20' /></td>";
+													echo "<td><img id='item_status_" . $i['id'] . "' title='Pending approval'  src='$pending' width='20' height='20' /></td>";
 												}
 												else if ($i['status_id'] == Status::REJECTED ) {
-													echo "<td><img id='item_status_" . $i['id'] . "' title='Item has been rejected'  src='$rejected' width='20' height='20' /></td>";
+													echo "<td><img id='item_status_" . $i['id'] . "' title='Rejected'  src='$rejected' width='20' height='20' /></td>";
+												}
+												else if ($i['status_id'] == Status::APPROVED ) {
+													echo "<td><img id='item_status_" . $i['id'] . "' title='Approved'  src='$approved' width='20' height='20' /></td>";
+												}
+												else if ($i['status_id'] == Status::DRAFT ) {
+													echo "<td><img id='item_status_" . $i['id'] . "' title='Draft'  src='$draft' width='20' height='20' /></td>";
 												}
 												else {
 													echo '<td></td>';
@@ -234,7 +254,7 @@
 							</tbody>
 							</table>
 
-							<?php if ( Yii::app()->user->isAdmin ) { ?>
+							<?php if ( Yii::app()->user->isApprover ) { ?>
 								<span style='display:none;' id='button_ApproveItem'>Approve this Item</span>
 								<span style='display:none;' id='button_RejectItem'>Reject this Item</span>
 							<?php } ?>  
@@ -251,13 +271,6 @@
 		<div id='section_Manufacturing'>  
 			<!-- create a readonly view of _mfg_details.php -->
 			<?php require '_mfg_details_RO.php';    ?>
-
-
-
-
-
-
-
 
 		</div>
 

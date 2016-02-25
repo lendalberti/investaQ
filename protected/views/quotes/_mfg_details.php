@@ -219,6 +219,11 @@
 		</div>
 	</div>
 
+	<div style='border: 1px solid lightblue;'>
+		<span class='terms'>Author's Notes:</span><br /><textarea rows="4" cols="80" name="Quotes[salesperson_notes]" id="Quotes_salesperson_notes" ><?php echo $q->salesperson_notes; ?></textarea>
+	</div>
+
+
 
 
 

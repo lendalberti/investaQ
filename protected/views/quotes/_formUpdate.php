@@ -22,8 +22,14 @@
  		$print  = Yii::app()->request->baseUrl . "/images/New/print.png";
  		$email  = Yii::app()->request->baseUrl . "/images/New/mail.png";
  		$attach = Yii::app()->request->baseUrl . "/images/New/attachment.png";
- 		$pending = Yii::app()->request->baseUrl . "/images/New/gear_yellow.png";
- 		$rejected = Yii::app()->request->baseUrl . "/images/New/gear_yellow_x.png";
+ 		//$pending = Yii::app()->request->baseUrl . "/images/New/gear_yellow.png";
+ 		//$rejected = Yii::app()->request->baseUrl . "/images/New/gear_yellow_x.png";
+
+ 		$draft = Yii::app()->request->baseUrl . "/images/New/draft.png";
+ 		$approved = Yii::app()->request->baseUrl . "/images/New/button_green.png";
+ 		$rejected = Yii::app()->request->baseUrl . "/images/New/button_red.png";
+ 		$pending = Yii::app()->request->baseUrl . "/images/New/button_yellow.png";
+
 
  		$q  = $data['model']; 
  		$cu = $data['customer'];
@@ -54,7 +60,7 @@
 			<li><a href="#section_Parts">Inventory Items</a></li>
 			<!--  Manufacturing : hide (3), show (4),(5)-->
 			<li><a href="#section_Manufacturing">Manufacturing Details</a></li>
-			<li><a href="#section_Approvals">Process Approvals</a></li>
+			<li><a href="#section_Approvals">Process Approval Status</a></li>
 		</ul>
 
 		<!--  for Stock Quotes -->
@@ -215,10 +221,16 @@
 													echo '<td>' . $i['total'] . '</td>';
 
 													if ( $i['status_id'] == Status::PENDING ) {
-														echo "<td ><img id='item_status_" . $i['id'] . "' title='Item waiting for approval'  src='$pending' width='20' height='20' /></td>";
+														echo "<td><img id='item_status_" . $i['id'] . "' title='Pending approval'  src='$pending' width='20' height='20' /></td>";
 													}
 													else if ($i['status_id'] == Status::REJECTED ) {
-														echo "<td ><img id='item_status_" . $i['id'] . "' title='Item has been rejected'  src='$rejected' width='20' height='20' /></td>";
+														echo "<td><img id='item_status_" . $i['id'] . "' title='Rejected'  src='$rejected' width='20' height='20' /></td>";
+													}
+													else if ($i['status_id'] == Status::APPROVED ) {
+														echo "<td><img id='item_status_" . $i['id'] . "' title='Approved'  src='$approved' width='20' height='20' /></td>";
+													}
+													else if ($i['status_id'] == Status::DRAFT ) {
+														echo "<td><img id='item_status_" . $i['id'] . "' title='Draft'  src='$draft' width='20' height='20' /></td>";
 													}
 													else {
 														echo '<td></td>';

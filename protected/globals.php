@@ -258,12 +258,29 @@
     }
 
 
+
+
+    // -----------------------------------------------------------------------------------
+    function notifyProposalManager( $quoteModel ) {
+
+        if ( Yii::app()->params['DEBUG'] ) {   // no emails when working from home
+            pDebug("notifyProposalManager() - user notified...");
+            return true;
+        }
+
+        // TODO...
+
+
+    }
+
+
+
     // -----------------------------------------------------------------------------------
     function notifyApprovers( $model_StockItem) {
 
-        // if ( Yii::app()->params['DEBUG'] ) {   // no emails when working from home
-        //     return true;
-        // }
+        if ( Yii::app()->params['DEBUG'] ) {   // no emails when working from home
+            return true;
+        }
 
 
         $quote_id = $model_StockItem->quote_id;
@@ -328,6 +345,11 @@
 
     // -----------------------------------------------------------------------------------
     function notifySalespersonStatusChange( $quoteModel, $itemModel ) {
+
+          if ( Yii::app()->params['DEBUG'] ) {   // no emails when working from home
+            return true;
+        }
+
 
         $item_status  = $itemModel->status->name;
         $quote_status = $quoteModel->status->name;

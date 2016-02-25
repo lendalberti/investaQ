@@ -217,21 +217,25 @@ $(document).ready(function() {
 
     $('#submitProcessApproval').on('click', function() {
         if ( confirm( "This manufacturng quote will be submitted for process approval; are you sure?") ) {
+            var quoteID = $('#Quotes_id').val(); 
             console.log('Submitting for process approval...');
-            /*
 
-                * change status to Status::BTO_PENDING
-                * notify Proposal Manager with link in email
-
-
-
-
-
-
-
-
-            */
-
+            var postData = { requestProcessApproval: 1 };
+            $.ajax({
+                    type: "POST",
+                    url: myURL + 'quotes/update?id=' + quoteID,
+                    data: postData,
+                    success: function(results)  {
+                        console.log('results from quote process approval=['+results+']');
+                        if ( results == SUCCESS ) {
+                            console.log('Approval is pending...');
+                            location.reload();
+                        }
+                        else {
+                            alert('Could not submit this quote for process approval - see Admin.');
+                        }
+                    }
+            });
         }   
         return false;
     });
@@ -331,6 +335,10 @@ $(document).ready(function() {
                     currentItemID = itemID;
 
                     $('#ajax_loading_image').hide();
+
+
+                    console.log("itemID=" + itemID + ", length=" + $( "#item_status_"+itemID ).length );
+
                     // check if item needs approval; if so, display 'button_ApproveItem' and 'button_RejectItem'
                     if ( $( "#item_status_"+itemID ).length ) {
                         $('#button_ApproveItem').show();
@@ -934,8 +942,7 @@ $(document).ready(function() {
 
      // ----------------------------------------------------- save editing changes
     $('#button_SaveItemChanges').on('click', function() {
-
-        console.log( $('#item_SelectVolume').val() );
+        console.log( 'button_SaveItemChanges() - ' + $('#item_SelectVolume').val() );
 
         if ( $('#item_SelectVolume').val() == 0 ) {
             alert('Missing required field(s)...');
@@ -1413,7 +1420,7 @@ $(document).ready(function() {
         var lifeCycle               = $('#lifeCycle').text();
         var approvalNeeded          = 0;
 
-        console.log('cp=['+cp+'], distributor_price=['+distributor_price+'], lifecycle=['+lifeCycle+']');
+        console.log('checkCustomPrice() - cp=['+cp+'], distributor_price=['+distributor_price+'], lifecycle=['+lifeCycle+']');
         /*
             if item is "Active", needs Approval if "cp" less than 'distributor_price'
             if item is 'Obsolete', needs Approval if "cp" less than 75% of 'distributor_price'
@@ -1434,9 +1441,6 @@ $(document).ready(function() {
 
         }
         console.log('Approval needed? ' + approvalNeeded);
-
-      
-
 
         // var min_custom_price = $('#min_custom_price').html().substring(1).trim(); // ignore first character of '$' and leading spaces...
         // var diff =  parseFloat(min_custom_price) - parseFloat(cp);

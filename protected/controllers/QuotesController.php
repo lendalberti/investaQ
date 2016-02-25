@@ -151,16 +151,16 @@ class QuotesController extends Controller
 
 		// 2. update item status
 		if ( $item_disposition == 'Approve' ) {
-			$modelStockItems->status_id = Status::APPROVED;
+			$modelStockItems->status_id = Status::APPROVED;  				 // set Item status
 
 			if ( $modelStockItems->save() ) {
 				// update quote status
 				$quoteModel = $this->loadModel($quote_id);
-				$quoteModel->status_id = $this->getUpdatedQuoteStatus($quote_id);
+				$quoteModel->status_id = $this->getUpdatedQuoteStatus($quote_id);   // set Quote status
 
 				if ( $quoteModel->save() ) {
 					pDebug("actionDisposition() - Quote status updated to: " . $quoteModel->status->name . "; calling notifySalespersonStatusChange()...");
-					//notifySalespersonStatusChange($quoteModel,$modelStockItems );
+					notifySalespersonStatusChange($quoteModel,$modelStockItems );
 
 					echo Status::SUCCESS;
 				}
@@ -293,6 +293,7 @@ class QuotesController extends Controller
 		$data['items'] = $this->getItemsByQuote($quote_id);
 
 		$data['selects']  = Quotes::model()->getAllSelects();
+		pDebug('actionView() - data=', $data);
 
 		$this->render('view',array(
 			'data'=>$data,
@@ -490,6 +491,16 @@ class QuotesController extends Controller
 				}
 			}
 			else {  																			// adding Inventory Item
+
+
+
+
+				pDebug('actionPartsUpdate() - _POST:', $_POST);
+
+
+
+
+
 				$modelStockItem = new StockItems;
 				$modelStockItem->attributes = $_POST;
 
@@ -588,12 +599,25 @@ class QuotesController extends Controller
 		$quote_id = $id;
 
 		if ( $_POST ) {
-
 			pDebug( "actionUpdate() - _POST:", $_POST);
 
+			// request Mfg Quote Process Approval
+			if ( isset( $_POST['requestProcessApproval'] ) ) {  
+				$quoteModel            = $this->loadModel($id);
+				$quoteModel->status_id = Status::BTO_PENDING; 
+				if ( $quoteModel->save() ) {
+					pDebug( "actionUpdate() - manufacturing quote no. " . $quoteModel->quote_no . " is now 'Pending Approval'.");
+					notifyProposalManager($quoteModel);
+					echo  Status::SUCCESS;
+				}
+				else {
+					pDebug( "actionUpdate() - could not change status of manufacturing quote no. " . $quoteModel->quote_no . "; error=", $quoteModel->errors);
+					echo Status::FAILURE;
+				}
+				return;
+			}
 
 			if ( isset( $_POST['newQuoteTypeID'] ) ) {  	 // updating just quote type from update/inventory lookup page
-				pDebug( "actionUpdate() - _POST:", $_POST);
 
 						// [newQuoteTypeID] => 3
 						// [requested_part_number] => 55551/BXA
@@ -731,6 +755,8 @@ class QuotesController extends Controller
 			}
 
 			// update quote with source_id, contact_id, terms
+			pDebug("actionPartsUpdate() - Saving quote with these _POST variables:", $_POST);
+
 			$quoteModel = $this->loadModel($quote_id);
 			$quoteModel->attributes = $_POST['Quotes'];
 
@@ -749,9 +775,11 @@ class QuotesController extends Controller
 		    //  $quoteModel->process_flow_id         = $_POST['Quotes']['process_flow_id'];
 		    //  $quoteModel->testing_id              = $_POST['Quotes']['testing_id'];
 		    //  $quoteModel->die_manufacturer_id     = $_POST['Quotes']['die_manufacturer_id'];
+			// $quoteModel->status_id                =  $_POST['Quotes']['status_id'];  
 
-			// $quoteModel->status_id               =  $_POST['Quotes']['status_id'];  
-			$quoteModel->status_id               =  $this->getUpdatedQuoteStatus($quote_id);   //  TODO: verify this is correct
+			$quoteModel->status_id         =  $this->getUpdatedQuoteStatus($quote_id); 
+			$quoteModel->salesperson_notes = $_POST['Quotes']['salesperson_notes'];
+			pDebug("actionPartsUpdate() - Saving quote with these attributes:", $quoteModel->attributes);
 
 			try {
 				$res = $quoteModel->save();
@@ -926,12 +954,14 @@ class QuotesController extends Controller
 		pDebug('actionIndexApproval() - _GET=', $_GET);
 
 		$quote_type = QuoteTypes::MANUFACTURING;
+		$status     = Status::BTO_PENDING;
 
 		$criteria = new CDbCriteria();
 
 		if ( Yii::app()->user->isProposalManager || Yii::app()->user->isAdmin ) {
 			$page_title = "Manufacturing Quotes";
-			$criteria->addCondition("quote_type_id = " . $quote_type );
+			$criteria->addCondition("quote_type_id = $quote_type");
+			$criteria->addCondition("status_id = $status");
 
 			$criteria->order = 'id DESC';
 			$model = Quotes::model()->findAll( $criteria );

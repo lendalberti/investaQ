@@ -9,6 +9,11 @@
 		<li><a href='../motivationals/admin'  >Motivational sayings</a></li>
 		<li>Quote approver roles</li>
 		<li>Quote Admin roles</li>
+
+		<li>Terms &amp; Conditions</li>
+		<li>RISL</li>
+		<li>Manufacturing Lead Times</li>
+		<li>Customer Ackowledgment</li>
 	</ul>
 
 </div>...

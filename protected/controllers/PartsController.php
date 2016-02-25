@@ -177,7 +177,7 @@ class PartsController extends Controller {
 			$url        = 'http://mongoa/parts/*/500/?q='.$item;	  // mongoa for my local use
 			$tmp        = file_get_contents($url);
 
-			pDebug('actionSearch() - mongo record=', $tmp);
+			//pDebug('actionSearch() - mongo record=', $tmp);
 			// $tmp = file_get_contents('/Users/len/www/iq2/Docs/mongo_sample_records_3333.inc');
 			
 

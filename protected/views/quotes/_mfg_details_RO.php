@@ -59,4 +59,14 @@
 				<tr>   	<td>Wip Product</td>	<td><input readonly='readonly'  id='Quotes_wip_product' name='Quotes[wip_product]'  value='<?php echo ( $q->wip_product == 1 ? 'Yes' : 'No' );  ?>'/></td> </tr> 
 			</table>
 		</div>
-	</div>
+</div>
+
+		<div style='border: 1px solid lightblue;'>
+
+				<span style='font-weight: bold;'>Author's Notes:</span><br />
+				<span id='Quotes_salesperson_notes'><?php echo $q->salesperson_notes; ?></span>
+
+		</div>
+
+
+	

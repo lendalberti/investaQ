@@ -1,4 +1,29 @@
 
+
++--------------------------------+
+| 24 February 2016 (Wednesday)   |
++--------------------------------+
+
+	[x] 'Submit Quote...' should only show up for Mfg quotes in draft mode
+	
+	[x] Proposal Manager should only see mfg quotes that have been submitted
+
+	[x] add test users for BTO Approver, Quote Approver, Sales Rep.
+
+	[ ] reminder in 'Config' to add T&C, RISL, etc.
+
+	[x] add Notes field to Quotes
+
+	[ ] add notifyProposalManager()
+
+	[ ] make fields on details page required ?
+
+	[ ] wireframe for BTO
+
+
+
+
+
 +--------------------------------+
 | 22 February 2016 (Monday)      |
 +--------------------------------+
@@ -9,6 +34,11 @@
 	[x] motivationals model - add inserts, db table
 
 	[ ] bto approvals page
+		[ ] Approvers
+			- Assembly
+			- Test
+			- Production
+			- Quality
 
 
 
