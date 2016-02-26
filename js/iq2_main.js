@@ -216,18 +216,18 @@ $(document).ready(function() {
 
 
     $('#submitProcessApproval').on('click', function() {
-        if ( confirm( "This manufacturng quote will be submitted for process approval; are you sure?") ) {
+        if ( confirm( "Submit this manufacturing quote for process approval; are you sure?") ) {
             var quoteID = $('#Quotes_id').val(); 
             console.log('Submitting for process approval...');
-
-            var postData = { requestProcessApproval: 1 };
+            
+            var postData = { quote_id: quoteID };
             $.ajax({
                     type: "POST",
-                    url: myURL + 'quotes/update?id=' + quoteID,
+                    url: myURL + 'btoItems/process',
                     data: postData,
                     success: function(results)  {
-                        console.log('results from quote process approval=['+results+']');
-                        if ( results == SUCCESS ) {
+                        alert('Proposal Manager has been notified.'); 
+                         if ( results == SUCCESS ) {
                             console.log('Approval is pending...');
                             location.reload();
                         }
@@ -337,10 +337,10 @@ $(document).ready(function() {
                     $('#ajax_loading_image').hide();
 
 
-                    console.log("itemID=" + itemID + ", length=" + $( "#item_status_"+itemID ).length );
+                    console.log("itemID=" + itemID + ", title=" + $( "#item_status_"+itemID ).attr('title') );
 
                     // check if item needs approval; if so, display 'button_ApproveItem' and 'button_RejectItem'
-                    if ( $( "#item_status_"+itemID ).length ) {
+                    if ( $( "#item_status_"+itemID ).attr('title') == 'Pending approval' ) {
                         $('#button_ApproveItem').show();
                         $('#button_RejectItem').show();
                     }
@@ -1972,25 +1972,50 @@ $(document).ready(function() {
                                 return false;
                             }
                             else if ( confirm("Part No. "+partNo+" is Build to Order only.\n\nContinue processing as a Manufacturing Quote?") ) {
-                                showManufacturingTabs();
-                                $('#QuoteView_Tabs').tabs({ active: 3 });
-                                //$('#header_PageTitle').text('Updating Manufacturing Quote No.');
 
                                 var postData = {
-                                        newQuoteTypeID:         MANUFACTURING_QUOTE,
                                         requested_part_number:  partNo,
                                         mfg:                    mfg,
+                                        quote_id:               quoteID,
                                 };
-                                 $.ajax({
+
+                                $.ajax({
                                         type: "POST",
-                                        url: myURL + 'quotes/update?id=' + quoteID,
+                                        url: myURL + 'btoItems/create',
                                         data: postData,
                                         success: function(results)  {
-                                            console.log('results from update quote type: ['+results+']');
+                                            console.log('results from create BtoItem: ['+results+']');
                                             //$('#mfg_quote_details').html("results from update quote type: " + results);
                                             location.reload();
                                         }
                                 });
+
+
+
+                                // Old code... leaving here for now for reference
+                                /*
+                                        showManufacturingTabs();
+                                        $('#QuoteView_Tabs').tabs({ active: 3 });
+                                        //$('#header_PageTitle').text('Updating Manufacturing Quote No.');
+
+                                        var postData = {
+                                                newQuoteTypeID:         MANUFACTURING_QUOTE,
+                                                requested_part_number:  partNo,
+                                                mfg:                    mfg,
+                                        };
+                                         $.ajax({
+                                                type: "POST",
+                                                url: myURL + 'quotes/update?id=' + quoteID,
+                                                data: postData,
+                                                success: function(results)  {
+                                                    console.log('results from update quote type: ['+results+']');
+                                                    //$('#mfg_quote_details').html("results from update quote type: " + results);
+                                                    location.reload();
+                                                }
+                                        });
+                                */
+
+
                             }
                             else {
                                 location.reload();

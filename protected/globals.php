@@ -1,21 +1,21 @@
 <?php
 
 
+    function setQuoteStatus($id, $s) {
+
+    }
+
+
+
+
 
     function getMfgID( $short_name ) {
         $sql = "SELECT * FROM die_manufacturers WHERE short_name = '$short_name'";
         $results = Yii::app()->db->createCommand($sql)->queryAll();
+        $id = $results[0]['id'];
 
-        pDebug("getMfgID() - results count: ". count($results) );  //->attributes );
-        pDebug("getMfgID() - results: ",  $results );
-
-        return $results[0]['id'];
-
-
-
-        // pDebug("getMfgID() - short_name=[$short_name], id=[".$results['id']."]");
-
-        // return $results['id'];
+        pDebug("getMfgID() - [$short_name] = [$id]");
+        return $id;
     }
 
 
@@ -96,7 +96,7 @@
         $pending =  Status::PENDING;
         
         $sql = "SELECT COUNT(*) FROM stock_items WHERE quote_id = $quote_id AND status_id = $pending";
-        pDebug("sql=[$sql]");
+       // pDebug("sql=[$sql]");
 
         $count = Yii::app()->db->createCommand($sql)->queryScalar();
         return $count;
@@ -106,7 +106,7 @@
         $rejected =  Status::REJECTED;
         
         $sql = "SELECT COUNT(*) FROM stock_items WHERE quote_id = $quote_id AND status_id = $rejected";
-        pDebug("sql=[$sql]");
+        //pDebug("sql=[$sql]");
 
         $count = Yii::app()->db->createCommand($sql)->queryScalar();
         return $count;

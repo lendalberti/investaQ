@@ -25,12 +25,29 @@
  * @property integer $lost_reason_id
  * @property integer $no_bid_reason_id
  * @property integer $ready_to_order
- * @property string $salesperson_notes
+ * @property string $requested_part_number
+ * @property string $generic_part_number
+ * @property integer $quantity1
+ * @property integer $quantity2
+ * @property integer $quantity3
+ * @property integer $die_manufacturer_id
+ * @property integer $package_type_id
+ * @property integer $lead_count
+ * @property integer $process_flow_id
+ * @property integer $testing_id
+ * @property integer $priority_id
+ * @property string $temp_low
+ * @property string $temp_high
+ * @property integer $ncnr
+ * @property integer $itar
+ * @property integer $have_die
+ * @property integer $spa
+ * @property integer $recreation
+ * @property integer $wip_product
  *
  * The followings are the available model relations:
  * @property Attachments[] $attachments
- * @property BtoComments[] $btoComments
- * @property BtoItems[] $btoItems
+ * @property BtoApprovals[] $btoApprovals
  * @property Customers $customer
  * @property Users $owner
  * @property Status $status
@@ -39,6 +56,11 @@
  * @property QuoteTypes $quoteType
  * @property Levels $level
  * @property Sources $source
+ * @property DieManufacturers $dieManufacturer
+ * @property PackageTypes $packageType
+ * @property ProcessFlow $processFlow
+ * @property Testing $testing
+ * @property Priority $priority
  * @property LeadQuality $leadQuality
  * @property StockItems[] $stockItems
  */
@@ -70,13 +92,13 @@ class Quotes extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('quote_no, quote_type_id, status_id, owner_id, customer_id, contact_id, updated_date, expiration_date, source_id', 'required'),
-			array('quote_type_id, status_id, owner_id, customer_id, contact_id, level_id, source_id, lead_quality_id, lost_reason_id, no_bid_reason_id, ready_to_order', 'numerical', 'integerOnly'=>true),
-			array('quote_no', 'length', 'max'=>45),
-			array('created_date, additional_notes, terms_conditions, customer_acknowledgment, risl, manufacturing_lead_time, salesperson_notes', 'safe'),
+			array('quote_no, quote_type_id, status_id, owner_id, customer_id, contact_id, created_date, updated_date, expiration_date, source_id', 'required'),
+			array('quote_type_id, status_id, owner_id, customer_id, contact_id, level_id, source_id, lead_quality_id, lost_reason_id, no_bid_reason_id, ready_to_order, quantity1, quantity2, quantity3, die_manufacturer_id, package_type_id, lead_count, process_flow_id, testing_id, priority_id, ncnr, itar, have_die, spa, recreation, wip_product', 'numerical', 'integerOnly'=>true),
+			array('quote_no, requested_part_number, generic_part_number, temp_low, temp_high', 'length', 'max'=>45),
+			array('additional_notes, terms_conditions, customer_acknowledgment, risl, manufacturing_lead_time', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, quote_no, quote_type_id, status_id, owner_id, customer_id, contact_id, created_date, updated_date, expiration_date, level_id, source_id, lead_quality_id, additional_notes, terms_conditions, customer_acknowledgment, risl, manufacturing_lead_time, lost_reason_id, no_bid_reason_id, ready_to_order, salesperson_notes', 'safe', 'on'=>'search'),
+			array('id, quote_no, quote_type_id, status_id, owner_id, customer_id, contact_id, created_date, updated_date, expiration_date, level_id, source_id, lead_quality_id, additional_notes, terms_conditions, customer_acknowledgment, risl, manufacturing_lead_time, lost_reason_id, no_bid_reason_id, ready_to_order, requested_part_number, generic_part_number, quantity1, quantity2, quantity3, die_manufacturer_id, package_type_id, lead_count, process_flow_id, testing_id, priority_id, temp_low, temp_high, ncnr, itar, have_die, spa, recreation, wip_product', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -89,8 +111,7 @@ class Quotes extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'attachments' => array(self::HAS_MANY, 'Attachments', 'quote_id'),
-			'btoComments' => array(self::HAS_MANY, 'BtoComments', 'quote_id'),
-			'btoItems' => array(self::HAS_MANY, 'BtoItems', 'quote_id'),
+			'btoApprovals' => array(self::HAS_MANY, 'BtoApprovals', 'quote_id'),
 			'customer' => array(self::BELONGS_TO, 'Customers', 'customer_id'),
 			'contact' => array(self::BELONGS_TO, 'Contacts', 'contact_id'),
 			'owner' => array(self::BELONGS_TO, 'Users', 'owner_id'),
@@ -100,6 +121,11 @@ class Quotes extends CActiveRecord
 			'quoteType' => array(self::BELONGS_TO, 'QuoteTypes', 'quote_type_id'),
 			'level' => array(self::BELONGS_TO, 'Levels', 'level_id'),
 			'source' => array(self::BELONGS_TO, 'Sources', 'source_id'),
+			'dieManufacturer' => array(self::BELONGS_TO, 'DieManufacturers', 'die_manufacturer_id'),
+			'packageType' => array(self::BELONGS_TO, 'PackageTypes', 'package_type_id'),
+			'processFlow' => array(self::BELONGS_TO, 'ProcessFlow', 'process_flow_id'),
+			'testing' => array(self::BELONGS_TO, 'Testing', 'testing_id'),
+			'priority' => array(self::BELONGS_TO, 'Priority', 'priority_id'),
 			'leadQuality' => array(self::BELONGS_TO, 'LeadQuality', 'lead_quality_id'),
 			'stockItems' => array(self::HAS_MANY, 'StockItems', 'quote_id'),
 		);
@@ -132,7 +158,25 @@ class Quotes extends CActiveRecord
 			'lost_reason_id' => 'Lost Reason',
 			'no_bid_reason_id' => 'No Bid Reason',
 			'ready_to_order' => 'Ready To Order',
-			'salesperson_notes' => 'Salesperson Notes',
+			'requested_part_number' => 'Requested Part Number',
+			'generic_part_number' => 'Generic Part Number',
+			'quantity1' => 'Quantity1',
+			'quantity2' => 'Quantity2',
+			'quantity3' => 'Quantity3',
+			'die_manufacturer_id' => 'Die Manufacturer',
+			'package_type_id' => 'Package Type',
+			'lead_count' => 'Lead Count',
+			'process_flow_id' => 'Process Flow',
+			'testing_id' => 'Testing',
+			'priority_id' => 'Priority',
+			'temp_low' => 'Temp Low',
+			'temp_high' => 'Temp High',
+			'ncnr' => 'Ncnr',
+			'itar' => 'Itar',
+			'have_die' => 'Have Die',
+			'spa' => 'Spa',
+			'recreation' => 'Recreation',
+			'wip_product' => 'Wip Product',
 		);
 	}
 
@@ -168,12 +212,31 @@ class Quotes extends CActiveRecord
 		$criteria->compare('lost_reason_id',$this->lost_reason_id);
 		$criteria->compare('no_bid_reason_id',$this->no_bid_reason_id);
 		$criteria->compare('ready_to_order',$this->ready_to_order);
-		$criteria->compare('salesperson_notes',$this->salesperson_notes,true);
+		$criteria->compare('requested_part_number',$this->requested_part_number,true);
+		$criteria->compare('generic_part_number',$this->generic_part_number,true);
+		$criteria->compare('quantity1',$this->quantity1);
+		$criteria->compare('quantity2',$this->quantity2);
+		$criteria->compare('quantity3',$this->quantity3);
+		$criteria->compare('die_manufacturer_id',$this->die_manufacturer_id);
+		$criteria->compare('package_type_id',$this->package_type_id);
+		$criteria->compare('lead_count',$this->lead_count);
+		$criteria->compare('process_flow_id',$this->process_flow_id);
+		$criteria->compare('testing_id',$this->testing_id);
+		$criteria->compare('priority_id',$this->priority_id);
+		$criteria->compare('temp_low',$this->temp_low,true);
+		$criteria->compare('temp_high',$this->temp_high,true);
+		$criteria->compare('ncnr',$this->ncnr);
+		$criteria->compare('itar',$this->itar);
+		$criteria->compare('have_die',$this->have_die);
+		$criteria->compare('spa',$this->spa);
+		$criteria->compare('recreation',$this->recreation);
+		$criteria->compare('wip_product',$this->wip_product);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
 	}
+
 
 	public function getAllSelects() {
 		$selects = array();
@@ -200,6 +263,7 @@ class Quotes extends CActiveRecord
 		//pDebug('getAllSelects() - selects:', $selects);
 		return $selects;
 	}
+
 
 
 }
