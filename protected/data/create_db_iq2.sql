@@ -690,6 +690,7 @@ DROP TABLE IF EXISTS `iq2`.`bto_items` ;
 CREATE  TABLE IF NOT EXISTS `iq2`.`bto_items` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `quote_id` INT NOT NULL ,
+  `approvers_notified` TINYINT(1) NULL DEFAULT false ,
   `requested_part_number` VARCHAR(45) NOT NULL ,
   `generic_part_number` VARCHAR(45) NULL ,
   `order_probability` VARCHAR(45) NULL ,
@@ -805,6 +806,38 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`bto_status` (
   CONSTRAINT `fk_bto_status_3`
     FOREIGN KEY (`group_id` )
     REFERENCES `iq2`.`bto_groups` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `iq2`.`bto_approvers`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `iq2`.`bto_approvers` ;
+
+CREATE  TABLE IF NOT EXISTS `iq2`.`bto_approvers` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `user_id` INT NOT NULL ,
+  `group_id` INT NOT NULL ,
+  `role_id` INT NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_bto_approvers_1_idx` (`user_id` ASC) ,
+  INDEX `fk_bto_approvers_2_idx` (`group_id` ASC) ,
+  INDEX `fk_bto_approvers_3_idx` (`role_id` ASC) ,
+  CONSTRAINT `fk_bto_approvers_1`
+    FOREIGN KEY (`user_id` )
+    REFERENCES `iq2`.`users` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_bto_approvers_2`
+    FOREIGN KEY (`group_id` )
+    REFERENCES `iq2`.`bto_groups` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_bto_approvers_3`
+    FOREIGN KEY (`role_id` )
+    REFERENCES `iq2`.`roles` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

@@ -1,4 +1,54 @@
 
+#button_NotifyApprovers {
+  width: 67px;
+  /*height: 35px;*/
+  moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  padding: 5px;
+  font-weight: normal;
+  font-size: 12px;
+}
+
+.ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited {
+	color: gray;
+}
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
+	color:  #2C6371;
+}
+
+.ui-helper-clearfix { display:block; min-width: 0; overflow: hidden; }
+.ui-accordion-header{
+  text-align: left;
+}
+
+.grid_outline_20 {
+	border: 1px solid lightgray;
+	height: 20px;
+	margin-top: 10px;
+}
+.grid_outline_50 {
+	border: 1px solid lightgray;
+	height: 50px;
+	margin-top: 10px;
+}
+
+.grid_outline_80 {
+	border: 1px solid lightgray;
+	height: 80px;
+	margin-top: 10px;
+}
+
+.grid_outline_120 {
+	border: 1px solid lightgray;
+	height: 120px;
+	margin-top: 10px;
+}
+.grid_outline_150 {
+	border: 1px solid lightgray;
+	height: 150px;
+	margin-top: 10px;
+}
+
 #mfg_details > tbody > tr > td { 
 	font-size: .8em;
 }

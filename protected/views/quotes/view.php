@@ -72,7 +72,7 @@
 
 	<div id="QuoteView_Tabs" style='margin-top: 5px;'>
 
-		<ul>
+		<ul >
 			<li><a href="#section_CustomerContact">Customer &amp; Contact Information</a></li>
 			<li><a href="#section_TermsConditions">Quote Terms</a></li>
 			<li><a href="#section_Parts">Inventory Items</a></li>

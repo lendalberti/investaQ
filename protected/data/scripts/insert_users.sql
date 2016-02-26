@@ -1,20 +1,27 @@
 insert into users (id, username, first_name, last_name, email, title, phone, fax, sig) values (1, 'ldalberti', 'Len', "D'Alberti", 'ldalberti@rocelec.com', 'Software Developer', '7-(970)828-7357', '20-(802)978-8532', null);
 insert into users (id, username, first_name, last_name, email, title, phone, fax, sig) values (2, 'mkelleher', 'Mike', 'Kelleher', 'mkelleher@rocelec.com', 'Proposal Manager', '226-(825)719-5199', '33-(236)464-3654', null);
+insert into users (id, username, first_name, last_name, email, title, phone, fax, sig) values (3, 'eelie', 'Emily', 'Elie', 'eelie@rocelec.com', 'Inside Sales Representative', '1-(694)837-3276', '55-(960)241-6684', null);
+insert into users (id, username, first_name, last_name, email, title, phone, fax, sig) values (4, 'rwiles', 'Robert', 'Wiles', 'rwiles@rocelec.com', 'Quote Approver', '55-(912)551-8759', '86-(822)397-8895', null);
 
--- BTO Approvers?	
-insert into users (id, group_id, username, first_name, last_name, email, title, phone, fax, sig) values (3,  5,  'eelie', 'Emily', 'Elie', 'eelie@rocelec.com', 'Inside Sales Representative', '1-(694)837-3276', '55-(960)241-6684', null);
-insert into users (id, group_id, username, first_name, last_name, email, title, phone, fax, sig) values (4,  5,  'rwiles', 'Robert', 'Wiles', 'rwiles@rocelec.com', 'Quote Approver', '55-(912)551-8759', '86-(822)397-8895', null);
-insert into users (id, group_id, username, first_name, last_name, email, title, phone, fax, sig) values (5,  5,  'bmontgomery4', 'Brian', 'Montgomery', 'bmontgomery4@typepad.com', 'Database Administrator I', '1-(480)521-8637', '46-(195)221-9450', null);
-	
-insert into users (id, group_id, username, first_name, last_name, email, title, phone, fax, sig) values (6,  5,  'dtucker5', 'Dennis', 'Tucker', 'dtucker5@zdnet.com', 'Safety Technician I', '62-(580)449-8669', '84-(615)908-1019', null);
-insert into users (id, group_id, username, first_name, last_name, email, title, phone, fax, sig) values (7,  5,  'csnyder6', 'Cheryl', 'Snyder', 'csnyder6@ebay.co.uk', 'Clinical Specialist', '7-(741)391-1563', '351-(962)893-4093', null);
-insert into users (id, group_id, username, first_name, last_name, email, title, phone, fax, sig) values (8,  5,  'rferguson7', 'Robin', 'Ferguson', 'rferguson7@sina.com.cn', 'Accounting Assistant III', '62-(127)338-2422', '359-(984)829-7789', null);
-insert into users (id, group_id, username, first_name, last_name, email, title, phone, fax, sig) values (9,  5,  'rmatthews8', 'Ryan', 'Matthews', 'rmatthews8@tumblr.com', 'Analog Circuit Design manager', '86-(746)732-8370', '262-(343)942-8655', null);
-insert into users (id, group_id, username, first_name, last_name, email, title, phone, fax, sig) values (10, 5,  'esimpson9', 'Ernest', 'Simpson', 'esimpson9@omniture.com', 'Associate Professor', '66-(282)428-2412', '66-(161)332-0794', null);
-insert into users (id, group_id, username, first_name, last_name, email, title, phone, fax, sig) values (11, 5,  'wharrisona', 'Wanda', 'Harrison', 'wharrisona@adobe.com', 'Biostatistician III', '46-(170)146-8891', '591-(518)612-4747', null);
-insert into users (id, group_id, username, first_name, last_name, email, title, phone, fax, sig) values (12, 5,  'vnguyenb', 'Virginia', 'Nguyen', 'vnguyenb@shinystat.com', 'Assistant Professor', '27-(729)105-8732', '86-(289)751-2048', null);
+-- Assembly: Jamie Vatcher, Chuck Shermer, Trevor Pounder
+-- Test: Pete Crudele, Gary Francouer
+-- Production: Rene Grandmaison
+-- Quality: Steve Lombard, Bob Buchanon, Steve Herschfeld
 
-insert into users (id, username, first_name, last_name, email, title, phone, fax, sig) values (13, 'user1', 'Kathryn', 'Murray', 'kmurrayc@time.com', 'Junior Executive', '966-(214)969-9371', '269-(395)395-5259', null);
+insert into users (id, username, first_name, last_name, email, title, phone, fax, sig) values (5,  'jvatcher', 'Jamie',  'Vatcher', 'jvatcher@rocelec.com', 'Database Administrator I', '1-(480)521-8637', '46-(195)221-9450', null);
+insert into users (id, username, first_name, last_name, email, title, phone, fax, sig) values (6,  'cshermer', 'Chuck',  'Shermer', 'cshermer@rocelec.com', 'Safety Technician I', '62-(580)449-8669', '84-(615)908-1019', null);
+insert into users (id, username, first_name, last_name, email, title, phone, fax, sig) values (7,  'tpounder', 'Trevor', 'Pounder', 'tpounder@rocelec.com', 'Clinical Specialist', '7-(741)391-1563', '351-(962)893-4093', null);
+
+insert into users (id, username, first_name, last_name, email, title, phone, fax, sig) values (8,  'pcrudele',   'Pete', 'Crudele',   'pcrudele@rocelec.com', 'Accounting Assistant III', '62-(127)338-2422', '359-(984)829-7789', null);
+insert into users (id, username, first_name, last_name, email, title, phone, fax, sig) values (9,  'gfrancoeur', 'Gary', 'Francoeur', 'gfrancoeur@rocelec.com', 'Analog Circuit Design manager', '86-(746)732-8370', '262-(343)942-8655', null);
+
+insert into users (id, username, first_name, last_name, email, title, phone, fax, sig) values (10, 'rgrandmaison', 'Rene', 'Grandmaison', 'rgrandmaison@rocelec.com', 'Associate Professor', '66-(282)428-2412', '66-(161)332-0794', null);
+
+insert into users (id, username, first_name, last_name, email, title, phone, fax, sig) values (11, 'slombard',    'Steve',  'Lombard',    'slombard@rocelec.com', 'Biostatistician III', '46-(170)146-8891', '591-(518)612-4747', null);
+insert into users (id, username, first_name, last_name, email, title, phone, fax, sig) values (12, 'bbuchanon',   'Robert', 'Buchanon',   'rbuchanon@rocelec.com', 'Assistant Professor', '27-(729)105-8732', '86-(289)751-2048', null);
+insert into users (id, username, first_name, last_name, email, title, phone, fax, sig) values (13, 'shirschfeld', 'Steve',  'Hirschfeld', 'shirschfeld@rocelec.com', 'Junior Executive', '966-(214)969-9371', '269-(395)395-5259', null);
+
+
 insert into users (id, username, first_name, last_name, email, title, phone, fax, sig) values (14, 'user2', 'Russell', 'Fields', 'rfieldsd@mysql.com', 'Pharmacist', '374-(130)640-7266', '30-(170)709-2335', null);
 insert into users (id, username, first_name, last_name, email, title, phone, fax, sig) values (15, 'user3', 'Cynthia', 'Harrison', 'charrisone@house.gov', 'Staff Accountant IV', '81-(964)409-6021', '1-(127)750-8964', null);
 insert into users (id, username, first_name, last_name, email, title, phone, fax, sig) values (16, 'admin1', 'Ruth', 'Kelley', 'rkelleyf@amazon.co.uk', 'Nuclear Power Engineer', '7-(662)266-0236', '47-(842)862-6832', null);
