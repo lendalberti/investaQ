@@ -96,6 +96,7 @@
 	
 				if (Yii::app()->user->isProposalManager ) {
 					$menuItems[] = array('label'=>'Manufacturing', 'url'=>array('/quotes/manufacturing') );
+					$menuItems[] = array('label'=>'Mfg Admin', 'url'=>array('/btoApprovers/admin') );
 				}
 
 				//$menuItems[] = array('label'=>'My Quotes', 'url'=>array('/quotes/index') ); 

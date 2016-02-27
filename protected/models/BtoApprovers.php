@@ -97,4 +97,81 @@ class BtoApprovers extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+
+
+
+
+
+
+	// $data['bto_approvers'] = BtoApprovers::model()->getList();
+	//
+	// $data['bto_approvers']['assembly'] 
+	public function getList() {
+		$app = array();
+
+		foreach( array( BtoGroups::ASSEMBLY,BtoGroups::QUALITY,BtoGroups::TEST,BtoGroups::PRODUCTION ) as $i => $g_id ) {
+			$criteria = new CDbCriteria;
+			$criteria->addCondition("group_id = $g_id");
+			$criteria->addCondition("role_id = " . Roles::BTO_APPROVER);
+		
+			$res = $this->findAll($criteria);
+			
+			foreach ( $res as $i => $v ) {
+				$u = Users::model()->findByPk($v['user_id']);
+				$app[ $v['group_id'] ][] = array( $u->id => $u->fullname );
+			}
+		}
+		pDebug("BtoApprovers::getList() = app:", $app);
+		return $app;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

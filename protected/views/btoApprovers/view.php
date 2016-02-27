@@ -2,7 +2,7 @@
 
 <div style='padding-bottom: 120px;'>
 	<h1>View User <?php echo $model->user->fullname; ?></h1>
-	<a href='create' >Edit</a>
+	<a href='create' >Add New</a>
 </div>
 
 

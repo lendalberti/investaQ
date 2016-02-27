@@ -43,7 +43,7 @@ class QuotesController extends Controller
 			),
 
 			array('allow', // allow Proposal Manager to initiate Manufacturing Quote 
-				'actions'=>array('manufacturing'),
+				'actions'=>array('manufacturing', 'notifyMfgApprovers'),
 				'expression' => '$user->isProposalManager'
 			),
 			
@@ -292,7 +292,7 @@ class QuotesController extends Controller
 		$data['items'] = array();
 		$data['items'] = $this->getItemsByQuote($quote_id);
 
-
+		$data['bto_approvers'] = BtoApprovers::model()->getList();
 
 		// $criteria = new CDbCriteria();
 
@@ -884,6 +884,61 @@ class QuotesController extends Controller
 		}
 
 	}
+
+
+
+	public function actionNotifyMfgApprovers() {
+		pDebug("Quotes::actionNotifyMfgApprovers() - _POST=", $_POST);
+		$recipients = array();
+
+		foreach( array( $_POST['assembly'] ,$_POST['production'] ,$_POST['test'] ,$_POST['quality'] ) as $id ) {
+			if ( $id ) {
+				$recipients[] = $id;
+			}
+		}
+
+		if ( $_POST['quoteID'] === '' || $_POST['msg'] === '' || count($recipients) === 0 ) {
+			pDebug("Quotes::actionNotifyMfgApprovers() - missing _POST variables...");
+			echo Status::FAILURE;
+		}
+
+		try {
+			// set approvers_notified = true
+			$criteria = new CDbCriteria();
+			$criteria->addCondition("quote_id = " . $_POST['quoteID'] );
+			
+			$modelItems =  BtoItems::model()->find($criteria);
+			$modelItems->approvers_notified = true;
+			$modelItems->save();
+
+			// save comment
+			foreach( $recepients as $user_id ) {
+				$modelComments = new BtoComments;
+				$modelComments->quote_id     = $_POST['quoteID'];
+				$modelComments->bto_item_id  = $modelItems->id;
+				$modelComments->from_user_id = Yii::app()->user->id;
+				$modelComments->to_user_id   = $user_id;
+				$modelComments->comment      = $_POST['msg'];
+				$modelComments->save();
+			}
+
+			// notify approvers
+			if ( !notifyBtoApprovers( $modelComments ) ) {
+				throw new Exception("Couldn't notify approvers.");
+			}
+		}
+		catch( Exception $ex ) {
+			pDebug("Quotes::actionNotifyMfgApprovers() - Exception: ", $ex );
+			echo Status::FAILURE;
+		}
+		echo Status::SUCCESS;
+	}
+
+
+
+
+
+
 
 
 	

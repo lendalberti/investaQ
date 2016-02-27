@@ -37,3 +37,4 @@ source /home/len/www/iq2/protected/data/scripts/insert_sources.sql
 source /home/len/www/iq2/protected/data/scripts/insert_lead_quality.sql 
 
 source /home/len/www/iq2/protected/data/scripts/insert_motivationals.sql 
+source /home/len/www/iq2/protected/data/scripts/insert_bto_approvers.sql 

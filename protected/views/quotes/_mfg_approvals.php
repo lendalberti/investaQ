@@ -25,17 +25,69 @@
 			<div class='push_1' style='font-variant: small-caps; margin-top: 10px;'>
 
 				<div class='grid_3 '>
-					<span style='font-weight: bold;'> Assembly</span><br />   <select><option>Select an approver</option><option>N/A</option><option>Jaime Vaitcher</option><option>Chuck Shermer</option><option>Trevor Pounder</option></select></span>
+					<span style='font-weight: bold;'> Assembly</span><br />   
+						<select id='approver_Assembly'>
+							<?php 
+									echo "<option></option>";
+									foreach( $data['bto_approvers'][BtoGroups::ASSEMBLY] as $k=>$v ) {
+										foreach( $v as $id => $fullname ) {
+											echo "<option value='$id'>$fullname</option>";
+										}
+										
+									} 
+							?>
+						</select>
+					</span>
 				</div>
+
 				<div class='grid_3 '>
-					<span style='font-weight: bold;'>Production</span><br />   <select><option>Select an approver</option><option>N/A</option><option>Rene Grandmaison</option></select></span>
+					<span style='font-weight: bold;'> Production</span><br />   
+						<select id='approver_Production'>
+							<?php 
+									echo "<option></option>";
+									foreach( $data['bto_approvers'][BtoGroups::PRODUCTION] as $k=>$v ) {
+										foreach( $v as $id => $fullname ) {
+											echo "<option value='$id'>$fullname</option>";
+										}
+										
+									} 
+							?>
+						</select>
+					</span>
 				</div>
+
 				<div class='grid_3 '>
-					<span style='font-weight: bold;'>Testing</span><br />   <select><option>Select an approver</option><option>N/A</option><option>Peter Crudele</option><option>Gary Francona</option></select></span>
+					<span style='font-weight: bold;'> Test</span><br />   
+						<select id='approver_Test'>
+							<?php 
+									echo "<option></option>";
+									foreach( $data['bto_approvers'][BtoGroups::TEST] as $k=>$v ) {
+										foreach( $v as $id => $fullname ) {
+											echo "<option value='$id'>$fullname</option>";
+										}
+										
+									} 
+							?>
+						</select>
+					</span>
 				</div>
+
 				<div class='grid_3 '>
-					<span style='font-weight: bold;'>Quality</span><br />   <select><option>Select an approver</option><option>N/A</option><option>Steve Lombard</option><option>Bob Buchanon</option><option>Steve Herschfeld</option></select></span>
+					<span style='font-weight: bold;'> Quality</span><br />   
+						<select id='approver_Quality'>
+							<?php 
+									echo "<option></option>";
+									foreach( $data['bto_approvers'][BtoGroups::QUALITY] as $k=>$v ) {
+										foreach( $v as $id => $fullname ) {
+											echo "<option value='$id'>$fullname</option>";
+										}
+										
+									} 
+							?>
+						</select>
+					</span>
 				</div>
+
 			</div>
 
 			<div class="clear">&nbsp;</div>
@@ -47,7 +99,8 @@
 			</div>
 		</div>
 
-<?php } else { ?>
+<!-- < ?php } else { ?> -->
+<?php } ?>
 
 		<div class="clear">&nbsp;</div>
 	   
@@ -180,4 +233,4 @@
 	</div> <!--    approvers_accordion -->
  
 
-<?php } ?>
+<!-- < ?php } ?> -->

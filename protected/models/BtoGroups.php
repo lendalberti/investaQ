@@ -10,8 +10,16 @@
  * The followings are the available model relations:
  * @property UserRoles[] $userRoles
  */
-class BtoGroups extends CActiveRecord
-{
+class BtoGroups extends CActiveRecord {
+
+
+	const 	ASSEMBLY   = 1,
+			QUALITY    = 2,
+			TEST       = 3,
+			PRODUCTION = 4;
+
+
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.

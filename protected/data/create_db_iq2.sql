@@ -761,19 +761,27 @@ DROP TABLE IF EXISTS `iq2`.`bto_comments` ;
 CREATE  TABLE IF NOT EXISTS `iq2`.`bto_comments` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `bto_item_id` INT NOT NULL ,
-  `user_id` INT NOT NULL ,
+  `from_user_id` INT NOT NULL ,
+  `to_user_id` INT NOT NULL ,
   `comment` TEXT NOT NULL ,
+  `date_created` TIMESTAMP NULL DEFAULT now() ,
   PRIMARY KEY (`id`) ,
-  INDEX `fk_bto_comments_2_idx` (`user_id` ASC) ,
+  INDEX `fk_bto_comments_2_idx` (`from_user_id` ASC) ,
   INDEX `fk_bto_comments_4_idx` (`bto_item_id` ASC) ,
+  INDEX `fk_bto_comments_5_idx` (`to_user_id` ASC) ,
   CONSTRAINT `fk_bto_comments_2`
-    FOREIGN KEY (`user_id` )
+    FOREIGN KEY (`from_user_id` )
     REFERENCES `iq2`.`users` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_bto_comments_4`
     FOREIGN KEY (`bto_item_id` )
     REFERENCES `iq2`.`bto_items` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_bto_comments_5`
+    FOREIGN KEY (`to_user_id` )
+    REFERENCES `iq2`.`users` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

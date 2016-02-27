@@ -274,6 +274,31 @@
     }
 
 
+    // -----------------------------------------------------------------------------------
+    function notifyBtoApprovers( $modelComments) {
+
+        if ( Yii::app()->params['DEBUG'] ) {   // no emails when working from home
+            return true;
+        }
+
+
+        // TODO...
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // -----------------------------------------------------------------------------------
     function notifyApprovers( $model_StockItem) {

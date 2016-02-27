@@ -170,7 +170,7 @@ $(document).ready(function() {
         // ResultsTable = null;
     }
 
-    if ( window.location.href.match(/quotes\/update/ ) ) {   // show original tab if cookie is set
+    if ( window.location.href.match(/quotes\/update/ ) || window.location.href.match(/quotes\/view/ )) {   // show original tab if cookie is set
 
         if ( Cookies.get('quote_added') ) {
             Cookies.remove('quote_added');
@@ -228,11 +228,55 @@ $(document).ready(function() {
 
 
     $('#button_NotifyApprovers').on('click', function() {
+
+        var quoteID     = $('#Quotes_id').val(); 
+        var msg        = $('#approver_notification_message').val();
+        var assembly   = $('#approver_Assembly').val();
+        var production = $('#approver_Production').val();
+        var test       = $('#approver_Test').val();
+        var quality    = $('#approver_Quality').val();
+
+
         if ( $('#approver_notification_message').val().trim() == '' ) {
             alert('Missing notification message...');
         }
+        else if ( assembly==='' && production==='' && test==='' && quality==='' ) {
+            alert('Need to select a least 1 approver...');
+        }
         else {
-            alert('Approvers notified...');
+            //alert('Approvers: msg=['+msg+']\n\nassembly=['+assembly+'], production=['+production+'], test=['+test+'], quality=['+quality+']');
+
+            var postData = { 
+                    quoteID:    quoteID,
+                    msg:        msg,
+                    assembly:   assembly,
+                    production: production,
+                    test:       test,
+                    quality:    quality
+            };
+            $.ajax({
+                    type: "POST",
+                    url: myURL + 'quotes/notifyMfgApprovers',
+                    data: postData,
+                    success: function(results)  {
+                        if ( results == SUCCESS ) {
+                            alert('Manufacturing Approvers have been notified.'); 
+                            // console.log('Approval is pending...');
+                            Cookies.set('current_tab', TAB_Approvals-1);  // 0-indexed 
+                            location.reload();
+                        }
+                        else {
+                            alert('Could not send notification - see Admin.');
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown)  {
+                        alert("Could not send notification; error=\n\n" + errorThrown + ", jqXHR="+jqXHR);
+                    }
+            });
+
+
+
+
         }
     });
 
