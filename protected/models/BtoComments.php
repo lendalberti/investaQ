@@ -5,15 +5,17 @@
  *
  * The followings are the available columns in table 'bto_comments':
  * @property integer $id
- * @property integer $bto_item_id
  * @property integer $quote_id
- * @property integer $user_id
+ * @property integer $bto_item_id
+ * @property integer $from_user_id
+ * @property integer $to_user_id
  * @property string $comment
+ * @property string $date_created
  *
  * The followings are the available model relations:
- * @property Quotes $quote
- * @property Users $user
+ * @property Users $fromUser
  * @property BtoItems $btoItem
+ * @property Users $toUser
  */
 class BtoComments extends CActiveRecord
 {
@@ -43,11 +45,12 @@ class BtoComments extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('bto_item_id, quote_id, user_id, comment', 'required'),
-			array('bto_item_id, quote_id, user_id', 'numerical', 'integerOnly'=>true),
+			array('quote_id, bto_item_id, from_user_id, to_user_id, comment', 'required'),
+			array('quote_id, bto_item_id, from_user_id, to_user_id', 'numerical', 'integerOnly'=>true),
+			array('date_created', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, bto_item_id, quote_id, user_id, comment', 'safe', 'on'=>'search'),
+			array('id, quote_id, bto_item_id, from_user_id, to_user_id, comment, date_created', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -59,9 +62,9 @@ class BtoComments extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'quote' => array(self::BELONGS_TO, 'Quotes', 'quote_id'),
-			'user' => array(self::BELONGS_TO, 'Users', 'user_id'),
+			'fromUser' => array(self::BELONGS_TO, 'Users', 'from_user_id'),
 			'btoItem' => array(self::BELONGS_TO, 'BtoItems', 'bto_item_id'),
+			'toUser' => array(self::BELONGS_TO, 'Users', 'to_user_id'),
 		);
 	}
 
@@ -72,10 +75,12 @@ class BtoComments extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'bto_item_id' => 'Bto Item',
 			'quote_id' => 'Quote',
-			'user_id' => 'User',
+			'bto_item_id' => 'Bto Item',
+			'from_user_id' => 'From User',
+			'to_user_id' => 'To User',
 			'comment' => 'Comment',
+			'date_created' => 'Date Created',
 		);
 	}
 
@@ -91,13 +96,65 @@ class BtoComments extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('bto_item_id',$this->bto_item_id);
 		$criteria->compare('quote_id',$this->quote_id);
-		$criteria->compare('user_id',$this->user_id);
+		$criteria->compare('bto_item_id',$this->bto_item_id);
+		$criteria->compare('from_user_id',$this->from_user_id);
+		$criteria->compare('to_user_id',$this->to_user_id);
 		$criteria->compare('comment',$this->comment,true);
+		$criteria->compare('date_created',$this->date_created,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
 	}
+
+
+
+	public function getAllComments($quote_id) {
+		$criteria = new CDbCriteria;
+ 		$criteria->addCondition("quote_id = $quote_id");
+ 		$criteria->order = 'date_created DESC';
+		$res = $this->findAll( $criteria );
+
+		$data = array();
+		foreach( $res as $r ) {
+			$data[] = $r->date_created . ' - [' . $r->fromUser->fullname . '] to [' . $r->toUser->fullname . '] - ' . $r->comment;
+		}
+
+		pDebug("getAllComments() - data:", $data);
+		return $data;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

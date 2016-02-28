@@ -122,7 +122,7 @@ class BtoApprovers extends CActiveRecord
 				$app[ $v['group_id'] ][] = array( $u->id => $u->fullname );
 			}
 		}
-		pDebug("BtoApprovers::getList() = app:", $app);
+		//pDebug("BtoApprovers::getList() = app:", $app);
 		return $app;
 	}
 

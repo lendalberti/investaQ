@@ -760,6 +760,7 @@ DROP TABLE IF EXISTS `iq2`.`bto_comments` ;
 
 CREATE  TABLE IF NOT EXISTS `iq2`.`bto_comments` (
   `id` INT NOT NULL AUTO_INCREMENT ,
+  `quote_id` INT NOT NULL ,
   `bto_item_id` INT NOT NULL ,
   `from_user_id` INT NOT NULL ,
   `to_user_id` INT NOT NULL ,

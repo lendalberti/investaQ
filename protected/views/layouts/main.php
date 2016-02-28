@@ -40,7 +40,7 @@
 	<!--  960_Grid  -->
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/960_Grid/960.css" />
 	<!-- <link rel="stylesheet" type="text/css" href="< ?php echo Yii::app()->request->baseUrl; ?>/css/960_Grid/reset.css" /> -->
-	<!-- <link rel="stylesheet" type="text/css" href="< ?php echo Yii::app()->request->baseUrl; ?>/css/60_Grid/text.css" /> -->
+	<!-- <link rel="stylesheet" type="text/css" href="< ?php echo Yii::app()->request->baseUrl; ?>/css/60_Grid/text.css" />  -->
 	
 
 	<title><?php echo Yii::app()->params['app_title']; ?></title>

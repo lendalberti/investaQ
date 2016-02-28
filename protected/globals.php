@@ -278,6 +278,7 @@
     function notifyBtoApprovers( $modelComments) {
 
         if ( Yii::app()->params['DEBUG'] ) {   // no emails when working from home
+            pDebug("notifyBtoApprovers() - user(s) notified...");
             return true;
         }
 

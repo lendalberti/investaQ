@@ -1,4 +1,20 @@
 
++--------------------------------+
+| 27 February 2016 (Saturday)    |
++--------------------------------+
+
+	[ ] decide whether we need BTO status values
+
+	[ ] add $model['attachments'] from Quotes::view
+
+	[ ] make attchments behave like links to files
+
+	[ ] redo section for sending messages (shorten Messages and Attachments boxes)
+
+
+	
+
+
 
 +--------------------------------+
 | 24 February 2016 (Wednesday)   |
@@ -46,7 +62,7 @@
 | 20 February 2016 (Saturday)    |
 +--------------------------------+
 
-	[ ] when opting to create a Mfg Quote, save some
+	[x] when opting to create a Mfg Quote, save some
 		info, e.g. part no, dir mfg, package type, 
 		lead count, etc - whatever is available from mongo
 

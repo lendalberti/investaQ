@@ -307,7 +307,9 @@ class QuotesController extends Controller
 		$criteria->addCondition("quote_id = $id");
 		$data['BtoItems_model'] = BtoItems::model()->find( $criteria );
 
-		$data['selects']  = Quotes::model()->getAllSelects();
+		$data['selects']      = Quotes::model()->getAllSelects();
+		$data['bto_comments'] = BtoComments::model()->getAllComments($id);
+		$data['attachments']  = Attachments::model()->getAllAttachments($id);
 
 		$this->render('view',array(
 			'data'=>$data,
@@ -889,15 +891,15 @@ class QuotesController extends Controller
 
 	public function actionNotifyMfgApprovers() {
 		pDebug("Quotes::actionNotifyMfgApprovers() - _POST=", $_POST);
-		$recipients = array();
+		$toBeNotified = array();
 
 		foreach( array( $_POST['assembly'] ,$_POST['production'] ,$_POST['test'] ,$_POST['quality'] ) as $id ) {
 			if ( $id ) {
-				$recipients[] = $id;
+				$toBeNotified[] = $id;
 			}
 		}
 
-		if ( $_POST['quoteID'] === '' || $_POST['msg'] === '' || count($recipients) === 0 ) {
+		if ( $_POST['quoteID'] === '' || $_POST['msg'] === '' || count($toBeNotified) === 0 ) {
 			pDebug("Quotes::actionNotifyMfgApprovers() - missing _POST variables...");
 			echo Status::FAILURE;
 		}
@@ -912,7 +914,7 @@ class QuotesController extends Controller
 			$modelItems->save();
 
 			// save comment
-			foreach( $recepients as $user_id ) {
+			foreach( $toBeNotified as $user_id ) {
 				$modelComments = new BtoComments;
 				$modelComments->quote_id     = $_POST['quoteID'];
 				$modelComments->bto_item_id  = $modelItems->id;

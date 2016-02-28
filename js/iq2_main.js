@@ -59,12 +59,12 @@ $(document).ready(function() {
     // ----------------------------------------------------------------------------------------------
     // ---------- set up Accordian ------------------------------------------------------------------
     // ----------------------------------------------------------------------------------------------
-    $(function() {
-        $( "#approvers_accordion" ).accordion({
-          collapsible: true,
-          heightStyle: "content"
-        });
-    });
+    // $(function() {
+    //     $( "#approvers_accordion" ).accordion({
+    //       collapsible: true,
+    //       heightStyle: "content"
+    //     });
+    // });
     
 
     // ----------------------------------------------------------------------------------------------
@@ -82,6 +82,20 @@ $(document).ready(function() {
         Cookies.set('current_tab', newIndex );
         $('#item_details').hide();
         $('[id^=item_row_]').find('td').removeClass('highlight_row'); 
+
+        if ( newIndex === TAB_Approvals-1 ) {
+            $('#approvers_accordion').show();
+            $(function() {
+                $( "#approvers_accordion" ).accordion({
+                  collapsible: true,
+                  heightStyle: "content"
+                });
+            });
+        }
+        else {
+            $('#approvers_accordion').hide();
+        }
+
     });
 
     function showStockTabs() {
@@ -261,7 +275,7 @@ $(document).ready(function() {
                     success: function(results)  {
                         if ( results == SUCCESS ) {
                             alert('Manufacturing Approvers have been notified.'); 
-                            // console.log('Approval is pending...');
+
                             Cookies.set('current_tab', TAB_Approvals-1);  // 0-indexed 
                             location.reload();
                         }
@@ -288,27 +302,25 @@ $(document).ready(function() {
 
 
     $('#submitProcessApproval').on('click', function() {
-        if ( confirm( "Submit this manufacturing quote for process approval; are you sure?") ) {
-            var quoteID = $('#Quotes_id').val(); 
-            console.log('Submitting for process approval...');
-            
-            var postData = { quote_id: quoteID };
-            $.ajax({
-                    type: "POST",
-                    url: myURL + 'btoItems/process',
-                    data: postData,
-                    success: function(results)  {
-                        alert('Proposal Manager has been notified.'); 
-                         if ( results == SUCCESS ) {
-                            console.log('Approval is pending...');
-                            location.reload();
-                        }
-                        else {
-                            alert('Could not submit this quote for process approval - see Admin.');
-                        }
+        var quoteID = $('#Quotes_id').val(); 
+        console.log('Submitting for process approval...');
+        
+        var postData = { quote_id: quoteID };
+        $.ajax({
+                type: "POST",
+                url: myURL + 'btoItems/process',
+                data: postData,
+                success: function(results)  {
+                    alert('Quote has been submitted to Proposal Manager.'); 
+                     if ( results == SUCCESS ) {
+                        console.log('Approval is pending...');
+                        location.reload();
                     }
-            });
-        }   
+                    else {
+                        alert('Could not submit this quote for process approval - see Admin.');
+                    }
+                }
+        });
         return false;
     });
 
@@ -2057,7 +2069,7 @@ $(document).ready(function() {
                                         data: postData,
                                         success: function(results)  {
                                             console.log('results from create BtoItem: ['+results+']');
-                                            //$('#mfg_quote_details').html("results from update quote type: " + results);
+                                            Cookies.set('current_tab', TAB_Details-1);  // 0-indexed 
                                             location.reload();
                                         }
                                 });

@@ -109,4 +109,61 @@ class Attachments extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+
+	public function getAllAttachments( $quote_id ) {
+		$criteria = new CDbCriteria;
+ 		$criteria->addCondition("quote_id = $quote_id");
+ 		$criteria->order = 'uploaded_date DESC';
+		$res = $this->findAll( $criteria );
+
+		$data = array();
+		foreach( $res as $r ) {
+			$data[] = $r->id . ' | ' . $r->filename .' | '. $r->size .' bytes | '.  $r->uploaded_date .' | '.  $r->uploadedBy->fullname;
+		}
+
+		pDebug("getAllAttachments() - data:", $data);
+		return $data;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
