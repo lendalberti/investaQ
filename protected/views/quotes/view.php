@@ -83,9 +83,11 @@
 			<li><a href="#section_CustomerContact">Customer &amp; Contact Information</a></li>
 			<li><a href="#section_TermsConditions">Quote Terms</a></li>
 			<li><a href="#section_Parts">Inventory Items</a></li>
-			<!--  Manufacturing : hide (3), show (4),(5)-->
 			<li><a href="#section_Manufacturing">Manufacturing Details</a></li>
 			<li><a href="#section_Approvals">Process Approval Status</a></li>
+			<?php if ( Yii::app()->user->isProposalManager || Yii::app()->user->isApprover ) { ?> 
+				<li><a href="#section_Coordinators">Coordinators</a></li>
+			<?php } ?>
 		</ul>
 
 		<div id='section_CustomerContact'>
@@ -285,6 +287,15 @@
 			<?php require '_mfg_approvals.php';    ?>
 		</div>
 
+
+	<!-- 	< ?php if ( Yii::app()->user->isProposalManager || Yii::app()->user->isBtoApprover ) { ?> 
+			<div id='section_Coordinators'>
+				< ?php require '_mfg_coordinators.php';    ?>
+			</div>
+		< ?php } ?>
+
+ -->
+		
 
 
 

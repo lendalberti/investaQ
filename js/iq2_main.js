@@ -39,6 +39,7 @@ $(document).ready(function() {
     var TAB_Items     = 3;
     var TAB_Details   = 4;
     var TAB_Approvals = 5;
+    var TAB_Coordinators = 6;
 
 
 
@@ -71,9 +72,7 @@ $(document).ready(function() {
     // ---------- set up Tabs -----------------------------------------------------------------------
     // ----------------------------------------------------------------------------------------------
     $(function() {
-        $( "#QuoteView_Tabs" ).tabs({
-            //collapsible: true
-        });
+        $( "#QuoteView_Tabs" ).tabs({ });
     });
 
     $('#QuoteView_Tabs').on('tabsactivate', function(event, ui) {
@@ -83,18 +82,18 @@ $(document).ready(function() {
         $('#item_details').hide();
         $('[id^=item_row_]').find('td').removeClass('highlight_row'); 
 
-        if ( newIndex === TAB_Approvals-1 ) {
-            $('#approvers_accordion').show();
-            // $(function() {
-            //     $( "#approvers_accordion" ).accordion({
-            //       collapsible: true,
-            //       heightStyle: "content"
-            //     });
-            // });
-        }
-        else {
-            $('#approvers_accordion').hide();
-        }
+        // if ( newIndex === TAB_Approvals-1 ) {
+        //     $('#approvers_accordion').show();
+        //     // $(function() {
+        //     //     $( "#approvers_accordion" ).accordion({
+        //     //       collapsible: true,
+        //     //       heightStyle: "content"
+        //     //     });
+        //     // });
+        // }
+        // else {
+        //     $('#approvers_accordion').hide();
+        // }
 
     });
 
@@ -104,6 +103,7 @@ $(document).ready(function() {
         $('#QuoteView_Tabs > ul > li:nth-child(3)').show();     // "Inventory Items"                2
         $('#QuoteView_Tabs > ul > li:nth-child(4)').hide();     // --------
         $('#QuoteView_Tabs > ul > li:nth-child(5)').hide();     // --------
+        $('#QuoteView_Tabs > ul > li:nth-child(6)').hide();     // --------
     }
 
     function showManufacturingTabs() {
@@ -112,6 +112,7 @@ $(document).ready(function() {
         $('#QuoteView_Tabs > ul > li:nth-child(3)').hide();     // --------
         $('#QuoteView_Tabs > ul > li:nth-child(4)').show();     // "Manufacturing Details"          3
         $('#QuoteView_Tabs > ul > li:nth-child(5)').show();     // "Process Approvals"              4
+        $('#QuoteView_Tabs > ul > li:nth-child(6)').show();     // "Coordinators"                   5
     }
 
 
@@ -237,15 +238,55 @@ $(document).ready(function() {
     // -------- Event Handlers  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------    
     // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+    $('#link_SendMesage').on('click', function() {
+        $('#div_SendMessage').toggle();
+    });
+
 
     $('#button_SendMessage').on('click', function() {
-        console.log('message to Coordinators: ' + $('#coordinator_notification_message').val() );
-
+        var postData = {
+            quoteID:             $('#Quotes_id').val(),
+            text_Subject:        $('#text_Subject').val(),
+            text_Message:        $('#text_Message').val(),
+            approver_Assembly:   $('#approver_Assembly').val(),
+            approver_Production: $('#approver_Production').val(),
+            approver_Test:       $('#approver_Test').val(),
+            approver_Quality:    $('#approver_Quality').val(),
+        }
         
+        if ( $('#text_Subject').val().trim() == '' || $('#text_Message').val().trim() == '' ) {
+            alert('Missing subject and/or message...');
+        }
+        else if ( $('#approver_Assembly').val()==='' && $('#approver_Production').val()==='' && $('#approver_Test').val()==='' && $('#approver_Quality').val()==='' ) {
+            alert('Need to select a least 1 coordinator...');
+        }
+        else {
 
-       
+            console.log('Post Data=' + postData);
+            $.ajax({
+                    type: "POST",
+                    url: myURL + 'quotes/notifyMfgApprovers',
+                    data: postData,
+                    success: function(results)  {
+                        if ( results == SUCCESS ) {
+                            alert('Process coordinators have been notified.'); 
+
+                            Cookies.set('current_tab', TAB_Approvals-1);  // 0-indexed 
+                            location.reload();
+                        }
+                        else {
+                            alert('Could not send notification - see Admin.');
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown)  {
+                        alert("Could not send notification; error=\n\n" + errorThrown + ", jqXHR="+jqXHR);
+                    }
+            });
+        }
 
     });
+
+
 
 
 

@@ -49,7 +49,13 @@
 
 
     // ------------------------------------------------ TODO: rename this since we're just getting a count
-    function getQuotePartNumbers( $quote_id ) {     //        - use SELECT COUNT(*)
+    function getQuotePartNumbers( $quote_id=null ) {     //        - use SELECT COUNT(*)
+        if ( $quote_id === null ) {
+            return 0;
+        }
+
+
+        
         $part_no = ''; 
 
         $sql = "SELECT part_no FROM stock_items WHERE quote_id = $quote_id";

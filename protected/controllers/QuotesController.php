@@ -46,6 +46,12 @@ class QuotesController extends Controller
 				'actions'=>array('manufacturing', 'notifyMfgApprovers'),
 				'expression' => '$user->isProposalManager'
 			),
+
+			array('allow', 
+				'actions'=>array('coordinator'),
+				'expression' => '$user->isBtoApprover'
+			),
+
 			
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -307,8 +313,19 @@ class QuotesController extends Controller
 		$criteria->addCondition("quote_id = $id");
 		$data['BtoItems_model'] = BtoItems::model()->find( $criteria );
 
+		// $data['coordinators'] = approver_Assembly  approver_Production  approver_Test  approver_Quality
+		// +----+------------+
+		// | id | name       |
+		// +----+------------+
+		// |  1 | Assembly   |
+		// |  2 | Quality    |
+		// |  3 | Test       |
+		// |  4 | Production |
+		// +----+------------+
+
+
 		$data['selects']      = Quotes::model()->getAllSelects();
-		$data['bto_comments'] = BtoComments::model()->getAllComments($id);
+		$data['bto_messages'] = BtoMessages::model()->getAllMessageSubjects($id);
 		$data['attachments']  = Attachments::model()->getAllAttachments($id);
 
 		$this->render('view',array(
@@ -885,12 +902,11 @@ class QuotesController extends Controller
 		}
 
 		$criteria->order = 'id DESC';
-		
 		$model = Quotes::model()->findAll( $criteria );
 
 		$this->render( 'index', array(
 			'quote_type' => $quote_type,
-			'model' => $model,
+			'model'      => $model,
 			'page_title' => "My Quotes",
 		));
 	}
@@ -914,7 +930,7 @@ class QuotesController extends Controller
 
 			$this->render( 'index', array(
 				'quote_type' => $quote_type,
-				'model' => $model,
+				'model'      => $model,
 				'page_title' => $page_title,
 			));
 		}
@@ -925,24 +941,101 @@ class QuotesController extends Controller
 	}
 
 
+	// isBtoApprover
+	public function actionCoordinator() {
+		pTrace( __METHOD__ );
+		pDebug('actionCoordinator() - _GET=', $_GET);
+
+		if ( Yii::app()->user->isBtoApprover || Yii::app()->user->isAdmin ) { 
+			$quote_type = QuoteTypes::MANUFACTURING;
+			$status     = Status::BTO_PENDING;
+			$page_title = "Manufacturing Quotes";
+
+			$my_id = Yii::app()->user->id;
+			$sql = <<<EOT
+
+SELECT 
+		q.id, 
+		q.quote_no,      
+		qt.name as quote_type, 
+		s.name as status,
+		l.name as level, 
+		concat(u.first_name, ' ', u.last_name) as owner_name,  
+		cu.name as customer_name, 
+		concat(con.first_name, ' ', con.last_name) as contact_name
+  FROM
+  		quotes AS q
+  			JOIN bto_messages  m ON m.quote_id  = q.id 
+  			JOIN bto_approvers a ON a.user_id   = m.to_user_id
+  			JOIN users u  		 ON u.id        = m.to_user_id
+  			JOIN levels l 		 ON l.id        = q.level_id
+  			JOIN quote_types qt  ON qt.id       = q.quote_type_id
+  			JOIN customers cu    ON cu.id  = q.customer_id
+  			JOIN contacts con    ON con.id = q.contact_id
+  			JOIN status s        ON s.id   = q.status_id
+ WHERE
+ 		m.to_user_id = $my_id
+
+EOT;
+
+			$command = Yii::app()->db->createCommand($sql);
+			$results = $command->queryAll();
+			pDebug("results=", $results);
+
+			$this->render( 'index_coordinator', array(
+				'quote_type' => $quote_type,
+				'model'      => $results,
+				'page_title' => $page_title,
+			));
+		}
+
+
+
+		// $criteria = new CDbCriteria();
+
+		// if ( Yii::app()->user->isBtoApprover || Yii::app()->user->isAdmin ) {
+		// 	$page_title = "Manufacturing Quotes";
+		// 	$criteria->addCondition("quote_type_id = $quote_type");
+		// 	$criteria->addCondition("status_id = $status");
+
+		// 	$criteria->order = 'id DESC';
+		// 	$model = Quotes::model()->findAll( $criteria );
+
+		// 	$this->render( 'index', array(
+		// 		'quote_type' => $quote_type,
+		// 		'model' => $model,
+		// 		'page_title' => $page_title,
+		// 	));
+		// }
+		// else {
+
+		// }
+
+
+
+
+	}
+
+
+
 
 	public function actionNotifyMfgApprovers() {
-		pDebug("Quotes::actionNotifyMfgApprovers() - _POST=", $_POST);
+		pDebug("Quotes::actionNotifyMfgApprovers() - _POST=", $_POST); 
+		
 		$toBeNotified = array();
-
-		foreach( array( $_POST['assembly'] ,$_POST['production'] ,$_POST['test'] ,$_POST['quality'] ) as $id ) {
+		foreach( array( $_POST['approver_Assembly'] ,$_POST['approver_Production'] ,$_POST['approver_Test'] ,$_POST['approver_Quality'] ) as $id ) {
 			if ( $id ) {
 				$toBeNotified[] = $id;
 			}
 		}
+		pDebug("Quotes::actionNotifyMfgApprovers() - to be notified:", $toBeNotified);
 
-		if ( $_POST['quoteID'] === '' || $_POST['msg'] === '' || count($toBeNotified) === 0 ) {
+		if ( $_POST['quoteID'] === '' || $_POST['text_Subject'] === '' || $_POST['text_Message'] === '' || count($toBeNotified) === 0 ) {
 			pDebug("Quotes::actionNotifyMfgApprovers() - missing _POST variables...");
 			echo Status::FAILURE;
 		}
 
 		try {
-			// set approvers_notified = true
 			$criteria = new CDbCriteria();
 			$criteria->addCondition("quote_id = " . $_POST['quoteID'] );
 			
@@ -952,17 +1045,18 @@ class QuotesController extends Controller
 
 			// save comment
 			foreach( $toBeNotified as $user_id ) {
-				$modelComments = new BtoComments;
-				$modelComments->quote_id     = $_POST['quoteID'];
-				$modelComments->bto_item_id  = $modelItems->id;
-				$modelComments->from_user_id = Yii::app()->user->id;
-				$modelComments->to_user_id   = $user_id;
-				$modelComments->comment      = $_POST['msg'];
-				$modelComments->save();
+				$modelMessages = new BtoMessages;
+				$modelMessages->quote_id     = $_POST['quoteID'];
+				$modelMessages->bto_item_id  = $modelItems->id;
+				$modelMessages->from_user_id = Yii::app()->user->id;
+				$modelMessages->to_user_id   = $user_id;
+				$modelMessages->subject      = $_POST['text_Subject'];
+				$modelMessages->message      = $_POST['text_Message'];
+				$modelMessages->save();
 			}
 
 			// notify approvers
-			if ( !notifyBtoApprovers( $modelComments ) ) {
+			if ( !notifyBtoApprovers( $modelMessages ) ) {
 				throw new Exception("Couldn't notify approvers.");
 			}
 		}

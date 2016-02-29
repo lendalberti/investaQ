@@ -759,17 +759,18 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `iq2`.`bto_comments`
+-- Table `iq2`.`bto_messages`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `iq2`.`bto_comments` ;
+DROP TABLE IF EXISTS `iq2`.`bto_messages` ;
 
-CREATE  TABLE IF NOT EXISTS `iq2`.`bto_comments` (
+CREATE  TABLE IF NOT EXISTS `iq2`.`bto_messages` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `quote_id` INT NOT NULL ,
   `bto_item_id` INT NOT NULL ,
   `from_user_id` INT NOT NULL ,
   `to_user_id` INT NOT NULL ,
-  `comment` TEXT NOT NULL ,
+  `subject` VARCHAR(255) NOT NULL ,
+  `message` TEXT NOT NULL ,
   `date_created` TIMESTAMP NULL DEFAULT now() ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_bto_comments_2_idx` (`from_user_id` ASC) ,

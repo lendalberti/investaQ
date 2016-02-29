@@ -78,7 +78,9 @@
 			else if (Yii::app()->user->isProposalManager) {
 				$user_type = ' (Proposal Manager)';
 			}
-
+			else if (Yii::app()->user->isBtoApprover) {
+				$user_type = ' (BTO Approver)';
+			}
 			
 
 			if ( Yii::app()->user->isLoggedIn ) {
@@ -94,15 +96,19 @@
 					$menuItems[] = array('label'=>'Approval Queue ', 'url'=>array('/quotes/indexApproval') );
 				}
 	
-				if (Yii::app()->user->isProposalManager ) {
+				if (Yii::app()->user->isProposalManager) {
 					$menuItems[] = array('label'=>'Manufacturing', 'url'=>array('/quotes/manufacturing') );
 					$menuItems[] = array('label'=>'Mfg Admin', 'url'=>array('/btoApprovers/admin') );
 				}
 
+				if (Yii::app()->user->isBtoApprover ) {
+					$menuItems[] = array('label'=>'Mfg Approvals', 'url'=>array('/quotes/coordinator') );
+				}
+
 				//$menuItems[] = array('label'=>'My Quotes', 'url'=>array('/quotes/index') ); 
 				// $menuItems[] = array('label'=>'Movements ', 'url'=>array('/PriceBook/movements') );
-				$menuItems[] = array('label'=>'Customers ', 'url'=>array('/customers/admin') );
-				$menuItems[] = array('label'=>'Contacts ', 'url'=>array('/contacts/admin') );
+				// $menuItems[] = array('label'=>'Customers ', 'url'=>array('/customers/admin') );
+				// $menuItems[] = array('label'=>'Contacts ', 'url'=>array('/contacts/admin') );
 				$menuItems[] = array('label'=>'My Profile', 'url'=>array('/Users/profile/'.Yii::app()->user->id) );
 				$menuItems[] = array('label'=>'Help',        'url'=>array('/site/help') );
 

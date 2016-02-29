@@ -87,7 +87,7 @@ class BtoItems extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'btoComments' => array(self::HAS_MANY, 'BtoComments', 'bto_item_id'),
+			'btoMessages' => array(self::HAS_MANY, 'BtoMessages', 'bto_item_id'),
 			'dieManufacturer' => array(self::BELONGS_TO, 'DieManufacturers', 'die_manufacturer_id'),
 			'packageType' => array(self::BELONGS_TO, 'PackageTypes', 'package_type_id'),
 			'processFlow' => array(self::BELONGS_TO, 'ProcessFlow', 'process_flow_id'),

@@ -15,8 +15,8 @@
 		if ( !$approversNotified ) {  ?>
 			<div class="container_15 grid_outline_350">
 			
-				<div class='grid_16 ' style='margin-bottom: 50px;'>
-					<span style='padding-left: 68px; color: #a31128; '>Select BTO Approvers to notify and then click Send:</span>
+				<!-- <div class='grid_16 ' style='margin-bottom: 50px;'>
+					<span style='padding-left: 68px; color: #a31128; '>Select Process Coordinators</span>
 					<div class='push_1' style='font-variant: small-caps; margin-top: 10px;'>
 
 						<div class='grid_3 '>
@@ -80,15 +80,102 @@
 						</div>
 
 					</div>
-
-					<div class="clear">&nbsp;</div>
+ -->
+				<!-- 	<div class="clear">&nbsp;</div>
 					<div class='push_1' style='font-variant: small-caps; margin-top: 10px;'>
 						<div class='grid_8 '>
 							<input type='text' id='approver_notification_message' name='' placeholder="Enter notification message" size='70' /> 
 							<input type='button' id='button_NotifyApprovers'  value='Send' style='margin-top: 5px;padding: 10px; font-weight: bold;'/>
 						</div>
 					</div>
+ -->
+
+				<div><span id='link_SendMesage' >Send a message to your coordinators</span></div>
+				<div class="clear">&nbsp;</div>
+
+				<div style='margin-left: 80px;'>
+					<div id='div_SendMessage' style='display: none; width: 800px; height: 600px; border: 0px solid lightgreen; margin: 10px;'>
+
+						<div class='grid_16 ' style='margin: 10px;'>
+
+							<!-- <span style='padding-left: 10px; color: #a31128; '>Select Process Coordinators</span> -->
+							<div class='push_1' style='font-variant: small-caps; margin-top: 10px;'>
+
+								<div class='grid_3 '>
+								<span style='padding-left: 0px; color: #a31128; font-weight: bold;'>Select Process <br /> Coordinators</span>
+								</div>
+
+								<div class='grid_3 ' style='text-align: center;'>
+									<span style='font-weight: bold;'> Assembly</span><br />   
+									<select id='approver_Assembly'>
+										<?php 
+												echo "<option></option>";
+												foreach( $data['bto_approvers'][BtoGroups::ASSEMBLY] as $k=>$v ) {
+													foreach( $v as $id => $fullname ) {
+														echo "<option value='$id'>$fullname</option>";
+													}
+												} 
+										?>
+									</select>
+								</div>
+
+								<div class='grid_3 ' style='text-align: center;'>
+									<span style='font-weight: bold;'> Production</span><br />   
+										<select id='approver_Production'>
+											<?php 
+													echo "<option></option>";
+													foreach( $data['bto_approvers'][BtoGroups::PRODUCTION] as $k=>$v ) {
+														foreach( $v as $id => $fullname ) {
+															echo "<option value='$id'>$fullname</option>";
+														}
+													} 
+											?>
+										</select>
+								</div>
+
+								<div class='grid_3 ' style='text-align: center;'>
+									<span style='font-weight: bold;'> Test</span><br />   
+										<select id='approver_Test'>
+											<?php 
+													echo "<option></option>";
+													foreach( $data['bto_approvers'][BtoGroups::TEST] as $k=>$v ) {
+														foreach( $v as $id => $fullname ) {
+															echo "<option value='$id'>$fullname</option>";
+														}
+													} 
+											?>
+										</select>
+								</div>
+
+								<div class='grid_3 ' style='text-align: center;'>
+									<span style='font-weight: bold;'> Quality</span><br />   
+										<select id='approver_Quality'>
+											<?php 
+													echo "<option></option>";
+													foreach( $data['bto_approvers'][BtoGroups::QUALITY] as $k=>$v ) {
+														foreach( $v as $id => $fullname ) {
+															echo "<option value='$id'>$fullname</option>";
+														}
+													} 
+											?>
+										</select>
+								</div>
+							</div>
+
+							<div class="clear">&nbsp;</div>
+
+							<div style='margin-top: 20px; padding: 10px 0px 0px 10px; background-color: lightgray; height: 30px;'>
+								<span style='padding: 0;font-weight: bold;'>Subject:</span>
+								<input id='text_Subject' placeholder='Enter subject here...' size='50'>
+							</div>
+							<div>
+								<textarea id='text_Message' placeholder='Enter message here and click "Send"...'></textarea>
+								<input type='button' id='button_SendMessage' value='Send' style='margin: 5px; padding: 5px 10px 5px 10px;'>
+							</div>
+						</div>
+					</div>
 				</div>
+
 			</div>
 		<?php } else { ?>
 
@@ -131,26 +218,29 @@
 				</div>
 
 				<div class='grid_16' style='padding: 20px 0px 0px 5px;'><span style='font-weight: bold;'>Messages:</span></div>
-				<div class='grid_16 grid_outline_150'>
+				<div class='grid_16 grid_outline_Msg'>
 					<?php 
-							foreach( $data['bto_comments'] as $row ) {
+							foreach( $data['bto_messages'] as $row ) {
 								echo "<span style='font-size: .8em;' >$row</span><br />";
 							}
 					?>
 				</div>
 
-				<div class='push_1'>
-					<div class='grid_16 ' style='padding-top: 5px; margin-top: 10px; '>
-						<input id='coordinator_notification_message'  style='font-family: Courier; padding: 5px;' type='text' placeholder='Enter a message for your coordinators...' size='70'>
-						<input type='button' id='button_SendMessage' value='Send Message'> 
-					</div>
-				</div>
+				<div class="clear">&nbsp;</div>
+					
+				<div><span id='link_SendMesage' >Send a message to your coordinators</span></div>
+				<div id='div_SendMessage' style='display: none; width: 600px; height: 400px; border: 0px solid lightgray; margin: 10px;'>
 
-				<!-- <div class='push_1' > -->
-					<div class='grid_2' style='padding-top: 10px; margin-top: 10px;'>
-						
+					<div style='margin-top: 20px; padding: 10px 0px 0px 10px; background-color: lightgray; height: 30px;'>
+						<span style='padding: 0;font-weight: bold;'>Subject:</span>
+						<input id='text_Subject' placeholder='Enter subject here...' size='50'>
 					</div>
-				<!-- </div> -->
+					<div>
+						<textarea id='text_Message' placeholder='Enter message here and click "Send"...'></textarea>
+						<input type='button' id='button_SendMessage' value='Send' style='margin: 5px; padding: 5px 10px 5px 10px;'>
+					</div>
+
+				</div>
 
 				<div class="clear">&nbsp;</div>
 
@@ -165,37 +255,7 @@
 
 			</div><!-- container -->
 
-
 			<div class="clear">&nbsp;</div>
-
-			<!--   BTO Approvers -->
-			<div id="approvers_accordion" style='display: none; margin-top: 50px;'>
-				<h3>Assembly</h3>
-				<div>
-						<span style='font-size: .9em; font-weight: bold;'>xxxxxxxxxxx</span>
-						<span style='padding-left: 500px;font-size: .9em; font-weight: normal;'>Status: PENDING</span>
-				</div>
-
-				<h3>Production</h3>
-				<div>
-						<span style='font-size: .9em; font-weight: bold;'>xxxxxxxxxxx</span>
-						<span style='padding-left: 500px;font-size: .9em; font-weight: normal;'>Status: PENDING</span>
-				   
-				</div>
-
-				<h3>Test</h3>
-				<div>
-						<span style='font-size: .9em; font-weight: bold;'>xxxxxxxxxxx</span>
-						<span style='padding-left: 500px;font-size: .9em; font-weight: normal;'>Status: PENDING</span>
-				</div>
-
-				<h3>Quality</h3>
-				<div>
-						<span style='font-size: .9em; font-weight: bold;'>xxxxxxxxxxx</span>
-						<span style='padding-left: 500px;font-size: .9em; font-weight: normal;'>Status: PENDING</span>
-				</div>
-			</div> <!--    approvers_accordion -->
- 
 
 		<?php } ?>
 	<?php } 
