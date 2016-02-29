@@ -9,22 +9,11 @@
 	$ready   = Yii::app()->request->baseUrl . "/images/New/button_green.png";
 	$blocked = Yii::app()->request->baseUrl . "/images/New/button_red.png";
 
-	if ( !Yii::app()->user->isProposalManager ) {
-		if ( $q->status_id == Status::BTO_PENDING ) {
-			$s = "Process approval is pending...";
-		}
-		else if ( $q->status_id == Status::DRAFT ) {
-			$s = "Quote hasn't been submitted for approval yet.";
-		}
-		else {
-			$s = "Unknown status...";
-		}
-		echo "<span id='process_approval_status' style='color: #2C6371; font-size: 1.1em;'>$s</span>";
-	}
-	else {
 
+
+	if (  $q->status_id == Status::BTO_PENDING && Yii::app()->user->isProposalManager ) {
 		if ( !$approversNotified ) {  ?>
-			<div class="container_15" style='border: 0px solid red; '>
+			<div class="container_15 grid_outline_350">
 			
 				<div class='grid_16 ' style='margin-bottom: 50px;'>
 					<span style='padding-left: 68px; color: #a31128; '>Select BTO Approvers to notify and then click Send:</span>
@@ -152,8 +141,8 @@
 
 				<div class='push_1'>
 					<div class='grid_16 ' style='padding-top: 5px; margin-top: 10px; '>
-						<input style='font-family: Courier; padding: 5px;' type='text' placeholder='Enter a message for your coordinators...' size='70'>
-						<input type='button' id='button_SendMessage' value='Send Message'>
+						<input id='coordinator_notification_message'  style='font-family: Courier; padding: 5px;' type='text' placeholder='Enter a message for your coordinators...' size='70'>
+						<input type='button' id='button_SendMessage' value='Send Message'> 
 					</div>
 				</div>
 
@@ -194,7 +183,7 @@
 				   
 				</div>
 
-				<h3>Testing</h3>
+				<h3>Test</h3>
 				<div>
 						<span style='font-size: .9em; font-weight: bold;'>xxxxxxxxxxx</span>
 						<span style='padding-left: 500px;font-size: .9em; font-weight: normal;'>Status: PENDING</span>
@@ -209,4 +198,23 @@
  
 
 		<?php } ?>
-<?php } ?>
+	<?php } 
+
+
+	else if ( $q->status_id == Status::DRAFT ) {
+		$s = "Quote hasn't been submitted for approval yet.";
+		echo "<span id='process_approval_status' style='color: #2C6371; font-size: 1.1em;'>$s</span>";
+	}
+	else if (  $q->status_id == Status::BTO_PENDING && !Yii::app()->user->isProposalManager ) {
+		$s = "Process approval is pending...";
+		echo "<span id='process_approval_status' style='color: #2C6371; font-size: 1.1em;'>$s</span>";
+	}
+	else {
+		$s = "Unknown status...";
+		echo "<span id='process_approval_status' style='color: #2C6371; font-size: 1.1em;'>$s</span>";
+	}
+
+
+?>
+
+

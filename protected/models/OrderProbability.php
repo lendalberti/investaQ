@@ -1,21 +1,21 @@
 <?php
 
 /**
- * This is the model class for table "lead_quality".
+ * This is the model class for table "order_probability".
  *
- * The followings are the available columns in table 'lead_quality':
+ * The followings are the available columns in table 'order_probability':
  * @property integer $id
  * @property string $name
  *
  * The followings are the available model relations:
- * @property Quotes[] $quotes
+ * @property BtoItems[] $btoItems
  */
-class LeadQuality extends CActiveRecord
+class OrderProbability extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
-	 * @return LeadQuality the static model class
+	 * @return OrderProbability the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -27,7 +27,7 @@ class LeadQuality extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'lead_quality';
+		return 'order_probability';
 	}
 
 	/**
@@ -54,7 +54,7 @@ class LeadQuality extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'quotes' => array(self::HAS_MANY, 'Quotes', 'lead_quality_id'),
+			'btoItems' => array(self::HAS_MANY, 'BtoItems', 'order_probability_id'),
 		);
 	}
 

@@ -59,12 +59,12 @@ $(document).ready(function() {
     // ----------------------------------------------------------------------------------------------
     // ---------- set up Accordian ------------------------------------------------------------------
     // ----------------------------------------------------------------------------------------------
-    // $(function() {
-    //     $( "#approvers_accordion" ).accordion({
-    //       collapsible: true,
-    //       heightStyle: "content"
-    //     });
-    // });
+    $(function() {
+        $( "#approvers_accordion" ).accordion({
+          collapsible: true,
+          heightStyle: "content"
+        });
+    });
     
 
     // ----------------------------------------------------------------------------------------------
@@ -85,12 +85,12 @@ $(document).ready(function() {
 
         if ( newIndex === TAB_Approvals-1 ) {
             $('#approvers_accordion').show();
-            $(function() {
-                $( "#approvers_accordion" ).accordion({
-                  collapsible: true,
-                  heightStyle: "content"
-                });
-            });
+            // $(function() {
+            //     $( "#approvers_accordion" ).accordion({
+            //       collapsible: true,
+            //       heightStyle: "content"
+            //     });
+            // });
         }
         else {
             $('#approvers_accordion').hide();
@@ -238,11 +238,18 @@ $(document).ready(function() {
     // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+    $('#button_SendMessage').on('click', function() {
+        console.log('message to Coordinators: ' + $('#coordinator_notification_message').val() );
+
+        
+
+       
+
+    });
 
 
 
     $('#button_NotifyApprovers').on('click', function() {
-
         var quoteID     = $('#Quotes_id').val(); 
         var msg        = $('#approver_notification_message').val();
         var assembly   = $('#approver_Assembly').val();
@@ -287,10 +294,6 @@ $(document).ready(function() {
                         alert("Could not send notification; error=\n\n" + errorThrown + ", jqXHR="+jqXHR);
                     }
             });
-
-
-
-
         }
     });
 
@@ -694,7 +697,6 @@ $(document).ready(function() {
                     url: myURL + 'quotes/update/' + quoteID,
                     data: postData,
                     success: function(results)  {
-                        console.log('results from quote update=['+results+']');
 
                         if ( results == SUCCESS ) { // update succeeded
                             alert('Quote updated...');
@@ -1204,15 +1206,20 @@ $(document).ready(function() {
         var quoteID = getThisID( $(this) ); 
         if ( confirm("Are you sure you want to delete this quote?" ) ) {
             $.ajax({
-                  url: myURL + 'quotes/delete/' + quoteID ,
-                  type: 'POST',
-                  data: { data: quoteID },
-                  success: function(data, textStatus, jqXHR) {
-                    window.location = myURL + 'quotes/index' ;
-                  },
-                  error: function (jqXHR, textStatus, errorThrown)  {
+                url: myURL + 'quotes/delete/' + quoteID ,
+                type: 'POST',
+                data: { data: quoteID },
+                success: function(ret) {
+                    if ( ret == SUCCESS ) {
+                        window.location = myURL + 'quotes/index';
+                    }
+                    else {
+                        alert("Couldn't delete quote " + quoteID + "; see Admin");
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown)  {
                     alert("Couldn't delete quote " + quoteID + "; error=\n\n" + errorThrown);
-                  }
+                }
             });
         }
         return false;

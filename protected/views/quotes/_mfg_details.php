@@ -13,13 +13,13 @@
 			<table id='mfg_details'>
 				<tr>   <td>Order Probability</td>     	
 							<td>
-								<select id='BtoItems_order_probability' 		name='BtoItems[order_probability]'>
+								<select id='BtoItems_order_probability_id' 		name='BtoItems[order_probability_id]'>
 									<?php
-											if ( isset($data['selects']['lead_quality']) ) {
+											if ( isset($data['selects']['order_probability']) ) {
 												echo "<option></option>";
-												foreach( $data['selects']['lead_quality'] as $s => $arr ) {
+												foreach( $data['selects']['order_probability'] as $s => $arr ) {
 													foreach( $arr as $k => $v ) {
-														$selected = ( $k==$q->order_probability ? 'selected' : '' );
+														$selected = ( $k==$q->orderProbability->name ? 'selected' : '' );
 														echo "<option $selected value='" . $k."'>".$v."</option>";
 													}
 												}
@@ -95,7 +95,7 @@
 						</td> </tr>
 
 
-				<tr>   <td>Testing</td> 
+				<tr>   <td>Test</td> 
 							<td>
 							<select id='BtoItems_testing_id' name='BtoItems[testing_id]'>
 								<?php
@@ -118,7 +118,7 @@
 						<td>
 							<select id='BtoItems_ncnr'       name='BtoItems[ncnr]' >  
 								<?php 	
-									echo "<option></option>";
+									// echo "<option></option>";
 									foreach( array(0,1) as $i ) {
 										$yn = ($i===0 ? 'No' : 'Yes');
 										$selected = ( $i===$q->ncnr ? "selected" : '' );
@@ -133,7 +133,7 @@
 						<td>
 							<select id='BtoItems_itar'       name='BtoItems[itar]' >  
 								<?php 	
-									echo "<option></option>";
+									// echo "<option></option>";
 									foreach( array(0,1) as $i ) {
 										$yn = ($i===0 ? 'No' : 'Yes');
 										$selected = ( $i===$q->itar ? "selected" : '' );
@@ -148,7 +148,7 @@
 						<td>
 							<select id='BtoItems_have_die'       name='BtoItems[have_die]' >  
 								<?php 	
-									echo "<option></option>";
+									// echo "<option></option>";
 									foreach( array(0,1) as $i ) {
 										$yn = ($i===0 ? 'No' : 'Yes');
 										$selected = ( $i===$q->have_die ? "selected" : '' );
@@ -164,7 +164,7 @@
 						<td>
 							<select id='BtoItems_spa'       name='BtoItems[spa]' >  
 								<?php 	
-									echo "<option></option>";
+									// echo "<option></option>";
 									foreach( array(0,1) as $i ) {
 										$yn = ($i===0 ? 'No' : 'Yes');
 										$selected = ( $i===$q->spa ? "selected" : '' );
@@ -179,7 +179,7 @@
 						<td>
 							<select id='BtoItems_recreation'       name='BtoItems[recreation]' >  
 								<?php 	
-									echo "<option></option>";
+									// echo "<option></option>";
 									foreach( array(0,1) as $i ) {
 										$yn = ($i===0 ? 'No' : 'Yes');
 										$selected = ( $i===$q->recreation ? "selected" : '' );
@@ -195,7 +195,7 @@
 						<td>
 							<select id='BtoItems_wip_product'       name='BtoItems[wip_product]' >  
 								<?php 	
-									echo "<option></option>";
+									// echo "<option></option>";
 									foreach( array(0,1) as $i ) {
 										$yn = ($i===0 ? 'No' : 'Yes');
 										$selected = ( $i===$q->wip_product ? "selected" : '' );

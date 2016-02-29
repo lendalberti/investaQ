@@ -1,9 +1,9 @@
 <?php $this->layout = '//layouts/column1'; ?>
 
 <div style='padding-bottom: 120px;'>
-	<h1>Manage Manufacturing Quote Approvers</h1>
+	<h1>Managing Quote Coordinators</h1>
 	<a href='create' >Add new approver</a>
-	<a href='xxxxxxx return_url  xxxxxxxxxxxx' >Return to Quote</a>   <!--    TODO       -->
+	<!-- <a href='xxxxxxx return_url  xxxxxxxxxxxx' >Return to Quote</a>    TODO       --> 
 </div>
 
 <?php $this->widget('zii.widgets.grid.CGridView', array(

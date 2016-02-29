@@ -182,73 +182,7 @@
 
     [ ] show popup with pricing details on results table row click
 
-		stock_items:
-				comments       
-				date_code      
-				id             
-				last_updated   
-				line_note      
-				manufacturer   
-				part_no        
-				price_1000_Plus
-				price_100_499  
-				price_1_24     
-				price_25_99    
-				price_500_999  
-				price_Base     
-				price_Custom   
-				qty_1000_Plus  
-				qty_100_499    
-				qty_1_24       
-				qty_25_99      
-				qty_500_999    
-				qty_Available  
-				qty_Base       
-				qty_Custom     
-				qty_NoBid      
-				quote_id    
-
-		quotes:
-			 	additional_notes        
-				contact_id              
-				created_date            
-				customer_acknowledgment 
-				customer_id             
-				die_manufacturer_id     
-				expiration_date         
-				generic_part_number     
-				have_die                
-				id                      
-				itar                    
-				lead_count              
-				lead_quality_id         
-				level_id                
-				lost_reason_id          
-				manufacturing_lead_time 
-				ncnr                    
-				no_bid_reason_id        
-				owner_id                
-				package_type_id         
-				priority_id             
-				process_flow_id         
-				quantity1               
-				quantity2               
-				quantity3               
-				quote_no                
-				quote_type_id           
-				ready_to_order          
-				requested_part_number   
-				risl                    
-				source_id               
-				spa                     
-				status_id               
-				temp_high               
-				temp_low                
-				terms_conditions        
-				testing_id              
-				updated_date            
-
-
+	
 
 
 +-----------------+

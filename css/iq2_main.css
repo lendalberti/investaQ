@@ -91,6 +91,15 @@
 	overflow-y: scroll;
 }
 
+.grid_outline_350 {
+	border: 0px solid lightblue;
+	height: 350x;
+	margin-top: 10px;
+	overflow-y: scroll;
+}
+
+
+
 #mfg_details > tbody > tr > td { 
 	font-size: .8em;
 }

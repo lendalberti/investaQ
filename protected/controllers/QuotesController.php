@@ -600,6 +600,7 @@ class QuotesController extends Controller
 		pTrace( __METHOD__ );
 		$quote_id = $id;
 
+		pDebug("Quotes::actionUpdate() - id=[$id], _POST=", $_POST);
 		if ( $_POST ) {
 			
 			// validate source id > 0
@@ -608,35 +609,50 @@ class QuotesController extends Controller
 				return;
 			}
 
-			if ( isset($_POST['BtoItems']) ) {
-				$item_id = $_POST['BtoItems']['id'];
+			if ( $_POST['quoteTypeID'] == QuoteTypes::MANUFACTURING ) {
+				if ( isset($_POST['BtoItems']) ) {
+					$item_id = $_POST['BtoItems']['id'];
 
-				$itemsModel                        = BtoItems::model()->findByPk($item_id);
-				$itemsModel->order_probability     = $_POST['BtoItems']['order_probability'];
-				$itemsModel->requested_part_number = $_POST['BtoItems']['requested_part_number'];
-				$itemsModel->generic_part_number   = $_POST['BtoItems']['generic_part_number'];
-				$itemsModel->quantity1             = $_POST['BtoItems']['quantity1'];
-				$itemsModel->quantity2             = $_POST['BtoItems']['quantity2'];
-				$itemsModel->quantity3             = $_POST['BtoItems']['quantity3'];
-				$itemsModel->die_manufacturer_id   = $_POST['BtoItems']['die_manufacturer_id'];
-				$itemsModel->package_type_id       = $_POST['BtoItems']['package_type_id'];
-				$itemsModel->lead_count            = $_POST['BtoItems']['lead_count'];
-				$itemsModel->temp_low              = $_POST['BtoItems']['temp_low'];
-				$itemsModel->temp_high             = $_POST['BtoItems']['temp_high'];
-				$itemsModel->process_flow_id       = $_POST['BtoItems']['process_flow_id'];
-				$itemsModel->testing_id            = $_POST['BtoItems']['testing_id'];
-				$itemsModel->ncnr                  = $_POST['BtoItems']['ncnr'];
-				$itemsModel->itar                  = $_POST['BtoItems']['itar'];
-				$itemsModel->have_die              = $_POST['BtoItems']['have_die'];
-				$itemsModel->spa                   = $_POST['BtoItems']['spa'];
-				$itemsModel->recreation            = $_POST['BtoItems']['recreation'];
-				$itemsModel->wip_product           = $_POST['BtoItems']['wip_product'];
+					pDebug("Quotes::actionUpdate() - saving item_id:[$item_id] for Manufacturing quote: [$id]");
 
-				if ( $itemsModel->save() ) {
-					pDebug("Quotes::actionUpdate() - Manufacturing quote saved.");
-				}
-				else {
-					pDebug("Quotes::actionUpdate() - Error: manufacturing quote NOT saved, error=", $itemsModel->errors);
+					$itemsModel                        = BtoItems::model()->findByPk($item_id);
+					$itemsModel->order_probability_id  = $_POST['BtoItems']['order_probability_id'];
+					$itemsModel->requested_part_number = $_POST['BtoItems']['requested_part_number'];
+					$itemsModel->generic_part_number   = $_POST['BtoItems']['generic_part_number'];
+					$itemsModel->quantity1             = $_POST['BtoItems']['quantity1'];
+					$itemsModel->quantity2             = $_POST['BtoItems']['quantity2'];
+					$itemsModel->quantity3             = $_POST['BtoItems']['quantity3'];
+					$itemsModel->die_manufacturer_id   = $_POST['BtoItems']['die_manufacturer_id'];
+					$itemsModel->package_type_id       = $_POST['BtoItems']['package_type_id'];
+					$itemsModel->lead_count            = $_POST['BtoItems']['lead_count'];
+					$itemsModel->temp_low              = $_POST['BtoItems']['temp_low'];
+					$itemsModel->temp_high             = $_POST['BtoItems']['temp_high'];
+					$itemsModel->process_flow_id       = $_POST['BtoItems']['process_flow_id'];
+					$itemsModel->testing_id            = $_POST['BtoItems']['testing_id'];
+					$itemsModel->ncnr                  = $_POST['BtoItems']['ncnr'];
+					$itemsModel->itar                  = $_POST['BtoItems']['itar'];
+					$itemsModel->have_die              = $_POST['BtoItems']['have_die'];
+					$itemsModel->spa                   = $_POST['BtoItems']['spa'];
+					$itemsModel->recreation            = $_POST['BtoItems']['recreation'];
+					$itemsModel->wip_product           = $_POST['BtoItems']['wip_product'];
+
+					pDebug("Quotes::actionUpdate() - item attributes:", $itemsModel->attributes );
+
+					try { 
+						if ( $itemsModel->save() ) {
+							pDebug("Quotes::actionUpdate() - Manufacturing quote saved.");
+						}
+						else {
+							pDebug("Quotes::actionUpdate() - Error: manufacturing quote NOT saved, error=", $itemsModel->errors);
+							echo Status::FAILURE;
+							return;
+						}
+					}
+					catch( Exception $ex ) {
+						pDebug("actionPartsUpdate() - Exception: ", $e->errorInfo );
+						echo Status::FAILURE;
+						return;
+					}
 				}
 			}
 
@@ -746,6 +762,20 @@ class QuotesController extends Controller
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	// -----------------------------------------------------------------------------
 	private function getItemsByQuote( $quote_id ) {
 		$sql = "SELECT * FROM stock_items WHERE  quote_id = $quote_id";
@@ -801,12 +831,19 @@ class QuotesController extends Controller
 		pDebug("QuotesController::actionDelete() - _POST=", $_POST);
 
 		if ( $_POST['data'][0] == $id ) {
-			if ( $this->loadModel($id)->delete() ) {
-				pDebug("Quotes:actionDelete() - quote id $id deleted...");
-				echo Status::SUCCESS;
+
+			try {
+				if ( $this->loadModel($id)->delete() ) {
+					pDebug("Quotes:actionDelete() - quote id $id deleted...");
+					echo Status::SUCCESS;
+				}
+				else {
+					pDebug("Quotes:actionDelete() - ERROR: can't delete quote id $id; error=", $model->errors  );
+					echo Status::FAILURE;
+				}
 			}
-			else {
-				pDebug("Quotes:actionDelete() - ERROR: can't delete quote id $id; error=", $model->errors  );
+			catch (Exception $ex) {
+				pDebug("Quotes:actionDelete() - Exception caught: ",  $ex->errorInfo  );
 				echo Status::FAILURE;
 			}
 		}

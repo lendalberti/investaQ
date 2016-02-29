@@ -16,7 +16,6 @@
  * @property string $expiration_date
  * @property integer $level_id
  * @property integer $source_id
- * @property integer $lead_quality_id
  * @property string $additional_notes
  * @property string $terms_conditions
  * @property string $customer_acknowledgment
@@ -29,17 +28,16 @@
  *
  * The followings are the available model relations:
  * @property Attachments[] $attachments
- * @property BtoComments[] $btoComments
  * @property BtoItems[] $btoItems
+ * @property Status $status
  * @property Customers $customer
  * @property Users $owner
- * @property Status $status
  * @property LostReasons $lostReason
  * @property NoBidReasons $noBidReason
  * @property QuoteTypes $quoteType
  * @property Levels $level
  * @property Sources $source
- * @property LeadQuality $leadQuality
+ * @property Contacts $contact
  * @property StockItems[] $stockItems
  */
 class Quotes extends CActiveRecord
@@ -71,12 +69,12 @@ class Quotes extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('quote_no, quote_type_id, status_id, owner_id, customer_id, contact_id, updated_date, expiration_date, source_id', 'required'),
-			array('quote_type_id, status_id, owner_id, customer_id, contact_id, level_id, source_id, lead_quality_id, lost_reason_id, no_bid_reason_id, ready_to_order', 'numerical', 'integerOnly'=>true),
+			array('quote_type_id, status_id, owner_id, customer_id, contact_id, level_id, source_id, lost_reason_id, no_bid_reason_id, ready_to_order', 'numerical', 'integerOnly'=>true),
 			array('quote_no', 'length', 'max'=>45),
 			array('created_date, additional_notes, terms_conditions, customer_acknowledgment, risl, manufacturing_lead_time, salesperson_notes', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, quote_no, quote_type_id, status_id, owner_id, customer_id, contact_id, created_date, updated_date, expiration_date, level_id, source_id, lead_quality_id, additional_notes, terms_conditions, customer_acknowledgment, risl, manufacturing_lead_time, lost_reason_id, no_bid_reason_id, ready_to_order, salesperson_notes', 'safe', 'on'=>'search'),
+			array('id, quote_no, quote_type_id, status_id, owner_id, customer_id, contact_id, created_date, updated_date, expiration_date, level_id, source_id, additional_notes, terms_conditions, customer_acknowledgment, risl, manufacturing_lead_time, lost_reason_id, no_bid_reason_id, ready_to_order, salesperson_notes', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -89,18 +87,16 @@ class Quotes extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'attachments' => array(self::HAS_MANY, 'Attachments', 'quote_id'),
-			'btoComments' => array(self::HAS_MANY, 'BtoComments', 'quote_id'),
 			'btoItems' => array(self::HAS_MANY, 'BtoItems', 'quote_id'),
-			'customer' => array(self::BELONGS_TO, 'Customers', 'customer_id'),
-			'contact' => array(self::BELONGS_TO, 'Contacts', 'contact_id'),
-			'owner' => array(self::BELONGS_TO, 'Users', 'owner_id'),
 			'status' => array(self::BELONGS_TO, 'Status', 'status_id'),
+			'customer' => array(self::BELONGS_TO, 'Customers', 'customer_id'),
+			'owner' => array(self::BELONGS_TO, 'Users', 'owner_id'),
 			'lostReason' => array(self::BELONGS_TO, 'LostReasons', 'lost_reason_id'),
 			'noBidReason' => array(self::BELONGS_TO, 'NoBidReasons', 'no_bid_reason_id'),
 			'quoteType' => array(self::BELONGS_TO, 'QuoteTypes', 'quote_type_id'),
 			'level' => array(self::BELONGS_TO, 'Levels', 'level_id'),
 			'source' => array(self::BELONGS_TO, 'Sources', 'source_id'),
-			'leadQuality' => array(self::BELONGS_TO, 'LeadQuality', 'lead_quality_id'),
+			'contact' => array(self::BELONGS_TO, 'Contacts', 'contact_id'),
 			'stockItems' => array(self::HAS_MANY, 'StockItems', 'quote_id'),
 		);
 	}
@@ -123,7 +119,6 @@ class Quotes extends CActiveRecord
 			'expiration_date' => 'Expiration Date',
 			'level_id' => 'Level',
 			'source_id' => 'Source',
-			'lead_quality_id' => 'Lead Quality',
 			'additional_notes' => 'Additional Notes',
 			'terms_conditions' => 'Terms Conditions',
 			'customer_acknowledgment' => 'Customer Acknowledgment',
@@ -159,7 +154,6 @@ class Quotes extends CActiveRecord
 		$criteria->compare('expiration_date',$this->expiration_date,true);
 		$criteria->compare('level_id',$this->level_id);
 		$criteria->compare('source_id',$this->source_id);
-		$criteria->compare('lead_quality_id',$this->lead_quality_id);
 		$criteria->compare('additional_notes',$this->additional_notes,true);
 		$criteria->compare('terms_conditions',$this->terms_conditions,true);
 		$criteria->compare('customer_acknowledgment',$this->customer_acknowledgment,true);
@@ -175,12 +169,13 @@ class Quotes extends CActiveRecord
 		));
 	}
 
+
 	public function getAllSelects() {
 		$selects = array();
-		// lead_quality  package_types  process_flow  testing  die_manufacturers
+		// order_probability  package_types  process_flow  testing  die_manufacturers
 
-		foreach( array( 'lead_quality', 'package_types', 'process_flow', 'testing') as $t ) {
-			$order_by = ( $t=='lead_quality' ? 'id' : 'name');
+		foreach( array( 'order_probability', 'package_types', 'process_flow', 'testing') as $t ) {
+			$order_by = ( $t=='order_probability' ? 'id' : 'name');
 			$sql     = "SELECT * FROM $t ORDER BY $order_by";
 			$command = Yii::app()->db->createCommand($sql);
 			$results = $command->queryAll();
@@ -202,4 +197,7 @@ class Quotes extends CActiveRecord
 	}
 
 
+
+
+	
 }

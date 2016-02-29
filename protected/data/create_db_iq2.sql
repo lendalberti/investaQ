@@ -264,14 +264,37 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `iq2`.`lead_quality`
+-- Table `iq2`.`contacts`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `iq2`.`lead_quality` ;
+DROP TABLE IF EXISTS `iq2`.`contacts` ;
 
-CREATE  TABLE IF NOT EXISTS `iq2`.`lead_quality` (
+CREATE  TABLE IF NOT EXISTS `iq2`.`contacts` (
   `id` INT NOT NULL AUTO_INCREMENT ,
-  `name` VARCHAR(45) NOT NULL ,
-  PRIMARY KEY (`id`) )
+  `first_name` VARCHAR(45) NOT NULL ,
+  `last_name` VARCHAR(45) NOT NULL ,
+  `email` VARCHAR(45) NOT NULL ,
+  `title` VARCHAR(45) NOT NULL ,
+  `phone1` VARCHAR(45) NOT NULL ,
+  `phone2` VARCHAR(45) NULL ,
+  `address1` VARCHAR(45) NULL ,
+  `address2` VARCHAR(45) NULL ,
+  `city` VARCHAR(45) NULL ,
+  `state_id` INT NULL ,
+  `zip` VARCHAR(45) NULL ,
+  `country_id` INT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_contacts_1_idx` (`state_id` ASC) ,
+  INDEX `fk_contacts_2_idx` (`country_id` ASC) ,
+  CONSTRAINT `fk_contacts_1`
+    FOREIGN KEY (`state_id` )
+    REFERENCES `iq2`.`us_states` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_contacts_2`
+    FOREIGN KEY (`country_id` )
+    REFERENCES `iq2`.`countries` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
@@ -293,7 +316,6 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`quotes` (
   `expiration_date` DATETIME NOT NULL ,
   `level_id` INT NOT NULL DEFAULT 1 ,
   `source_id` INT NOT NULL ,
-  `lead_quality_id` INT NULL ,
   `additional_notes` TEXT NULL ,
   `terms_conditions` TEXT NULL ,
   `customer_acknowledgment` TEXT NULL ,
@@ -314,7 +336,7 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`quotes` (
   UNIQUE INDEX `quote_no_UNIQUE` (`quote_no` ASC) ,
   INDEX `fk_quotes_7_idx` (`level_id` ASC) ,
   INDEX `fk_quotes_8_idx` (`source_id` ASC) ,
-  INDEX `fk_quotes_14_idx` (`lead_quality_id` ASC) ,
+  INDEX `fk_quotes_9_idx` (`contact_id` ASC) ,
   CONSTRAINT `fk_quotes_2`
     FOREIGN KEY (`customer_id` )
     REFERENCES `iq2`.`customers` (`id` )
@@ -355,9 +377,9 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`quotes` (
     REFERENCES `iq2`.`sources` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_quotes_14`
-    FOREIGN KEY (`lead_quality_id` )
-    REFERENCES `iq2`.`lead_quality` (`id` )
+  CONSTRAINT `fk_quotes_9`
+    FOREIGN KEY (`contact_id` )
+    REFERENCES `iq2`.`contacts` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -438,41 +460,6 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`roles` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `name` VARCHAR(45) NULL ,
   PRIMARY KEY (`id`) )
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `iq2`.`contacts`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `iq2`.`contacts` ;
-
-CREATE  TABLE IF NOT EXISTS `iq2`.`contacts` (
-  `id` INT NOT NULL AUTO_INCREMENT ,
-  `first_name` VARCHAR(45) NOT NULL ,
-  `last_name` VARCHAR(45) NOT NULL ,
-  `email` VARCHAR(45) NOT NULL ,
-  `title` VARCHAR(45) NOT NULL ,
-  `phone1` VARCHAR(45) NOT NULL ,
-  `phone2` VARCHAR(45) NULL ,
-  `address1` VARCHAR(45) NULL ,
-  `address2` VARCHAR(45) NULL ,
-  `city` VARCHAR(45) NULL ,
-  `state_id` INT NULL ,
-  `zip` VARCHAR(45) NULL ,
-  `country_id` INT NULL ,
-  PRIMARY KEY (`id`) ,
-  INDEX `fk_contacts_1_idx` (`state_id` ASC) ,
-  INDEX `fk_contacts_2_idx` (`country_id` ASC) ,
-  CONSTRAINT `fk_contacts_1`
-    FOREIGN KEY (`state_id` )
-    REFERENCES `iq2`.`us_states` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_contacts_2`
-    FOREIGN KEY (`country_id` )
-    REFERENCES `iq2`.`countries` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
@@ -671,6 +658,18 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `iq2`.`order_probability`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `iq2`.`order_probability` ;
+
+CREATE  TABLE IF NOT EXISTS `iq2`.`order_probability` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(45) NOT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `iq2`.`motivationals`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `iq2`.`motivationals` ;
@@ -693,7 +692,7 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`bto_items` (
   `approvers_notified` TINYINT(1) NULL DEFAULT false ,
   `requested_part_number` VARCHAR(45) NOT NULL ,
   `generic_part_number` VARCHAR(45) NULL ,
-  `order_probability` VARCHAR(45) NULL ,
+  `order_probability_id` INT NULL ,
   `quantity1` INT NULL ,
   `quantity2` INT NULL ,
   `quantity3` INT NULL ,
@@ -720,6 +719,7 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`bto_items` (
   INDEX `fk_bto_items_4_idx` (`testing_id` ASC) ,
   INDEX `fk_bto_items_5_idx` (`quote_id` ASC) ,
   INDEX `fk_bto_items_6_idx` (`priority_id` ASC) ,
+  INDEX `fk_bto_items_7_idx` (`order_probability_id` ASC) ,
   CONSTRAINT `fk_bto_items_1`
     FOREIGN KEY (`die_manufacturer_id` )
     REFERENCES `iq2`.`die_manufacturers` (`id` )
@@ -743,11 +743,16 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`bto_items` (
   CONSTRAINT `fk_bto_items_5`
     FOREIGN KEY (`quote_id` )
     REFERENCES `iq2`.`quotes` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_bto_items_6`
     FOREIGN KEY (`priority_id` )
     REFERENCES `iq2`.`priority` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_bto_items_7`
+    FOREIGN KEY (`order_probability_id` )
+    REFERENCES `iq2`.`order_probability` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -778,8 +783,8 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`bto_comments` (
   CONSTRAINT `fk_bto_comments_4`
     FOREIGN KEY (`bto_item_id` )
     REFERENCES `iq2`.`bto_items` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_bto_comments_5`
     FOREIGN KEY (`to_user_id` )
     REFERENCES `iq2`.`users` (`id` )
@@ -810,8 +815,8 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`bto_status` (
   CONSTRAINT `fk_bto_status_2`
     FOREIGN KEY (`bto_item_id` )
     REFERENCES `iq2`.`bto_items` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_bto_status_3`
     FOREIGN KEY (`group_id` )
     REFERENCES `iq2`.`bto_groups` (`id` )

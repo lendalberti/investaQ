@@ -9,7 +9,7 @@
 		<div style='border: 0px solid green; margin: 20px 0px 0px 60px; float: left; width: 40%;'>
 
 			<table id='mfg_details'>
-				<tr>   <td>Order Probability</td>    <td><input value='<?php echo $q->order_probability; ?>'       readonly='readonly'  id='BtoItems_order_probability'       name='BtoItems[order_probability]' /></td> </tr>
+				<tr>   <td>Order Probability</td>    <td><input value='<?php echo $q->orderProbability->name; ?>'       readonly='readonly'  id='BtoItems_order_probability'       name='BtoItems[order_probability]' /></td> </tr>
 				<tr>   <td>Requested Part No.</td>   <td><input value='<?php echo $q->requested_part_number; ?>' readonly='readonly'  id='BtoItems_requested_part_number' name='BtoItems[requested_part_number]' /></td> </tr>
 				<tr>   <td>Generic Part No.</td>     <td><input value='<?php echo $q->generic_part_number; ?>' 	 readonly='readonly'  id='BtoItems_generic_part_number'   name='BtoItems[generic_part_number]' /></td> </tr>
 				<tr>   <td>Quantity</td>     		 <td><input value='<?php echo $q->quantity1; ?>'			 readonly='readonly'  id='BtoItems_quantity1' 			name='BtoItems[quantity1]' /></td> </tr>
@@ -40,12 +40,3 @@
 		</div>
 </div>
 
-		<!-- <div style='border: 1px solid lightblue;'>
-
-				<span style='font-weight: bold;'>Author's Notes:</span><br />
-				<span id='BtoItems_salesperson_notes'>< ?php echo $q->salesperson_notes; ?></span>
-
-		</div>
-
- -->
-	
