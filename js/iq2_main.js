@@ -238,8 +238,145 @@ $(document).ready(function() {
     // -------- Event Handlers  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------    
     // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
+    $('[id^=approveItem_]').on('click', function() {
+        var tmp    =  $(this).attr('id');
+        var match  = /^.+_(\d+)_(\w+)$/.exec(tmp);
+        var itemID = RegExp.$1;
+        var groupID = RegExp.$2;
+        var action = 'Approve';
+
+        console.log('Approved item: ' + itemID + ', group=' + groupID + ', action=' + action);
+        var postData = { itemID: itemID, groupID: groupID, action: action };
+        $.ajax({
+            type: "POST",
+            url: myURL + 'quotes/itemStatus',
+            data: postData,
+            success: function(results)  {
+                if ( results == SUCCESS ) {
+                    console.log('Item status set to Approved.'); 
+
+                    Cookies.set('current_tab', TAB_Approvals-1);  // 0-indexed 
+                    location.reload();
+                }
+                else {
+                    alert('Could not set status to Approved - See Admin.');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown)  {
+                alert("Could not set status to Approved; error=\n\n" + errorThrown + ", jqXHR="+jqXHR);
+            }
+        });
+    });
+
+
+    $('[id^=holdItem_]').on('click', function() {
+        var tmp    =  $(this).attr('id');
+        var match  = /^.+_(\d+)_(\w+)$/.exec(tmp);
+        var itemID = RegExp.$1;
+        var groupID = RegExp.$2;
+        var action = 'Hold';
+
+        console.log('Approved item: ' + itemID + ', group=' + groupID + ', action=' + action);
+        var postData = { itemID: itemID, groupID: groupID, action: action };
+        $.ajax({
+            type: "POST",
+            url: myURL + 'quotes/itemStatus',
+            data: postData,
+            success: function(results)  {
+                if ( results == SUCCESS ) {
+                    console.log('Item status set to Pending.');
+
+                    Cookies.set('current_tab', TAB_Approvals-1);  // 0-indexed 
+                    location.reload();
+                }
+                else {
+                    alert('Could not set status to Pending - See Admin.'); 
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown)  {
+                alert("Could not set status to Pending; error=\n\n" + errorThrown + ", jqXHR="+jqXHR);
+            }
+        });
+
+    });
+
+
+    $('[id^=rejectItem_]').on('click', function() {
+        var tmp    =  $(this).attr('id');
+        var match  = /^.+_(\d+)_(\w+)$/.exec(tmp);
+        var itemID = RegExp.$1;
+        var groupID = RegExp.$2;
+        var action = 'Reject';
+
+        console.log('Approved item: ' + itemID + ', group=' + groupID + ', action=' + action);
+        var postData = { itemID: itemID, groupID: groupID, action: action };
+        $.ajax({
+            type: "POST",
+            url: myURL + 'quotes/itemStatus',
+            data: postData,
+            success: function(results)  {
+                if ( results == SUCCESS ) {
+                    console.log('Item status set to Rejected.');
+
+                    Cookies.set('current_tab', TAB_Approvals-1);  // 0-indexed 
+                    location.reload();
+                }
+                else {
+                    alert('Could not set status to Rejected - See Admin.');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown)  {
+                alert("Could not set status to Rejected; error=\n\n" + errorThrown + ", jqXHR="+jqXHR);
+            }
+        });
+    });
+
+
+
+
     $('#link_SendMesage').on('click', function() {
         $('#div_SendMessage').toggle();
+    });
+
+    
+    $('#button_AddMessage').on('click', function() {
+        var postData = {
+            quoteID:             $('#Quotes_id').val(),
+            text_Subject:        $('#text_Subject').val(),
+            text_Message:        $('#text_Message').val(),
+            approver_Assembly:   $('#approver_Assembly').val(),
+            approver_Test:       $('#approver_Test').val(),
+            approver_Quality:    $('#approver_Quality').val(),
+        }
+        
+        if ( $('#text_Subject').val().trim() == '' || $('#text_Message').val().trim() == '' ) {
+            alert('Missing subject and/or message...');
+        }
+        else {
+
+            console.log('Post Data=' + postData);
+            $.ajax({
+                    type: "POST",
+                    url: myURL + 'quotes/addMessage',
+                    data: postData,
+                    success: function(results)  {
+                        if ( results == SUCCESS ) {
+                           // alert('Message has been added.'); 
+
+                            Cookies.set('current_tab', TAB_Approvals-1);  // 0-indexed 
+                            location.reload();
+                        }
+                        else {
+                            alert('Could not add message - See Admin.');
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown)  {
+                        alert("Could not add message; error=\n\n" + errorThrown + ", jqXHR="+jqXHR);
+                    }
+            });
+        }
+
     });
 
 
@@ -268,7 +405,7 @@ $(document).ready(function() {
                     data: postData,
                     success: function(results)  {
                         if ( results == SUCCESS ) {
-                            alert('Process coordinators have been notified.'); 
+                            //alert('Process coordinators have been notified.'); 
 
                             Cookies.set('current_tab', TAB_Approvals-1);  // 0-indexed 
                             location.reload();

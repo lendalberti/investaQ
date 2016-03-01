@@ -3,7 +3,22 @@
 | 29 February 2016 (Monday)      |
 +--------------------------------+
 
-	[ ] coordinators tab should show up only for Proposal Manager 
+	[x] coordinators tab should show up only for Proposal Manager 
+
+	[x] Process coordinators have been notified - add function
+
+	[x] second link to: "Send a message to your coordinators" 
+		- should be renamed to "Add Note" 
+		- don't want to use Outlook for notifications after first time.
+
+	[ ] add "hover" to message subjects
+		- add icon? 
+		- on click display message
+
+	[ ] instead of dropdown ("Update status to") on coordinators page
+		- use Approve, Reject buttons
+
+	[ ] fix My Quotes Board to reflect BTO quotes
 
 
 
@@ -12,7 +27,7 @@
 | 27 February 2016 (Saturday)    |
 +--------------------------------+
 
-	[ ] decide whether we need BTO status values
+	[x] decide whether we need BTO status values
 
 	[ ] add $model['attachments'] from Quotes::view
 
@@ -20,7 +35,7 @@
 
 	[ ] make subject list behave like links to messages
 
-	[ ] redo section for sending messages (shorten Messages and Attachments boxes)
+	[x] redo section for sending messages (shorten Messages and Attachments boxes)
 
 
 	
@@ -41,7 +56,7 @@
 
 	[x] add Notes field to Quotes
 
-	[ ] add notifyProposalManager()
+	[x] add notifyProposalManager()
 
 	[ ] make fields on details page required ?
 

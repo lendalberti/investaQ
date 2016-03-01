@@ -19,7 +19,7 @@
 												echo "<option></option>";
 												foreach( $data['selects']['order_probability'] as $s => $arr ) {
 													foreach( $arr as $k => $v ) {
-														$selected = ( $k==$q->orderProbability->name ? 'selected' : '' );
+														$selected = ( $k==$q->orderProbability->id ? 'selected' : '' );
 														echo "<option $selected value='" . $k."'>".$v."</option>";
 													}
 												}

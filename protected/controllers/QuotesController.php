@@ -43,7 +43,7 @@ class QuotesController extends Controller
 			),
 
 			array('allow', // allow Proposal Manager to initiate Manufacturing Quote 
-				'actions'=>array('manufacturing', 'notifyMfgApprovers'),
+				'actions'=>array('manufacturing', 'notifyMfgApprovers', 'addMessage', 'itemStatus'),
 				'expression' => '$user->isProposalManager'
 			),
 
@@ -67,6 +67,36 @@ class QuotesController extends Controller
 			'model'=>$model,
 		));
 	}
+
+
+	public function actionItemStatus() {
+		pDebug("actionConfig() - _POST=", $_POST);  //  itemID: itemID, groupID: groupID 
+
+		$item_id   = $_POST['itemID'];
+		$group_id  = $_POST['groupID'];
+		$action    = $_POST['action'];
+
+		$status['Hold']    = Status::PENDING;
+		$status['Approve'] = Status::APPROVED;
+		$status['Reject']  = Status::REJECTED;
+
+		$model = BtoStatus::model()->findByPk($item_id);
+		$model->status_id = $status[$action];
+		
+		if ( $model->save() ) {
+			pDebug("actionItemStatus() - item_id=[$item_id], group_id=[$group_id], action=[$ction]" );
+			echo Status::SUCCESS; 
+		}
+		else {
+			pDebug("actionItemStatus() - ERROR: could not change status for item_id: [$item_id], group_id=[$group_id], action=[$ction]; error:", $model->errors );
+			echo Status::FAILURE; 
+		}
+
+
+	}
+
+
+
 
 
 
@@ -272,8 +302,8 @@ class QuotesController extends Controller
 
 
 
-	
-	// ------------------------------------- 
+
+    // ------------------------------------- 
 	public function actionView($id) {
 		pTrace( __METHOD__ );
 
@@ -283,56 +313,39 @@ class QuotesController extends Controller
 		$customer_id = $data['model']->customer_id;
 		$contact_id  = $data['model']->contact_id;
 		$quote_id    = $data['model']->id;
+		$quote_type  = $data['model']->quote_type_id;
 
-		// ------------------------------ get customer
 		$data['customer'] = Customers::model()->findByPk($customer_id);
-		
-		// ------------------------------ get contact
 		$data['contact']  = Contacts::model()->findByPk($contact_id);
+		$data['status']   = Status::model()->findAll();
 
-		// ------------------------------ get status
-		$data['status'] = array();
-		$data['status']  = Status::model()->findAll();
+		if ( $quote_type == QuoteTypes::MANUFACTURING ) {
+			$data['bto_approvers'] = BtoApprovers::model()->getList();
 
-		// ------------------------------ get items
-		$data['items'] = array();
-		$data['items'] = $this->getItemsByQuote($quote_id);
+			$criteria =  new CDbCriteria();
+			$criteria->addCondition("quote_id = $id");
+			$data['BtoItems_model'] = BtoItems::model()->find( $criteria );
 
-		$data['bto_approvers'] = BtoApprovers::model()->getList();
+			$data['bto_messages'] = BtoMessages::model()->getAllMessageSubjects($id);
 
-		// $criteria = new CDbCriteria();
+			$criteria =  new CDbCriteria();
+			$criteria->addCondition("bto_item_id = " . $data['BtoItems_model']->id );
+			$data['BtoStatus'] = BtoStatus::model()->findAll( $criteria );
 
-		// if ( Yii::app()->user->isApprover || Yii::app()->user->isAdmin ) {
-		// 	$page_title = "Quotes Needing Approval";
-		// 	$criteria->addCondition("status_id = " . Status::PENDING);
-
-		// 	$criteria->order = 'id DESC';
-		// 	$model = Quotes::model()->findAll( $criteria );
-
-		$criteria =  new CDbCriteria();
-		$criteria->addCondition("quote_id = $id");
-		$data['BtoItems_model'] = BtoItems::model()->find( $criteria );
-
-		// $data['coordinators'] = approver_Assembly   approver_Test  approver_Quality
-		// +----+------------+
-		// | id | name       |
-		// +----+------------+
-		// |  1 | Assembly   |
-		// |  2 | Quality    |
-		// |  3 | Test       |
-		// +----+------------+
-
+		}
+		else {
+			$data['items'] = $this->getStockItemsByQuote($quote_id);
+		}
 
 		$data['selects']      = Quotes::model()->getAllSelects();
-		$data['bto_messages'] = BtoMessages::model()->getAllMessageSubjects($id);
 		$data['attachments']  = Attachments::model()->getAllAttachments($id);
 
 		$this->render('view',array(
 			'data'=>$data,
 		));
-
 	}
 
+	
 	
 	public function actionCreate() {
 		pTrace( __METHOD__ );
@@ -760,7 +773,7 @@ class QuotesController extends Controller
 			
 			// ------------------------------ get items
 			$data['items']   = array();
-			$data['items']   = $this->getItemsByQuote($quote_id);
+			$data['items']   = $this->getStockItemsByQuote($quote_id);
 			$data['selects'] = Quotes::model()->getAllSelects();
 			$data['model']   = $this->loadModel($quote_id);
 			$data['sources'] = Sources::model()->findAll( array('order' => 'name') );
@@ -782,24 +795,26 @@ class QuotesController extends Controller
 
 
 
+	// -----------------------------------------------------------------------------
+	private function getBtoItemsByQuote( $quote_id ) {
+		$sql = "SELECT * FROM bto_items WHERE  quote_id = $quote_id";
+		$command = Yii::app()->db->createCommand($sql);
+		$items = $command->queryAll();
 
-
-
-
-
-
-
+		pDebug("Quotes::getStockItemsByQuote() - items:", $items );
+		return $items;
+	}
 
 
 
 	// -----------------------------------------------------------------------------
-	private function getItemsByQuote( $quote_id ) {
+	private function getStockItemsByQuote( $quote_id ) {
 		$sql = "SELECT * FROM stock_items WHERE  quote_id = $quote_id";
 		$command = Yii::app()->db->createCommand($sql);
 		$results = $command->queryAll();
 
 		foreach( $results as $i ) {
-			// pDebug('Quotes:getItemsByQuote() - results from stock_items:', $i );
+			// pDebug('Quotes:getStockItemsByQuote() - results from stock_items:', $i );
 			foreach( array('1_24', '25_99', '100_499', '500_999', '1000_Plus', 'Base', 'Custom') as $v ) {
 				if ( fq($i['qty_'.$v]) != '0' ) {
 
@@ -830,7 +845,7 @@ class QuotesController extends Controller
 			}
 		}
 
-		pDebug('Quotes::getItemsByQuote() - final items:', $items );
+		pDebug('Quotes::getStockItemsByQuote() - final items:', $items );
 		return $items;
 	}
 
@@ -915,7 +930,7 @@ class QuotesController extends Controller
 		pDebug('actionIndexApproval() - _GET=', $_GET);
 
 		$quote_type = QuoteTypes::MANUFACTURING;
-		$status     = Status::BTO_PENDING;
+		$status     = Status::PENDING;
 
 		$criteria = new CDbCriteria();
 
@@ -947,7 +962,7 @@ class QuotesController extends Controller
 
 		if ( Yii::app()->user->isBtoApprover || Yii::app()->user->isAdmin ) { 
 			$quote_type = QuoteTypes::MANUFACTURING;
-			$status     = Status::BTO_PENDING;
+			$status     = Status::PENDING;
 			$page_title = "Manufacturing Quotes";
 
 			$my_id = Yii::app()->user->id;
@@ -1014,6 +1029,43 @@ EOT;
 
 
 	}
+
+
+	public function actionAddMessage() {
+		pDebug("Quotes::actionAddMessage() - _POST=", $_POST); 
+	
+		if ( $_POST['quoteID'] === '' || $_POST['text_Subject'] === '' || $_POST['text_Message'] === '' ) {
+			pDebug("Quotes::actionAddMessage() - missing _POST variables...");
+			echo Status::FAILURE;
+		}
+
+		try {
+			$criteria = new CDbCriteria();
+			$criteria->addCondition("quote_id = " . $_POST['quoteID'] );
+			
+			$modelItems =  BtoItems::model()->find($criteria);
+			$modelItems->save();
+			pDebug("Quotes::actionAddMessage() - modelItems->save()");
+
+			// save comment
+			$modelMessages = new BtoMessages;
+			$modelMessages->quote_id     = $_POST['quoteID'];
+			$modelMessages->bto_item_id  = $modelItems->id;
+			$modelMessages->from_user_id = Yii::app()->user->id;
+			$modelMessages->to_user_id   = Yii::app()->user->id;  // TODO: required field; adding a message for all
+			$modelMessages->subject      = $_POST['text_Subject'];
+			$modelMessages->message      = $_POST['text_Message'];
+			$modelMessages->save();
+			pDebug("Quotes::actionAddMessage() - modelMessages->save()");
+
+		}
+		catch( Exception $ex ) {
+			pDebug("Quotes::actionAddMessage() - Exception: ", $ex );
+			echo Status::FAILURE;
+		}
+		echo Status::SUCCESS;
+	}
+
 
 
 

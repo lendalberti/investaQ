@@ -20,10 +20,8 @@ class Status extends CActiveRecord {
 			NO_BID        = 6,
 			SUBMITTED     = 7,
 			APPROVED      = 8,
-			REJECTED	  = 9,
-			BTO_PENDING   = 10,
-			BTO_APPROVED  = 11,
-			BTO_NOBID     = 12;
+			REJECTED	  = 9;
+		
 
 	const		
 			SUCCESS       = 0,

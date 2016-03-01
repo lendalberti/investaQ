@@ -5,6 +5,15 @@
 
     }
 
+    function displayMfgQuoteStatus( $status_id ) {
+        $s[Status::PENDING ]  = 'pending';  // 2
+        $s[Status::APPROVED ] = 'approved'; // 8 
+        $s[Status::REJECTED ] = 'rejected'; // 9
+
+        $src = Yii::app()->request->baseUrl . "/images/New/".$s[$status_id].".png";
+
+        return  "<img src='$src' width='20' height='20' style='vertical-align:middle' >";
+    }
 
 
 

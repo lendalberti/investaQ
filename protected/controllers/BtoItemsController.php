@@ -49,14 +49,14 @@ class BtoItemsController extends Controller
 	public function actionProcess() {
 		pDebug( "actionProcess() - _POST=", $_POST);
 		/*
-			1. set quote status to BTO_PENDING
+			1. set quote status to PENDING
 			2. notify Proposal Manager
 		*/
 		$quote_id = $_POST['quote_id'];
 
 		try {
 			$quoteModel            = Quotes::model()->findByPk($quote_id);
-			$quoteModel->status_id = Status::BTO_PENDING; 
+			$quoteModel->status_id = Status::PENDING; 
 			if ( $quoteModel->save() ) {
 				pDebug( "actionProcess() - manufacturing quote no. " . $quoteModel->quote_no . " is now 'Pending Approval'.");
 				notifyProposalManager($quoteModel);
@@ -102,10 +102,20 @@ class BtoItemsController extends Controller
 			pDebug("BtoItems::actionCreate() - trying to save itemModel with these attributes: ", $itemModel->attributes);
 
 			try {
-				if ( $itemModel->save() ) {					// 1. save BtoItems model
-					$quoteModel                = Quotes::model()->findByPk( $_POST['quote_id'] );
+				if ( $itemModel->save() ) {				// 1. save BtoItems model
+					
+					foreach( array( BtoGroups::ASSEMBLY, BtoGroups::TEST, BtoGroups::QUALITY ) as $group_id ) {
+						$statusModel = new BtoStatus;    
+						$statusModel->bto_item_id = $itemModel->id;
+						$statusModel->group_id    = $group_id;
+						$statusModel->status_id   = Status::PENDING;
+						$statusModel->save();  			 // 2. save BtoStatus for each group
+					}
+					
+					$quoteModel = Quotes::model()->findByPk( $_POST['quote_id'] );
 					$quoteModel->quote_type_id = QuoteTypes::MANUFACTURING;
-					if ( $quoteModel->save() ) {		// 2. update Quote type
+
+					if ( $quoteModel->save() ) {		// 3. update Quote type
 						echo  Status::SUCCESS;
 					}
 					else {
@@ -119,7 +129,7 @@ class BtoItemsController extends Controller
 				}
 			}
 			catch (Exception $ex) {
-				pDebug("BtoItems::actionCreate() - error trying to save BtoItems model: ", $ex);
+				pDebug("BtoItems::actionCreate() - exception trying to save BtoItems model: ", $ex);
 			}
 				
 		}

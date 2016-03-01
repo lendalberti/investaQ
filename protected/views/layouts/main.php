@@ -159,9 +159,9 @@
 					<tr>	<td>Pending</td>       <td><?php echo getMyQuoteCount(Status::PENDING); ?></td>          <td>Approved</td>    <td><?php echo getMyQuoteCount(Status::APPROVED); ?></td>   </tr>  
 					<tr>	<td>Order Placed</td>  <td><?php echo getMyQuoteCount(Status::ORDER_PLACED); ?></td>     <td>Rejected</td>       <td><?php echo getMyQuoteCount(Status::REJECTED); ?></td>   </tr>  
 					<tr>	<td>Submitted</td>     <td><?php echo getMyQuoteCount(Status::SUBMITTED); ?></td>        <td>Won</td>         <td><?php echo getMyQuoteCount(Status::WON); ?></td>     </tr> 
-					<tr>	<td>BTO Pending</td>   <td><?php echo getMyQuoteCount(Status::BTO_PENDING); ?></td>      <td>Lost</td>        <td><?php echo getMyQuoteCount(Status::LOST); ?></td>    </tr>
-					<tr>	<td>BTO Approved</td>     <td><?php echo getMyQuoteCount(Status::BTO_APPROVED); ?></td>  <td>NoBid</td>    <td><?php echo getMyQuoteCount(Status::NO_BID); ?></td>  </tr>
-					<tr>	<td>BTO NoBid</td>     <td><?php echo getMyQuoteCount(Status::BTO_NOBID); ?></td>        <td>Draft</td>    <td><?php echo getMyQuoteCount(Status::DRAFT); ?></td>  </tr>
+					<tr>	<td>BTO Pending</td>   <td><?php echo getMyQuoteCount(Status::PENDING); ?></td>      <td>Lost</td>        <td><?php echo getMyQuoteCount(Status::LOST); ?></td>    </tr>
+					<tr>	<td>BTO Approved</td>     <td><?php echo getMyQuoteCount(Status::APPROVED); ?></td>  <td>NoBid</td>    <td><?php echo getMyQuoteCount(Status::NO_BID); ?></td>  </tr>
+					<tr>	<td>BTO NoBid</td>     <td><?php echo getMyQuoteCount(Status::NO_BID); ?></td>        <td>Draft</td>    <td><?php echo getMyQuoteCount(Status::DRAFT); ?></td>  </tr>
 				</table>
 			</div>
 	<?php } ?>

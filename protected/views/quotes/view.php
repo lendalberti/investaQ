@@ -18,7 +18,7 @@
 				echo "<span style='color: #2C6371;  font-size: .7em; border: 0px solid red; '> [ $quoteType,$status ] [ " . $data['model']->owner->fullname . " ]</span>";
 			}
 			else if ( Yii::app()->user->isProposalManager ) {
-				echo "<span style='color: #2C6371;  font-size: .7em; border: 0px solid red; '> [ ". $data['model']->owner->fullname . " ]</span>";
+				echo "<span style='color: #2C6371;  font-size: .7em; border: 0px solid red; '> [ ". $data['model']->owner->fullname . ", $status ]</span>";
 			}
 		?>
 	</div>
@@ -31,14 +31,13 @@
  		$attach = Yii::app()->request->baseUrl . "/images/New/attachment.png";
  		$email  = Yii::app()->request->baseUrl . "/images/New/mail.png";
  		$contact = Yii::app()->request->baseUrl . "/images/New/contact.png";
- 		// $pending = Yii::app()->request->baseUrl . "/images/New/gear_yellow.png";
- 		//$rejected = Yii::app()->request->baseUrl . "/images/New/gear_yellow_x.png";
+ 		
  		$submit = Yii::app()->request->baseUrl . "/images/New/submit.png";
  		$draft = Yii::app()->request->baseUrl . "/images/New/draft.png";
 
- 		$approved = Yii::app()->request->baseUrl . "/images/New/button_green.png";
- 		$rejected = Yii::app()->request->baseUrl . "/images/New/button_red.png";
- 		$pending = Yii::app()->request->baseUrl . "/images/New/button_yellow.png";
+ 		$approved = Yii::app()->request->baseUrl . "/images/New/approved.png";
+ 		$rejected = Yii::app()->request->baseUrl . "/images/New/rejected.png";
+ 		$pending = Yii::app()->request->baseUrl . "/images/New/pending.png";
 
  		if ( Yii::app()->user->isAdmin || Yii::app()->user->isApprover ) { // allow all for Admin
  			echo "<img id='quote_edit_"  .$data['model']['id']."' title='Edit this quote'   src='$edit' />";
@@ -51,7 +50,7 @@
  		else {
  			//if ( $data['model']->status_id == Status::DRAFT || $data['model']->status_id == Status::REJECTED ) { // edits allowed only for draft,rejected quotes
 
- 			if ( $data['model']->status_id != Status::BTO_PENDING ) {
+ 			if ( $data['model']->status_id != Status::PENDING ) {
  				echo "<img id='quote_edit_"  .$data['model']['id']."' title='Edit this quote'   src='$edit' />";
  			}
  			
@@ -278,23 +277,18 @@
 
 		<!--  for Manufacturing Quotes--> 
 		<div id='section_Manufacturing'>  
-			<!-- create a readonly view of _mfg_details.php -->
-			<?php require '_mfg_details_RO.php';    ?>
-
+			<?php require '_mfg_details_RO.php';    ?> <!-- readonly view of _mfg_details.php -->
 		</div>
 
 		<div id='section_Approvals'>
 			<?php require '_mfg_approvals.php';    ?>
 		</div>
+		
+		<div id='section_Coordinators'>
+			<?php require '_mfg_coordinators.php';    ?>
+		</div>
 
 
-	<!-- 	< ?php if ( Yii::app()->user->isProposalManager || Yii::app()->user->isBtoApprover ) { ?> 
-			<div id='section_Coordinators'>
-				< ?php require '_mfg_coordinators.php';    ?>
-			</div>
-		< ?php } ?>
-
- -->
 		
 
 
@@ -334,6 +328,6 @@
 
 </div>
 
-<div style='margin: 20px 20px 20px 10px;'> <input type='button' id='back_to_index' value='Done' /> </div>
+<!-- <div style='margin: 20px 20px 20px 10px;'> <input type='button' id='back_to_index' value='Done' /> </div> -->
 
 <!--  fini --> 
