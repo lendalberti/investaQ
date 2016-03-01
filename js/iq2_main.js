@@ -249,7 +249,6 @@ $(document).ready(function() {
             text_Subject:        $('#text_Subject').val(),
             text_Message:        $('#text_Message').val(),
             approver_Assembly:   $('#approver_Assembly').val(),
-            approver_Production: $('#approver_Production').val(),
             approver_Test:       $('#approver_Test').val(),
             approver_Quality:    $('#approver_Quality').val(),
         }
@@ -257,7 +256,7 @@ $(document).ready(function() {
         if ( $('#text_Subject').val().trim() == '' || $('#text_Message').val().trim() == '' ) {
             alert('Missing subject and/or message...');
         }
-        else if ( $('#approver_Assembly').val()==='' && $('#approver_Production').val()==='' && $('#approver_Test').val()==='' && $('#approver_Quality').val()==='' ) {
+        else if ( $('#approver_Assembly').val()==='' && $('#approver_Test').val()==='' && $('#approver_Quality').val()==='' ) {
             alert('Need to select a least 1 coordinator...');
         }
         else {
@@ -294,7 +293,6 @@ $(document).ready(function() {
         var quoteID     = $('#Quotes_id').val(); 
         var msg        = $('#approver_notification_message').val();
         var assembly   = $('#approver_Assembly').val();
-        var production = $('#approver_Production').val();
         var test       = $('#approver_Test').val();
         var quality    = $('#approver_Quality').val();
 
@@ -302,17 +300,14 @@ $(document).ready(function() {
         if ( $('#approver_notification_message').val().trim() == '' ) {
             alert('Missing notification message...');
         }
-        else if ( assembly==='' && production==='' && test==='' && quality==='' ) {
+        else if ( assembly===''                      && test==='' && quality==='' ) {
             alert('Need to select a least 1 approver...');
         }
         else {
-            //alert('Approvers: msg=['+msg+']\n\nassembly=['+assembly+'], production=['+production+'], test=['+test+'], quality=['+quality+']');
-
             var postData = { 
                     quoteID:    quoteID,
                     msg:        msg,
                     assembly:   assembly,
-                    production: production,
                     test:       test,
                     quality:    quality
             };

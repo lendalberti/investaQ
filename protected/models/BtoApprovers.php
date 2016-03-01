@@ -110,7 +110,7 @@ class BtoApprovers extends CActiveRecord
 	public function getList() {
 		$app = array();
 
-		foreach( array( BtoGroups::ASSEMBLY,BtoGroups::QUALITY,BtoGroups::TEST,BtoGroups::PRODUCTION ) as $i => $g_id ) {
+		foreach( array( BtoGroups::ASSEMBLY,BtoGroups::QUALITY,BtoGroups::TEST ) as $i => $g_id ) {
 			$criteria = new CDbCriteria;
 			$criteria->addCondition("group_id = $g_id");
 			$criteria->addCondition("role_id = " . Roles::BTO_APPROVER);

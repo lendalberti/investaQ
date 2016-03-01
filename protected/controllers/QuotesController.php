@@ -313,14 +313,13 @@ class QuotesController extends Controller
 		$criteria->addCondition("quote_id = $id");
 		$data['BtoItems_model'] = BtoItems::model()->find( $criteria );
 
-		// $data['coordinators'] = approver_Assembly  approver_Production  approver_Test  approver_Quality
+		// $data['coordinators'] = approver_Assembly   approver_Test  approver_Quality
 		// +----+------------+
 		// | id | name       |
 		// +----+------------+
 		// |  1 | Assembly   |
 		// |  2 | Quality    |
 		// |  3 | Test       |
-		// |  4 | Production |
 		// +----+------------+
 
 
@@ -1023,7 +1022,7 @@ EOT;
 		pDebug("Quotes::actionNotifyMfgApprovers() - _POST=", $_POST); 
 		
 		$toBeNotified = array();
-		foreach( array( $_POST['approver_Assembly'] ,$_POST['approver_Production'] ,$_POST['approver_Test'] ,$_POST['approver_Quality'] ) as $id ) {
+		foreach( array( $_POST['approver_Assembly'],$_POST['approver_Test'] ,$_POST['approver_Quality'] ) as $id ) {
 			if ( $id ) {
 				$toBeNotified[] = $id;
 			}

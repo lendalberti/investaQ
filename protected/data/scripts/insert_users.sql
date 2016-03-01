@@ -5,7 +5,6 @@ insert into users (id, username, first_name, last_name, email, title, phone, fax
 
 -- Assembly: Jamie Vatcher, Chuck Shermer, Trevor Pounder
 -- Test: Pete Crudele, Gary Francouer
--- Production: Rene Grandmaison
 -- Quality: Steve Lombard, Bob Buchanon, Steve Herschfeld
 
 insert into users (id, username, first_name, last_name, email, title, phone, fax, sig) values (5,  'jvatcher', 'Jamie',  'Vatcher', 'jvatcher@rocelec.com', 'Database Administrator I', '1-(480)521-8637', '46-(195)221-9450', null);

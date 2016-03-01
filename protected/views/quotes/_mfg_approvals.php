@@ -15,31 +15,9 @@
 		if ( !$approversNotified ) {  ?>
 			<div class="container_15 grid_outline_350">
 			
-				<!-- <div class='grid_16 ' style='margin-bottom: 50px;'>
-					<span style='padding-left: 68px; color: #a31128; '>Select Process Coordinators</span>
-					<div class='push_1' style='font-variant: small-caps; margin-top: 10px;'>
-
-						<div class='grid_3 '>
-							<span style='font-weight: bold;'> Assembly</span><br />   
-								<select id='approver_Assembly'>
 									<?php 
 											echo "<option></option>";
 											foreach( $data['bto_approvers'][BtoGroups::ASSEMBLY] as $k=>$v ) {
-												foreach( $v as $id => $fullname ) {
-													echo "<option value='$id'>$fullname</option>";
-												}
-											} 
-									?>
-								</select>
-							</span>
-						</div>
-
-						<div class='grid_3 '>
-							<span style='font-weight: bold;'> Production</span><br />   
-								<select id='approver_Production'>
-									<?php 
-											echo "<option></option>";
-											foreach( $data['bto_approvers'][BtoGroups::PRODUCTION] as $k=>$v ) {
 												foreach( $v as $id => $fullname ) {
 													echo "<option value='$id'>$fullname</option>";
 												}
@@ -80,15 +58,7 @@
 						</div>
 
 					</div>
- -->
-				<!-- 	<div class="clear">&nbsp;</div>
-					<div class='push_1' style='font-variant: small-caps; margin-top: 10px;'>
-						<div class='grid_8 '>
-							<input type='text' id='approver_notification_message' name='' placeholder="Enter notification message" size='70' /> 
-							<input type='button' id='button_NotifyApprovers'  value='Send' style='margin-top: 5px;padding: 10px; font-weight: bold;'/>
-						</div>
-					</div>
- -->
+ 
 
 				<div><span id='link_SendMesage' >Send a message to your coordinators</span></div>
 				<div class="clear">&nbsp;</div>
@@ -98,7 +68,6 @@
 
 						<div class='grid_16 ' style='margin: 10px;'>
 
-							<!-- <span style='padding-left: 10px; color: #a31128; '>Select Process Coordinators</span> -->
 							<div class='push_1' style='font-variant: small-caps; margin-top: 10px;'>
 
 								<div class='grid_3 '>
@@ -119,19 +88,6 @@
 									</select>
 								</div>
 
-								<div class='grid_3 ' style='text-align: center;'>
-									<span style='font-weight: bold;'> Production</span><br />   
-										<select id='approver_Production'>
-											<?php 
-													echo "<option></option>";
-													foreach( $data['bto_approvers'][BtoGroups::PRODUCTION] as $k=>$v ) {
-														foreach( $v as $id => $fullname ) {
-															echo "<option value='$id'>$fullname</option>";
-														}
-													} 
-											?>
-										</select>
-								</div>
 
 								<div class='grid_3 ' style='text-align: center;'>
 									<span style='font-weight: bold;'> Test</span><br />   
@@ -200,10 +156,6 @@
 					<br /><img src='<?php echo $pending;?>' id='status_Assembly'  width="30" height="30">
 					</div>
 
-					<div class='grid_2 grid_outline_50'>
-					<span class='button_StatusTitle'>Production</span>
-					<br /><img src='<?php echo $pending; ?>' id='status_Production' width="30" height="30">
-					</div>
 					
 					<div class='grid_2 grid_outline_50'>
 					<span class='button_StatusTitle'>Test</span>

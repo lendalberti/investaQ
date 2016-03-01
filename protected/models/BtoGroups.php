@@ -15,9 +15,7 @@ class BtoGroups extends CActiveRecord {
 
 	const 	ASSEMBLY   = 1,
 			QUALITY    = 2,
-			TEST       = 3,
-			PRODUCTION = 4;
-
+			TEST       = 3;
 
 
 	/**
