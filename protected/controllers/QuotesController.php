@@ -43,7 +43,7 @@ class QuotesController extends Controller
 			),
 
 			array('allow', // allow Proposal Manager to initiate Manufacturing Quote 
-				'actions'=>array('manufacturing', 'notifyMfgApprovers', 'addMessage', 'itemStatus'),
+				'actions'=>array('manufacturing', 'notifyMfgApprovers', 'addMessage', 'itemStatus', 'updateStatus'),
 				'expression' => '$user->isProposalManager'
 			),
 
@@ -68,27 +68,59 @@ class QuotesController extends Controller
 		));
 	}
 
+	// ------------------------------------------------------- update Quote Status
+	public function actionUpdateStatus() {
+		pDebug("actionUpdateStatus() - _POST=", $_POST); 
+
+		$quote_id          = $_POST['quote_id'];
+		$new_status_id     = $_POST['new_status_id'];
+		$new_status_text   = $_POST['new_status_text'];
+
+		$model = Quotes::model()->findByPk($quote_id);
+		$model->status_id = $new_status_id;
+		if ( $model->save() ) {
+			pDebug("actionUpdateStatus() - quote status changed to: $new_status_id ($new_status_text)");
+			echo Status::SUCCESS; 
+		}
+		else {
+			pDebug("actionUpdateStatus() - Error - can't change quote status: ", $model->errors);
+			echo Status::FAILURE; 
+		}
+
+		return;
+	}
+
 
 	public function actionItemStatus() {
-		pDebug("actionConfig() - _POST=", $_POST);  //  itemID: itemID, groupID: groupID 
+		pDebug("actionConfig() - _POST=", $_POST); 
 
 		$item_id   = $_POST['itemID'];
 		$group_id  = $_POST['groupID'];
 		$action    = $_POST['action'];
 
-		$status['Hold']    = Status::PENDING;
-		$status['Approve'] = Status::APPROVED;
-		$status['Reject']  = Status::REJECTED;
+		$status['Hold']    = Status::PENDING;    // 2
+		$status['Approve'] = Status::APPROVED;   // 8
+		$status['Reject']  = Status::REJECTED;   // 9
 
-		$model = BtoStatus::model()->findByPk($item_id);
-		$model->status_id = $status[$action];
-		
-		if ( $model->save() ) {
-			pDebug("actionItemStatus() - item_id=[$item_id], group_id=[$group_id], action=[$ction]" );
-			echo Status::SUCCESS; 
+		$criteria =  new CDbCriteria();
+		$criteria->addCondition("bto_item_id = $item_id");
+		$criteria->addCondition("group_id = $group_id");
+
+		try {
+			$model = BtoStatus::model()->find( $criteria );
+			$model->status_id = $status[$action];
+
+			if ( $model->save() ) {
+				pDebug("actionItemStatus() - bto_item_id=[$item_id], group_id=[$group_id], action=[$action]" );
+				echo Status::SUCCESS; 
+			}
+			else {
+				pDebug("actionItemStatus() - ERROR: could not change status for item_id: [$item_id], group_id=[$group_id], action=[$ction]; error:", $model->errors );
+				echo Status::FAILURE; 
+			}
 		}
-		else {
-			pDebug("actionItemStatus() - ERROR: could not change status for item_id: [$item_id], group_id=[$group_id], action=[$ction]; error:", $model->errors );
+		catch( Exception $e) {
+			pDebug("actionItemStatus() - Exception: ", $e->errorInfo );
 			echo Status::FAILURE; 
 		}
 
@@ -307,30 +339,35 @@ class QuotesController extends Controller
 	public function actionView($id) {
 		pTrace( __METHOD__ );
 
+		$quote_id    = $id;
+
 		$data['model'] = $this->loadModel($id);
 		pDebug('actionView() - Viewing quote model:', $data['model']->attributes );
 
 		$customer_id = $data['model']->customer_id;
 		$contact_id  = $data['model']->contact_id;
-		$quote_id    = $data['model']->id;
 		$quote_type  = $data['model']->quote_type_id;
 
-		$data['customer'] = Customers::model()->findByPk($customer_id);
-		$data['contact']  = Contacts::model()->findByPk($contact_id);
-		$data['status']   = Status::model()->findAll();
+		$data['customer']       = Customers::model()->findByPk($customer_id);
+		$data['contact']        = Contacts::model()->findByPk($contact_id);
+		$data['status']         = Status::model()->findAll();
+		$data['BtoItems_model'] = BtoItems::model()->find( $criteria );
 
 		if ( $quote_type == QuoteTypes::MANUFACTURING ) {
 			$data['bto_approvers'] = BtoApprovers::model()->getList();
 
 			$criteria =  new CDbCriteria();
 			$criteria->addCondition("quote_id = $id");
-			$data['BtoItems_model'] = BtoItems::model()->find( $criteria );
+			
+			pDebug("actionView() - BtoItems_model->attributes:", $data['BtoItems_model']->attributes );
 
 			$data['bto_messages'] = BtoMessages::model()->getAllMessageSubjects($id);
 
 			$criteria =  new CDbCriteria();
 			$criteria->addCondition("bto_item_id = " . $data['BtoItems_model']->id );
 			$data['BtoStatus'] = BtoStatus::model()->findAll( $criteria );
+
+			pDebug('actionView() - BtoStatus->attributes for item_id:['. $data['BtoItems_model']->id.']', $data['BtoStatus']->attributes );
 
 		}
 		else {
@@ -741,7 +778,7 @@ class QuotesController extends Controller
 
 			$quoteModel                    = $this->loadModel($quote_id);
 			$quoteModel->attributes        = $_POST['Quotes'];
-			$quoteModel->status_id         =  $this->getUpdatedQuoteStatus($quote_id); 
+			$quoteModel->status_id         = $this->getUpdatedQuoteStatus($quote_id); 
 			$quoteModel->salesperson_notes = $_POST['Quotes']['salesperson_notes'];
 
 			pDebug("actionPartsUpdate() - Updating quote with these attributes:", $quoteModel->attributes);
@@ -904,25 +941,98 @@ class QuotesController extends Controller
 		}
 	}
 
+
+	private function findMyMfgQuotes($pending_only=null) {
+		$my_id        = Yii::app()->user->id;
+		$my_quotes    = array();
+		
+		$approver_ids = array();
+
+		$criteria = new CDbCriteria();
+		$criteria->addCondition("quote_type_id = " . QuoteTypes::MANUFACTURING);
+		if ( $pending_only ) {
+			$criteria->addCondition("status_id = " . Status::PENDING);
+		}
+		$quoteModel = Quotes::model()->findAll( $criteria );
+
+		// ***************************  $quoteModel->btoItems->btoStatuses->approver_id ***************************
+
+		foreach( $quoteModel as $quote ) {
+			foreach( $quote->btoItems as $item ) {
+				foreach( $item->btoStatuses as $stat ) {
+					pDebug( $quote->id . ": stat->approver_id: [" . $stat->approver_id . "], myID=[$my_id]");
+
+					if ( $my_id == $stat->approver_id ) {
+						$my_quotes[] = $quote->id;
+					}
+				}
+			}
+			// if ( in_array($my_id, $approver_ids[ $quote->id ]) ) {
+			// 	$my_quotes[] = $quote->id;
+			// }
+		}
+
+		pDebug("Quote ids: ", $my_quotes);
+		return $my_quotes;
+	}
+
+
+
+
 	public function actionIndex() 	{
 		pTrace( __METHOD__ );
 		pDebug('actionIndex() - _GET=', $_GET);
 
-		$quote_type = QuoteTypes::STOCK;
-
 		$criteria = new CDbCriteria();
+		
 		if ( !Yii::app()->user->isAdmin ) {
-			$criteria->addCondition("owner_id = " . Yii::app()->user->id);
-		}
+			if (Yii::app()->user->isProposalManager || Yii::app()->user->isBtoApprover) {
 
+				$my_quotes = $this->findMyMfgQuotes();
+				if ( count($my_quotes) > 0 ) {
+					$criteria->addCondition("id IN (" .  implode(",", $my_quotes)  . ")" ); 
+				}
+				
+
+				$quote_type = QuoteTypes::MANUFACTURING;
+				$page_title = "Manufacturing Quotes";
+				$criteria->addCondition("quote_type_id = " . $quote_type ); 
+			}
+			else {
+				$page_title = "My Quotes";
+				$criteria->addCondition("owner_id = " . Yii::app()->user->id);
+			}
+		}
+		
 		$criteria->order = 'id DESC';
 		$model = Quotes::model()->findAll( $criteria );
 
 		$this->render( 'index', array(
 			'quote_type' => $quote_type,
 			'model'      => $model,
-			'page_title' => "My Quotes",
+			'page_title' => $page_title,
 		));
+
+
+
+		// $criteria = new CDbCriteria();
+		// if ( !Yii::app()->user->isAdmin ) {
+		// 	$criteria->addCondition("owner_id = " . Yii::app()->user->id);
+		// }
+
+		// $page_title = "My Quotes";
+		// if (Yii::app()->user->isProposalManager || Yii::app()->user->isBtoApprover) {
+		// 	$page_title = "Manufacturing Quotes";
+		// }
+
+		// $criteria->order = 'id DESC';
+		// $model = Quotes::model()->findAll( $criteria );
+
+		// $this->render( 'index', array(
+		// 	'quote_type' => $quote_type,
+		// 	'model'      => $model,
+		// 	'page_title' => $page_title,
+		// ));
 	}
 
 	public function actionManufacturing() {
@@ -935,7 +1045,7 @@ class QuotesController extends Controller
 		$criteria = new CDbCriteria();
 
 		if ( Yii::app()->user->isProposalManager || Yii::app()->user->isAdmin ) {
-			$page_title = "Manufacturing Quotes";
+			$page_title = "Mfg Quotes Needing Approval";
 			$criteria->addCondition("quote_type_id = $quote_type");
 			$criteria->addCondition("status_id = $status");
 
@@ -1072,9 +1182,11 @@ EOT;
 
 	public function actionNotifyMfgApprovers() {
 		pDebug("Quotes::actionNotifyMfgApprovers() - _POST=", $_POST); 
+
+		
 		
 		$toBeNotified = array();
-		foreach( array( $_POST['approver_Assembly'],$_POST['approver_Test'] ,$_POST['approver_Quality'] ) as $id ) {
+		foreach( array( $_POST['approver_Assembly'],$_POST['approver_Test'],$_POST['approver_Quality'] ) as $id ) {
 			if ( $id ) {
 				$toBeNotified[] = $id;
 			}
@@ -1094,11 +1206,18 @@ EOT;
 			$modelItems->approvers_notified = true;
 			$modelItems->save();
 
+			$item_id = $modelItems->id;
+			$group_approvers['item_id']           = $item_id;
+			$group_approvers[BtoGroups::ASSEMBLY] = $_POST['approver_Assembly'];
+			$group_approvers[BtoGroups::TEST]     = $_POST['approver_Test'];
+			$group_approvers[BtoGroups::QUALITY]  = $_POST['approver_Quality'];
+			$this->updateBtoStatus($group_approvers);
+
 			// save comment
 			foreach( $toBeNotified as $user_id ) {
 				$modelMessages = new BtoMessages;
 				$modelMessages->quote_id     = $_POST['quoteID'];
-				$modelMessages->bto_item_id  = $modelItems->id;
+				$modelMessages->bto_item_id  = $item_id;
 				$modelMessages->from_user_id = Yii::app()->user->id;
 				$modelMessages->to_user_id   = $user_id;
 				$modelMessages->subject      = $_POST['text_Subject'];
@@ -1119,6 +1238,19 @@ EOT;
 	}
 
 
+	// -------------------------------------------------
+	private function updateBtoStatus( $g ) {
+		foreach( array(BtoGroups::ASSEMBLY, BtoGroups::TEST, BtoGroups::QUALITY) as $g_id ) {
+			$criteria = new CDbCriteria();
+			$criteria->addCondition("bto_item_id = " . $g['item_id']);
+			$criteria->addCondition("group_id = "    . $g_id );
+			
+			$model =  BtoStatus::model()->find($criteria);
+			$model->approver_id = $g[$g_id];
+			$model->save();
+			pDebug('updateBtoStatus() - model->attributes saved: ', $model->attributes );
+		}
+	}
 
 
 

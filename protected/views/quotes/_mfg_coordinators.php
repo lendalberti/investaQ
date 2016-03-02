@@ -11,13 +11,27 @@
 	$test_id     = "$item_id" . "_" . BtoGroups::TEST ;
 	$quality_id  = "$item_id" . "_" . BtoGroups::QUALITY ;
 
+	$criteria = new CDbCriteria();
+	$criteria->addCondition("bto_item_id = $item_id" );
+	$modelItems =  BtoStatus::model()->find($criteria);
+
+	$assembly_approver = $data['BtoStatus'][BtoGroups::ASSEMBLY-1]->approver->fullname;
+	$test_approver     = $data['BtoStatus'][BtoGroups::TEST-1]->approver->fullname;
+	$quality_approver  = $data['BtoStatus'][BtoGroups::QUALITY-1]->approver->fullname;
+
+
+
 ?>
 
 
 
 			<!--   BTO Approvers -->
 			<div id="approvers_accordion" style='margin-top: 20px;'>
-				<h3>Assembly</h3>
+
+
+				<input type='hidden' id='itemID' value='<?php echo $item_id; ?>' >
+
+				<h3><span 'font-weight: bold;'>Assembly</span><span style='font-variant: small-caps;'> (<?php echo $assembly_approver; ?>)</span></h3>
 				<div>
 
 					<div style='margin: 10px 0px 50px 0px;'>
@@ -53,9 +67,8 @@
 
 				</div>
 
-				<h3>Test</h3>
+				<h3><span 'font-weight: bold;'>Test</span><span style='font-variant: small-caps;'> (<?php echo $test_approver; ?>)</span></h3>
 				<div>
-
 						<div style='margin: 10px 0px 50px 0px;'>
 							<div style='margin-bottom: 15px;'>Current Status: <br /><?php echo $test_bto_status; ?> </div>
 							
@@ -90,7 +103,7 @@
 
 				</div>
 
-				<h3>Quality</h3>
+				<h3><span 'font-weight: bold;'>Quality</span><span style='font-variant: small-caps;'> (<?php echo $quality_approver; ?>)</span></h3>
 				<div>
 
 						<div style='margin: 10px 0px 50px 0px;'>

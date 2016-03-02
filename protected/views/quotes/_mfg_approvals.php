@@ -2,6 +2,7 @@
 <?php
 
 	$q                 = $data['model']; 
+	$current_status    = $data['model']->status->name;
 	$approversNotified = $data['BtoItems_model']->approvers_notified;
 
 	$blank   = Yii::app()->request->baseUrl . "/images/New/button_blank.png";
@@ -17,53 +18,9 @@
 
 
 
-	if (  $q->status_id == Status::PENDING && Yii::app()->user->isProposalManager ) {
+	if (  $q->status_id == Status::PENDING && Yii::app()->user->isProposalManager || Yii::app()->user->isBtoApprover ) {
 		if ( !$approversNotified ) {  ?>
 			<div class="container_15 grid_outline_350">
-<!-- 
-				<div class='grid_3 '>
-					<span style='font-weight: bold;'> Assembly</span><br />   
-						<select id='approver_Test'>
-							< ?php 
-									echo "<option></option>";
-									foreach( $data['bto_approvers'][BtoGroups::ASSEMBLY] as $k=>$v ) {
-										foreach( $v as $id => $fullname ) {
-											echo "<option value='$id'>$fullname</option>";
-										}
-									} 
-							?>
-						</select>
-				</div>
-
-				<div class='grid_3 '>
-					<span style='font-weight: bold;'> Test</span><br />   
-						<select id='approver_Test'>
-							< ?php 
-									echo "<option></option>";
-									foreach( $data['bto_approvers'][BtoGroups::TEST] as $k=>$v ) {
-										foreach( $v as $id => $fullname ) {
-											echo "<option value='$id'>$fullname</option>";
-										}
-									} 
-							?>
-						</select>
-				</div>
-
-				<div class='grid_3 '>
-					<span style='font-weight: bold;'> Quality</span><br />   
-						<select id='approver_Quality'>
-							< ?php 
-									echo "<option></option>";
-									foreach( $data['bto_approvers'][BtoGroups::QUALITY] as $k=>$v ) {
-										foreach( $v as $id => $fullname ) {
-											echo "<option value='$id'>$fullname</option>";
-										}
-									} 
-							?>
-						</select>
-				</div> 
--->
-
 				<div><span style='font-weight: bold;'>This is a new Manufacturing Quote -</span><span id='link_SendMesage' > Notify process coordinators. </span></div>
 				<div class="clear">&nbsp;</div>
 
@@ -73,9 +30,8 @@
 						<div class='grid_16 ' style='margin: 10px;'>
 
 							<div class='push_1' style='font-variant: small-caps; margin-top: 10px;'>
-
 								<div class='grid_3 '>
-								<span style='padding-left: 0px; color: #a31128; font-weight: bold;'>Select Process <br /> Coordinators</span>
+								   <span style='padding-left: 0px; color: #a31128; font-weight: bold;'>Select Process <br /> Coordinators</span>
 								</div>
 
 								<div class='grid_3 ' style='text-align: center;'>
@@ -91,7 +47,6 @@
 										?>
 									</select>
 								</div>
-
 
 								<div class='grid_3 ' style='text-align: center;'>
 									<span style='font-weight: bold;'> Test</span><br />   
@@ -135,43 +90,39 @@
 						</div>
 					</div>
 				</div>
-
 			</div>
 			
 		<?php } else { ?>
 
 			<div class="container_16" style='padding-bottom: 20px; border: 0px solid red; '>
 			   
-				 <div class='grid_4 grid_outline_50' > 
-					Current Status:<span style='font-weight: bold; color: #a31128'> PENDING </span>
+				 <div class='grid_5 grid_outline_50' > 
+					Current Status:<span id='currentQuoteStatus'><?php echo $current_status; ?></span>
 					<br />
-					<select>
-						<option>Update status to...</option>
-						<option>Pending</option>
-						<option>Approved</option>
-						<option>Rejected</option>
+					<select id='select_UpdateQuoteStatus'>
+						<option value=''>Change to...</option>
+						<option value='<?php echo Status::PENDING; ?>'>Pending Approval</option>
+						<option value='<?php echo Status::APPROVED; ?>'>Approved</option>
+						<option value='<?php echo Status::REJECTED; ?>'>Rejected</option>
 					</select>
 
 				</div>
-				
-				<div class='push_3'>
 
+				<div class='push_3'>
 					<div class='grid_2 grid_outline_50'>
 						<span class='button_StatusTitle'>Assembly</span>
-						<br /> <?php echo displayMfgQuoteStatus($data['BtoStatus'][BtoGroups::ASSEMBLY-1]->status_id);  ?>  <!--  <img src='< ?php echo $pending;?>' id='status_Assembly'  width="30" height="30"> -->
-						
+						<br /> <?php echo  displayMfgQuoteStatus($data['BtoStatus'][BtoGroups::ASSEMBLY-1]->status_id);  ?>  
 					</div>
 					
 					<div class='grid_2 grid_outline_50'>
 						<span class='button_StatusTitle'>Test</span>
-						<br /> <?php echo displayMfgQuoteStatus($data['BtoStatus'][BtoGroups::TEST-1]->status_id);  ?>  <!--  <img src='< ?php echo $blocked; ?>' id='status_Test' width="30" height="30"> -->
+						<br /> <?php echo displayMfgQuoteStatus($data['BtoStatus'][BtoGroups::TEST-1]->status_id);  ?> 
 					</div>
 
 					<div class='grid_2 grid_outline_50'>
 						<span class='button_StatusTitle'>Quality</span>
-						<br /> <?php echo displayMfgQuoteStatus($data['BtoStatus'][BtoGroups::QUALITY-1]->status_id);  ?>  <!-- <img src='< ?php echo $ready; ?>' id='status_Quality' width="30" height="30"> -->
+						<br /> <?php echo displayMfgQuoteStatus($data['BtoStatus'][BtoGroups::QUALITY-1]->status_id);  ?> 
 					</div>
-
 				</div>
 
 				<div class='grid_16' style='padding: 20px 0px 0px 5px;'><span style='font-weight: bold;'>Messages:</span></div>
@@ -229,13 +180,35 @@
 		$s = "Quote hasn't been submitted for approval yet.";
 		echo "<span id='process_approval_status' style='color: #2C6371; font-size: 1.1em;'>$s</span>";
 	}
-	else if (  $q->status_id == Status::PENDING && !Yii::app()->user->isProposalManager ) {
+	else if (  $q->status_id == Status::PENDING && !Yii::app()->user->isProposalManager && !Yii::app()->user->isBtoApprover ) {
 		$s = "Process approval is pending...";
 		echo "<span id='process_approval_status' style='color: #2C6371; font-size: 1.1em;'>$s</span>";
+
+
+		// display values from BTO approval process
+		echo '<br />[ tbd ]';
+		
 	}
-	else {
-		$s = "Unknown status...";
+	else if (  $q->status_id == Status::REJECTED ) {		// TODO: does it matter who user is?
+		$s = "Quote has been rejected.";
+		echo "<span id='process_approval_status' style='color: red; font-size: 1.1em;'>$s</span>";
+
+		// display values from BTO approval process
+		echo '<br />[ tbd ]';
+
+
+	}
+	else if ( $q->status_id == Status::APPROVED ) { 		// TODO: does it matter who user is?
+		$s = "Quote has been approved.";
 		echo "<span id='process_approval_status' style='color: #2C6371; font-size: 1.1em;'>$s</span>";
+
+		// display values from BTO approval process
+		echo '<br />[ tbd ]';
+
+
+
+
+
 	}
 
 

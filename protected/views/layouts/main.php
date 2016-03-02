@@ -63,25 +63,43 @@
 		</div>
 	</div><!-- header -->
 
+<!-- 
 
+		Roles::ADMIN        = 1,
+		Roles::USER         = 2,
+		Roles::MGR          = 3,
+		Roles::APPROVER     = 4,
+		Roles::PROPOSAL_MGR = 5,
+		Roles::BTO_APPROVER = 6;
+
+-->
 
 	<div id="mainmenu">
 		<?php
+			// echo '<pre>'; 			print_r(Yii::app()->user->attributes);        echo '</pre>'; 		
 			$user_type = '';
 			date_default_timezone_set('America/New_York');
 			if ( Yii::app()->user->isAdmin ) {
 				$user_type = ' (Admin)';
+				$role = Roles::ADMIN;
 			}
 			else if (Yii::app()->user->isApprover) {
 				$user_type = ' (Approver)';
+				$role = Roles::APPROVER;
 			}
 			else if (Yii::app()->user->isProposalManager) {
 				$user_type = ' (Proposal Manager)';
+				$role = Roles::PROPOSAL_MGR;
 			}
 			else if (Yii::app()->user->isBtoApprover) {
 				$user_type = ' (BTO Approver)';
+				$role = Roles::BTO_APPROVER;
 			}
 			
+			echo "<input type='hidden' id='loggedIn_BtoRole' name='loggedIn_BtoRole' value='$role'>";
+			// echo "<input type='hidden' id='loggedIn_BtoGroup' name='loggedIn_BtoGroup' value='$group'>";
+
+			//$user_type = ' (id='.Yii::app()->user->id.')';
 
 			if ( Yii::app()->user->isLoggedIn ) {
 				$menuItems = array();
@@ -97,18 +115,18 @@
 				}
 	
 				if (Yii::app()->user->isProposalManager) {
-					$menuItems[] = array('label'=>'Manufacturing', 'url'=>array('/quotes/manufacturing') );
+					$menuItems[] = array('label'=>'Mfg Pending', 'url'=>array('/quotes/manufacturing') );
 					$menuItems[] = array('label'=>'Mfg Admin', 'url'=>array('/btoApprovers/admin') );
 				}
 
 				if (Yii::app()->user->isBtoApprover ) {
-					$menuItems[] = array('label'=>'Mfg Approvals', 'url'=>array('/quotes/coordinator') );
+					$menuItems[] = array('label'=>'Pending', 'url'=>array('/quotes/coordinator') );
 				}
 
-				//$menuItems[] = array('label'=>'My Quotes', 'url'=>array('/quotes/index') ); 
+				// $menuItems[] = array('label'=>'My Quotes',  'url'=>array('/quotes/index') ); 
 				// $menuItems[] = array('label'=>'Movements ', 'url'=>array('/PriceBook/movements') );
 				// $menuItems[] = array('label'=>'Customers ', 'url'=>array('/customers/admin') );
-				// $menuItems[] = array('label'=>'Contacts ', 'url'=>array('/contacts/admin') );
+				// $menuItems[] = array('label'=>'Contacts ',  'url'=>array('/contacts/admin') );
 				$menuItems[] = array('label'=>'My Profile', 'url'=>array('/Users/profile/'.Yii::app()->user->id) );
 				$menuItems[] = array('label'=>'Help',        'url'=>array('/site/help') );
 

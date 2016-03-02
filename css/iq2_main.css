@@ -1,4 +1,18 @@
+  
 
+#currentQuoteStatus {
+	font-weight: bold; 
+	color: #a31128;
+}
+
+
+
+#ui-id-8 > span:nth-child(2), 
+#ui-id-10 > span:nth-child(2),
+#ui-id-12 > span:nth-child(2) {
+	font-weight: bold;
+	color: #2C6371;
+}
 		
 #section_Manufacturing,
 #section_Approvals,

@@ -804,10 +804,12 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`bto_status` (
   `bto_item_id` INT NOT NULL ,
   `status_id` INT NOT NULL ,
   `group_id` INT NOT NULL ,
+  `approver_id` INT NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_bto_status_1_idx` (`status_id` ASC) ,
   INDEX `fk_bto_status_2_idx` (`bto_item_id` ASC) ,
   INDEX `fk_bto_status_3_idx` (`group_id` ASC) ,
+  INDEX `fk_bto_status_4_idx` (`approver_id` ASC) ,
   CONSTRAINT `fk_bto_status_1`
     FOREIGN KEY (`status_id` )
     REFERENCES `iq2`.`status` (`id` )
@@ -821,6 +823,11 @@ CREATE  TABLE IF NOT EXISTS `iq2`.`bto_status` (
   CONSTRAINT `fk_bto_status_3`
     FOREIGN KEY (`group_id` )
     REFERENCES `iq2`.`bto_groups` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_bto_status_4`
+    FOREIGN KEY (`approver_id` )
+    REFERENCES `iq2`.`users` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

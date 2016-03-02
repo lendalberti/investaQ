@@ -1,4 +1,26 @@
 
+
++--------------------------------+
+| 02 March 2016 (Wednesday)      |
++--------------------------------+
+
+	[x] Coordinators can change their dept. status
+		[ ] should affect quote status
+	
+	[ ] Proposal Managers can change quote status
+		[x] as well as dept. status
+
+	[ ] remove Save Changes on Approvals page (no need)
+
+	[ ] Proposal Manager - change menu items
+		- 'Manufacturing' should be 'Pending Approval'
+		- 'Home' should show past mfg quotes 
+
+	[ ] force adding note whenever status is changed by coord.
+
+
+
+
 +--------------------------------+
 | 29 February 2016 (Monday)      |
 +--------------------------------+
@@ -15,7 +37,7 @@
 		- add icon? 
 		- on click display message
 
-	[ ] instead of dropdown ("Update status to") on coordinators page
+	[x] instead of dropdown ("Update status to") on coordinators page
 		- use Approve, Reject buttons
 
 	[ ] fix My Quotes Board to reflect BTO quotes

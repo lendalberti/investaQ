@@ -84,7 +84,7 @@
 			<li><a href="#section_Parts">Inventory Items</a></li>
 			<li><a href="#section_Manufacturing">Manufacturing Details</a></li>
 			<li><a href="#section_Approvals">Process Approval Status</a></li>
-			<?php if ( Yii::app()->user->isProposalManager || Yii::app()->user->isApprover ) { ?> 
+			<?php if ( Yii::app()->user->isProposalManager || Yii::app()->user->isBtoApprover ) { ?> 
 				<li><a href="#section_Coordinators">Coordinators</a></li>
 			<?php } ?>
 		</ul>

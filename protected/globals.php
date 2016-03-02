@@ -511,8 +511,8 @@
     }
     
     function pDebug( $msg, $what='' ) {
-
-        $msg =  print_r($msg, true) . " (".Yii::app()->user->fullname .")";
+        $user = "logged by: ".Yii::app()->user->fullname;
+        $msg =  print_r($user . "\n" . $msg, true) ;
         if ( $what ) {
           $what = "\n" . print_r($what, true);
         }

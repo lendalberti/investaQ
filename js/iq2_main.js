@@ -41,7 +41,16 @@ $(document).ready(function() {
     var TAB_Approvals = 5;
     var TAB_Coordinators = 6;
 
-
+    // ----------------------------------------------------------------
+    // these should line up with constants in Roles.php 
+    //   - TODO: figure out a better way of doing this; ok for now
+    // ----------------------------------------------------------------
+    var ROLES_ADMIN        = 1;
+    var ROLES_USER         = 2;
+    var ROLES_MGR          = 3;
+    var ROLES_APPROVER     = 4;
+    var ROLES_PROPOSAL_MGR = 5;
+    var ROLES_BTO_APPROVER = 6;
 
     console.log('*** myURL=['+myURL+']');
     console.log('*** returnUrl=[' + $('#returnUrl').val() + ']' );
@@ -137,17 +146,12 @@ $(document).ready(function() {
         $('#QuoteView_Tabs > ul > li:nth-child(4)').hide();
         $('#QuoteView_Tabs > ul > li:nth-child(5)').hide();
     }
-   
 
-  
-
-
-
+    var quoteID       = $('#Quotes_id').val(); 
     var quoteTypeID   = $('#quoteTypeID').val();
     var quoteTypeName = $('#quoteTypeName').val();
-    console.log('*** quoteTypeID=' + quoteTypeID + ', quoteTypeName=' + quoteTypeName);
 
-    //hideAllTabs();
+    console.log('*** quoteID=' + quoteID + ', quoteTypeID=' + quoteTypeID + ', quoteTypeName=' + quoteTypeName);
 
     if ( quoteTypeID == MANUFACTURING_QUOTE ) {
         showManufacturingTabs();
@@ -232,13 +236,96 @@ $(document).ready(function() {
 
     }
 
+    var loggedIn_BtoRole = $('#loggedIn_BtoRole').val();
+    var loggedIn_BtoGroup = 2; // $('#loggedIn_BtoGroup').val();
 
+    if ( loggedIn_BtoRole != ROLES_PROPOSAL_MGR ) {
+        $('#select_UpdateQuoteStatus').hide();
+        $('#link_SendMesage').hide();
+        $('#saveItemChanges').hide();
+    }
+
+     // $('[id^=approveItem_]').hide();
+     // $('[id^=rejectItem_]').hide();
+     // $('[id^=holdItem_]').hide();
+
+     console.log('Showing elements for quoteID=['+quoteID+'], group=['+loggedIn_BtoGroup+']');
+
+     $('#approveItem_'+quoteID + '_' + loggedIn_BtoGroup  ).show();       
+     $('#rejectItem_'+quoteID + '_' + loggedIn_BtoGroup ).show();       
+     //$('#holdItem_'+quoteID + '_' + loggedIn_BtoGroup  ).show();   
+
+     $('#holdItem_2_2').show();
+
+
+
+
+
+     
+/*
+
+ASSEMBLY
+    approveItem_1_1
+    rejectItem_1_1
+    holdItem_1_1
+
+TEST
+    approveItem_1_2
+    rejectItem_1_2
+    holdItem_1_2
+
+QUALITY
+    approveItem_1_3
+    rejectItem_1_3
+    holdItem_1_3
+
+
+*/
 	
 	// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     // -------- Event Handlers  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------    
     // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+    //  select_UpdateQuoteStatus  currentQuoteStatus
+
+
+    $('#select_UpdateQuoteStatus').on('change', function() {
+       // var quoteID  = $('#Quotes_id').val(); 
+        var new_id   = $('#select_UpdateQuoteStatus option:selected').val();
+        var new_text = $('#select_UpdateQuoteStatus option:selected').text();
+        console.log('Changing quote status:  id=['+new_id+'], text=['+new_text+']');
+
+        var postData = {
+                quote_id:        quoteID,
+                new_status_id:   new_id,
+                new_status_text: new_text,
+        }
+
+        $.ajax({
+            type: "POST",
+            url: myURL + 'quotes/updateStatus',
+            data: postData,
+            success: function(results)  {
+                if ( results == SUCCESS ) {
+                    console.log('Quote status set to '+ new_text ); 
+
+                    Cookies.set('current_tab', TAB_Approvals-1);  // 0-indexed 
+                    location.reload();
+                }
+                else {
+                    alert('Could not change quote status - See Admin.');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown)  {
+                alert("Could not change quote status; error=\n\n" + errorThrown + ", jqXHR="+jqXHR);
+            }
+        });
+    });
+
+
+
+    // ---------------------------------------------------------------- 
     $('[id^=approveItem_]').on('click', function() {
         var tmp    =  $(this).attr('id');
         var match  = /^.+_(\d+)_(\w+)$/.exec(tmp);
@@ -269,7 +356,7 @@ $(document).ready(function() {
         });
     });
 
-
+    // ---------------------------------------------------------------- 
     $('[id^=holdItem_]').on('click', function() {
         var tmp    =  $(this).attr('id');
         var match  = /^.+_(\d+)_(\w+)$/.exec(tmp);
@@ -301,7 +388,7 @@ $(document).ready(function() {
 
     });
 
-
+    // ---------------------------------------------------------------- 
     $('[id^=rejectItem_]').on('click', function() {
         var tmp    =  $(this).attr('id');
         var match  = /^.+_(\d+)_(\w+)$/.exec(tmp);
@@ -355,7 +442,7 @@ $(document).ready(function() {
         }
         else {
 
-            console.log('Post Data=' + postData);
+            console.log('button_AddMessage: Post Data=' + postData);
             $.ajax({
                     type: "POST",
                     url: myURL + 'quotes/addMessage',
@@ -398,7 +485,7 @@ $(document).ready(function() {
         }
         else {
 
-            console.log('Post Data=' + postData);
+            console.log('button_SendMessage: Post Data=' + postData);
             $.ajax({
                     type: "POST",
                     url: myURL + 'quotes/notifyMfgApprovers',
@@ -427,7 +514,7 @@ $(document).ready(function() {
 
 
     $('#button_NotifyApprovers').on('click', function() {
-        var quoteID     = $('#Quotes_id').val(); 
+        // var quoteID     = $('#Quotes_id').val(); 
         var msg        = $('#approver_notification_message').val();
         var assembly   = $('#approver_Assembly').val();
         var test       = $('#approver_Test').val();
@@ -478,7 +565,7 @@ $(document).ready(function() {
 
 
     $('#submitProcessApproval').on('click', function() {
-        var quoteID = $('#Quotes_id').val(); 
+        // var quoteID = $('#Quotes_id').val(); 
         console.log('Submitting for process approval...');
         
         var postData = { quote_id: quoteID };
@@ -511,7 +598,7 @@ $(document).ready(function() {
 
 
     $('#button_ApproveItem').on('click', function() {
-        var quoteID = $('#Quotes_id').val(); 
+        // var quoteID = $('#Quotes_id').val(); 
         if ( confirm( "Are you sure you want to approve this item?") ) {
             var postData = {
                     item_id:           currentItemID,
@@ -535,7 +622,7 @@ $(document).ready(function() {
 
 
     $('#button_RejectItem').on('click', function() {
-        var quoteID = $('#Quotes_id').val(); 
+        // var quoteID = $('#Quotes_id').val(); 
         if ( confirm( "Are you sure you want to reject this item?") ) {
            var postData = {
                     item_id:           currentItemID,
@@ -641,7 +728,7 @@ $(document).ready(function() {
                     var newStatus =  $('#newQuoteStatus').val();
                     console.log( "new status = " + newStatus + ", form: " + $('#new_status_form').serialize() );
                     var postData = $('#new_status_form').serialize();
-                    var quoteID = $('#Quotes_id').val();
+                    // var quoteID = $('#Quotes_id').val();
 
                     $.ajax({
                             type: "POST",
@@ -861,7 +948,7 @@ $(document).ready(function() {
         //     console.log('Setting quote status to "Pending Approval"');
         // }
 
-        var quoteID = $('#Quotes_id').val(); 
+        // var quoteID = $('#Quotes_id').val(); 
         var postData = $(this).serialize();
         var returnURL = $('#return_URL').val();
 
@@ -947,7 +1034,7 @@ $(document).ready(function() {
     //     event.preventDefault();
     //     // var postData = $(this).serialize();
 
-    //     var quoteID = $('#form_QuoteID').val();
+        // var quoteID = $('#form_QuoteID').val();
     //     var postData = $('#quoteForm_Terms').serialize();
     //     console.log('quoteForm_Terms serialized: ' + postData);
 
@@ -1209,7 +1296,7 @@ $(document).ready(function() {
         }
 
         var itemID  = $('#item_id').val();
-        var quoteID = $('#Quotes_id').val();
+        // var quoteID = $('#Quotes_id').val();
         var URL     = myURL + 'quotes/partsUpdate';
         console.log('quoteID=' + quoteID + ", URL=" + URL);
 
@@ -2193,7 +2280,7 @@ $(document).ready(function() {
     	var a          = JSON.parse(res);
     	var partsCount = a.parts.length; 
     	var rows       = '';
-        var quoteID    = $('#Quotes_id').val(); 
+        // var quoteID    = $('#Quotes_id').val(); 
 
     	for( var i=0; i<partsCount; i++ ) {
     		rows += "<tr id='rowID_"+a.parts[i].part_number+"'>";
@@ -2235,7 +2322,7 @@ $(document).ready(function() {
                                 location.reload();
                                 return false;
                             }
-                            else if ( confirm("Part No. "+partNo+" is Build to Order only.\n\nContinue processing as a Manufacturing Quote?") ) {
+                            else if ( confirm("Part No. "+partNo+" is Build to Order only; continue processing?") ) {
 
                                 var postData = {
                                         requested_part_number:  partNo,

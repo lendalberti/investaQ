@@ -45,7 +45,7 @@ class BtoItemsController extends Controller
 		);
 	}
 
-
+	// -------------------------------------------------------------------------
 	public function actionProcess() {
 		pDebug( "actionProcess() - _POST=", $_POST);
 		/*
@@ -57,6 +57,7 @@ class BtoItemsController extends Controller
 		try {
 			$quoteModel            = Quotes::model()->findByPk($quote_id);
 			$quoteModel->status_id = Status::PENDING; 
+			
 			if ( $quoteModel->save() ) {
 				pDebug( "actionProcess() - manufacturing quote no. " . $quoteModel->quote_no . " is now 'Pending Approval'.");
 				notifyProposalManager($quoteModel);
