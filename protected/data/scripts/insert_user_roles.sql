@@ -2,13 +2,11 @@ INSERT INTO user_roles(user_id,role_id) VALUES(1,1);  -- Admin, me
 
 
 -- 1 Assembly: Jamie Vatcher, Chuck Shermer, Trevor Pounder
-
 -- 2 Test: Pete Crudele, Gary Francouer
-
 -- 3 Quality: Steve Lombard, Bob Buchanon, Steve Herschfeld
 
---  id | user_id | role_id | bto_group_id 
 
+--  id | user_id | role_id | bto_group_id 
 
 INSERT INTO user_roles(user_id,role_id) VALUES(2,5);  -- Proposal Manager, Mike Kelleher
 INSERT INTO user_roles(user_id,role_id) VALUES(3,2);  -- User,             Emily Elie

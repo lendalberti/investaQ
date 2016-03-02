@@ -163,10 +163,20 @@
 
 
 
+
+        public function getGroupId() {
+             if ( $this->user ) {
+                
+
+
+        }
+
+
+
         /**
         * @return   user's group id
         */
-        public function getGroupId() {
+        public function getGroupId_ORIGINAL() {
             if ( $this->user ) {
                 $group = Groups::model()->findByPk( $this->user->group_id );
                 return $group->id;

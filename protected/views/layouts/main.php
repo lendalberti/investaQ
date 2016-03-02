@@ -96,6 +96,7 @@
 				$role = Roles::BTO_APPROVER;
 			}
 			
+			$group = getLoggedInUserGroup
 			echo "<input type='hidden' id='loggedIn_BtoRole' name='loggedIn_BtoRole' value='$role'>";
 			// echo "<input type='hidden' id='loggedIn_BtoGroup' name='loggedIn_BtoGroup' value='$group'>";
 

@@ -236,8 +236,10 @@ $(document).ready(function() {
 
     }
 
-    var loggedIn_BtoRole = $('#loggedIn_BtoRole').val();
-    var loggedIn_BtoGroup = 2; // $('#loggedIn_BtoGroup').val();
+    var itemID = $('#itemID').val();
+
+    var loggedIn_BtoRole  = $('#loggedIn_BtoRole').val();
+    var loggedIn_BtoGroup = $('#loggedIn_BtoGroup').val();
 
     if ( loggedIn_BtoRole != ROLES_PROPOSAL_MGR ) {
         $('#select_UpdateQuoteStatus').hide();
@@ -251,36 +253,12 @@ $(document).ready(function() {
 
      console.log('Showing elements for quoteID=['+quoteID+'], group=['+loggedIn_BtoGroup+']');
 
-     $('#approveItem_'+quoteID + '_' + loggedIn_BtoGroup  ).show();       
-     $('#rejectItem_'+quoteID + '_' + loggedIn_BtoGroup ).show();       
-     //$('#holdItem_'+quoteID + '_' + loggedIn_BtoGroup  ).show();   
-
-     $('#holdItem_2_2').show();
+     $('#approveItem_' +itemID + '_' + loggedIn_BtoGroup  ).show();       
+     $('#rejectItem_'  +itemID + '_' + loggedIn_BtoGroup ).show();       
+     $('#holdItem_'    +itemID + '_' + loggedIn_BtoGroup  ).show();   
 
 
 
-
-
-     
-/*
-
-ASSEMBLY
-    approveItem_1_1
-    rejectItem_1_1
-    holdItem_1_1
-
-TEST
-    approveItem_1_2
-    rejectItem_1_2
-    holdItem_1_2
-
-QUALITY
-    approveItem_1_3
-    rejectItem_1_3
-    holdItem_1_3
-
-
-*/
 	
 	// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     // -------- Event Handlers  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------    
