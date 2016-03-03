@@ -164,12 +164,12 @@
 
 
 
-        public function getGroupId() {
-             if ( $this->user ) {
+        // public function getGroupId() {
+        //      if ( $this->user ) {
                 
 
 
-        }
+        // }
 
 
 
