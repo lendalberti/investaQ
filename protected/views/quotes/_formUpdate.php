@@ -385,6 +385,8 @@
 
 
 <div class='print' id="form_PartPricing" style='display: none'> pricing details content goes here </div>
+<div class='print' id="form_SalesHistory" style='display: none'> sales history goes here </div>
+
 
 <div id="dialog_status_form" title="Change Quote Status">
 	<form id='new_status_form' name='new_status_form' >

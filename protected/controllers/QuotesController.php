@@ -28,7 +28,8 @@ class QuotesController extends Controller
 	{
 		return array(
 			array('allow', 
-				'actions'=>array('index', 'indexApproval', 'view','create','update', 'search', 'partsUpdate', 'delete', 'select'),
+				'actions'=>array(	'index', 'indexApproval', 'view','create','update', 'search', 'partsUpdate', 
+									'delete', 'select', 'history', 'sales', 'DisplayInvoice_FB'),
 				'expression' => '$user->isLoggedIn'
 			),
 		
@@ -58,6 +59,174 @@ class QuotesController extends Controller
 			),
 		);
 	}
+
+
+
+	//-------------------------------------------------------
+	public function actionHistory() {
+		$quotes = array();
+		$model  = new Quotes();
+
+		$pn   = $_GET['pn'];
+		$ajax = $_GET['ajax'];
+
+		if ( $pn && $ajax) {
+			pDebug("actionHistory() - returning Quote History for: pn=[$pn], ajax=[$ajax]");
+
+			$history_table = <<<EOT
+				<table id='quotes_table'>
+				<thead>
+					<tr>
+						<th>Ouote ID</th>
+						<th>Created</th>
+						<th>Type</th>
+						<th>Mfr</th>
+						<th>Date Code</th>
+
+						<th>Cust Name</th>
+						<th>Location</th>
+						<th>Contact</th>
+						<th>Sales Person</th>
+
+						<th>Status</th>
+						<th>NoBid or Lost Reason</th>
+						<th>Qty</th>
+						<th>Unit Price</th>
+
+					</tr>
+				</thead>
+
+				<tbody>
+EOT;
+					
+			setlocale(LC_MONETARY, 'en_US');
+			$quotes = Quotes::model()->getQuoteHistory($pn);
+			foreach ( $quotes as $q ) {
+				$history_table .= "<tr><td>".$q['Opportunity_ID']."</td>";
+				$history_table .= "<td>".$this->fixDateDisplay($q['Date']) ."</td>";
+				$history_table .= "<td>".$q['Type']."</td>";
+				$history_table .= "<td>".$q['Mfr']."</td>";
+				$history_table .= "<td>".$q['Date_Code']."</td>";
+
+				$history_table .= "<td>".$q['Customer']."</td>";
+				$history_table .= "<td>".$q['Location']."</td>";
+				$history_table .= "<td>".$q['Contact']."</td>";
+				$history_table .= "<td>".$q['Sales_Person']."</td>";
+
+				$history_table .= "<td>".$q['Status']."</td>";
+				$history_table .= "<td>".$q['No_Bid_Lost_Reason']."</td>";
+				$history_table .= "<td>".number_format($q['Quantity'])."</td>";
+				$history_table .= "<td>".money_format('%.2n', $q['Unit_Price'])."</td></tr>";
+				
+			} 
+					
+			$history_table .= '</tbody></table>';
+			echo json_encode($history_table);
+		}
+		else {
+			if ( $pn ) {
+				$quotes = Quotes::model()->getQuoteHistory($pn);
+			}
+
+			$this->render('history',array(
+				'model'  => $model,
+				'quotes' => $quotes,
+			));
+		}
+	} // END_OF_FUNCTION actionHistory()
+
+
+	
+	private function fixDateDisplay($d) {
+		// convert "Apr 13 2015 12:00:00:000AM" into "Apr.13.2015"
+		return Date('M.d.Y', strtotime($d));
+	}
+
+
+
+
+	//-------------------------------------------------------
+	public function actionSales() {
+
+		$pn   = $_GET['pn'];
+		$ajax = $_GET['ajax'];
+		pDebug("actionSales() - getting Sales history for part no. $pn (ajax=$ajax)");
+
+
+		if ( $pn && $ajax) {
+			pDebug("actionSales() - returning Sales history for: pn=[$pn], ajax=[$ajax]");
+
+			$sales_table = <<<EOT
+				<table id='sales_table'>
+				<thead>
+					<tr>
+						<th>Order Status</th>
+						<th>Order Date</th>
+						<th>Salesperson</th>
+						<th>Customer Code</th>
+						<th>Customer</th>
+						<th>Ship Date</th>
+						<th>Ship to Customer</th>
+						<th>Ship to City</th>
+						<th>Invoice Date</th>
+						<th>Invoice</th>
+						<th>Sales Order</th>
+						<th>Line Number</th>
+						<th>Purchase Order No.</th>
+						<th>Part No.</th>
+						<th>Quantity</th>
+						<th>Unit Price</th>
+						<th>Net Amount</th>
+					</tr>
+				</thead>
+
+				<tbody>
+EOT;
+
+			setlocale(LC_MONETARY, 'en_US');
+			$sales = Quotes::model()->getSalesHistory($pn);       
+			foreach ( $sales as $s ) {
+				$sales_table .= "<tr>";
+				$sales_table .= "<td>".$s['Order_Status']."</td>";
+				$sales_table .= "<td>".$this->fixDateDisplay($s['Order_Date'])."</td>";
+				$sales_table .= "<td>".$s['Sales_Person_Name']."</td>";
+				$sales_table .= "<td>".$s['Customer_ID']."</td>";
+				$sales_table .= "<td>".$s['Customer_Name']."</td>";
+				$sales_table .= "<td>".$this->fixDateDisplay($s['Ship_Date'])."</td>";
+				$sales_table .= "<td>".$s['Ship_To_Customer_Name']."</td>";
+				$sales_table .= "<td>".$s['Ship_To_City']."</td>";
+				$sales_table .= "<td>".$this->fixDateDisplay($s['Invoice_Date'])."</td>";
+
+				$url = CController::createUrl('quotes/displayInvoice_FB') . '?invoice=' . $s['Invoice'];
+				$sales_table .= "<td>". "<a target='_blank' href='$url'>" . $s['Invoice'] . "</a></td>";
+
+				$sales_table .= "<td>".$s['Sales_Order']."</td>";
+				$sales_table .= "<td>".$s['Line_Number']."</td>";
+				$sales_table .= "<td>".$s['Customer_Purchase_Order_ID']."</td>";
+				$sales_table .= "<td>".$s['Part_Number']."</td>";
+				$sales_table .= "<td>".number_format($s['QTY_Invoiced'])."</td>";
+				$sales_table .= "<td>".money_format('%.2n', $s['Unit_Price'])."</td>";  
+				$sales_table .= "<td>".money_format('%.2n', $s['Net_Amount'])."</td>";  
+				$sales_table .= "</tr>";
+			} 
+					
+			$sales_table .= '</tbody></table>';
+			echo json_encode($sales_table);
+		}
+
+	}
+
+
+
+	public function actionDisplayInvoice_FB() {
+			pDebug("Quotes::actionDisplayInvoice_FB() -  _GET:", $_GET );
+
+			$this->renderPartial('displayPdf_FB',array(
+				'invoice' => $_GET['invoice'],
+			));
+	}
+
+
 
 	public function actionConfig() {
 		pDebug("actionConfig() - _GET=", $_GET);

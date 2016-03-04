@@ -22,6 +22,7 @@ $(document).ready(function() {
     var selected_ItemTotal        = '';
     var selected_ItemPartNo       = '';
     var selected_ItemMaxAvailable = '';
+    var selected_part_number      = '';
 
     var lifeCycle_ACTIVE   = 'Active';
     var lifeCycle_OBSOLETE = 'Obsolete';
@@ -174,6 +175,17 @@ $(document).ready(function() {
     		close: function() { }
     	});
     }
+
+    var dialog_SalesHistory = $( "#form_SalesHistory" ).dialog({
+            autoOpen: false,
+            height: 500,
+            width: 1200,
+            modal: true,
+            resizable: false,
+            close: function() { }
+    });
+
+
 
     $('#reset_form').on('click', function() {
         location.reload();
@@ -2092,6 +2104,48 @@ $(document).ready(function() {
 
 
     // -------------------------------------------
+    // set up sales history click on paginate
+    // -------------------------------------------
+    function setupOnSalesHistoryClick( pn ) {
+        $('#link_SalesHistory').on('click', function() {
+            $.ajax({
+                  url: '../quotes/sales?ajax=1&pn=' + pn,
+                  type: 'GET',
+                  success: function(jData, textStatus, jqXHR) {
+                        var data = JSON.parse(jData);
+                        console.log('link_SalesHistory, data=' + data);
+
+                        $('#form_SalesHistory').html( data );
+
+                        dialog_SalesHistory.dialog('option', 'title', 'Sales History for Part No. ' + pn ); 
+
+                        var buttons = { 
+                          "Done": function() { 
+                             dialog_SalesHistory.dialog( "close" );  
+                             return false; 
+                          },
+                        }
+
+                        dialog_SalesHistory.dialog("option", "buttons", buttons);
+                        dialog_SalesHistory.dialog( "open" );
+                        return false; 
+
+                  },
+                  error: function (jqXHR, textStatus, errorThrown)  {
+                        console.log("Couldn't retrieve sales history for this part; error=" + errorThrown);
+                        alert("Couldn't retrieve sales history for this part; error=" + errorThrown);
+                  } 
+            });
+
+            return false;
+
+        });
+    }
+
+
+
+
+    // -------------------------------------------
     // set up quote history click on paginate
     // -------------------------------------------
     function setupOnQuoteHistoryClick( pn ) {
@@ -2107,7 +2161,7 @@ $(document).ready(function() {
                   url: '../quotes/history?ajax=1&pn=' + pn,
                   type: 'GET',
                   success: function(jData, textStatus, jqXHR) {
-                        console.log('data=' + jData);
+                        console.log('link_QuoteHistory data=' + jData);
                         //return false;
                         
                         var data = JSON.parse(jData);
@@ -2185,6 +2239,7 @@ $(document).ready(function() {
 
 		dialog_PartPricing.dialog('option', 'title', 'Inventory Part Pricing Details'); 
         setupOnQuoteHistoryClick( partNo );
+        setupOnSalesHistoryClick( partNo );
 
 		dialog_PartPricing.dialog({
 			buttons :  [{

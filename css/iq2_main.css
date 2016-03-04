@@ -1,3 +1,34 @@
+#sales_table {
+	table-layout: auto;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#sales_table > thead > tr > th {
+	background: #5E6E78;
+  	color: white;
+  	font-variant: small-caps;
+  	font-size: .9em;
+  	text-align: center;
+}
+#sales_table > tbody > tr:hover {
+	background: lightyellow;
+   	cursor: pointer;
+}
+
+#sales_table > tbody > tr.odd {
+	background: #E6E6E6;
+}
+
+#sales_table > tbody > tr > td {
+	font-size: .9em;
+}
+
+#sales_table > tbody > tr > td:nth-child(10) > a {
+	color: #1485cc;
+    text-decoration: underline;
+}
+
 table.coordinator_table {
 	border: 0px solid green;
 	width: 70%;

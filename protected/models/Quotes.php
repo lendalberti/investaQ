@@ -199,5 +199,170 @@ class Quotes extends CActiveRecord
 
 
 
+
+	// ----------------------------------------------------------------------
+	public function getQuoteHistory($pn=null) {
+		if ( !$pn ) {
+			return null;
+		}
+		pDebug("Quotes::getQuoteHistory() - part no: [$pn]");
+
+		$hostname = "crmpdb";
+		$database = 'ProdED.[REI\elowell].erin_quote_history_vw'; 
+		$username = 'CRMserver'; 
+		$password = 'Rochester123'; 
+		$count    = 1;
+		$quotes = array();
+
+		// ---------------------------------- 
+		// query SQL Server on CRMpdb
+		// ---------------------------------- 
+		$MSSQL_conn = mssql_connect($hostname, $username, $password);
+		if ( !$MSSQL_conn ) {
+			pDebug("getQuoteHistory() - Can't connect to $hostname...\n\n");
+		}
+
+		$sql      = "SELECT TOP 1000 * FROM $database WHERE Part_Number LIKE '%$pn%'"; 
+		$resource = mssql_query( $sql);
+
+		if ( $resource ) {
+			while( $q = mssql_fetch_assoc($resource) ) {
+				$quotes[] = $q;
+			}
+		}
+		else {
+			pDebug("getQuoteHistory() - No resource found for db fetch...\n");
+		}
+
+		mssql_close($MSSQL_conn);
+
+
+
+		// -------------------------------------------------------------------------
+		// append local records into same array as remote record list above
+		// -------------------------------------------------------------------------
+
+		$sql = <<<EOS
+
+		SELECT 	h.quote_no,		h.customer_id, 	h.salesperson_id, t.name as type, 
+				s.name as status, l.name as lost_reason, b.name as no_bid_reason, 
+				h.manufacturer, h.part_no, h.date_code, h.quantity, h.created, 	h.unit_price
+		  FROM
+		  		history h
+		  			JOIN types          t ON t.id = h.type_id 
+		  			JOIN status         s ON s.id = h.status_id
+		  			JOIN lost_reasons   l ON l.id = h.lost_reason_id
+		  			JOIN no_bid_reasons b ON b.id = h.no_bid_reason_id
+		 WHERE
+				h.part_no LIKE '%$pn%'
+EOS;
+
+		$local_quotes = Yii::app()->db->createCommand($sql)->queryAll();
+		foreach( $local_quotes as $rec ) {
+
+			$cust  = Customers::model()->findByPk( $rec['customer_id'] );
+			$sales = Users::model()->findByPk($rec['salesperson_id']); 
+
+			$tmp = array();
+			$tmp['Opportunity_ID']     = $rec['quote_no'];
+			$tmp['Type']               = $rec['type'];
+			$tmp['Status']             = $rec['status'];
+			$tmp['No_Bid_Lost_Reason'] = $rec['lost_reason'] . $rec['no_bid_reason']; 
+			$tmp['Mfr']                = $rec['manufacturer'];
+			$tmp['Part_Number']        = $rec['part_no'];
+			$tmp['Date_Code']          = $rec['date_code'];
+			$tmp['Quantity']           = $rec['quantity'];
+			$tmp['Date']               = $rec['created'];
+			$tmp['Unit_Price']         = $rec['unit_price'];
+
+			$tmp['Address_1']          = $cust->address1;
+			$tmp['Address_2']          = $cust->address2;
+			$tmp['Customer']           = $cust->name;
+			$tmp['City']               = $cust->city;
+			$tmp['State_']             = $cust->state->short_name;
+			$tmp['Country']            = $cust->country->short_name;
+			$tmp['Zip']                = $cust->zip;
+			$tmp['Location']           = $cust->city . ", " . $cust->state->short_name;
+
+			$tmp['Contact']            = "tbd";   // $cust->contact_name;  // TODO: get name from contact id
+			$tmp['Email']              = "tbd";   //$cust->contact_email;
+			$tmp['Phone']              = "tbd";   //$cust->contact_phone1;
+
+			$tmp['Sales_Person']       = $sales->first_name . " " . $sales->last_name;
+
+			$quotes[] = $tmp;
+
+		}
+
+		return $quotes;
+
+	}  // END_OF_FUNCTION getQuoteHistory()
+
+
+
+
+
+
+	public function getSalesHistory($pn=null) {
+		if ( !$pn ) {
+			return null;
+		}
+		pDebug("Quotes::getSalesHistory() - part no: [$pn]");
+
+		$hostname = "ERPPDB";
+		$database = "CompanyR";
+		$username = "ReadmeCase";
+		$password = "Mexico1981#";
+		$view     = "a_invoiced_sales_all_history_vw";
+
+		$count    = 1;
+		$sales   = array();
+
+		// ---------------------------------- 
+		// query SQL Server on erppdb
+		// ---------------------------------- 
+		$MSSQL_conn = mssql_connect($hostname, $username, $password);
+		if ( !$MSSQL_conn ) {
+			pDebug("getSalesHistory() - Can't connect to $hostname...\n\n");
+		}
+
+		$sql = <<<EOT
+
+SELECT
+		Order_Status, Order_Date, 	Customer_ID, 	Customer_Name, Ship_To_Customer_Name, 
+		Invoice_Date, Invoice, Ship_To_City, Sales_Order, Ship_Date, Customer_Purchase_Order_ID,
+		Sales_Person_Name,Line_Number,Part_Number,QTY_Invoiced,	Unit_Price,	Net_Amount
+
+  FROM  
+  		$view where Part_Number = '$pn' and Product_Class_Code != '_FRT'
+ 
+ORDER BY 
+			Order_Date DESC
+
+EOT;
+
+		$resource = mssql_query( $sql);
+
+		if ( $resource ) {
+			while( $record = mssql_fetch_assoc($resource) ) {
+				$sales[] = $record;
+			}
+		}
+		else {
+			pDebug("getSalesHistory() - No resource found for db fetch...\n");
+		}
+
+		pDebug("Quotes::getSalesHistory() - sales history:", $sales);
+
+
+		mssql_close($MSSQL_conn);
+		return $sales;
+
+	}  // END_OF_FUNCTION getSalesHistory()
+
+
+
+
+
 	
 }
