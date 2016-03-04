@@ -17,7 +17,7 @@ class Roles extends CActiveRecord  {
 			MGR          = 3,
 			APPROVER     = 4,
 			PROPOSAL_MGR = 5,
-			BTO_APPROVER = 6;
+			COORDINATOR  = 6;
 
 	/**
 	 * Returns the static model of the specified AR class.

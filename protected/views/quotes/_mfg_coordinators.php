@@ -21,6 +21,10 @@
 	$test_id     = $data['BtoItemStatus'][Groups::TEST-1]->coordinator->id . '_' . $item_id . '_' . Groups::TEST ;
 	$quality_id  = $data['BtoItemStatus'][Groups::QUALITY-1]->coordinator->id . '_' . $item_id . '_' . Groups::QUALITY ;
 
+	pDebug("****** _mfg_coordinators.php - ASSEMBLY:", $data['BtoItemStatus'][Groups::ASSEMBLY-1]->coordinator->attributes);
+	pDebug("****** _mfg_coordinators.php - TEST", $data['BtoItemStatus'][Groups::TEST-1]->coordinator->attributes);
+	pDebug("****** _mfg_coordinators.php - QUALITY", $data['BtoItemStatus'][Groups::QUALITY-1]->coordinator->attributes);
+
 
 ?>
 
@@ -29,12 +33,13 @@
 			<input type='hidden' id='assembly_coordinator' value='<?php echo $assembly_coordinator;  ?>'>
 			<input type='hidden' id='test_coordinator' value='<?php echo $test_coordinator;  ?>'>
 			<input type='hidden' id='quality_coordinator' value='<?php echo $quality_coordinator;  ?>'>
+
 			<input type='hidden' id='logged_in_as' value='<?php echo $logged_in_as;  ?>'>
 
 		  	<h3><span style='font-weight: bold;'>Assembly</span><span style='font-variant: small-caps;'> (<?php echo $assembly_coordinator; ?>)</span></h3>
 		  	<div>
 		   			<div style='margin: 10px 0px 50px 0px;'>
-						<div style='margin-bottom: 15px;'>Current Status:<br /> <?php echo $assembly_bto_status; ?></div>
+						<div style='margin-bottom: 15px;'> Current Status: <?php echo $assembly_bto_status; ?></div>
 						<div>
 							<span style='padding-right: 10px;'>
 								<input type='button' id='approveItem_<?php echo $assembly_id; ?>' value='Approve' >	</span>
@@ -67,7 +72,7 @@
 		  	<h3><span style='font-weight: bold;'>Test</span><span style='font-variant: small-caps;'> (<?php echo $test_coordinator; ?>)</span></h3>
 		  	<div>
 		  			<div style='margin: 10px 0px 50px 0px;'>
-						<div style='margin-bottom: 15px;'>Current Status: <br /><?php echo $test_bto_status; ?> </div>
+						<div style='margin-bottom: 15px;'> Current Status: <?php echo $test_bto_status; ?> </div>
 						
 						<div>
 							<span style='padding-right: 10px;'>
@@ -106,7 +111,7 @@
 			<h3><span style='font-weight: bold;'>Quality</span><span style='font-variant: small-caps;'> (<?php echo $quality_coordinator; ?>)</span></h3>
 			<div>
 				<div style='margin: 10px 0px 50px 0px;'>
-					<div style='margin-bottom: 15px;'>Current Status:<br /> <?php echo $quality_bto_status; ?> </div>
+					<div style='margin-bottom: 15px;'> Current Status:  <?php echo $quality_bto_status; ?> </div>
 					<div>
 						<span style='padding-right: 10px;'>
 							<input type='button' id='approveItem_<?php echo $quality_id; ?>' value='Approve' ></span>

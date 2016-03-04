@@ -50,7 +50,7 @@ $(document).ready(function() {
     var ROLES_MGR          = 3;
     var ROLES_APPROVER     = 4;
     var ROLES_PROPOSAL_MGR = 5;
-    var ROLES_BTO_APPROVER = 6;
+    var ROLES_COORDINATOR  = 6;
 
     console.log('*** myURL=['+myURL+']');
     console.log('*** returnUrl=[' + $('#returnUrl').val() + ']' );
@@ -264,18 +264,17 @@ $(document).ready(function() {
         // approveItem_ $owner_id _ $item_id _ Groups::ASSEMBLY
 
         $.each( ['approveItem_', 'rejectItem_', 'holdItem_', 'saveItemChanges_'], function(i,val) {
+            //console.log("********** val=["+val+"]");
             $.each( $('[id^='+val+']'), function() {
                 var tmp     =  $(this).attr('id');
-                var match   = /^.+(\d+)_(\d+)_(\d+)$/.exec(tmp);
+                var match   = /^\w+_(\d+)_(\d+)_(\d+)$/.exec(tmp);
                 var owner = RegExp.$1;
                 var item  = RegExp.$2;
                 var group = RegExp.$3;
-                console.log("loggedInAs=["+loggedInAs+"], owner=["+owner+"], item=["+item+"], group=["+group+"]");
-
+                //console.log("tmp=["+tmp+"], loggedInAs=["+loggedInAs+"], owner=["+owner+"], item=["+item+"], group=["+group+"]");
                 if ( owner != loggedInAs ) {
                     $(this).hide();
                 }
-               
             });
         });
 
@@ -288,7 +287,7 @@ $(document).ready(function() {
                     //     $(this).hide();
                     // }
                     var tmp     =  $(this).attr('id');
-                    var match   = /^.+(\d+)_(\d+)_(\d+)$/.exec(tmp);
+                    var match   = /^\w+_(\d+)_(\d+)_(\d+)$/.exec(tmp);
                     var owner = RegExp.$1;
                     var item  = RegExp.$2;
                     var group = RegExp.$3;

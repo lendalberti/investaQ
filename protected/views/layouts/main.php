@@ -70,7 +70,7 @@
 		Roles::MGR          = 3,
 		Roles::APPROVER     = 4,
 		Roles::PROPOSAL_MGR = 5,
-		Roles::BTO_APPROVER = 6;
+		Roles::COORDINATOR  = 6;
 
 -->
 
@@ -118,7 +118,7 @@
 			// }
 			// else if (Yii::app()->user->isCoordinator) {
 			// 	$user_type = ' (BTO Approver)';
-			// 	$role = Roles::BTO_APPROVER;
+			// 	$role = Roles::COORDINATOR;
 			// }
 			
 			// $group = getLoggedInUserGroup

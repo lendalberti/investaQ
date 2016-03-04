@@ -982,27 +982,38 @@ class QuotesController extends Controller
 		pTrace( __METHOD__ );
 		pDebug('actionIndex() - _GET=', $_GET);
 
-		$criteria = new CDbCriteria();
-		
-		if ( Yii::app()->user->isCoordinator ) {
-			$quote_type = QuoteTypes::MANUFACTURING;
-			$page_title = "My Pending Manufacturing Quotes";
-			$criteria->addCondition("quote_type_id = " . $quote_type ); 
+		$quote_type = QuoteTypes::MANUFACTURING;
+		$page_title = "My Pending Manufacturing Quotes";
 
-			$my_quotes = $this->findMyMfgQuotes();
-			//if ( count($my_quotes) > 0 ) {
-				$criteria->addCondition("id IN (" .  implode(",", $my_quotes)  . ")" ); 
-			//}
+		$my_quotes = $this->findMyMfgQuotes();
+		if ( count($my_quotes) > 0 ) {
+
+			$criteria = new CDbCriteria();
+			$criteria->addCondition("quote_type_id = " . $quote_type ); 
+			$criteria->addCondition("id IN (" .  implode(",", $my_quotes)  . ")" ); 
+
+			$criteria->order = 'id DESC';
+			$model = Quotes::model()->findAll( $criteria );
+			$this->render( 'index', array(
+				'quote_type' => $quote_type,
+				'model'      => $model,
+				'page_title' => $page_title,
+			));
+
+		}
+		else {
+			$this->render( 'no_pending' );
 		}
 		
-		$criteria->order = 'id DESC';
-		$model = Quotes::model()->findAll( $criteria );
 
-		$this->render( 'index', array(
-			'quote_type' => $quote_type,
-			'model'      => $model,
-			'page_title' => $page_title,
-		));
+
+
+		
+
+		
+		
+
+		
 	}
 
 

@@ -17,7 +17,7 @@
         }
 
         function getIsCoordinator() { // should be getIsCoordinator
-            return ( $this->user &&  ( in_array(Roles::BTO_APPROVER, $this->roles) || in_array(Roles::PROPOSAL_MGR, $this->roles) || in_array(Roles::ADMIN, $this->roles) ) );
+            return ( $this->user &&  ( in_array(Roles::COORDINATOR, $this->roles) || in_array(Roles::PROPOSAL_MGR, $this->roles) || in_array(Roles::ADMIN, $this->roles) ) );
         }
 
 

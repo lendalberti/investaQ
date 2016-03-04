@@ -101,7 +101,7 @@ class Coordinators extends CActiveRecord
 		foreach( array( Groups::ASSEMBLY,Groups::QUALITY,Groups::TEST ) as $i => $g_id ) {
 			$criteria = new CDbCriteria;
 			$criteria->addCondition("group_id = $g_id");
-			//$criteria->addCondition("role_id = " . Roles::BTO_APPROVER);  // no longer needed
+			//$criteria->addCondition("role_id = " . Roles::COORDINATOR);  // no longer needed
 		
 			$res = $this->findAll($criteria);
 			

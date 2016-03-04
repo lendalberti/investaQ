@@ -21,7 +21,7 @@
 	if (  $q->status_id == Status::PENDING && Yii::app()->user->isProposalManager || Yii::app()->user->isCoordinator ) {
 		if ( !$coordinatorsNotified ) {  ?>
 			<div class="container_15 grid_outline_350">
-				<div><span style='font-weight: bold;'>This is a new Manufacturing Quote -</span><span id='link_SendMesage' > Notify process coordinators. </span></div>
+				<div><span style='font-weight: bold;'>This is a newly submitted Manufacturing Quote... </span><span id='link_SendMesage' > Start approval process. </span></div>
 				<div class="clear">&nbsp;</div>
 
 				<div style='margin-left: 80px;'>
@@ -39,11 +39,13 @@
 									<select id='coordinator_Assembly'>
 										<?php 
 												echo "<option></option>";
-												foreach( $data['coordinators'][Groups::ASSEMBLY] as $k=>$v ) {
-													foreach( $v as $id => $fullname ) {
-														echo "<option value='$id'>$fullname</option>";
-													}
-												} 
+												if ( $data['coordinators'] ) {
+													foreach( $data['coordinators'][Groups::ASSEMBLY] as $k=>$v ) {
+														foreach( $v as $id => $fullname ) {
+															echo "<option value='$id'>$fullname</option>";
+														}
+													} 
+												}
 										?>
 									</select>
 								</div>
@@ -53,11 +55,13 @@
 										<select id='coordinator_Test'>
 											<?php 
 													echo "<option></option>";
-													foreach( $data['coordinators'][Groups::TEST] as $k=>$v ) {
-														foreach( $v as $id => $fullname ) {
-															echo "<option value='$id'>$fullname</option>";
-														}
-													} 
+													if ( $data['coordinators'] ) {
+														foreach( $data['coordinators'][Groups::TEST] as $k=>$v ) {
+															foreach( $v as $id => $fullname ) {
+																echo "<option value='$id'>$fullname</option>";
+															}
+														} 
+													}
 											?>
 										</select>
 								</div>
@@ -67,11 +71,13 @@
 										<select id='coordinator_Quality'>
 											<?php 
 													echo "<option></option>";
-													foreach( $data['coordinators'][Groups::QUALITY] as $k=>$v ) {
-														foreach( $v as $id => $fullname ) {
-															echo "<option value='$id'>$fullname</option>";
-														}
-													} 
+													if ( $data['coordinators'] ) {
+														foreach( $data['coordinators'][Groups::QUALITY] as $k=>$v ) {
+															foreach( $v as $id => $fullname ) {
+																echo "<option value='$id'>$fullname</option>";
+															}
+														} 
+													}
 											?>
 										</select>
 								</div>
@@ -178,11 +184,11 @@
 
 	else if ( $q->status_id == Status::DRAFT ) {
 		$s = "Ready to be submitted...";
-		echo "<span id='process_approval_status' style='padding-left: 590px; color: #a31128; font-size: .9em;'>$s</span>";
+		echo "<span id='process_approval_status' style='padding-left: 590px; color: #2C6371; font-size: .9em;'>$s</span>";
 	}
 	else if (  $q->status_id == Status::PENDING && !Yii::app()->user->isProposalManager && !Yii::app()->user->isCoordinator ) {
 		$s = "Pending...";
-		echo "<span id='process_approval_status' style='padding-left: 590px;  color: #a31128; font-size: .9em;'>$s</span>";
+		echo "<span id='process_approval_status' style='padding-left: 590px;  color: #2C6371; font-size: .9em;'>$s</span>";
 
 
 		// display values from BTO approval process
@@ -191,7 +197,7 @@
 	}
 	else if (  $q->status_id == Status::REJECTED ) {		// TODO: does it matter who user is?
 		$s = "Quote has been rejected.";
-		echo "<span id='process_approval_status' style='padding-left: 590px;   color: #a31128; font-size: 1.1em;'>$s</span>";
+		echo "<span id='process_approval_status' style='padding-left: 590px;   color: #2C6371; font-size: 1.1em;'>$s</span>";
 
 		// display values from BTO approval process
 		echo '<br />[ tbd ]';
