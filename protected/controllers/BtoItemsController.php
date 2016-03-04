@@ -105,12 +105,12 @@ class BtoItemsController extends Controller
 			try {
 				if ( $itemModel->save() ) {				// 1. save BtoItems model
 					
-					foreach( array( BtoGroups::ASSEMBLY, BtoGroups::TEST, BtoGroups::QUALITY ) as $group_id ) {
-						$statusModel = new BtoStatus;    
+					foreach( array( Groups::ASSEMBLY, Groups::TEST, Groups::QUALITY ) as $group_id ) {
+						$statusModel = new BtoItemStatus;    
 						$statusModel->bto_item_id = $itemModel->id;
 						$statusModel->group_id    = $group_id;
 						$statusModel->status_id   = Status::PENDING;
-						$statusModel->save();  			 // 2. save BtoStatus for each group
+						$statusModel->save();  			 // 2. save BtoItemStatus for each group
 					}
 					
 					$quoteModel = Quotes::model()->findByPk( $_POST['quote_id'] );

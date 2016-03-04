@@ -76,25 +76,50 @@
 
 	<div id="mainmenu">
 		<?php
-			// echo '<pre>'; 			print_r(Yii::app()->user->attributes);        echo '</pre>'; 		
+			//echo '<pre>'; 	echo "My attributes:" ; print_r(Yii::app()->user->attributes);	      echo '</pre>'; 
+		   // echo '<pre>'; 	echo "My role: " ; print_r(Yii::app()->user->roles);	    echo '</pre>'; 
+			/*
+				My attributes:Array
+					(
+					    [0] => Array
+					        (
+					            [id] => 1
+					            [username] => ldalberti
+					            [first_name] => Len
+					            [last_name] => D'Alberti
+					            [email] => ldalberti@rocelec.com
+					            [title] => Software Developer
+					            [phone] => 7-(970)828-7357
+					            [fax] => 20-(802)978-8532
+					        )
+
+					)
+			*/
+
 			$user_type = '';
 			date_default_timezone_set('America/New_York');
 			if ( Yii::app()->user->isAdmin ) {
 				$user_type = ' (Admin)';
 				$role = Roles::ADMIN;
 			}
-			else if (Yii::app()->user->isApprover) {
-				$user_type = ' (Approver)';
-				$role = Roles::APPROVER;
+
+			// -- might suffice to use what's in the user record
+			else {
+				$user_type = ' (' . Yii::app()->user->title . ')';
 			}
-			else if (Yii::app()->user->isProposalManager) {
-				$user_type = ' (Proposal Manager)';
-				$role = Roles::PROPOSAL_MGR;
-			}
-			else if (Yii::app()->user->isBtoApprover) {
-				$user_type = ' (BTO Approver)';
-				$role = Roles::BTO_APPROVER;
-			}
+			//
+			// else if (Yii::app()->user->isCoordinator) {
+			// 	$user_type = ' (Approver)';
+			// 	$role = Roles::APPROVER;
+			// }
+			// else if (Yii::app()->user->isProposalManager) {
+			// 	$user_type = ' (Proposal Manager)';
+			// 	$role = Roles::PROPOSAL_MGR;
+			// }
+			// else if (Yii::app()->user->isBtoApprover) {
+			// 	$user_type = ' (BTO Approver)';
+			// 	$role = Roles::BTO_APPROVER;
+			// }
 			
 			// $group = getLoggedInUserGroup
 			// echo "<input type='hidden' id='loggedIn_BtoRole' name='loggedIn_BtoRole' value='$role'>";
@@ -111,13 +136,13 @@
 					$menuItems[] = array('label'=>'Config', 'url'=>array('/quotes/config') );
 				}
 
-				if (Yii::app()->user->isApprover) {
+				if (Yii::app()->user->isCoordinator) {
 					$menuItems[] = array('label'=>'Approval Queue ', 'url'=>array('/quotes/indexApproval') );
 				}
 	
 				if (Yii::app()->user->isProposalManager) {
 					$menuItems[] = array('label'=>'Mfg Pending', 'url'=>array('/quotes/manufacturing') );
-					$menuItems[] = array('label'=>'Mfg Admin', 'url'=>array('/btoApprovers/admin') );
+					$menuItems[] = array('label'=>'Mfg Admin', 'url'=>array('/coordinators/admin') );
 				}
 
 				if (Yii::app()->user->isBtoApprover ) {
@@ -132,7 +157,7 @@
 				$menuItems[] = array('label'=>'Help',        'url'=>array('/site/help') );
 
 				
-				// if ( Yii::app()->user->isAdmin || Yii::app()->user->isApprover ) { 
+				// if ( Yii::app()->user->isAdmin || Yii::app()->user->isCoordinator ) { 
 				// 	$menuItems[] = array('label'=>'Approval Queue', 'url'=>array('/quotes/approve') );
 				// }
 				

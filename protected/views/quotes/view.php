@@ -1,21 +1,30 @@
 <?php 
 	$this->layout = '//layouts/column1';
-	$status       = $data['model']->status->name;
+	$status_name  = $data['model']->status->name;
+	$status_id    = $data['model']->status_id;
 	$quote_no     = $data['model']->quote_no;
 	$quoteType    = $data['model']->quoteType->name;
+	$mfgQuote     = $data['model']->quote_type_id == QuoteTypes::MANUFACTURING ? true : false;
+
+	$coordinatorsNotified = $data['BtoItems_model']->coordinators_notified;
+
+	$im_a_coordinator = true;  // TODO:     xxx ? true : false;
+
 ?>
 
 <input type='hidden' id='return_URL' name='return_URL' value="<?php echo $_SERVER['REQUEST_URI'];  ?> ">
 <input type='hidden' id='quoteTypeID' name='quoteTypeID' value="<?php echo $data['model']->quote_type_id; ?>">
 <input type='hidden' id='quoteTypeName' name='quoteTypeName' value="<?php echo $data['model']->quoteType->name; ?>">
 
+<input type='hidden' id='coordinatorGroup' name='coordinatorGroup' value='<?php echo Yii::app()->user->groupId; ?>'>
+<input type='hidden' id='myRoleIDs' name='myRoleIDs' value='<?php echo json_encode(Yii::app()->user->roles); ?>'>
 
 <div style='height: 100px; border: 0px solid gray;'>
 	<div style='color: #2C6371;  font-size: 2em; border: 0px solid green; float: left; padding-right: 10px;' id='header_PageTitle'>Viewing Quote No.</div>
 	<div style='color: #a31128;  font-size: 1.5em; border: 0px solid red; font-family: courier.;padding-top:  5px; font-family: courier.;padding-top:  5px;' id='header_QuoteNo'><?php echo $quote_no; ?> 
 		<?php 
 			if ( Yii::app()->user->isAdmin ) {
-				echo "<span style='color: #2C6371;  font-size: .7em; border: 0px solid red; '> [ $quoteType,$status ] [ " . $data['model']->owner->fullname . " ]</span>";
+				echo "<span style='color: #2C6371;  font-size: .7em; border: 0px solid red; '> [ $quoteType,$status_name ] [ " . $data['model']->owner->fullname . " ]</span>";
 			}
 			else if ( Yii::app()->user->isProposalManager ) {
 				echo "<span style='color: #2C6371;  font-size: .7em; border: 0px solid red; '> [ ". $data['model']->owner->fullname . ", $status ]</span>";
@@ -39,7 +48,7 @@
  		$rejected = Yii::app()->request->baseUrl . "/images/New/rejected.png";
  		$pending = Yii::app()->request->baseUrl . "/images/New/pending.png";
 
- 		if ( Yii::app()->user->isAdmin || Yii::app()->user->isApprover ) { // allow all for Admin
+ 		if ( Yii::app()->user->isAdmin || Yii::app()->user->isCoordinator ) { // allow all for Admin
  			echo "<img id='quote_edit_"  .$data['model']['id']."' title='Edit this quote'   src='$edit' />";
 	 		echo "<img id='quote_contact_" .$data['model']['id']."' title='Contact Salesperson'  src='$contact' />";
 			echo "<img id='quote_print_" .$data['model']['id']."' title='Print this quote'  src='$print' />";
@@ -262,7 +271,7 @@
 							</tbody>
 							</table>
 
-							<?php if ( Yii::app()->user->isApprover ) { ?>
+							<?php if ( Yii::app()->user->isCoordinator ) { ?>
 								<span style='display:none;' id='button_ApproveItem'>Approve this Item</span>
 								<span style='display:none;' id='button_RejectItem'>Reject this Item</span>
 							<?php } ?>  
@@ -277,15 +286,15 @@
 
 		<!--  for Manufacturing Quotes--> 
 		<div id='section_Manufacturing'>  
-			<?php require '_mfg_details_RO.php';    ?> <!-- readonly view of _mfg_details.php -->
+			<?php if ($mfgQuote)   require '_mfg_details_RO.php';    ?> <!-- readonly view of _mfg_details.php -->
 		</div>
 
 		<div id='section_Approvals'>
-			<?php require '_mfg_approvals.php';    ?>
+			<?php if ($mfgQuote)   require '_mfg_approvals.php';    ?>
 		</div>
 		
 		<div id='section_Coordinators'>
-			<?php require '_mfg_coordinators.php';    ?>
+			<?php if ($mfgQuote && $im_a_coordinator && $coordinatorsNotified )   require '_mfg_coordinators.php';    ?>
 		</div>
 
 

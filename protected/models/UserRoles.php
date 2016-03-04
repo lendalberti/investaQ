@@ -1,27 +1,23 @@
 <?php
 
 /**
- * This is the model class for table "bto_status".
+ * This is the model class for table "user_roles".
  *
- * The followings are the available columns in table 'bto_status':
+ * The followings are the available columns in table 'user_roles':
  * @property integer $id
- * @property integer $bto_item_id
- * @property integer $status_id
- * @property integer $group_id
- * @property integer $approver_id
+ * @property integer $user_id
+ * @property integer $role_id
  *
  * The followings are the available model relations:
- * @property Status $status
- * @property BtoItems $btoItem
- * @property BtoGroups $group
- * @property Users $approver
+ * @property Users $user
+ * @property Roles $role
  */
-class BtoStatus extends CActiveRecord
+class UserRoles extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
-	 * @return BtoStatus the static model class
+	 * @return UserRoles the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -33,7 +29,7 @@ class BtoStatus extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'bto_status';
+		return 'user_roles';
 	}
 
 	/**
@@ -44,11 +40,11 @@ class BtoStatus extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('bto_item_id, status_id, group_id', 'required'),
-			array('bto_item_id, status_id, group_id, approver_id', 'numerical', 'integerOnly'=>true),
+			array('user_id, role_id', 'required'),
+			array('user_id, role_id', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, bto_item_id, status_id, group_id, approver_id', 'safe', 'on'=>'search'),
+			array('id, user_id, role_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -60,10 +56,8 @@ class BtoStatus extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'status' => array(self::BELONGS_TO, 'Status', 'status_id'),
-			'btoItem' => array(self::BELONGS_TO, 'BtoItems', 'bto_item_id'),
-			'group' => array(self::BELONGS_TO, 'BtoGroups', 'group_id'),
-			'approver' => array(self::BELONGS_TO, 'Users', 'approver_id'),
+			'user' => array(self::BELONGS_TO, 'Users', 'user_id'),
+			'role' => array(self::BELONGS_TO, 'Roles', 'role_id'),
 		);
 	}
 
@@ -74,10 +68,8 @@ class BtoStatus extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'bto_item_id' => 'Bto Item',
-			'status_id' => 'Status',
-			'group_id' => 'Group',
-			'approver_id' => 'Approver',
+			'user_id' => 'User',
+			'role_id' => 'Role',
 		);
 	}
 
@@ -93,10 +85,8 @@ class BtoStatus extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('bto_item_id',$this->bto_item_id);
-		$criteria->compare('status_id',$this->status_id);
-		$criteria->compare('group_id',$this->group_id);
-		$criteria->compare('approver_id',$this->approver_id);
+		$criteria->compare('user_id',$this->user_id);
+		$criteria->compare('role_id',$this->role_id);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

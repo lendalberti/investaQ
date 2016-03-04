@@ -33,19 +33,20 @@ textarea#text_Message {
 
 #link_SendMesage {
 	color: #2C6371; 
-	text-decoration: underline; 
 	padding: 10px;
 }
 
 #link_SendMesage:hover {
 	cursor: pointer;
+	font-weight: bold;
+	text-decoration: underline; 
 }
 .container {
     width: 1050px;
     margin: 0 auto;
 }
 
-#approver_notification_message {
+#coordinator_notification_message {
 	margin-top: 15px;
     padding: 10px;
     font-family: Courier;

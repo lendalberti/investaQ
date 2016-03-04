@@ -70,7 +70,7 @@ $(document).ready(function() {
     // ---------- set up Accordian ------------------------------------------------------------------
     // ----------------------------------------------------------------------------------------------
     $(function() {
-        $( "#approvers_accordion" ).accordion({
+        $( "#coordinators_accordion" ).accordion({
           collapsible: true,
           heightStyle: "content"
         });
@@ -92,16 +92,16 @@ $(document).ready(function() {
         $('[id^=item_row_]').find('td').removeClass('highlight_row'); 
 
         // if ( newIndex === TAB_Approvals-1 ) {
-        //     $('#approvers_accordion').show();
+        //     $('#coordinators_accordion').show();
         //     // $(function() {
-        //     //     $( "#approvers_accordion" ).accordion({
+        //     //     $( "#coordinators_accordion" ).accordion({
         //     //       collapsible: true,
         //     //       heightStyle: "content"
         //     //     });
         //     // });
         // }
         // else {
-        //     $('#approvers_accordion').hide();
+        //     $('#coordinators_accordion').hide();
         // }
 
     });
@@ -238,24 +238,46 @@ $(document).ready(function() {
 
     var itemID = $('#itemID').val();
 
-    var loggedIn_BtoRole  = $('#loggedIn_BtoRole').val();
-    var loggedIn_BtoGroup = $('#loggedIn_BtoGroup').val();
 
-    if ( loggedIn_BtoRole != ROLES_PROPOSAL_MGR ) {
-        $('#select_UpdateQuoteStatus').hide();
-        $('#link_SendMesage').hide();
-        $('#saveItemChanges').hide();
+
+    // -----------------------------------------------
+    // ---------- set up minimal protection ----------
+    // -----------------------------------------------
+
+    if ( window.location.href.match(/quotes\/view/ ) ) {
+        var myRoleIDs  = $('#myRoleIDs').val();
+        var myGroup = $('#coordinatorGroup').val();
+
+        var re = RegExp(ROLES_PROPOSAL_MGR, 'g');
+        var notProposalMgr = !myRoleIDs.match(re);
+
+        re = RegExp(ROLES_ADMIN, 'g');
+        var notAdmin = !myRoleIDs.match(re);
+
+        $.each( ['approveItem_', 'rejectItem_', 'holdItem_', 'saveItemChanges_'], function(i,val) {
+            $.each( $('[id^='+val+']'), function() {
+                var tmp     =  $(this).attr('id');
+                var match   = /^.+_(\d+)$/.exec(tmp);
+                if ( myGroup != RegExp.$1 ) {
+                    $(this).hide();
+                }
+            });
+        });
+
+        if ( notProposalMgr && notAdmin ) {
+            $.each( ['select_UpdateQuoteStatus', 'link_SendMesage', 'saveItemChanges' ], function(i,val) {
+                $.each( $('#'+val), function() {
+                    var tmp     =  $(this).attr('id');
+                    var match   = /^.+_(\d+)$/.exec(tmp);
+                    if ( myGroup != RegExp.$1 ) {
+                        $(this).hide();
+                    }
+                });
+            });
+        }
     }
 
-     // $('[id^=approveItem_]').hide();
-     // $('[id^=rejectItem_]').hide();
-     // $('[id^=holdItem_]').hide();
 
-     console.log('Showing elements for quoteID=['+quoteID+'], group=['+loggedIn_BtoGroup+']');
-
-     $('#approveItem_' +itemID + '_' + loggedIn_BtoGroup  ).show();       
-     $('#rejectItem_'  +itemID + '_' + loggedIn_BtoGroup ).show();       
-     $('#holdItem_'    +itemID + '_' + loggedIn_BtoGroup  ).show();   
 
 
 
@@ -263,9 +285,6 @@ $(document).ready(function() {
 	// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     // -------- Event Handlers  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------    
     // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-    //  select_UpdateQuoteStatus  currentQuoteStatus
 
 
     $('#select_UpdateQuoteStatus').on('change', function() {
@@ -410,9 +429,9 @@ $(document).ready(function() {
             quoteID:             $('#Quotes_id').val(),
             text_Subject:        $('#text_Subject').val(),
             text_Message:        $('#text_Message').val(),
-            approver_Assembly:   $('#approver_Assembly').val(),
-            approver_Test:       $('#approver_Test').val(),
-            approver_Quality:    $('#approver_Quality').val(),
+            coordinator_Assembly:   $('#coordinator_Assembly').val(),
+            coordinator_Test:       $('#coordinator_Test').val(),
+            coordinator_Quality:    $('#coordinator_Quality').val(),
         }
         
         if ( $('#text_Subject').val().trim() == '' || $('#text_Message').val().trim() == '' ) {
@@ -450,15 +469,15 @@ $(document).ready(function() {
             quoteID:             $('#Quotes_id').val(),
             text_Subject:        $('#text_Subject').val(),
             text_Message:        $('#text_Message').val(),
-            approver_Assembly:   $('#approver_Assembly').val(),
-            approver_Test:       $('#approver_Test').val(),
-            approver_Quality:    $('#approver_Quality').val(),
+            coordinator_Assembly:   $('#coordinator_Assembly').val(),
+            coordinator_Test:       $('#coordinator_Test').val(),
+            coordinator_Quality:    $('#coordinator_Quality').val(),
         }
         
         if ( $('#text_Subject').val().trim() == '' || $('#text_Message').val().trim() == '' ) {
             alert('Missing subject and/or message...');
         }
-        else if ( $('#approver_Assembly').val()==='' && $('#approver_Test').val()==='' && $('#approver_Quality').val()==='' ) {
+        else if ( $('#coordinator_Assembly').val()==='' && $('#coordinator_Test').val()==='' && $('#coordinator_Quality').val()==='' ) {
             alert('Need to select a least 1 coordinator...');
         }
         else {
@@ -466,7 +485,7 @@ $(document).ready(function() {
             console.log('button_SendMessage: Post Data=' + postData);
             $.ajax({
                     type: "POST",
-                    url: myURL + 'quotes/notifyMfgApprovers',
+                    url: myURL + 'quotes/notifyCoordinators',
                     data: postData,
                     success: function(results)  {
                         if ( results == SUCCESS ) {
@@ -491,49 +510,49 @@ $(document).ready(function() {
 
 
 
-    $('#button_NotifyApprovers').on('click', function() {
-        // var quoteID     = $('#Quotes_id').val(); 
-        var msg        = $('#approver_notification_message').val();
-        var assembly   = $('#approver_Assembly').val();
-        var test       = $('#approver_Test').val();
-        var quality    = $('#approver_Quality').val();
+    // $('#button_NotifyApprovers').on('click', function() {
+    //     // var quoteID     = $('#Quotes_id').val(); 
+    //     var msg        = $('#coordinator_notification_message').val();
+    //     var assembly   = $('#coordinator_Assembly').val();
+    //     var test       = $('#coordinator_Test').val();
+    //     var quality    = $('#coordinator_Quality').val();
 
 
-        if ( $('#approver_notification_message').val().trim() == '' ) {
-            alert('Missing notification message...');
-        }
-        else if ( assembly===''                      && test==='' && quality==='' ) {
-            alert('Need to select a least 1 approver...');
-        }
-        else {
-            var postData = { 
-                    quoteID:    quoteID,
-                    msg:        msg,
-                    assembly:   assembly,
-                    test:       test,
-                    quality:    quality
-            };
-            $.ajax({
-                    type: "POST",
-                    url: myURL + 'quotes/notifyMfgApprovers',
-                    data: postData,
-                    success: function(results)  {
-                        if ( results == SUCCESS ) {
-                            alert('Manufacturing Approvers have been notified.'); 
+    //     if ( $('#coordinator_notification_message').val().trim() == '' ) {
+    //         alert('Missing notification message...');
+    //     }
+    //     else if ( assembly===''                      && test==='' && quality==='' ) {
+    //         alert('Need to select a least 1 coordinator...');
+    //     }
+    //     else {
+    //         var postData = { 
+    //                 quoteID:    quoteID,
+    //                 msg:        msg,
+    //                 assembly:   assembly,
+    //                 test:       test,
+    //                 quality:    quality
+    //         };
+    //         $.ajax({
+    //                 type: "POST",
+    //                 url: myURL + 'quotes/notifyMfgApprovers',
+    //                 data: postData,
+    //                 success: function(results)  {
+    //                     if ( results == SUCCESS ) {
+    //                         alert('Manufacturing Approvers have been notified.'); 
 
-                            Cookies.set('current_tab', TAB_Approvals-1);  // 0-indexed 
-                            location.reload();
-                        }
-                        else {
-                            alert('Could not send notification - see Admin.');
-                        }
-                    },
-                    error: function (jqXHR, textStatus, errorThrown)  {
-                        alert("Could not send notification; error=\n\n" + errorThrown + ", jqXHR="+jqXHR);
-                    }
-            });
-        }
-    });
+    //                         Cookies.set('current_tab', TAB_Approvals-1);  // 0-indexed 
+    //                         location.reload();
+    //                     }
+    //                     else {
+    //                         alert('Could not notify coordinators - see Admin.');
+    //                     }
+    //                 },
+    //                 error: function (jqXHR, textStatus, errorThrown)  {
+    //                     alert("Could not notify coordinators; error=\n\n" + errorThrown + ", jqXHR="+jqXHR);
+    //                 }
+    //         });
+    //     }
+    // });
 
 
 
@@ -2300,7 +2319,7 @@ $(document).ready(function() {
                                 location.reload();
                                 return false;
                             }
-                            else if ( confirm("Part No. "+partNo+" is Build to Order only; continue processing?") ) {
+                            else if ( confirm("Part No. "+partNo+" is Build to Order only; continue?") ) {
 
                                 var postData = {
                                         requested_part_number:  partNo,

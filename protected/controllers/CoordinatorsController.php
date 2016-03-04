@@ -1,6 +1,6 @@
 <?php
 
-class BtoApproversController extends Controller
+class CoordinatorsController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -15,6 +15,7 @@ class BtoApproversController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
+			'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
 
@@ -36,7 +37,7 @@ class BtoApproversController extends Controller
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions'=>array('admin','delete'),
-				'expression' => '$user->isProposalManager',   
+				'expression' => '$user->isProposalManager'
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -61,14 +62,14 @@ class BtoApproversController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new BtoApprovers;
+		$model=new Coordinators;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['BtoApprovers']))
+		if(isset($_POST['Coordinators']))
 		{
-			$model->attributes=$_POST['BtoApprovers'];
+			$model->attributes=$_POST['Coordinators'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -90,9 +91,9 @@ class BtoApproversController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['BtoApprovers']))
+		if(isset($_POST['Coordinators']))
 		{
-			$model->attributes=$_POST['BtoApprovers'];
+			$model->attributes=$_POST['Coordinators'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -109,17 +110,11 @@ class BtoApproversController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		if(Yii::app()->request->isPostRequest)
-		{
-			// we only allow deletion via POST request
-			$this->loadModel($id)->delete();
+		$this->loadModel($id)->delete();
 
-			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-			if(!isset($_GET['ajax']))
-				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-		}
-		else
-			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
+		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+		if(!isset($_GET['ajax']))
+			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
 	}
 
 	/**
@@ -127,7 +122,7 @@ class BtoApproversController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('BtoApprovers');
+		$dataProvider=new CActiveDataProvider('Coordinators');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -138,10 +133,10 @@ class BtoApproversController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new BtoApprovers('search');
+		$model=new Coordinators('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['BtoApprovers']))
-			$model->attributes=$_GET['BtoApprovers'];
+		if(isset($_GET['Coordinators']))
+			$model->attributes=$_GET['Coordinators'];
 
 		$this->render('admin',array(
 			'model'=>$model,
@@ -151,11 +146,13 @@ class BtoApproversController extends Controller
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
-	 * @param integer the ID of the model to be loaded
+	 * @param integer $id the ID of the model to be loaded
+	 * @return Coordinators the loaded model
+	 * @throws CHttpException
 	 */
 	public function loadModel($id)
 	{
-		$model=BtoApprovers::model()->findByPk($id);
+		$model=Coordinators::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -163,11 +160,11 @@ class BtoApproversController extends Controller
 
 	/**
 	 * Performs the AJAX validation.
-	 * @param CModel the model to be validated
+	 * @param Coordinators $model the model to be validated
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='bto-approvers-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='coordinators-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();

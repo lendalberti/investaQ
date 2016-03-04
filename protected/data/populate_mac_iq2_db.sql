@@ -5,7 +5,7 @@ source /Users/len/www/iq2/protected/data/scripts/insert_countries.sql
 source /Users/len/www/iq2/protected/data/scripts/insert_regions.sql
 source /Users/len/www/iq2/protected/data/scripts/insert_territories.sql
 
-source /Users/len/www/iq2/protected/data/scripts/insert_bto_groups.sql
+source /Users/len/www/iq2/protected/data/scripts/insert_groups.sql
 source /Users/len/www/iq2/protected/data/scripts/insert_quote_types.sql
 
 source /Users/len/www/iq2/protected/data/scripts/insert_actions.sql
@@ -37,4 +37,4 @@ source /Users/len/www/iq2/protected/data/scripts/insert_sources.sql
 source /Users/len/www/iq2/protected/data/scripts/insert_order_probability.sql 
 
 source /Users/len/www/iq2/protected/data/scripts/insert_motivationals.sql 
-source /Users/len/www/iq2/protected/data/scripts/insert_bto_approvers.sql 
+source /Users/len/www/iq2/protected/data/scripts/insert_coordinators.sql 

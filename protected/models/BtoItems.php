@@ -6,7 +6,7 @@
  * The followings are the available columns in table 'bto_items':
  * @property integer $id
  * @property integer $quote_id
- * @property integer $approvers_notified
+ * @property integer $coordinators_notified
  * @property string $requested_part_number
  * @property string $generic_part_number
  * @property integer $order_probability_id
@@ -39,7 +39,7 @@
  * @property Quotes $quote
  * @property Priority $priority
  * @property OrderProbability $orderProbability
- * @property BtoStatus[] $btoStatuses
+ * @property BtoItemStatus[] $btoItemStatuses
  */
 class BtoItems extends CActiveRecord
 {
@@ -70,12 +70,12 @@ class BtoItems extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('quote_id, requested_part_number', 'required'),
-			array('quote_id, approvers_notified, order_probability_id, quantity1, quantity2, quantity3, die_manufacturer_id, package_type_id, lead_count, process_flow_id, testing_id, priority_id, ncnr, itar, have_die, spa, recreation, wip_product', 'numerical', 'integerOnly'=>true),
+			array('quote_id, coordinators_notified, order_probability_id, quantity1, quantity2, quantity3, die_manufacturer_id, package_type_id, lead_count, process_flow_id, testing_id, priority_id, ncnr, itar, have_die, spa, recreation, wip_product', 'numerical', 'integerOnly'=>true),
 			array('requested_part_number, generic_part_number, temp_low, temp_high', 'length', 'max'=>45),
 			array('created_date, updated_date', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, quote_id, approvers_notified, requested_part_number, generic_part_number, order_probability_id, quantity1, quantity2, quantity3, die_manufacturer_id, package_type_id, lead_count, process_flow_id, testing_id, priority_id, temp_low, temp_high, ncnr, itar, have_die, spa, recreation, wip_product, created_date, updated_date', 'safe', 'on'=>'search'),
+			array('id, quote_id, coordinators_notified, requested_part_number, generic_part_number, order_probability_id, quantity1, quantity2, quantity3, die_manufacturer_id, package_type_id, lead_count, process_flow_id, testing_id, priority_id, temp_low, temp_high, ncnr, itar, have_die, spa, recreation, wip_product, created_date, updated_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -95,7 +95,7 @@ class BtoItems extends CActiveRecord
 			'quote' => array(self::BELONGS_TO, 'Quotes', 'quote_id'),
 			'priority' => array(self::BELONGS_TO, 'Priority', 'priority_id'),
 			'orderProbability' => array(self::BELONGS_TO, 'OrderProbability', 'order_probability_id'),
-			'btoStatuses' => array(self::HAS_MANY, 'BtoStatus', 'bto_item_id'),
+			'btoItemStatuses' => array(self::HAS_MANY, 'BtoItemStatus', 'bto_item_id'),
 		);
 	}
 
@@ -107,7 +107,7 @@ class BtoItems extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'quote_id' => 'Quote',
-			'approvers_notified' => 'Approvers Notified',
+			'coordinators_notified' => 'Coordinators Notified',
 			'requested_part_number' => 'Requested Part Number',
 			'generic_part_number' => 'Generic Part Number',
 			'order_probability_id' => 'Order Probability',
@@ -146,7 +146,7 @@ class BtoItems extends CActiveRecord
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('quote_id',$this->quote_id);
-		$criteria->compare('approvers_notified',$this->approvers_notified);
+		$criteria->compare('coordinators_notified',$this->coordinators_notified);
 		$criteria->compare('requested_part_number',$this->requested_part_number,true);
 		$criteria->compare('generic_part_number',$this->generic_part_number,true);
 		$criteria->compare('order_probability_id',$this->order_probability_id);

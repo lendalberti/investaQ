@@ -37,13 +37,13 @@ class QuotesController extends Controller
 				'expression' => '$user->isAdmin'
 			),
 
-			array('allow', // allow approvers  to perform 'disposition' 
+			array('allow', // allow coordinators  to perform 'disposition' 
 				'actions'=>array('disposition'),
-				'expression' => '$user->isApprover'
+				'expression' => '$user->isCoordinator'
 			),
 
 			array('allow', // allow Proposal Manager to initiate Manufacturing Quote 
-				'actions'=>array('manufacturing', 'notifyMfgApprovers', 'addMessage', 'itemStatus', 'updateStatus'),
+				'actions'=>array('manufacturing', 'notifyCoordinators', 'addMessage', 'itemStatus', 'updateStatus'),
 				'expression' => '$user->isProposalManager'
 			),
 
@@ -107,7 +107,7 @@ class QuotesController extends Controller
 		$criteria->addCondition("group_id = $group_id");
 
 		try {
-			$model = BtoStatus::model()->find( $criteria );
+			$model = BtoItemStatus::model()->find( $criteria );
 			$model->status_id = $status[$action];
 
 			if ( $model->save() ) {
@@ -348,16 +348,16 @@ class QuotesController extends Controller
 		$contact_id  = $data['model']->contact_id;
 		$quote_type  = $data['model']->quote_type_id;
 
-		$data['customer']       = Customers::model()->findByPk($customer_id);
-		$data['contact']        = Contacts::model()->findByPk($contact_id);
-		$data['status']         = Status::model()->findAll();
-		$data['BtoItems_model'] = BtoItems::model()->find( $criteria );
+		$data['customer'] = Customers::model()->findByPk($customer_id);
+		$data['contact']  = Contacts::model()->findByPk($contact_id);
+		$data['status']   = Status::model()->findAll();
 
 		if ( $quote_type == QuoteTypes::MANUFACTURING ) {
-			$data['bto_approvers'] = BtoApprovers::model()->getList();
+			$data['coordinators'] = Coordinators::model()->getCoordinatorList();
 
 			$criteria =  new CDbCriteria();
-			$criteria->addCondition("quote_id = $id");
+			$criteria->addCondition("quote_id = $quote_id");
+			$data['BtoItems_model'] = BtoItems::model()->find( $criteria );
 			
 			pDebug("actionView() - BtoItems_model->attributes:", $data['BtoItems_model']->attributes );
 
@@ -365,9 +365,9 @@ class QuotesController extends Controller
 
 			$criteria =  new CDbCriteria();
 			$criteria->addCondition("bto_item_id = " . $data['BtoItems_model']->id );
-			$data['BtoStatus'] = BtoStatus::model()->findAll( $criteria );
+			$data['BtoItemStatus'] = BtoItemStatus::model()->findAll( $criteria );
 
-			pDebug('actionView() - BtoStatus->attributes for item_id:['. $data['BtoItems_model']->id.']', $data['BtoStatus']->attributes );
+			pDebug('actionView() - BtoItemStatus->attributes for item_id:['. $data['BtoItems_model']->id.']', $data['BtoItemStatus']->attributes );
 
 		}
 		else {
@@ -924,7 +924,7 @@ class QuotesController extends Controller
 
 		$criteria = new CDbCriteria();
 
-		if ( Yii::app()->user->isApprover || Yii::app()->user->isAdmin ) {
+		if ( Yii::app()->user->isCoordinator || Yii::app()->user->isAdmin ) {
 			$page_title = "Quotes Needing Approval";
 			$criteria->addCondition("status_id = " . Status::PENDING);
 
@@ -946,7 +946,7 @@ class QuotesController extends Controller
 		$my_id        = Yii::app()->user->id;
 		$my_quotes    = array();
 		
-		$approver_ids = array();
+		$coordinator_ids = array();
 
 		$criteria = new CDbCriteria();
 		$criteria->addCondition("quote_type_id = " . QuoteTypes::MANUFACTURING);
@@ -955,19 +955,19 @@ class QuotesController extends Controller
 		}
 		$quoteModel = Quotes::model()->findAll( $criteria );
 
-		// ***************************  $quoteModel->btoItems->btoStatuses->approver_id ***************************
+		// ***************************  $quoteModel->btoItems->btoItemStatuses->coordinator_id ***************************
 
 		foreach( $quoteModel as $quote ) {
 			foreach( $quote->btoItems as $item ) {
-				foreach( $item->btoStatuses as $stat ) {
-					pDebug( $quote->id . ": stat->approver_id: [" . $stat->approver_id . "], myID=[$my_id]");
+				foreach( $item->btoItemStatuses as $stat ) {
+					pDebug( $quote->id . ": stat->coordinator_id: [" . $stat->coordinator_id . "], myID=[$my_id]");
 
-					if ( $my_id == $stat->approver_id ) {
+					if ( $my_id == $stat->coordinator_id ) {
 						$my_quotes[] = $quote->id;
 					}
 				}
 			}
-			// if ( in_array($my_id, $approver_ids[ $quote->id ]) ) {
+			// if ( in_array($my_id, $coordinator_ids[ $quote->id ]) ) {
 			// 	$my_quotes[] = $quote->id;
 			// }
 		}
@@ -1090,7 +1090,7 @@ SELECT
   FROM
   		quotes AS q
   			JOIN bto_messages  m ON m.quote_id  = q.id 
-  			JOIN bto_approvers a ON a.user_id   = m.to_user_id
+  			JOIN coordinators  a ON a.user_id   = m.to_user_id
   			JOIN users u  		 ON u.id        = m.to_user_id
   			JOIN levels l 		 ON l.id        = q.level_id
   			JOIN quote_types qt  ON qt.id       = q.quote_type_id
@@ -1180,21 +1180,19 @@ EOT;
 
 
 
-	public function actionNotifyMfgApprovers() {
-		pDebug("Quotes::actionNotifyMfgApprovers() - _POST=", $_POST); 
-
-		
+	public function actionNotifyCoordinators() {
+		pDebug("Quotes::actionNotifyCoordinators() - _POST=", $_POST); 
 		
 		$toBeNotified = array();
-		foreach( array( $_POST['approver_Assembly'],$_POST['approver_Test'],$_POST['approver_Quality'] ) as $id ) {
+		foreach( array( $_POST['coordinator_Assembly'],$_POST['coordinator_Test'],$_POST['coordinator_Quality'] ) as $id ) {
 			if ( $id ) {
 				$toBeNotified[] = $id;
 			}
 		}
-		pDebug("Quotes::actionNotifyMfgApprovers() - to be notified:", $toBeNotified);
+		pDebug("Quotes::actionNotifyCoordinators() - to be notified:", $toBeNotified);
 
 		if ( $_POST['quoteID'] === '' || $_POST['text_Subject'] === '' || $_POST['text_Message'] === '' || count($toBeNotified) === 0 ) {
-			pDebug("Quotes::actionNotifyMfgApprovers() - missing _POST variables...");
+			pDebug("Quotes::actionNotifyCoordinators() - missing _POST variables...");
 			echo Status::FAILURE;
 		}
 
@@ -1203,15 +1201,15 @@ EOT;
 			$criteria->addCondition("quote_id = " . $_POST['quoteID'] );
 			
 			$modelItems =  BtoItems::model()->find($criteria);
-			$modelItems->approvers_notified = true;
+			$modelItems->coordinators_notified = true;
 			$modelItems->save();
 
 			$item_id = $modelItems->id;
-			$group_approvers['item_id']           = $item_id;
-			$group_approvers[BtoGroups::ASSEMBLY] = $_POST['approver_Assembly'];
-			$group_approvers[BtoGroups::TEST]     = $_POST['approver_Test'];
-			$group_approvers[BtoGroups::QUALITY]  = $_POST['approver_Quality'];
-			$this->updateBtoStatus($group_approvers);
+			$group_coordinators['item_id']           = $item_id;
+			$group_coordinators[Groups::ASSEMBLY] = $_POST['coordinator_Assembly'];
+			$group_coordinators[Groups::TEST]     = $_POST['coordinator_Test'];
+			$group_coordinators[Groups::QUALITY]  = $_POST['coordinator_Quality'];
+			$this->updateBtoItemStatus($group_coordinators);
 
 			// save comment
 			foreach( $toBeNotified as $user_id ) {
@@ -1225,13 +1223,13 @@ EOT;
 				$modelMessages->save();
 			}
 
-			// notify approvers
-			if ( !notifyBtoApprovers( $modelMessages ) ) {
-				throw new Exception("Couldn't notify approvers.");
+			// notify coordinators
+			if ( !notifyCoordinators( $modelMessages ) ) {
+				throw new Exception("Couldn't notify coordinators.");
 			}
 		}
 		catch( Exception $ex ) {
-			pDebug("Quotes::actionNotifyMfgApprovers() - Exception: ", $ex );
+			pDebug("Quotes::actionNotifyCoordinators() - Exception: ", $ex );
 			echo Status::FAILURE;
 		}
 		echo Status::SUCCESS;
@@ -1239,18 +1237,33 @@ EOT;
 
 
 	// -------------------------------------------------
-	private function updateBtoStatus( $g ) {
-		foreach( array(BtoGroups::ASSEMBLY, BtoGroups::TEST, BtoGroups::QUALITY) as $g_id ) {
-			$criteria = new CDbCriteria();
-			$criteria->addCondition("bto_item_id = " . $g['item_id']);
-			$criteria->addCondition("group_id = "    . $g_id );
-			
-			$model =  BtoStatus::model()->find($criteria);
-			$model->approver_id = $g[$g_id];
+	private function updateBtoItemStatus( $g ) {
+		foreach( array(Groups::ASSEMBLY, Groups::TEST, Groups::QUALITY) as $g_id ) {
+		
+			$model = new BtoItemStatus;
+			$model->bto_item_id		= $g['item_id'];
+			$model->status_id 		= Status::PENDING; 
+			$model->group_id 		= $g_id;
+			$model->coordinator_id 	= $g[$g_id];
 			$model->save();
-			pDebug('updateBtoStatus() - model->attributes saved: ', $model->attributes );
+
+			pDebug('updateBtoItemStatus() - model->attributes saved: ', $model->attributes );
 		}
 	}
+
+
+
+
+			/*
+				$criteria = new CDbCriteria();
+				$criteria->addCondition("bto_item_id = " . $g['item_id']);
+				$criteria->addCondition("group_id = "    . $g_id );
+				$criteria->addCondition("status_id = "    . Status::PENDING );
+				
+				$model =  BtoItemStatus::model()->find($criteria);  
+				$model->coordinator_id = $g[$g_id];
+				$model->save();
+			*/
 
 
 

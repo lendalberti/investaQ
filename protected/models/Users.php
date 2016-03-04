@@ -17,11 +17,15 @@
  *
  * The followings are the available model relations:
  * @property Attachments[] $attachments
- * @property BtoApprovals[] $btoApprovals
+ * @property BtoItemStatus[] $btoItemStatuses
+ * @property BtoMessages[] $btoMessages
+ * @property BtoMessages[] $btoMessages1
+ * @property Coordinators[] $coordinators
  * @property Customers[] $customers
  * @property Customers[] $customers1
  * @property Quotes[] $quotes
  * @property UserRoles[] $userRoles
+ * @property Groups $group
  */
 class Users extends CActiveRecord
 {
@@ -69,11 +73,15 @@ class Users extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'attachments' => array(self::HAS_MANY, 'Attachments', 'uploaded_by'),
-			'btoApprovals' => array(self::HAS_MANY, 'BtoApprovals', 'user_id'),
+			'btoItemStatuses' => array(self::HAS_MANY, 'BtoItemStatus', 'coordinator_id'),
+			'btoMessages' => array(self::HAS_MANY, 'BtoMessages', 'from_user_id'),
+			'btoMessages1' => array(self::HAS_MANY, 'BtoMessages', 'to_user_id'),
+			'coordinators' => array(self::HAS_MANY, 'Coordinators', 'user_id'),
 			'customers' => array(self::HAS_MANY, 'Customers', 'inside_salesperson_id'),
 			'customers1' => array(self::HAS_MANY, 'Customers', 'outside_salesperson_id'),
 			'quotes' => array(self::HAS_MANY, 'Quotes', 'owner_id'),
 			'userRoles' => array(self::HAS_MANY, 'UserRoles', 'user_id'),
+			'groups' => array(self::BELONGS_TO, 'Groups', 'group_id'),
 		);
 	}
 
@@ -91,7 +99,7 @@ class Users extends CActiveRecord
 			'email' => 'Email',
 			'title' => 'Title',
 			'phone' => 'Phone',
-			'fax' => 'Signature',
+			'fax' => 'Fax',
 			'sig' => 'Sig',
 		);
 	}
@@ -122,6 +130,7 @@ class Users extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
 
 	
 	// =============================================================================================
@@ -205,18 +214,6 @@ class Users extends CActiveRecord
 		}
 
 
-		public function getBtoApprovers() {
-			// $sql = "select * from users where role_id = " . Roles::BTO_APPROVER;
-			// $users = Users::model()->findAllBySql($sql);
-			
-			// foreach( $users as $u ) {
-			// 	pDebug("user attributes=", $u->attributes);
-			// 	$userList[$u->id] = $u->fullname . ' (' . $u->group->name . ')';
-			// }
 
-			// pDebug("userList=", $userList);
-			// return $userList;
-
-		}         
 
 }

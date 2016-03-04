@@ -1,25 +1,24 @@
 <?php
 
 /**
- * This is the model class for table "bto_approvers".
+ * This is the model class for table "coordinators".
  *
- * The followings are the available columns in table 'bto_approvers':
+ * The followings are the available columns in table 'coordinators':
  * @property integer $id
  * @property integer $user_id
  * @property integer $group_id
- * @property integer $role_id
  *
  * The followings are the available model relations:
+ * @property BtoItemStatus[] $btoItemStatuses
  * @property Users $user
- * @property BtoGroups $group
- * @property Roles $role
+ * @property Groups $group
  */
-class BtoApprovers extends CActiveRecord
+class Coordinators extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
-	 * @return BtoApprovers the static model class
+	 * @return Coordinators the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -31,7 +30,7 @@ class BtoApprovers extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'bto_approvers';
+		return 'coordinators';
 	}
 
 	/**
@@ -42,11 +41,11 @@ class BtoApprovers extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user_id, group_id, role_id', 'required'),
-			array('user_id, group_id, role_id', 'numerical', 'integerOnly'=>true),
+			array('user_id, group_id', 'required'),
+			array('user_id, group_id', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, user_id, group_id, role_id', 'safe', 'on'=>'search'),
+			array('id, user_id, group_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -58,9 +57,9 @@ class BtoApprovers extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'btoItemStatuses' => array(self::HAS_MANY, 'BtoItemStatus', 'coordinator_id'),
 			'user' => array(self::BELONGS_TO, 'Users', 'user_id'),
-			'group' => array(self::BELONGS_TO, 'BtoGroups', 'group_id'),
-			'role' => array(self::BELONGS_TO, 'Roles', 'role_id'),
+			'group' => array(self::BELONGS_TO, 'Groups', 'group_id'),
 		);
 	}
 
@@ -73,7 +72,6 @@ class BtoApprovers extends CActiveRecord
 			'id' => 'ID',
 			'user_id' => 'User',
 			'group_id' => 'Group',
-			'role_id' => 'Role',
 		);
 	}
 
@@ -91,29 +89,19 @@ class BtoApprovers extends CActiveRecord
 		$criteria->compare('id',$this->id);
 		$criteria->compare('user_id',$this->user_id);
 		$criteria->compare('group_id',$this->group_id);
-		$criteria->compare('role_id',$this->role_id);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
 	}
 
-
-
-
-
-
-
-	// $data['bto_approvers'] = BtoApprovers::model()->getList();
-	//
-	// $data['bto_approvers']['assembly'] 
-	public function getList() {
+	public function getCoordinatorList() {
 		$app = array();
 
-		foreach( array( BtoGroups::ASSEMBLY,BtoGroups::QUALITY,BtoGroups::TEST ) as $i => $g_id ) {
+		foreach( array( Groups::ASSEMBLY,Groups::QUALITY,Groups::TEST ) as $i => $g_id ) {
 			$criteria = new CDbCriteria;
 			$criteria->addCondition("group_id = $g_id");
-			$criteria->addCondition("role_id = " . Roles::BTO_APPROVER);
+			//$criteria->addCondition("role_id = " . Roles::BTO_APPROVER);  // no longer needed
 		
 			$res = $this->findAll($criteria);
 			
@@ -125,52 +113,6 @@ class BtoApprovers extends CActiveRecord
 		//pDebug("BtoApprovers::getList() = app:", $app);
 		return $app;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

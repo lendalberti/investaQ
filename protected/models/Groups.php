@@ -1,27 +1,33 @@
 <?php
 
 /**
- * This is the model class for table "bto_groups".
+ * This is the model class for table "groups".
  *
- * The followings are the available columns in table 'bto_groups':
+ * The followings are the available columns in table 'groups':
  * @property integer $id
  * @property string $name
  *
  * The followings are the available model relations:
- * @property UserRoles[] $userRoles
+ * @property BtoItemStatus[] $btoItemStatuses
+ * @property Coordinators[] $coordinators
+ * @property Users[] $users
  */
-class BtoGroups extends CActiveRecord {
+class Groups extends CActiveRecord  {
 
 
 	const 	ASSEMBLY   = 1,
 			TEST       = 2,
-			QUALITY    = 3;
+			QUALITY    = 3,
+			PRODUCTION = 4,
+			SALES      = 5,
+			IT         = 6;
+
 
 
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
-	 * @return BtoGroups the static model class
+	 * @return Groups the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -33,7 +39,7 @@ class BtoGroups extends CActiveRecord {
 	 */
 	public function tableName()
 	{
-		return 'bto_groups';
+		return 'groups';
 	}
 
 	/**
@@ -60,7 +66,9 @@ class BtoGroups extends CActiveRecord {
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'userRoles' => array(self::HAS_MANY, 'UserRoles', 'bto_group_id'),
+			'btoItemStatuses' => array(self::HAS_MANY, 'BtoItemStatus', 'group_id'),
+			'coordinators' => array(self::HAS_MANY, 'Coordinators', 'group_id'),
+			'users' => array(self::HAS_MANY, 'Users', 'group_id'),
 		);
 	}
 

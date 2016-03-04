@@ -1,3 +1,8 @@
+<?php
+/* @var $this CoordinatorsController */
+/* @var $data Coordinators */
+?>
+
 <div class="view">
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('id')); ?>:</b>
@@ -10,10 +15,6 @@
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('group_id')); ?>:</b>
 	<?php echo CHtml::encode($data->group_id); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('role_id')); ?>:</b>
-	<?php echo CHtml::encode($data->role_id); ?>
 	<br />
 
 

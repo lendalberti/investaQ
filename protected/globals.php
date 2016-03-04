@@ -6,6 +6,8 @@
     }
 
     function displayMfgQuoteStatus( $status_id ) {
+        //pDebug("displayMfgQuoteStatus() - getting image for status_id=[$status_id]");
+        
         $s[Status::PENDING ]  = 'pending';  // 2
         $s[Status::APPROVED ] = 'approved'; // 8 
         $s[Status::REJECTED ] = 'rejected'; // 9
@@ -226,7 +228,7 @@
 
     // -----------------------------------------------------------
     function quoteIsUserModifiable( $status_id ) {  
-        // if ( $status_id == Status::DRAFT || Yii::app()->user->isAdmin || Yii::app()->user->isApprover ) {
+        // if ( $status_id == Status::DRAFT || Yii::app()->user->isAdmin || Yii::app()->user->isCoordinator ) {
         //     return true;
         // }
         // else {
@@ -290,10 +292,10 @@
 
 
     // -----------------------------------------------------------------------------------
-    function notifyBtoApprovers( $modelComments) {
+    function notifyCoordinators( $modelComments) {
 
         if ( Yii::app()->params['DEBUG'] ) {   // no emails when working from home
-            pDebug("notifyBtoApprovers() - user(s) notified...");
+            pDebug("notifyCoordinators() - user(s) notified...");
             return true;
         }
 
@@ -375,7 +377,7 @@
 
         }
         catch( Exception $e ) {
-            pDebug( "notifyApprovers() - ERROR: couldn't send email notifying approvers - ", $e->errorInfo );
+            pDebug( "notifyApprovers() - ERROR: couldn't send email notifying coordinators - ", $e->errorInfo );
             $transaction->rollback();
             return false;
         }

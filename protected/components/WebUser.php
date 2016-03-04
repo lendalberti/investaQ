@@ -8,7 +8,7 @@
       private $_user;
 
 
-        function getIsApprover() {
+        function getIsCoordinator() {
             return ( $this->user &&  ( in_array(Roles::APPROVER, $this->roles) || in_array(Roles::ADMIN, $this->roles) ) );
         }
 
@@ -153,7 +153,7 @@
         public function getRoles() {
             // userRoles
             if ( $this->user ) {
-                $roles = Roles::model()->getListByUser($this->id);
+                $roles = Roles::model()->getRoleListByUser($this->id);
                 //pDebug("my roles: ", $roles);
                 return $roles;
             }
@@ -161,22 +161,10 @@
         }
 
 
-
-
-
-        // public function getGroupId() {
-        //      if ( $this->user ) {
-                
-
-
-        // }
-
-
-
         /**
         * @return   user's group id
         */
-        public function getGroupId_ORIGINAL() {
+        public function getGroupId() {
             if ( $this->user ) {
                 $group = Groups::model()->findByPk( $this->user->group_id );
                 return $group->id;
@@ -188,7 +176,7 @@
         */
         public function getGroupName() {
             if ( $this->user ) {
-                return $this->user->group->name;
+                return $this->user->groups->name;
             }
         }
 
