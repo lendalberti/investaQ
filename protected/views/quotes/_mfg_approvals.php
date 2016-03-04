@@ -18,7 +18,7 @@
 
 
 
-	if (  $q->status_id == Status::PENDING && Yii::app()->user->isProposalManager || Yii::app()->user->isBtoApprover ) {
+	if (  $q->status_id == Status::PENDING && Yii::app()->user->isProposalManager || Yii::app()->user->isCoordinator ) {
 		if ( !$coordinatorsNotified ) {  ?>
 			<div class="container_15 grid_outline_350">
 				<div><span style='font-weight: bold;'>This is a new Manufacturing Quote -</span><span id='link_SendMesage' > Notify process coordinators. </span></div>
@@ -180,7 +180,7 @@
 		$s = "Ready to be submitted...";
 		echo "<span id='process_approval_status' style='padding-left: 590px; color: #a31128; font-size: .9em;'>$s</span>";
 	}
-	else if (  $q->status_id == Status::PENDING && !Yii::app()->user->isProposalManager && !Yii::app()->user->isBtoApprover ) {
+	else if (  $q->status_id == Status::PENDING && !Yii::app()->user->isProposalManager && !Yii::app()->user->isCoordinator ) {
 		$s = "Pending...";
 		echo "<span id='process_approval_status' style='padding-left: 590px;  color: #a31128; font-size: .9em;'>$s</span>";
 

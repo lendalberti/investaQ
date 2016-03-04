@@ -228,7 +228,7 @@
 
     // -----------------------------------------------------------
     function quoteIsUserModifiable( $status_id ) {  
-        // if ( $status_id == Status::DRAFT || Yii::app()->user->isAdmin || Yii::app()->user->isCoordinator ) {
+        // if ( $status_id == Status::DRAFT || Yii::app()->user->isAdmin || Yii::app()->user->isApprover ) {
         //     return true;
         // }
         // else {

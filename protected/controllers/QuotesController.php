@@ -27,29 +27,29 @@ class QuotesController extends Controller
 	public function accessRules()
 	{
 		return array(
-			array('allow',  // allow all users to perform 'index' and 'view' actions
+			array('allow', 
 				'actions'=>array('index', 'indexApproval', 'view','create','update', 'search', 'partsUpdate', 'delete', 'select'),
 				'expression' => '$user->isLoggedIn'
 			),
 		
-			array('allow', // allow admin user to perform 'admin' and 'delete' actions
+			array('allow', 
 				'actions'=>array('admin', 'config', 'disposition'),
 				'expression' => '$user->isAdmin'
 			),
 
-			array('allow', // allow coordinators  to perform 'disposition' 
+			array('allow',
 				'actions'=>array('disposition'),
-				'expression' => '$user->isCoordinator'
+				'expression' => '$user->isApprover'
 			),
 
-			array('allow', // allow Proposal Manager to initiate Manufacturing Quote 
-				'actions'=>array('manufacturing', 'notifyCoordinators', 'addMessage', 'itemStatus', 'updateStatus'),
+			array('allow', 
+				'actions'=>array('manufacturing', 'notifyCoordinators', 'addMessage', 'updateStatus'),
 				'expression' => '$user->isProposalManager'
 			),
 
 			array('allow', 
-				'actions'=>array('coordinator'),
-				'expression' => '$user->isBtoApprover'
+				'actions'=>array('coordinator', 'itemStatus', 'myPending'),
+				'expression' => '$user->isCoordinator'
 			),
 
 			
@@ -924,7 +924,7 @@ class QuotesController extends Controller
 
 		$criteria = new CDbCriteria();
 
-		if ( Yii::app()->user->isCoordinator || Yii::app()->user->isAdmin ) {
+		if ( Yii::app()->user->isApprover || Yii::app()->user->isAdmin ) {
 			$page_title = "Quotes Needing Approval";
 			$criteria->addCondition("status_id = " . Status::PENDING);
 
@@ -978,6 +978,35 @@ class QuotesController extends Controller
 
 
 
+	public function actionMyPending() 	{
+		pTrace( __METHOD__ );
+		pDebug('actionIndex() - _GET=', $_GET);
+
+		$criteria = new CDbCriteria();
+		
+		if ( Yii::app()->user->isCoordinator ) {
+			$quote_type = QuoteTypes::MANUFACTURING;
+			$page_title = "My Pending Manufacturing Quotes";
+			$criteria->addCondition("quote_type_id = " . $quote_type ); 
+
+			$my_quotes = $this->findMyMfgQuotes();
+			//if ( count($my_quotes) > 0 ) {
+				$criteria->addCondition("id IN (" .  implode(",", $my_quotes)  . ")" ); 
+			//}
+		}
+		
+		$criteria->order = 'id DESC';
+		$model = Quotes::model()->findAll( $criteria );
+
+		$this->render( 'index', array(
+			'quote_type' => $quote_type,
+			'model'      => $model,
+			'page_title' => $page_title,
+		));
+	}
+
+
+
 
 	public function actionIndex() 	{
 		pTrace( __METHOD__ );
@@ -986,16 +1015,18 @@ class QuotesController extends Controller
 		$criteria = new CDbCriteria();
 		
 		if ( !Yii::app()->user->isAdmin ) {
-			if (Yii::app()->user->isProposalManager || Yii::app()->user->isBtoApprover) {
-
-				$my_quotes = $this->findMyMfgQuotes();
-				if ( count($my_quotes) > 0 ) {
-					$criteria->addCondition("id IN (" .  implode(",", $my_quotes)  . ")" ); 
-				}
-				
+			if (Yii::app()->user->isProposalManager || Yii::app()->user->isCoordinator) {
 
 				$quote_type = QuoteTypes::MANUFACTURING;
 				$page_title = "Manufacturing Quotes";
+
+				if ( isset($_GET['my']) ) {
+					$my_quotes = $this->findMyMfgQuotes();
+					if ( count($my_quotes) > 0 ) {
+						$criteria->addCondition("id IN (" .  implode(",", $my_quotes)  . ")" ); 
+					}
+				}
+				
 				$criteria->addCondition("quote_type_id = " . $quote_type ); 
 			}
 			else {
@@ -1021,7 +1052,7 @@ class QuotesController extends Controller
 		// }
 
 		// $page_title = "My Quotes";
-		// if (Yii::app()->user->isProposalManager || Yii::app()->user->isBtoApprover) {
+		// if (Yii::app()->user->isProposalManager || Yii::app()->user->isCoordinator) {
 		// 	$page_title = "Manufacturing Quotes";
 		// }
 
@@ -1065,12 +1096,12 @@ class QuotesController extends Controller
 	}
 
 
-	// isBtoApprover
+	// isCoordinator
 	public function actionCoordinator() {
 		pTrace( __METHOD__ );
 		pDebug('actionCoordinator() - _GET=', $_GET);
 
-		if ( Yii::app()->user->isBtoApprover || Yii::app()->user->isAdmin ) { 
+		if ( Yii::app()->user->isCoordinator || Yii::app()->user->isAdmin ) { 
 			$quote_type = QuoteTypes::MANUFACTURING;
 			$status     = Status::PENDING;
 			$page_title = "Manufacturing Quotes";
@@ -1117,7 +1148,7 @@ EOT;
 
 		// $criteria = new CDbCriteria();
 
-		// if ( Yii::app()->user->isBtoApprover || Yii::app()->user->isAdmin ) {
+		// if ( Yii::app()->user->isCoordinator || Yii::app()->user->isAdmin ) {
 		// 	$page_title = "Manufacturing Quotes";
 		// 	$criteria->addCondition("quote_type_id = $quote_type");
 		// 	$criteria->addCondition("status_id = $status");

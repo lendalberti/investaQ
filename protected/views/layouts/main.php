@@ -108,7 +108,7 @@
 				$user_type = ' (' . Yii::app()->user->title . ')';
 			}
 			//
-			// else if (Yii::app()->user->isCoordinator) {
+			// else if (Yii::app()->user->isApprover) {
 			// 	$user_type = ' (Approver)';
 			// 	$role = Roles::APPROVER;
 			// }
@@ -116,7 +116,7 @@
 			// 	$user_type = ' (Proposal Manager)';
 			// 	$role = Roles::PROPOSAL_MGR;
 			// }
-			// else if (Yii::app()->user->isBtoApprover) {
+			// else if (Yii::app()->user->isCoordinator) {
 			// 	$user_type = ' (BTO Approver)';
 			// 	$role = Roles::BTO_APPROVER;
 			// }
@@ -136,7 +136,7 @@
 					$menuItems[] = array('label'=>'Config', 'url'=>array('/quotes/config') );
 				}
 
-				if (Yii::app()->user->isCoordinator) {
+				if (Yii::app()->user->isApprover) {
 					$menuItems[] = array('label'=>'Approval Queue ', 'url'=>array('/quotes/indexApproval') );
 				}
 	
@@ -145,8 +145,8 @@
 					$menuItems[] = array('label'=>'Mfg Admin', 'url'=>array('/coordinators/admin') );
 				}
 
-				if (Yii::app()->user->isBtoApprover ) {
-					$menuItems[] = array('label'=>'Pending', 'url'=>array('/quotes/coordinator') );
+				if (Yii::app()->user->isCoordinator ) {
+					$menuItems[] = array('label'=>'My Pending', 'url'=>array('/quotes/myPending') );
 				}
 
 				// $menuItems[] = array('label'=>'My Quotes',  'url'=>array('/quotes/index') ); 
@@ -157,7 +157,7 @@
 				$menuItems[] = array('label'=>'Help',        'url'=>array('/site/help') );
 
 				
-				// if ( Yii::app()->user->isAdmin || Yii::app()->user->isCoordinator ) { 
+				// if ( Yii::app()->user->isAdmin || Yii::app()->user->isApprover ) { 
 				// 	$menuItems[] = array('label'=>'Approval Queue', 'url'=>array('/quotes/approve') );
 				// }
 				

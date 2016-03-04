@@ -2,14 +2,12 @@
 
 <?php
 
+	$logged_in_as = Yii::app()->user->id;
+
 	$item_id = $data['BtoItems_model']->id;
 	$assembly_bto_status =  displayMfgQuoteStatus($data['BtoItemStatus'][Groups::ASSEMBLY-1]->status_id);
 	$test_bto_status     =  displayMfgQuoteStatus($data['BtoItemStatus'][Groups::TEST-1]->status_id); 
 	$quality_bto_status  =  displayMfgQuoteStatus($data['BtoItemStatus'][Groups::QUALITY-1]->status_id);  
-
-	$assembly_id = "$item_id" . "_" . Groups::ASSEMBLY ;
-	$test_id     = "$item_id" . "_" . Groups::TEST ;
-	$quality_id  = "$item_id" . "_" . Groups::QUALITY ;
 
 	$criteria = new CDbCriteria();
 	$criteria->addCondition("bto_item_id = $item_id" );
@@ -19,9 +17,19 @@
 	$test_coordinator     = $data['BtoItemStatus'][Groups::TEST-1]->coordinator->fullname;
 	$quality_coordinator  = $data['BtoItemStatus'][Groups::QUALITY-1]->coordinator->fullname;
 
+	$assembly_id = $data['BtoItemStatus'][Groups::ASSEMBLY-1]->coordinator->id . '_' . $item_id . '_' . Groups::ASSEMBLY;  //  approveItem_ $owner_id _ $item_id _ Groups::ASSEMBLY
+	$test_id     = $data['BtoItemStatus'][Groups::TEST-1]->coordinator->id . '_' . $item_id . '_' . Groups::TEST ;
+	$quality_id  = $data['BtoItemStatus'][Groups::QUALITY-1]->coordinator->id . '_' . $item_id . '_' . Groups::QUALITY ;
+
+
 ?>
 
 		<div id="coordinators_accordion">
+
+			<input type='hidden' id='assembly_coordinator' value='<?php echo $assembly_coordinator;  ?>'>
+			<input type='hidden' id='test_coordinator' value='<?php echo $test_coordinator;  ?>'>
+			<input type='hidden' id='quality_coordinator' value='<?php echo $quality_coordinator;  ?>'>
+			<input type='hidden' id='logged_in_as' value='<?php echo $logged_in_as;  ?>'>
 
 		  	<h3><span style='font-weight: bold;'>Assembly</span><span style='font-variant: small-caps;'> (<?php echo $assembly_coordinator; ?>)</span></h3>
 		  	<div>
@@ -38,14 +46,17 @@
 					</div>
 
 					<div>
-						Assembly NRE Charge: <br />
-						Assembly Location: <br />
-						Bond Diagram? <br />
-						Package Type: <br />
-						Assembly Lead Time (weeks): <br />
 
-						Customer Viewable Proposal Notes: <br />
-						Internal Exception Notes: <br />
+						<table class='coordinator_table'>
+							<tr><td>Assembly NRE Charge:</td><td><input type='text' id='' name=''> </td> </tr>
+							<tr><td>Assembly Location:</td><td><input type='text' id='' name=''> </td> </tr>
+							<tr><td>Bond Diagram?</td><td> <select><option>No</option><option>Yes</option></select></td> </tr>
+							<tr><td>Assembly Lead Time (weeks):</td><td><input type='text' id='' name=''> </td> </tr>
+							<tr><td>Customer Viewable Proposal Notes:</td><td><textarea rows="6" cols="30" name='' id='' ></textarea> </td> </tr>
+							<tr><td>Internal Exception Notes: </td><td><textarea rows="6" cols="30" name='' id='' ></textarea> </td> </tr>
+						</table>
+
+
 					</div>
 
 					<div style='margin:20px 0px 20px 0px;' >
@@ -70,16 +81,21 @@
 					</div>
 
 					<div>
-						Test BI NRE Charge: <br />
 
-						Test Software NRE Charge: <br />
-						Software lead Time (weeks):
+						<table class='coordinator_table'>
+							<tr><td>Test BI NRE Charge:</td><td><input type='text' id='' name=''> </td> </tr>
+							<tr><td>Test Software NRE Charge:</td><td><input type='text' id='' name=''> </td> </tr>
+							<tr><td>Test Hardware NRE Charge:</td><td><input type='text' id='' name=''> </td> </tr>
 
-						Test Hardware NRE Charge: <br />
-						Hardware lead Time (weeks):
+							<tr><td>Software lead Time (weeks):</td><td><input type='text' id='' name=''> </td> </tr>
+							<tr><td>Hardware lead Time (weeks):</td><td><input type='text' id='' name=''> </td> </tr>
 
-						Customer Viewable Proposal Notes: <br />
-						Internal Exception Notes: <br />
+							<tr><td>Customer Viewable Proposal Notes:</td><td><textarea rows="6" cols="30" name='' id='' ></textarea> </td> </tr>
+							<tr><td>Internal Exception Notes:</td><td><textarea rows="6" cols="30" name='' id='' ></textarea> </td> </tr>
+							
+						</table>
+
+
 					</div>
 
 					<div style='margin:20px 0px 20px 0px;' >
@@ -101,8 +117,12 @@
 					</div>
 				</div>
 				<div>
-					Customer Viewable Proposal Notes: <br />
-					Internal Exception Notes: <br />
+
+					<table class='coordinator_table'>
+						<tr><td>Customer Viewable Proposal Notes:</td><td><textarea rows="6" cols="30" name='' id='' ></textarea> </td> </tr>
+						<tr><td>Internal Exception Notes:</td><td><textarea rows="6" cols="30" name='' id='' ></textarea> </td> </tr>
+					</table>
+
 				</div>
 
 				<div style='margin:20px 0px 20px 0px;' >

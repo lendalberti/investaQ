@@ -48,7 +48,7 @@
  		$rejected = Yii::app()->request->baseUrl . "/images/New/rejected.png";
  		$pending = Yii::app()->request->baseUrl . "/images/New/pending.png";
 
- 		if ( Yii::app()->user->isAdmin || Yii::app()->user->isCoordinator ) { // allow all for Admin
+ 		if ( Yii::app()->user->isAdmin || Yii::app()->user->isApprover ) { // allow all for Admin
  			echo "<img id='quote_edit_"  .$data['model']['id']."' title='Edit this quote'   src='$edit' />";
 	 		echo "<img id='quote_contact_" .$data['model']['id']."' title='Contact Salesperson'  src='$contact' />";
 			echo "<img id='quote_print_" .$data['model']['id']."' title='Print this quote'  src='$print' />";
@@ -93,7 +93,7 @@
 			<li><a href="#section_Parts">Inventory Items</a></li>
 			<li><a href="#section_Manufacturing">Manufacturing Details</a></li>
 			<li><a href="#section_Approvals">Process Approval Status</a></li>
-			<?php if ( Yii::app()->user->isProposalManager || Yii::app()->user->isBtoApprover ) { ?> 
+			<?php if ( Yii::app()->user->isProposalManager || Yii::app()->user->isCoordinator ) { ?> 
 				<li><a href="#section_Coordinators">Coordinators</a></li>
 			<?php } ?>
 		</ul>
@@ -271,7 +271,7 @@
 							</tbody>
 							</table>
 
-							<?php if ( Yii::app()->user->isCoordinator ) { ?>
+							<?php if ( Yii::app()->user->isApprover ) { ?>
 								<span style='display:none;' id='button_ApproveItem'>Approve this Item</span>
 								<span style='display:none;' id='button_RejectItem'>Reject this Item</span>
 							<?php } ?>  

@@ -238,7 +238,9 @@ $(document).ready(function() {
 
     var itemID = $('#itemID').val();
 
-
+                    // <input type='hidden' id='assembly_coordinator' value='<?php echo $assembly_coordinator;  ?>'>
+                    // <input type='hidden' id='test_coordinator' value='<?php echo $test_coordinator;  ?>'>
+                    // <input type='hidden' id='' value='<?php echo $quality_coordinator;  ?>'>
 
     // -----------------------------------------------
     // ---------- set up minimal protection ----------
@@ -248,28 +250,51 @@ $(document).ready(function() {
         var myRoleIDs  = $('#myRoleIDs').val();
         var myGroup = $('#coordinatorGroup').val();
 
+        var assembly_coordinator = $('#assembly_coordinator').val();
+        var test_coordinator     = $('#test_coordinator').val();
+        var quality_coordinator  = $('#quality_coordinator').val();
+        var loggedInAs           = $('#logged_in_as').val();
+
         var re = RegExp(ROLES_PROPOSAL_MGR, 'g');
         var notProposalMgr = !myRoleIDs.match(re);
 
         re = RegExp(ROLES_ADMIN, 'g');
         var notAdmin = !myRoleIDs.match(re);
 
+        // approveItem_ $owner_id _ $item_id _ Groups::ASSEMBLY
+
         $.each( ['approveItem_', 'rejectItem_', 'holdItem_', 'saveItemChanges_'], function(i,val) {
             $.each( $('[id^='+val+']'), function() {
                 var tmp     =  $(this).attr('id');
-                var match   = /^.+_(\d+)$/.exec(tmp);
-                if ( myGroup != RegExp.$1 ) {
+                var match   = /^.+(\d+)_(\d+)_(\d+)$/.exec(tmp);
+                var owner = RegExp.$1;
+                var item  = RegExp.$2;
+                var group = RegExp.$3;
+                console.log("loggedInAs=["+loggedInAs+"], owner=["+owner+"], item=["+item+"], group=["+group+"]");
+
+                if ( owner != loggedInAs ) {
                     $(this).hide();
                 }
+               
             });
         });
 
         if ( notProposalMgr && notAdmin ) {
             $.each( ['select_UpdateQuoteStatus', 'link_SendMesage', 'saveItemChanges' ], function(i,val) {
                 $.each( $('#'+val), function() {
+                    // var tmp     =  $(this).attr('id');
+                    // var match   = /^.+_(\d+)$/.exec(tmp);
+                    // if ( myGroup != RegExp.$1 ) {
+                    //     $(this).hide();
+                    // }
                     var tmp     =  $(this).attr('id');
-                    var match   = /^.+_(\d+)$/.exec(tmp);
-                    if ( myGroup != RegExp.$1 ) {
+                    var match   = /^.+(\d+)_(\d+)_(\d+)$/.exec(tmp);
+                    var owner = RegExp.$1;
+                    var item  = RegExp.$2;
+                    var group = RegExp.$3;
+                    console.log("loggedInAs=["+loggedInAs+"], owner=["+owner+"], item=["+item+"], group=["+group+"]");
+
+                    if ( owner != loggedInAs ) {
                         $(this).hide();
                     }
                 });

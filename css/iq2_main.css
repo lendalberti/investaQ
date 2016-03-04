@@ -1,4 +1,15 @@
-  
+table.coordinator_table {
+	border: 0px solid green;
+	width: 70%;
+    
+}
+
+table.coordinator_table > tbody > tr > td:nth-child(1) {
+	text-align: right;
+	font-size: .8em;
+    font-weight: bold;
+}
+
 
 #currentQuoteStatus {
 	font-weight: bold; 

@@ -8,7 +8,7 @@
       private $_user;
 
 
-        function getIsCoordinator() {
+        function getIsApprover() {  // set this back to getIsApprover
             return ( $this->user &&  ( in_array(Roles::APPROVER, $this->roles) || in_array(Roles::ADMIN, $this->roles) ) );
         }
 
@@ -16,8 +16,8 @@
             return ( $this->user &&  ( in_array(Roles::PROPOSAL_MGR, $this->roles) || in_array(Roles::ADMIN, $this->roles) ) );
         }
 
-        function getIsBtoApprover() {
-            return ( $this->user &&  ( in_array(Roles::BTO_APPROVER, $this->roles) || in_array(Roles::ADMIN, $this->roles) ) );
+        function getIsCoordinator() { // should be getIsCoordinator
+            return ( $this->user &&  ( in_array(Roles::BTO_APPROVER, $this->roles) || in_array(Roles::PROPOSAL_MGR, $this->roles) || in_array(Roles::ADMIN, $this->roles) ) );
         }
 
 
