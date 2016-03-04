@@ -1495,6 +1495,13 @@ $(document).ready(function() {
 
 
 
+
+    $('[id^=quote_attach_]').on('click', function() { //   Attach to quote 
+        var quoteID = getThisID( $(this) ); 
+        window.location = myURL + 'attachments/upload/' + quoteID ; 
+    });
+
+
     $('[id^=quote_trash_]').on('click', function() { //   Delete quote  
         var quoteID = getThisID( $(this) ); 
         if ( confirm("Are you sure you want to delete this quote?" ) ) {
