@@ -40,7 +40,7 @@
 	<!--  960_Grid  -->
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/960_Grid/960.css" />
 	<!-- <link rel="stylesheet" type="text/css" href="< ?php echo Yii::app()->request->baseUrl; ?>/css/960_Grid/reset.css" /> -->
-	<!-- <link rel="stylesheet" type="text/css" href="< ?php echo Yii::app()->request->baseUrl; ?>/css/60_Grid/text.css" /> -->
+	<!-- <link rel="stylesheet" type="text/css" href="< ?php echo Yii::app()->request->baseUrl; ?>/css/60_Grid/text.css" />  -->
 	
 
 	<title><?php echo Yii::app()->params['app_title']; ?></title>
@@ -63,23 +63,69 @@
 		</div>
 	</div><!-- header -->
 
+<!-- 
 
+		Roles::ADMIN        = 1,
+		Roles::USER         = 2,
+		Roles::MGR          = 3,
+		Roles::APPROVER     = 4,
+		Roles::PROPOSAL_MGR = 5,
+		Roles::COORDINATOR  = 6;
+
+-->
 
 	<div id="mainmenu">
 		<?php
+			//echo '<pre>'; 	echo "My attributes:" ; print_r(Yii::app()->user->attributes);	      echo '</pre>'; 
+		   // echo '<pre>'; 	echo "My role: " ; print_r(Yii::app()->user->roles);	    echo '</pre>'; 
+			/*
+				My attributes:Array
+					(
+					    [0] => Array
+					        (
+					            [id] => 1
+					            [username] => ldalberti
+					            [first_name] => Len
+					            [last_name] => D'Alberti
+					            [email] => ldalberti@rocelec.com
+					            [title] => Software Developer
+					            [phone] => 7-(970)828-7357
+					            [fax] => 20-(802)978-8532
+					        )
+
+					)
+			*/
+
 			$user_type = '';
 			date_default_timezone_set('America/New_York');
 			if ( Yii::app()->user->isAdmin ) {
 				$user_type = ' (Admin)';
-			}
-			else if (Yii::app()->user->isApprover) {
-				$user_type = ' (Approver)';
-			}
-			else if (Yii::app()->user->isProposalManager) {
-				$user_type = ' (Proposal Manager)';
+				$role = Roles::ADMIN;
 			}
 
+			// -- might suffice to use what's in the user record
+			else {
+				$user_type = ' (' . Yii::app()->user->title . ')';
+			}
+			//
+			// else if (Yii::app()->user->isApprover) {
+			// 	$user_type = ' (Approver)';
+			// 	$role = Roles::APPROVER;
+			// }
+			// else if (Yii::app()->user->isProposalManager) {
+			// 	$user_type = ' (Proposal Manager)';
+			// 	$role = Roles::PROPOSAL_MGR;
+			// }
+			// else if (Yii::app()->user->isCoordinator) {
+			// 	$user_type = ' (BTO Approver)';
+			// 	$role = Roles::COORDINATOR;
+			// }
 			
+			// $group = getLoggedInUserGroup
+			// echo "<input type='hidden' id='loggedIn_BtoRole' name='loggedIn_BtoRole' value='$role'>";
+			// echo "<input type='hidden' id='loggedIn_BtoGroup' name='loggedIn_BtoGroup' value='$group'>";
+
+			//$user_type = ' (id='.Yii::app()->user->id.')';
 
 			if ( Yii::app()->user->isLoggedIn ) {
 				$menuItems = array();
@@ -94,14 +140,19 @@
 					$menuItems[] = array('label'=>'Approval Queue ', 'url'=>array('/quotes/indexApproval') );
 				}
 	
-				if (Yii::app()->user->isProposalManager ) {
-					$menuItems[] = array('label'=>'Manufacturing', 'url'=>array('/quotes/manufacturing') );
+				if (Yii::app()->user->isProposalManager) {
+					$menuItems[] = array('label'=>'Mfg Pending', 'url'=>array('/quotes/manufacturing') );
+					$menuItems[] = array('label'=>'Mfg Admin', 'url'=>array('/coordinators/admin') );
 				}
 
-				//$menuItems[] = array('label'=>'My Quotes', 'url'=>array('/quotes/index') ); 
+				if (Yii::app()->user->isCoordinator ) {
+					$menuItems[] = array('label'=>'My Pending', 'url'=>array('/quotes/myPending') );
+				}
+
+				// $menuItems[] = array('label'=>'My Quotes',  'url'=>array('/quotes/index') ); 
 				// $menuItems[] = array('label'=>'Movements ', 'url'=>array('/PriceBook/movements') );
-				$menuItems[] = array('label'=>'Customers ', 'url'=>array('/customers/admin') );
-				$menuItems[] = array('label'=>'Contacts ', 'url'=>array('/contacts/admin') );
+				// $menuItems[] = array('label'=>'Customers ', 'url'=>array('/customers/admin') );
+				// $menuItems[] = array('label'=>'Contacts ',  'url'=>array('/contacts/admin') );
 				$menuItems[] = array('label'=>'My Profile', 'url'=>array('/Users/profile/'.Yii::app()->user->id) );
 				$menuItems[] = array('label'=>'Help',        'url'=>array('/site/help') );
 
@@ -152,9 +203,9 @@
 					<tr>	<td>Pending</td>       <td><?php echo getMyQuoteCount(Status::PENDING); ?></td>          <td>Approved</td>    <td><?php echo getMyQuoteCount(Status::APPROVED); ?></td>   </tr>  
 					<tr>	<td>Order Placed</td>  <td><?php echo getMyQuoteCount(Status::ORDER_PLACED); ?></td>     <td>Rejected</td>       <td><?php echo getMyQuoteCount(Status::REJECTED); ?></td>   </tr>  
 					<tr>	<td>Submitted</td>     <td><?php echo getMyQuoteCount(Status::SUBMITTED); ?></td>        <td>Won</td>         <td><?php echo getMyQuoteCount(Status::WON); ?></td>     </tr> 
-					<tr>	<td>BTO Pending</td>   <td><?php echo getMyQuoteCount(Status::BTO_PENDING); ?></td>      <td>Lost</td>        <td><?php echo getMyQuoteCount(Status::LOST); ?></td>    </tr>
-					<tr>	<td>BTO Approved</td>     <td><?php echo getMyQuoteCount(Status::BTO_APPROVED); ?></td>  <td>NoBid</td>    <td><?php echo getMyQuoteCount(Status::NO_BID); ?></td>  </tr>
-					<tr>	<td>BTO NoBid</td>     <td><?php echo getMyQuoteCount(Status::BTO_NOBID); ?></td>        <td>Draft</td>    <td><?php echo getMyQuoteCount(Status::DRAFT); ?></td>  </tr>
+					<tr>	<td>BTO Pending</td>   <td><?php echo getMyQuoteCount(Status::PENDING); ?></td>      <td>Lost</td>        <td><?php echo getMyQuoteCount(Status::LOST); ?></td>    </tr>
+					<tr>	<td>BTO Approved</td>     <td><?php echo getMyQuoteCount(Status::APPROVED); ?></td>  <td>NoBid</td>    <td><?php echo getMyQuoteCount(Status::NO_BID); ?></td>  </tr>
+					<tr>	<td>BTO NoBid</td>     <td><?php echo getMyQuoteCount(Status::NO_BID); ?></td>        <td>Draft</td>    <td><?php echo getMyQuoteCount(Status::DRAFT); ?></td>  </tr>
 				</table>
 			</div>
 	<?php } ?>

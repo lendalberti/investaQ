@@ -8,12 +8,16 @@
       private $_user;
 
 
-        function getIsApprover() {
+        function getIsApprover() {  // set this back to getIsApprover
             return ( $this->user &&  ( in_array(Roles::APPROVER, $this->roles) || in_array(Roles::ADMIN, $this->roles) ) );
         }
 
         function getIsProposalManager() {
             return ( $this->user &&  ( in_array(Roles::PROPOSAL_MGR, $this->roles) || in_array(Roles::ADMIN, $this->roles) ) );
+        }
+
+        function getIsCoordinator() { // should be getIsCoordinator
+            return ( $this->user &&  ( in_array(Roles::COORDINATOR, $this->roles) || in_array(Roles::PROPOSAL_MGR, $this->roles) || in_array(Roles::ADMIN, $this->roles) ) );
         }
 
 
@@ -149,14 +153,12 @@
         public function getRoles() {
             // userRoles
             if ( $this->user ) {
-                $roles = Roles::model()->getListByUser($this->id);
+                $roles = Roles::model()->getRoleListByUser($this->id);
                 //pDebug("my roles: ", $roles);
                 return $roles;
             }
             return null;
         }
-
-
 
 
         /**
@@ -174,7 +176,7 @@
         */
         public function getGroupName() {
             if ( $this->user ) {
-                return $this->user->group->name;
+                return $this->user->groups->name;
             }
         }
 

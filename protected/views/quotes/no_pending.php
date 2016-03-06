@@ -1,0 +1,1 @@
+<h3>No pending quotes found...</h3>

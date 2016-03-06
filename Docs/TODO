@@ -1,6 +1,70 @@
 
 
 +--------------------------------+
+| 02 March 2016 (Wednesday)      |
++--------------------------------+
+
+	[x] Coordinators can change their dept. status
+		[ ] should affect quote status
+	
+	[ ] Proposal Managers can change quote status
+		[x] as well as dept. status
+
+	[ ] remove Save Changes on Approvals page (no need)
+
+	[ ] Proposal Manager - change menu items
+		- 'Manufacturing' should be 'Pending Approval'
+		- 'Home' should show past mfg quotes 
+
+	[ ] force adding note whenever status is changed by coord.
+
+
+
+
++--------------------------------+
+| 29 February 2016 (Monday)      |
++--------------------------------+
+
+	[x] coordinators tab should show up only for Proposal Manager 
+
+	[x] Process coordinators have been notified - add function
+
+	[x] second link to: "Send a message to your coordinators" 
+		- should be renamed to "Add Note" 
+		- don't want to use Outlook for notifications after first time.
+
+	[ ] add "hover" to message subjects
+		- add icon? 
+		- on click display message
+
+	[x] instead of dropdown ("Update status to") on coordinators page
+		- use Approve, Reject buttons
+
+	[ ] fix My Quotes Board to reflect BTO quotes
+
+
+
+
++--------------------------------+
+| 27 February 2016 (Saturday)    |
++--------------------------------+
+
+	[x] decide whether we need BTO status values
+
+	[ ] add $model['attachments'] from Quotes::view
+
+	[ ] make attachments behave like links to files
+
+	[ ] make subject list behave like links to messages
+
+	[x] redo section for sending messages (shorten Messages and Attachments boxes)
+
+
+	
+
+
+
++--------------------------------+
 | 24 February 2016 (Wednesday)   |
 +--------------------------------+
 
@@ -14,11 +78,11 @@
 
 	[x] add Notes field to Quotes
 
-	[ ] add notifyProposalManager()
+	[x] add notifyProposalManager()
 
 	[ ] make fields on details page required ?
 
-	[ ] wireframe for BTO
+	[x] wireframe for BTO
 
 
 
@@ -37,7 +101,6 @@
 		[ ] Approvers
 			- Assembly
 			- Test
-			- Production
 			- Quality
 
 
@@ -46,7 +109,7 @@
 | 20 February 2016 (Saturday)    |
 +--------------------------------+
 
-	[ ] when opting to create a Mfg Quote, save some
+	[x] when opting to create a Mfg Quote, save some
 		info, e.g. part no, dir mfg, package type, 
 		lead count, etc - whatever is available from mongo
 
@@ -166,73 +229,7 @@
 
     [ ] show popup with pricing details on results table row click
 
-		stock_items:
-				comments       
-				date_code      
-				id             
-				last_updated   
-				line_note      
-				manufacturer   
-				part_no        
-				price_1000_Plus
-				price_100_499  
-				price_1_24     
-				price_25_99    
-				price_500_999  
-				price_Base     
-				price_Custom   
-				qty_1000_Plus  
-				qty_100_499    
-				qty_1_24       
-				qty_25_99      
-				qty_500_999    
-				qty_Available  
-				qty_Base       
-				qty_Custom     
-				qty_NoBid      
-				quote_id    
-
-		quotes:
-			 	additional_notes        
-				contact_id              
-				created_date            
-				customer_acknowledgment 
-				customer_id             
-				die_manufacturer_id     
-				expiration_date         
-				generic_part_number     
-				have_die                
-				id                      
-				itar                    
-				lead_count              
-				lead_quality_id         
-				level_id                
-				lost_reason_id          
-				manufacturing_lead_time 
-				ncnr                    
-				no_bid_reason_id        
-				owner_id                
-				package_type_id         
-				priority_id             
-				process_flow_id         
-				quantity1               
-				quantity2               
-				quantity3               
-				quote_no                
-				quote_type_id           
-				ready_to_order          
-				requested_part_number   
-				risl                    
-				source_id               
-				spa                     
-				status_id               
-				temp_high               
-				temp_low                
-				terms_conditions        
-				testing_id              
-				updated_date            
-
-
+	
 
 
 +-----------------+

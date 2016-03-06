@@ -7,7 +7,7 @@
 	<ul>
 		<li>Floor % for obsolete parts</li>
 		<li><a href='../motivationals/admin'  >Motivational sayings</a></li>
-		<li>Quote approver roles</li>
+		<li>Quote coordinator roles</li>
 		<li>Quote Admin roles</li>
 
 		<li>Terms &amp; Conditions</li>

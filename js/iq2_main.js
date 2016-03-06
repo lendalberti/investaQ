@@ -22,6 +22,7 @@ $(document).ready(function() {
     var selected_ItemTotal        = '';
     var selected_ItemPartNo       = '';
     var selected_ItemMaxAvailable = '';
+    var selected_part_number      = '';
 
     var lifeCycle_ACTIVE   = 'Active';
     var lifeCycle_OBSOLETE = 'Obsolete';
@@ -39,8 +40,18 @@ $(document).ready(function() {
     var TAB_Items     = 3;
     var TAB_Details   = 4;
     var TAB_Approvals = 5;
+    var TAB_Coordinators = 6;
 
-
+    // ----------------------------------------------------------------
+    // these should line up with constants in Roles.php 
+    //   - TODO: figure out a better way of doing this; ok for now
+    // ----------------------------------------------------------------
+    var ROLES_ADMIN        = 1;
+    var ROLES_USER         = 2;
+    var ROLES_MGR          = 3;
+    var ROLES_APPROVER     = 4;
+    var ROLES_PROPOSAL_MGR = 5;
+    var ROLES_COORDINATOR  = 6;
 
     console.log('*** myURL=['+myURL+']');
     console.log('*** returnUrl=[' + $('#returnUrl').val() + ']' );
@@ -56,15 +67,22 @@ $(document).ready(function() {
     }
 
    
-
+    // ----------------------------------------------------------------------------------------------
+    // ---------- set up Accordian ------------------------------------------------------------------
+    // ----------------------------------------------------------------------------------------------
+    $(function() {
+        $( "#coordinators_accordion" ).accordion({
+          collapsible: true,
+          heightStyle: "content"
+        });
+    });
+    
 
     // ----------------------------------------------------------------------------------------------
     // ---------- set up Tabs -----------------------------------------------------------------------
     // ----------------------------------------------------------------------------------------------
     $(function() {
-        $( "#QuoteView_Tabs" ).tabs({
-            collapsible: true
-        });
+        $( "#QuoteView_Tabs" ).tabs({ });
     });
 
     $('#QuoteView_Tabs').on('tabsactivate', function(event, ui) {
@@ -73,6 +91,20 @@ $(document).ready(function() {
         Cookies.set('current_tab', newIndex );
         $('#item_details').hide();
         $('[id^=item_row_]').find('td').removeClass('highlight_row'); 
+
+        // if ( newIndex === TAB_Approvals-1 ) {
+        //     $('#coordinators_accordion').show();
+        //     // $(function() {
+        //     //     $( "#coordinators_accordion" ).accordion({
+        //     //       collapsible: true,
+        //     //       heightStyle: "content"
+        //     //     });
+        //     // });
+        // }
+        // else {
+        //     $('#coordinators_accordion').hide();
+        // }
+
     });
 
     function showStockTabs() {
@@ -81,6 +113,7 @@ $(document).ready(function() {
         $('#QuoteView_Tabs > ul > li:nth-child(3)').show();     // "Inventory Items"                2
         $('#QuoteView_Tabs > ul > li:nth-child(4)').hide();     // --------
         $('#QuoteView_Tabs > ul > li:nth-child(5)').hide();     // --------
+        $('#QuoteView_Tabs > ul > li:nth-child(6)').hide();     // --------
     }
 
     function showManufacturingTabs() {
@@ -89,6 +122,7 @@ $(document).ready(function() {
         $('#QuoteView_Tabs > ul > li:nth-child(3)').hide();     // --------
         $('#QuoteView_Tabs > ul > li:nth-child(4)').show();     // "Manufacturing Details"          3
         $('#QuoteView_Tabs > ul > li:nth-child(5)').show();     // "Process Approvals"              4
+        $('#QuoteView_Tabs > ul > li:nth-child(6)').show();     // "Coordinators"                   5
     }
 
 
@@ -113,17 +147,12 @@ $(document).ready(function() {
         $('#QuoteView_Tabs > ul > li:nth-child(4)').hide();
         $('#QuoteView_Tabs > ul > li:nth-child(5)').hide();
     }
-   
 
-
-
-
-
+    var quoteID       = $('#Quotes_id').val(); 
     var quoteTypeID   = $('#quoteTypeID').val();
     var quoteTypeName = $('#quoteTypeName').val();
-    console.log('*** quoteTypeID=' + quoteTypeID + ', quoteTypeName=' + quoteTypeName);
 
-    //hideAllTabs();
+    console.log('*** quoteID=' + quoteID + ', quoteTypeID=' + quoteTypeID + ', quoteTypeName=' + quoteTypeName);
 
     if ( quoteTypeID == MANUFACTURING_QUOTE ) {
         showManufacturingTabs();
@@ -147,6 +176,17 @@ $(document).ready(function() {
     	});
     }
 
+    var dialog_SalesHistory = $( "#form_SalesHistory" ).dialog({
+            autoOpen: false,
+            height: 500,
+            width: 1200,
+            modal: true,
+            resizable: false,
+            close: function() { }
+    });
+
+
+
     $('#reset_form').on('click', function() {
         location.reload();
     });
@@ -161,7 +201,7 @@ $(document).ready(function() {
         // ResultsTable = null;
     }
 
-    if ( window.location.href.match(/quotes\/update/ ) ) {   // show original tab if cookie is set
+    if ( window.location.href.match(/quotes\/update/ ) || window.location.href.match(/quotes\/view/ )) {   // show original tab if cookie is set
 
         if ( Cookies.get('quote_added') ) {
             Cookies.remove('quote_added');
@@ -208,6 +248,74 @@ $(document).ready(function() {
 
     }
 
+    var itemID = $('#itemID').val();
+
+                    // <input type='hidden' id='assembly_coordinator' value='<?php echo $assembly_coordinator;  ?>'>
+                    // <input type='hidden' id='test_coordinator' value='<?php echo $test_coordinator;  ?>'>
+                    // <input type='hidden' id='' value='<?php echo $quality_coordinator;  ?>'>
+
+    // -----------------------------------------------
+    // ---------- set up minimal protection ----------
+    // -----------------------------------------------
+
+    if ( window.location.href.match(/quotes\/view/ ) ) {
+        var myRoleIDs  = $('#myRoleIDs').val();
+        var myGroup = $('#coordinatorGroup').val();
+
+        var assembly_coordinator = $('#assembly_coordinator').val();
+        var test_coordinator     = $('#test_coordinator').val();
+        var quality_coordinator  = $('#quality_coordinator').val();
+        var loggedInAs           = $('#logged_in_as').val();
+
+        var re = RegExp(ROLES_PROPOSAL_MGR, 'g');
+        var notProposalMgr = !myRoleIDs.match(re);
+
+        re = RegExp(ROLES_ADMIN, 'g');
+        var notAdmin = !myRoleIDs.match(re);
+
+        // approveItem_ $owner_id _ $item_id _ Groups::ASSEMBLY
+
+        $.each( ['approveItem_', 'rejectItem_', 'holdItem_', 'saveItemChanges_'], function(i,val) {
+            //console.log("********** val=["+val+"]");
+            $.each( $('[id^='+val+']'), function() {
+                var tmp     =  $(this).attr('id');
+                var match   = /^\w+_(\d+)_(\d+)_(\d+)$/.exec(tmp);
+                var owner = RegExp.$1;
+                var item  = RegExp.$2;
+                var group = RegExp.$3;
+                //console.log("tmp=["+tmp+"], loggedInAs=["+loggedInAs+"], owner=["+owner+"], item=["+item+"], group=["+group+"]");
+                if ( owner != loggedInAs ) {
+                    $(this).hide();
+                }
+            });
+        });
+
+        if ( notProposalMgr && notAdmin ) {
+            $.each( ['select_UpdateQuoteStatus', 'link_SendMesage', 'saveItemChanges' ], function(i,val) {
+                $.each( $('#'+val), function() {
+                    // var tmp     =  $(this).attr('id');
+                    // var match   = /^.+_(\d+)$/.exec(tmp);
+                    // if ( myGroup != RegExp.$1 ) {
+                    //     $(this).hide();
+                    // }
+                    var tmp     =  $(this).attr('id');
+                    var match   = /^\w+_(\d+)_(\d+)_(\d+)$/.exec(tmp);
+                    var owner = RegExp.$1;
+                    var item  = RegExp.$2;
+                    var group = RegExp.$3;
+                    console.log("loggedInAs=["+loggedInAs+"], owner=["+owner+"], item=["+item+"], group=["+group+"]");
+
+                    if ( owner != loggedInAs ) {
+                        $(this).hide();
+                    }
+                });
+            });
+        }
+    }
+
+
+
+
 
 	
 	// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -215,28 +323,300 @@ $(document).ready(function() {
     // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-    $('#submitProcessApproval').on('click', function() {
-        if ( confirm( "This manufacturng quote will be submitted for process approval; are you sure?") ) {
-            var quoteID = $('#Quotes_id').val(); 
-            console.log('Submitting for process approval...');
+    $('#select_UpdateQuoteStatus').on('change', function() {
+       // var quoteID  = $('#Quotes_id').val(); 
+        var new_id   = $('#select_UpdateQuoteStatus option:selected').val();
+        var new_text = $('#select_UpdateQuoteStatus option:selected').text();
+        console.log('Changing quote status:  id=['+new_id+'], text=['+new_text+']');
 
-            var postData = { requestProcessApproval: 1 };
+        var postData = {
+                quote_id:        quoteID,
+                new_status_id:   new_id,
+                new_status_text: new_text,
+        }
+
+        $.ajax({
+            type: "POST",
+            url: myURL + 'quotes/updateStatus',
+            data: postData,
+            success: function(results)  {
+                if ( results == SUCCESS ) {
+                    console.log('Quote status set to '+ new_text ); 
+
+                    Cookies.set('current_tab', TAB_Approvals-1);  // 0-indexed 
+                    location.reload();
+                }
+                else {
+                    alert('Could not change quote status - See Admin.');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown)  {
+                alert("Could not change quote status; error=\n\n" + errorThrown + ", jqXHR="+jqXHR);
+            }
+        });
+    });
+
+
+
+    // ---------------------------------------------------------------- 
+    $('[id^=approveItem_]').on('click', function() {
+        var tmp    =  $(this).attr('id');
+        var match  = /^.+_(\d+)_(\w+)$/.exec(tmp);
+        var itemID = RegExp.$1;
+        var groupID = RegExp.$2;
+        var action = 'Approve';
+
+        console.log('Approved item: ' + itemID + ', group=' + groupID + ', action=' + action);
+        var postData = { itemID: itemID, groupID: groupID, action: action };
+        $.ajax({
+            type: "POST",
+            url: myURL + 'quotes/itemStatus',
+            data: postData,
+            success: function(results)  {
+                if ( results == SUCCESS ) {
+                    console.log('Item status set to Approved.'); 
+
+                    Cookies.set('current_tab', TAB_Approvals-1);  // 0-indexed 
+                    location.reload();
+                }
+                else {
+                    alert('Could not set status to Approved - See Admin.');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown)  {
+                alert("Could not set status to Approved; error=\n\n" + errorThrown + ", jqXHR="+jqXHR);
+            }
+        });
+    });
+
+    // ---------------------------------------------------------------- 
+    $('[id^=holdItem_]').on('click', function() {
+        var tmp    =  $(this).attr('id');
+        var match  = /^.+_(\d+)_(\w+)$/.exec(tmp);
+        var itemID = RegExp.$1;
+        var groupID = RegExp.$2;
+        var action = 'Hold';
+
+        console.log('Approved item: ' + itemID + ', group=' + groupID + ', action=' + action);
+        var postData = { itemID: itemID, groupID: groupID, action: action };
+        $.ajax({
+            type: "POST",
+            url: myURL + 'quotes/itemStatus',
+            data: postData,
+            success: function(results)  {
+                if ( results == SUCCESS ) {
+                    console.log('Item status set to Pending.');
+
+                    Cookies.set('current_tab', TAB_Approvals-1);  // 0-indexed 
+                    location.reload();
+                }
+                else {
+                    alert('Could not set status to Pending - See Admin.'); 
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown)  {
+                alert("Could not set status to Pending; error=\n\n" + errorThrown + ", jqXHR="+jqXHR);
+            }
+        });
+
+    });
+
+    // ---------------------------------------------------------------- 
+    $('[id^=rejectItem_]').on('click', function() {
+        var tmp    =  $(this).attr('id');
+        var match  = /^.+_(\d+)_(\w+)$/.exec(tmp);
+        var itemID = RegExp.$1;
+        var groupID = RegExp.$2;
+        var action = 'Reject';
+
+        console.log('Approved item: ' + itemID + ', group=' + groupID + ', action=' + action);
+        var postData = { itemID: itemID, groupID: groupID, action: action };
+        $.ajax({
+            type: "POST",
+            url: myURL + 'quotes/itemStatus',
+            data: postData,
+            success: function(results)  {
+                if ( results == SUCCESS ) {
+                    console.log('Item status set to Rejected.');
+
+                    Cookies.set('current_tab', TAB_Approvals-1);  // 0-indexed 
+                    location.reload();
+                }
+                else {
+                    alert('Could not set status to Rejected - See Admin.');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown)  {
+                alert("Could not set status to Rejected; error=\n\n" + errorThrown + ", jqXHR="+jqXHR);
+            }
+        });
+    });
+
+
+
+
+    $('#link_SendMesage').on('click', function() {
+        $('#div_SendMessage').toggle();
+    });
+
+    
+    $('#button_AddMessage').on('click', function() {
+        var postData = {
+            quoteID:             $('#Quotes_id').val(),
+            text_Subject:        $('#text_Subject').val(),
+            text_Message:        $('#text_Message').val(),
+            coordinator_Assembly:   $('#coordinator_Assembly').val(),
+            coordinator_Test:       $('#coordinator_Test').val(),
+            coordinator_Quality:    $('#coordinator_Quality').val(),
+        }
+        
+        if ( $('#text_Subject').val().trim() == '' || $('#text_Message').val().trim() == '' ) {
+            alert('Missing subject and/or message...');
+        }
+        else {
+
+            console.log('button_AddMessage: Post Data=' + postData);
             $.ajax({
                     type: "POST",
-                    url: myURL + 'quotes/update?id=' + quoteID,
+                    url: myURL + 'quotes/addMessage',
                     data: postData,
                     success: function(results)  {
-                        console.log('results from quote process approval=['+results+']');
                         if ( results == SUCCESS ) {
-                            console.log('Approval is pending...');
+                           // alert('Message has been added.'); 
+
+                            Cookies.set('current_tab', TAB_Approvals-1);  // 0-indexed 
                             location.reload();
                         }
                         else {
-                            alert('Could not submit this quote for process approval - see Admin.');
+                            alert('Could not add message - See Admin.');
                         }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown)  {
+                        alert("Could not add message; error=\n\n" + errorThrown + ", jqXHR="+jqXHR);
                     }
             });
-        }   
+        }
+
+    });
+
+
+    $('#button_SendMessage').on('click', function() {
+        var postData = {
+            quoteID:             $('#Quotes_id').val(),
+            text_Subject:        $('#text_Subject').val(),
+            text_Message:        $('#text_Message').val(),
+            coordinator_Assembly:   $('#coordinator_Assembly').val(),
+            coordinator_Test:       $('#coordinator_Test').val(),
+            coordinator_Quality:    $('#coordinator_Quality').val(),
+        }
+        
+        if ( $('#text_Subject').val().trim() == '' || $('#text_Message').val().trim() == '' ) {
+            alert('Missing subject and/or message...');
+        }
+        else if ( $('#coordinator_Assembly').val()==='' && $('#coordinator_Test').val()==='' && $('#coordinator_Quality').val()==='' ) {
+            alert('Need to select a least 1 coordinator...');
+        }
+        else {
+
+            console.log('button_SendMessage: Post Data=' + postData);
+            $.ajax({
+                    type: "POST",
+                    url: myURL + 'quotes/notifyCoordinators',
+                    data: postData,
+                    success: function(results)  {
+                        if ( results == SUCCESS ) {
+                            //alert('Process coordinators have been notified.'); 
+
+                            Cookies.set('current_tab', TAB_Approvals-1);  // 0-indexed 
+                            location.reload();
+                        }
+                        else {
+                            alert('Could not send notification - see Admin.');
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown)  {
+                        alert("Could not send notification; error=\n\n" + errorThrown + ", jqXHR="+jqXHR);
+                    }
+            });
+        }
+
+    });
+
+
+
+
+
+    // $('#button_NotifyApprovers').on('click', function() {
+    //     // var quoteID     = $('#Quotes_id').val(); 
+    //     var msg        = $('#coordinator_notification_message').val();
+    //     var assembly   = $('#coordinator_Assembly').val();
+    //     var test       = $('#coordinator_Test').val();
+    //     var quality    = $('#coordinator_Quality').val();
+
+
+    //     if ( $('#coordinator_notification_message').val().trim() == '' ) {
+    //         alert('Missing notification message...');
+    //     }
+    //     else if ( assembly===''                      && test==='' && quality==='' ) {
+    //         alert('Need to select a least 1 coordinator...');
+    //     }
+    //     else {
+    //         var postData = { 
+    //                 quoteID:    quoteID,
+    //                 msg:        msg,
+    //                 assembly:   assembly,
+    //                 test:       test,
+    //                 quality:    quality
+    //         };
+    //         $.ajax({
+    //                 type: "POST",
+    //                 url: myURL + 'quotes/notifyMfgApprovers',
+    //                 data: postData,
+    //                 success: function(results)  {
+    //                     if ( results == SUCCESS ) {
+    //                         alert('Manufacturing Approvers have been notified.'); 
+
+    //                         Cookies.set('current_tab', TAB_Approvals-1);  // 0-indexed 
+    //                         location.reload();
+    //                     }
+    //                     else {
+    //                         alert('Could not notify coordinators - see Admin.');
+    //                     }
+    //                 },
+    //                 error: function (jqXHR, textStatus, errorThrown)  {
+    //                     alert("Could not notify coordinators; error=\n\n" + errorThrown + ", jqXHR="+jqXHR);
+    //                 }
+    //         });
+    //     }
+    // });
+
+
+
+
+
+
+
+
+    $('#submitProcessApproval').on('click', function() {
+        // var quoteID = $('#Quotes_id').val(); 
+        console.log('Submitting for process approval...');
+        
+        var postData = { quote_id: quoteID };
+        $.ajax({
+                type: "POST",
+                url: myURL + 'btoItems/process',
+                data: postData,
+                success: function(results)  {
+                    alert('Quote has been submitted to Proposal Manager.'); 
+                     if ( results == SUCCESS ) {
+                        console.log('Approval is pending...');
+                        location.reload();
+                    }
+                    else {
+                        alert('Could not submit this quote for process approval - see Admin.');
+                    }
+                }
+        });
         return false;
     });
 
@@ -251,7 +631,7 @@ $(document).ready(function() {
 
 
     $('#button_ApproveItem').on('click', function() {
-        var quoteID = $('#Quotes_id').val(); 
+        // var quoteID = $('#Quotes_id').val(); 
         if ( confirm( "Are you sure you want to approve this item?") ) {
             var postData = {
                     item_id:           currentItemID,
@@ -275,7 +655,7 @@ $(document).ready(function() {
 
 
     $('#button_RejectItem').on('click', function() {
-        var quoteID = $('#Quotes_id').val(); 
+        // var quoteID = $('#Quotes_id').val(); 
         if ( confirm( "Are you sure you want to reject this item?") ) {
            var postData = {
                     item_id:           currentItemID,
@@ -337,10 +717,10 @@ $(document).ready(function() {
                     $('#ajax_loading_image').hide();
 
 
-                    console.log("itemID=" + itemID + ", length=" + $( "#item_status_"+itemID ).length );
+                    console.log("itemID=" + itemID + ", title=" + $( "#item_status_"+itemID ).attr('title') );
 
                     // check if item needs approval; if so, display 'button_ApproveItem' and 'button_RejectItem'
-                    if ( $( "#item_status_"+itemID ).length ) {
+                    if ( $( "#item_status_"+itemID ).attr('title') == 'Pending approval' ) {
                         $('#button_ApproveItem').show();
                         $('#button_RejectItem').show();
                     }
@@ -381,7 +761,7 @@ $(document).ready(function() {
                     var newStatus =  $('#newQuoteStatus').val();
                     console.log( "new status = " + newStatus + ", form: " + $('#new_status_form').serialize() );
                     var postData = $('#new_status_form').serialize();
-                    var quoteID = $('#Quotes_id').val();
+                    // var quoteID = $('#Quotes_id').val();
 
                     $.ajax({
                             type: "POST",
@@ -601,7 +981,7 @@ $(document).ready(function() {
         //     console.log('Setting quote status to "Pending Approval"');
         // }
 
-        var quoteID = $('#Quotes_id').val(); 
+        // var quoteID = $('#Quotes_id').val(); 
         var postData = $(this).serialize();
         var returnURL = $('#return_URL').val();
 
@@ -610,7 +990,6 @@ $(document).ready(function() {
                     url: myURL + 'quotes/update/' + quoteID,
                     data: postData,
                     success: function(results)  {
-                        console.log('results from quote update=['+results+']');
 
                         if ( results == SUCCESS ) { // update succeeded
                             alert('Quote updated...');
@@ -688,7 +1067,7 @@ $(document).ready(function() {
     //     event.preventDefault();
     //     // var postData = $(this).serialize();
 
-    //     var quoteID = $('#form_QuoteID').val();
+        // var quoteID = $('#form_QuoteID').val();
     //     var postData = $('#quoteForm_Terms').serialize();
     //     console.log('quoteForm_Terms serialized: ' + postData);
 
@@ -950,7 +1329,7 @@ $(document).ready(function() {
         }
 
         var itemID  = $('#item_id').val();
-        var quoteID = $('#Quotes_id').val();
+        // var quoteID = $('#Quotes_id').val();
         var URL     = myURL + 'quotes/partsUpdate';
         console.log('quoteID=' + quoteID + ", URL=" + URL);
 
@@ -1116,19 +1495,31 @@ $(document).ready(function() {
 
 
 
+
+    $('[id^=quote_attach_]').on('click', function() { //   Attach to quote 
+        var quoteID = getThisID( $(this) ); 
+        window.location = myURL + 'attachments/upload/' + quoteID ; 
+    });
+
+
     $('[id^=quote_trash_]').on('click', function() { //   Delete quote  
         var quoteID = getThisID( $(this) ); 
         if ( confirm("Are you sure you want to delete this quote?" ) ) {
             $.ajax({
-                  url: myURL + 'quotes/delete/' + quoteID ,
-                  type: 'POST',
-                  data: { data: quoteID },
-                  success: function(data, textStatus, jqXHR) {
-                    window.location = myURL + 'quotes/index' ;
-                  },
-                  error: function (jqXHR, textStatus, errorThrown)  {
+                url: myURL + 'quotes/delete/' + quoteID ,
+                type: 'POST',
+                data: { data: quoteID },
+                success: function(ret) {
+                    if ( ret == SUCCESS ) {
+                        window.location = myURL + 'quotes/index';
+                    }
+                    else {
+                        alert("Couldn't delete quote " + quoteID + "; see Admin");
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown)  {
                     alert("Couldn't delete quote " + quoteID + "; error=\n\n" + errorThrown);
-                  }
+                }
             });
         }
         return false;
@@ -1720,6 +2111,48 @@ $(document).ready(function() {
 
 
     // -------------------------------------------
+    // set up sales history click on paginate
+    // -------------------------------------------
+    function setupOnSalesHistoryClick( pn ) {
+        $('#link_SalesHistory').on('click', function() {
+            $.ajax({
+                  url: '../quotes/sales?ajax=1&pn=' + pn,
+                  type: 'GET',
+                  success: function(jData, textStatus, jqXHR) {
+                        var data = JSON.parse(jData);
+                        console.log('link_SalesHistory, data=' + data);
+
+                        $('#form_SalesHistory').html( data );
+
+                        dialog_SalesHistory.dialog('option', 'title', 'Sales History for Part No. ' + pn ); 
+
+                        var buttons = { 
+                          "Done": function() { 
+                             dialog_SalesHistory.dialog( "close" );  
+                             return false; 
+                          },
+                        }
+
+                        dialog_SalesHistory.dialog("option", "buttons", buttons);
+                        dialog_SalesHistory.dialog( "open" );
+                        return false; 
+
+                  },
+                  error: function (jqXHR, textStatus, errorThrown)  {
+                        console.log("Couldn't retrieve sales history for this part; error=" + errorThrown);
+                        alert("Couldn't retrieve sales history for this part; error=" + errorThrown);
+                  } 
+            });
+
+            return false;
+
+        });
+    }
+
+
+
+
+    // -------------------------------------------
     // set up quote history click on paginate
     // -------------------------------------------
     function setupOnQuoteHistoryClick( pn ) {
@@ -1735,7 +2168,7 @@ $(document).ready(function() {
                   url: '../quotes/history?ajax=1&pn=' + pn,
                   type: 'GET',
                   success: function(jData, textStatus, jqXHR) {
-                        console.log('data=' + jData);
+                        console.log('link_QuoteHistory data=' + jData);
                         //return false;
                         
                         var data = JSON.parse(jData);
@@ -1813,6 +2246,7 @@ $(document).ready(function() {
 
 		dialog_PartPricing.dialog('option', 'title', 'Inventory Part Pricing Details'); 
         setupOnQuoteHistoryClick( partNo );
+        setupOnSalesHistoryClick( partNo );
 
 		dialog_PartPricing.dialog({
 			buttons :  [{
@@ -1929,7 +2363,7 @@ $(document).ready(function() {
     	var a          = JSON.parse(res);
     	var partsCount = a.parts.length; 
     	var rows       = '';
-        var quoteID    = $('#Quotes_id').val(); 
+        // var quoteID    = $('#Quotes_id').val(); 
 
     	for( var i=0; i<partsCount; i++ ) {
     		rows += "<tr id='rowID_"+a.parts[i].part_number+"'>";
@@ -1971,26 +2405,51 @@ $(document).ready(function() {
                                 location.reload();
                                 return false;
                             }
-                            else if ( confirm("Part No. "+partNo+" is Build to Order only.\n\nContinue processing as a Manufacturing Quote?") ) {
-                                showManufacturingTabs();
-                                $('#QuoteView_Tabs').tabs({ active: 3 });
-                                //$('#header_PageTitle').text('Updating Manufacturing Quote No.');
+                            else if ( confirm("Part No. "+partNo+" is Build to Order only; continue?") ) {
 
                                 var postData = {
-                                        newQuoteTypeID:         MANUFACTURING_QUOTE,
                                         requested_part_number:  partNo,
                                         mfg:                    mfg,
+                                        quote_id:               quoteID,
                                 };
-                                 $.ajax({
+
+                                $.ajax({
                                         type: "POST",
-                                        url: myURL + 'quotes/update?id=' + quoteID,
+                                        url: myURL + 'btoItems/create',
                                         data: postData,
                                         success: function(results)  {
-                                            console.log('results from update quote type: ['+results+']');
-                                            //$('#mfg_quote_details').html("results from update quote type: " + results);
+                                            console.log('results from create BtoItem: ['+results+']');
+                                            Cookies.set('current_tab', TAB_Details-1);  // 0-indexed 
                                             location.reload();
                                         }
                                 });
+
+
+
+                                // Old code... leaving here for now for reference
+                                /*
+                                        showManufacturingTabs();
+                                        $('#QuoteView_Tabs').tabs({ active: 3 });
+                                        //$('#header_PageTitle').text('Updating Manufacturing Quote No.');
+
+                                        var postData = {
+                                                newQuoteTypeID:         MANUFACTURING_QUOTE,
+                                                requested_part_number:  partNo,
+                                                mfg:                    mfg,
+                                        };
+                                         $.ajax({
+                                                type: "POST",
+                                                url: myURL + 'quotes/update?id=' + quoteID,
+                                                data: postData,
+                                                success: function(results)  {
+                                                    console.log('results from update quote type: ['+results+']');
+                                                    //$('#mfg_quote_details').html("results from update quote type: " + results);
+                                                    location.reload();
+                                                }
+                                        });
+                                */
+
+
                             }
                             else {
                                 location.reload();

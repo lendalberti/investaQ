@@ -28,7 +28,7 @@ class AttachmentsController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
+				'actions'=>array('index','view', 'upload'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -44,6 +44,91 @@ class AttachmentsController extends Controller
 			),
 		);
 	}
+
+
+
+	public function actionUpload($id) {
+		$quote_id    = $id;
+		pDebug("AttachmentsController::actionUpload($quote_id) - _POST variables:", $_POST );
+		pDebug("AttachmentsController::actionUpload($quote_id) - _FILES variables:", $_FILES );
+		
+		$modelQuotes = Quotes::model()->findByPk($quote_id);
+		$quote_no    = $modelQuotes->quote_no;
+
+		$uploadMessage = '';
+		$modelAttachment = new Attachments;
+		
+
+		////////////////////////////////////////////////////////////////////////////////////
+		if ( isset($_FILES["quote_attachment"]) )  {
+
+			$name     = $_FILES["quote_attachment"]["name"];
+			$type     = $_FILES["quote_attachment"]["type"];
+			$size     = $_FILES["quote_attachment"]["size"];
+			$tmp_name = $_FILES["quote_attachment"]["tmp_name"];
+
+			preg_match('/(\w+$)/', $name, $match);
+		    $extension = $match[0];
+
+		    $md5 = md5( time() . $tmp_name ) . ".$extension";
+			$target   = Yii::app()->params['attachments'] . '/' . $md5;
+
+			pDebug("AttachmentsController::actionUpload($quote_id) - moving file [$tmp_name] to [$target]");
+
+			if ( move_uploaded_file( $tmp_name, $target ) ) {
+				$uploadMessage ="File successfully uploaded.";
+				$modelAttachment->quote_id     = $quote_id;  
+				$modelAttachment->filename     = $name;  
+				$modelAttachment->md5          = $md5;  
+				$modelAttachment->content_type = $type;     
+				$modelAttachment->size         = $size;   
+				$modelAttachment->uploaded_by  = Yii::app()->user->id;  
+				$modelAttachment->uploaded_date  = Date('Y-m-d H:i:s');
+
+				if( $modelAttachment->save() ) {
+					//save History record
+					//addHistory( $quote_id, Actions::ATTACH_FILE, "FILE attached: [$title]", $modelAttachment->getPrimaryKey() );  // TODO: is this needed??
+				}
+				else {
+					$uploadMessage = "Error: couldn't save attachment info in db; file not attached; ";
+					pDebug("AttachmentsController::actionUpload($quote_id) - Error:", $modelAttachment->getErrors() );
+				}
+			}
+			else {
+				$uploadMessage = "Error in upload; ";
+				pDebug("AttachmentsController::actionUpload($quote_id) - Error: couldn't move uploaded file [$tmp_name] to [$target]."); 
+			}
+		}
+
+        $attachment_list = getQuoteAttachments($quote_id);
+        pDebug("AttachmentsController::actionUpload() - attachment_list:", $attachment_list);
+
+		$this->render('upload',array(
+			'modelAttachment' => $modelAttachment,
+			'quote_id'        => $quote_id,
+			'quote_no'        => $quote_no,
+			'uploadMessage'   => $uploadMessage,
+			'attachment_list' => $attachment_list,
+		));
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	/**
 	 * Displays a particular model.

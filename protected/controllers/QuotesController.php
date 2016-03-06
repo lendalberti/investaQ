@@ -27,31 +27,206 @@ class QuotesController extends Controller
 	public function accessRules()
 	{
 		return array(
-			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index', 'indexApproval', 'view','create','update', 'search', 'partsUpdate', 'delete', 'select'),
+			array('allow', 
+				'actions'=>array(	'index', 'indexApproval', 'view','create','update', 'search', 'partsUpdate', 
+									'delete', 'select', 'history', 'sales', 'DisplayInvoice_FB'),
 				'expression' => '$user->isLoggedIn'
 			),
 		
-			array('allow', // allow admin user to perform 'admin' and 'delete' actions
+			array('allow', 
 				'actions'=>array('admin', 'config', 'disposition'),
 				'expression' => '$user->isAdmin'
 			),
 
-			array('allow', // allow approvers  to perform 'disposition' 
+			array('allow',
 				'actions'=>array('disposition'),
 				'expression' => '$user->isApprover'
 			),
 
-			array('allow', // allow Proposal Manager to initiate Manufacturing Quote 
-				'actions'=>array('manufacturing'),
+			array('allow', 
+				'actions'=>array('manufacturing', 'notifyCoordinators', 'addMessage', 'updateStatus'),
 				'expression' => '$user->isProposalManager'
 			),
+
+			array('allow', 
+				'actions'=>array('coordinator', 'itemStatus', 'myPending'),
+				'expression' => '$user->isCoordinator'
+			),
+
 			
 			array('deny',  // deny all users
 				'users'=>array('*'),
 			),
 		);
 	}
+
+
+
+	//-------------------------------------------------------
+	public function actionHistory() {
+		$quotes = array();
+		$model  = new Quotes();
+
+		$pn   = $_GET['pn'];
+		$ajax = $_GET['ajax'];
+
+		if ( $pn && $ajax) {
+			pDebug("actionHistory() - returning Quote History for: pn=[$pn], ajax=[$ajax]");
+
+			$history_table = <<<EOT
+				<table id='quotes_table'>
+				<thead>
+					<tr>
+						<th>Ouote ID</th>
+						<th>Created</th>
+						<th>Type</th>
+						<th>Mfr</th>
+						<th>Date Code</th>
+
+						<th>Cust Name</th>
+						<th>Location</th>
+						<th>Contact</th>
+						<th>Sales Person</th>
+
+						<th>Status</th>
+						<th>NoBid or Lost Reason</th>
+						<th>Qty</th>
+						<th>Unit Price</th>
+
+					</tr>
+				</thead>
+
+				<tbody>
+EOT;
+					
+			setlocale(LC_MONETARY, 'en_US');
+			$quotes = Quotes::model()->getQuoteHistory($pn);
+			foreach ( $quotes as $q ) {
+				$history_table .= "<tr><td>".$q['Opportunity_ID']."</td>";
+				$history_table .= "<td>".$this->fixDateDisplay($q['Date']) ."</td>";
+				$history_table .= "<td>".$q['Type']."</td>";
+				$history_table .= "<td>".$q['Mfr']."</td>";
+				$history_table .= "<td>".$q['Date_Code']."</td>";
+
+				$history_table .= "<td>".$q['Customer']."</td>";
+				$history_table .= "<td>".$q['Location']."</td>";
+				$history_table .= "<td>".$q['Contact']."</td>";
+				$history_table .= "<td>".$q['Sales_Person']."</td>";
+
+				$history_table .= "<td>".$q['Status']."</td>";
+				$history_table .= "<td>".$q['No_Bid_Lost_Reason']."</td>";
+				$history_table .= "<td>".number_format($q['Quantity'])."</td>";
+				$history_table .= "<td>".money_format('%.2n', $q['Unit_Price'])."</td></tr>";
+				
+			} 
+					
+			$history_table .= '</tbody></table>';
+			echo json_encode($history_table);
+		}
+		else {
+			if ( $pn ) {
+				$quotes = Quotes::model()->getQuoteHistory($pn);
+			}
+
+			$this->render('history',array(
+				'model'  => $model,
+				'quotes' => $quotes,
+			));
+		}
+	} // END_OF_FUNCTION actionHistory()
+
+
+	
+	private function fixDateDisplay($d) {
+		// convert "Apr 13 2015 12:00:00:000AM" into "Apr.13.2015"
+		return Date('M.d.Y', strtotime($d));
+	}
+
+
+
+
+	//-------------------------------------------------------
+	public function actionSales() {
+
+		$pn   = $_GET['pn'];
+		$ajax = $_GET['ajax'];
+		pDebug("actionSales() - getting Sales history for part no. $pn (ajax=$ajax)");
+
+
+		if ( $pn && $ajax) {
+			pDebug("actionSales() - returning Sales history for: pn=[$pn], ajax=[$ajax]");
+
+			$sales_table = <<<EOT
+				<table id='sales_table'>
+				<thead>
+					<tr>
+						<th>Order Status</th>
+						<th>Order Date</th>
+						<th>Salesperson</th>
+						<th>Customer Code</th>
+						<th>Customer</th>
+						<th>Ship Date</th>
+						<th>Ship to Customer</th>
+						<th>Ship to City</th>
+						<th>Invoice Date</th>
+						<th>Invoice</th>
+						<th>Sales Order</th>
+						<th>Line Number</th>
+						<th>Purchase Order No.</th>
+						<th>Part No.</th>
+						<th>Quantity</th>
+						<th>Unit Price</th>
+						<th>Net Amount</th>
+					</tr>
+				</thead>
+
+				<tbody>
+EOT;
+
+			setlocale(LC_MONETARY, 'en_US');
+			$sales = Quotes::model()->getSalesHistory($pn);       
+			foreach ( $sales as $s ) {
+				$sales_table .= "<tr>";
+				$sales_table .= "<td>".$s['Order_Status']."</td>";
+				$sales_table .= "<td>".$this->fixDateDisplay($s['Order_Date'])."</td>";
+				$sales_table .= "<td>".$s['Sales_Person_Name']."</td>";
+				$sales_table .= "<td>".$s['Customer_ID']."</td>";
+				$sales_table .= "<td>".$s['Customer_Name']."</td>";
+				$sales_table .= "<td>".$this->fixDateDisplay($s['Ship_Date'])."</td>";
+				$sales_table .= "<td>".$s['Ship_To_Customer_Name']."</td>";
+				$sales_table .= "<td>".$s['Ship_To_City']."</td>";
+				$sales_table .= "<td>".$this->fixDateDisplay($s['Invoice_Date'])."</td>";
+
+				$url = CController::createUrl('quotes/displayInvoice_FB') . '?invoice=' . $s['Invoice'];
+				$sales_table .= "<td>". "<a target='_blank' href='$url'>" . $s['Invoice'] . "</a></td>";
+
+				$sales_table .= "<td>".$s['Sales_Order']."</td>";
+				$sales_table .= "<td>".$s['Line_Number']."</td>";
+				$sales_table .= "<td>".$s['Customer_Purchase_Order_ID']."</td>";
+				$sales_table .= "<td>".$s['Part_Number']."</td>";
+				$sales_table .= "<td>".number_format($s['QTY_Invoiced'])."</td>";
+				$sales_table .= "<td>".money_format('%.2n', $s['Unit_Price'])."</td>";  
+				$sales_table .= "<td>".money_format('%.2n', $s['Net_Amount'])."</td>";  
+				$sales_table .= "</tr>";
+			} 
+					
+			$sales_table .= '</tbody></table>';
+			echo json_encode($sales_table);
+		}
+
+	}
+
+
+
+	public function actionDisplayInvoice_FB() {
+			pDebug("Quotes::actionDisplayInvoice_FB() -  _GET:", $_GET );
+
+			$this->renderPartial('displayPdf_FB',array(
+				'invoice' => $_GET['invoice'],
+			));
+	}
+
+
 
 	public function actionConfig() {
 		pDebug("actionConfig() - _GET=", $_GET);
@@ -61,6 +236,68 @@ class QuotesController extends Controller
 			'model'=>$model,
 		));
 	}
+
+	// ------------------------------------------------------- update Quote Status
+	public function actionUpdateStatus() {
+		pDebug("actionUpdateStatus() - _POST=", $_POST); 
+
+		$quote_id          = $_POST['quote_id'];
+		$new_status_id     = $_POST['new_status_id'];
+		$new_status_text   = $_POST['new_status_text'];
+
+		$model = Quotes::model()->findByPk($quote_id);
+		$model->status_id = $new_status_id;
+		if ( $model->save() ) {
+			pDebug("actionUpdateStatus() - quote status changed to: $new_status_id ($new_status_text)");
+			echo Status::SUCCESS; 
+		}
+		else {
+			pDebug("actionUpdateStatus() - Error - can't change quote status: ", $model->errors);
+			echo Status::FAILURE; 
+		}
+
+		return;
+	}
+
+
+	public function actionItemStatus() {
+		pDebug("actionConfig() - _POST=", $_POST); 
+
+		$item_id   = $_POST['itemID'];
+		$group_id  = $_POST['groupID'];
+		$action    = $_POST['action'];
+
+		$status['Hold']    = Status::PENDING;    // 2
+		$status['Approve'] = Status::APPROVED;   // 8
+		$status['Reject']  = Status::REJECTED;   // 9
+
+		$criteria =  new CDbCriteria();
+		$criteria->addCondition("bto_item_id = $item_id");
+		$criteria->addCondition("group_id = $group_id");
+
+		try {
+			$model = BtoItemStatus::model()->find( $criteria );
+			$model->status_id = $status[$action];
+
+			if ( $model->save() ) {
+				pDebug("actionItemStatus() - bto_item_id=[$item_id], group_id=[$group_id], action=[$action]" );
+				echo Status::SUCCESS; 
+			}
+			else {
+				pDebug("actionItemStatus() - ERROR: could not change status for item_id: [$item_id], group_id=[$group_id], action=[$ction]; error:", $model->errors );
+				echo Status::FAILURE; 
+			}
+		}
+		catch( Exception $e) {
+			pDebug("actionItemStatus() - Exception: ", $e->errorInfo );
+			echo Status::FAILURE; 
+		}
+
+
+	}
+
+
+
 
 
 
@@ -266,41 +503,55 @@ class QuotesController extends Controller
 
 
 
-	
-	// ------------------------------------- 
+
+    // ------------------------------------- 
 	public function actionView($id) {
 		pTrace( __METHOD__ );
+
+		$quote_id    = $id;
 
 		$data['model'] = $this->loadModel($id);
 		pDebug('actionView() - Viewing quote model:', $data['model']->attributes );
 
 		$customer_id = $data['model']->customer_id;
 		$contact_id  = $data['model']->contact_id;
-		$quote_id    = $data['model']->id;
+		$quote_type  = $data['model']->quote_type_id;
 
-		// ------------------------------ get customer
 		$data['customer'] = Customers::model()->findByPk($customer_id);
-		
-		// ------------------------------ get contact
 		$data['contact']  = Contacts::model()->findByPk($contact_id);
+		$data['status']   = Status::model()->findAll();
 
-		// ------------------------------ get status
-		$data['status'] = array();
-		$data['status']  = Status::model()->findAll();
+		if ( $quote_type == QuoteTypes::MANUFACTURING ) {
+			$data['coordinators'] = Coordinators::model()->getCoordinatorList();
 
-		// ------------------------------ get items
-		$data['items'] = array();
-		$data['items'] = $this->getItemsByQuote($quote_id);
+			$criteria =  new CDbCriteria();
+			$criteria->addCondition("quote_id = $quote_id");
+			$data['BtoItems_model'] = BtoItems::model()->find( $criteria );
+			
+			pDebug("actionView() - BtoItems_model->attributes:", $data['BtoItems_model']->attributes );
 
-		$data['selects']  = Quotes::model()->getAllSelects();
-		pDebug('actionView() - data=', $data);
+			$data['bto_messages'] = BtoMessages::model()->getAllMessageSubjects($id);
+
+			$criteria =  new CDbCriteria();
+			$criteria->addCondition("bto_item_id = " . $data['BtoItems_model']->id );
+			$data['BtoItemStatus'] = BtoItemStatus::model()->findAll( $criteria );
+
+			pDebug('actionView() - BtoItemStatus->attributes for item_id:['. $data['BtoItems_model']->id.']', $data['BtoItemStatus']->attributes );
+
+		}
+		else {
+			$data['items'] = $this->getStockItemsByQuote($quote_id);
+		}
+
+		$data['selects']      = Quotes::model()->getAllSelects();
+		$data['attachments']  = Attachments::model()->getAllAttachments($id);
 
 		$this->render('view',array(
 			'data'=>$data,
 		));
-
 	}
 
+	
 	
 	public function actionCreate() {
 		pTrace( __METHOD__ );
@@ -312,8 +563,7 @@ class QuotesController extends Controller
 			$contact_id  = $_POST['Contacts']['id'];
 			$quote_type  = $_POST['Quotes']['quote_type_id'];
 
-			if (!$customer_id ) {
-				// create new customer, get id
+			if (!$customer_id ) {				// create new customer, get id
 				$modelCustomers = new Customers;
 				$modelCustomers->attributes      = $_POST['Customers'];
 
@@ -341,8 +591,7 @@ class QuotesController extends Controller
 				}
 			}
 
-			if (!$contact_id ) {
-				// create new contact, get id
+			if (!$contact_id ) {					// create new contact, get id
 				$modelContacts = new Contacts;
 				$modelContacts->attributes      = $_POST['Contacts'];
 				if ( $modelContacts->save() ) {
@@ -370,13 +619,19 @@ class QuotesController extends Controller
 			$modelQuotes->quote_type_id   = QuoteTypes::TBD;
 			
 			pDebug("Quotes::actionCreate() - saving Quote with the following attributes", $modelQuotes->attributes );
-			if ( $modelQuotes->save() ) {
-				pDebug("Quotes::actionCreate() - Quote No. " . $modelQuotes->quote_no . " saved; quote ID=" . $modelQuotes->id );
-				Customers::model()->addContact($customer_id,$contact_id);
-				echo $modelQuotes->id . '|' . $modelQuotes->quote_no;
+			try {
+				if ( $modelQuotes->save() ) {
+					pDebug("Quotes::actionCreate() - Quote No. " . $modelQuotes->quote_no . " saved; quote ID=" . $modelQuotes->id );
+					Customers::model()->addContact($customer_id,$contact_id);
+					echo $modelQuotes->id . '|' . $modelQuotes->quote_no;
+				}
+				else {
+					pDebug("actionCreate() - Error on modelQuotes->save(): ", $modelQuotes->errors);
+					echo Status::FAILURE;
+				}
 			}
-			else {
-				pDebug("actionCreate() - Error on modelQuotes->save(): ", $modelQuotes->errors);
+			catch (Exception $e) {
+				pDebug("actionCreate() - Exception: ", $e );
 				echo Status::FAILURE;
 			}
 		}
@@ -406,26 +661,16 @@ class QuotesController extends Controller
 			$new_quote_status = Status::DRAFT;
 		}
 		
-		if ($pending_items) { 						 // set back to Pending
-			$new_quote_status = Status::PENDING;
-		}
-		
-		// this 'trumps' any Pending...  // set back to Rejected
 		if ($rejected_items) {
 			$new_quote_status = Status::REJECTED;
 		}
 
+		// Pending trumps Rejected
+		if ($pending_items) { 						 // set back to Pending
+			$new_quote_status = Status::PENDING;
+		}
+
 		return $new_quote_status;
-
-		// $quoteModel = $this->loadModel($quote_id);
-		// $quoteModel->status_id = $new_quote_status;
-
-		// if ( $quoteModel->save() ) {
-		// 	pDebug("actionPartsUpdate() - Quote status updated to: " . $new_quote_status );
-		// }
-		// else {
-		// 	pDebug("actionPartsUpdate() - Couldn't update Quote status: ", $quoteModel->errors );
-		// }
 	}
 
 
@@ -491,15 +736,7 @@ class QuotesController extends Controller
 				}
 			}
 			else {  																			// adding Inventory Item
-
-
-
-
 				pDebug('actionPartsUpdate() - _POST:', $_POST);
-
-
-
-
 
 				$modelStockItem = new StockItems;
 				$modelStockItem->attributes = $_POST;
@@ -598,106 +835,60 @@ class QuotesController extends Controller
 		pTrace( __METHOD__ );
 		$quote_id = $id;
 
+		pDebug("Quotes::actionUpdate() - id=[$id], _POST=", $_POST);
 		if ( $_POST ) {
-			pDebug( "actionUpdate() - _POST:", $_POST);
-
-			// request Mfg Quote Process Approval
-			if ( isset( $_POST['requestProcessApproval'] ) ) {  
-				$quoteModel            = $this->loadModel($id);
-				$quoteModel->status_id = Status::BTO_PENDING; 
-				if ( $quoteModel->save() ) {
-					pDebug( "actionUpdate() - manufacturing quote no. " . $quoteModel->quote_no . " is now 'Pending Approval'.");
-					notifyProposalManager($quoteModel);
-					echo  Status::SUCCESS;
-				}
-				else {
-					pDebug( "actionUpdate() - could not change status of manufacturing quote no. " . $quoteModel->quote_no . "; error=", $quoteModel->errors);
-					echo Status::FAILURE;
-				}
-				return;
-			}
-
-			if ( isset( $_POST['newQuoteTypeID'] ) ) {  	 // updating just quote type from update/inventory lookup page
-
-						// [newQuoteTypeID] => 3
-						// [requested_part_number] => 55551/BXA
-						// [mfg] => REI
-
-				$quoteModel = $this->loadModel($id);
-				pDebug( "actionUpdate() -  BEFORE: quote model:", $quoteModel->attributes );
-
-				$quoteModel->quote_type_id         = $_POST['newQuoteTypeID'];
-				$quoteModel->requested_part_number = $_POST['requested_part_number'];
-				$quoteModel->die_manufacturer_id   = getMfgID($_POST['mfg']);
-
-				try {
-					if ($quoteModel->save()) {
-						pDebug( "actionUpdate() -  Quote type changed to [".$quoteModel->quoteType->name."] for quote no. " . $quoteModel->quote_no );
-						pDebug( "actionUpdate() -  AFTER: quote model:", $quoteModel->attributes );
-						echo Status::SUCCESS;
-					}
-					else {
-						pDebug( "actionUpdate() -  Error in changing quote type: ", $quoteModel->errors );
-						echo Status::FAILURE;
-					}
-					return;
-				}
-				catch( Exception $e ) {
-					pDebug("actionUpdate() - Exception: ", $e->errorInfo );
-					echo Status::FAILURE;
-					return;
-				}
-			}
-
-
-			if ( isset( $_POST['quoteForm_Terms_QuoteID'] ) ) {  					 // updating just terms from Create page
-				pDebug( "actionUpdate() - _POST:", $_POST);
-
-				$quoteModel = $this->loadModel( $_POST['quoteForm_Terms_QuoteID'] );
-
-				$quoteModel->terms_conditions =  $_POST['quote_Terms'];
-				$quoteModel->customer_acknowledgment =  $_POST['quote_CustAck'];
-				$quoteModel->risl =  $_POST['quote_RISL'];
-				$quoteModel->manufacturing_lead_time =  $_POST['quote_MfgLeadTime'];
-				$quoteModel->additional_notes =  $_POST['quote_Notes'];
-
-				$quoteModel->status_id = $this->getUpdatedQuoteStatus($quote_id);
-
-				if ($quoteModel->save()) {
-					pDebug( "actionUpdate() -  Terms saved for quote no. " . $_POST['quoteForm_Terms_QuoteID'] );
-					echo Status::SUCCESS;
-				}
-				else {
-					pDebug( "actionUpdate() -  Error in saving terms: ", $quoteModel->errors );
-					echo Status::FAILURE;
-				}
-				return;
-			}
-
-				// TODO - only way to change status is to approve ALL items on same quote
-				//
-				// if ( isset($_POST['newQuoteStatus']) && Yii::app()->user->isAdmin ) {  // should only be Admin updating status
-				// 	$quoteModel = $this->loadModel($quote_id);
-				// 	$oldQuoteStatus = $quoteModel->status->name;
-
-				// 	$quoteModel->status_id = $_POST['newQuoteStatus'];
-				// 	if ($quoteModel->save()) {
-				// 		$new_quoteModel = $this->loadModel($quote_id);
-				// 		pDebug("Changed quote status from [$oldQuoteStatus] to [" . $new_quoteModel->status->name . "]" );
-				// 		notifySalespersonStatusChange($quoteModel);
-				// 		echo Status::SUCCESS;
-				// 	}
-				// 	else {
-				// 		pDebug("actionUpdate() - can't update quote status; error=", $quoteModel->errors );
-				// 		echo Status::FAILURE;
-				// 	}
-				// 	return;
-				// }
-
+			
 			// validate source id > 0
 			if ( $_POST['Quotes']['source_id'] == 0 ) {
 				echo Status::FAILURE;
 				return;
+			}
+
+			if ( $_POST['quoteTypeID'] == QuoteTypes::MANUFACTURING ) {
+				if ( isset($_POST['BtoItems']) ) {
+					$item_id = $_POST['BtoItems']['id'];
+
+					pDebug("Quotes::actionUpdate() - saving item_id:[$item_id] for Manufacturing quote: [$id]");
+
+					$itemsModel                        = BtoItems::model()->findByPk($item_id);
+					$itemsModel->order_probability_id  = $_POST['BtoItems']['order_probability_id'];
+					$itemsModel->requested_part_number = $_POST['BtoItems']['requested_part_number'];
+					$itemsModel->generic_part_number   = $_POST['BtoItems']['generic_part_number'];
+					$itemsModel->quantity1             = $_POST['BtoItems']['quantity1'];
+					$itemsModel->quantity2             = $_POST['BtoItems']['quantity2'];
+					$itemsModel->quantity3             = $_POST['BtoItems']['quantity3'];
+					$itemsModel->die_manufacturer_id   = $_POST['BtoItems']['die_manufacturer_id'];
+					$itemsModel->package_type_id       = $_POST['BtoItems']['package_type_id'];
+					$itemsModel->lead_count            = $_POST['BtoItems']['lead_count'];
+					$itemsModel->temp_low              = $_POST['BtoItems']['temp_low'];
+					$itemsModel->temp_high             = $_POST['BtoItems']['temp_high'];
+					$itemsModel->process_flow_id       = $_POST['BtoItems']['process_flow_id'];
+					$itemsModel->testing_id            = $_POST['BtoItems']['testing_id'];
+					$itemsModel->ncnr                  = $_POST['BtoItems']['ncnr'];
+					$itemsModel->itar                  = $_POST['BtoItems']['itar'];
+					$itemsModel->have_die              = $_POST['BtoItems']['have_die'];
+					$itemsModel->spa                   = $_POST['BtoItems']['spa'];
+					$itemsModel->recreation            = $_POST['BtoItems']['recreation'];
+					$itemsModel->wip_product           = $_POST['BtoItems']['wip_product'];
+
+					pDebug("Quotes::actionUpdate() - item attributes:", $itemsModel->attributes );
+
+					try { 
+						if ( $itemsModel->save() ) {
+							pDebug("Quotes::actionUpdate() - Manufacturing quote saved.");
+						}
+						else {
+							pDebug("Quotes::actionUpdate() - Error: manufacturing quote NOT saved, error=", $itemsModel->errors);
+							echo Status::FAILURE;
+							return;
+						}
+					}
+					catch( Exception $ex ) {
+						pDebug("actionPartsUpdate() - Exception: ", $e->errorInfo );
+						echo Status::FAILURE;
+						return;
+					}
+				}
 			}
 
 			// validate customer - if missing id, then assume it's a new customer, check for required fields
@@ -754,32 +945,12 @@ class QuotesController extends Controller
 				}
 			}
 
-			// update quote with source_id, contact_id, terms
-			pDebug("actionPartsUpdate() - Saving quote with these _POST variables:", $_POST);
-
-			$quoteModel = $this->loadModel($quote_id);
-			$quoteModel->attributes = $_POST['Quotes'];
-
-			// -- shouldn't need to do this
-			//
-			//  $quoteModel->customer_id             = $customer_id;
-			//  $quoteModel->contact_id              = $contact_id;
-			//  $quoteModel->source_id               = $_POST['Quotes']['source_id'];
-		    //  $quoteModel->additional_notes        = $_POST['Quotes']['additional_notes'];
-		    //  $quoteModel->terms_conditions        = $_POST['Quotes']['terms_conditions'];
-		    //  $quoteModel->customer_acknowledgment = $_POST['Quotes']['customer_acknowledgment'];
-		    //  $quoteModel->risl                    = $_POST['Quotes']['risl'];
-		    //  $quoteModel->manufacturing_lead_time = $_POST['Quotes']['manufacturing_lead_time'];
-		    //  $quoteModel->lead_quality_id         = $_POST['Quotes']['lead_quality_id'];
-		    //  $quoteModel->package_type_id         = $_POST['Quotes']['package_type_id'];
-		    //  $quoteModel->process_flow_id         = $_POST['Quotes']['process_flow_id'];
-		    //  $quoteModel->testing_id              = $_POST['Quotes']['testing_id'];
-		    //  $quoteModel->die_manufacturer_id     = $_POST['Quotes']['die_manufacturer_id'];
-			// $quoteModel->status_id                =  $_POST['Quotes']['status_id'];  
-
-			$quoteModel->status_id         =  $this->getUpdatedQuoteStatus($quote_id); 
+			$quoteModel                    = $this->loadModel($quote_id);
+			$quoteModel->attributes        = $_POST['Quotes'];
+			$quoteModel->status_id         = $this->getUpdatedQuoteStatus($quote_id); 
 			$quoteModel->salesperson_notes = $_POST['Quotes']['salesperson_notes'];
-			pDebug("actionPartsUpdate() - Saving quote with these attributes:", $quoteModel->attributes);
+
+			pDebug("actionPartsUpdate() - Updating quote with these attributes:", $quoteModel->attributes);
 
 			try {
 				$res = $quoteModel->save();
@@ -792,16 +963,6 @@ class QuotesController extends Controller
 
 			echo Status::SUCCESS;
 			return;
-
-   //       	if ($quoteModel->save()) {
-			// 	pDebug('Saved quote changes: ', $quoteModel->attributes);
-			// 	echo Status::SUCCESS;
-			// }
-			// else {
-			// 	pDebug("actionUpdate() - can't save quote changes; error=", $quoteModel->errors );
-			// 	echo Status::FAILURE;
-			// }
-			// return;
 		}
 		else {
 			pDebug("actionUpdate() - _GET=", $_GET);
@@ -818,16 +979,15 @@ class QuotesController extends Controller
 			
 			// ------------------------------ get items
 			$data['items']   = array();
-			$data['items']   = $this->getItemsByQuote($quote_id);
+			$data['items']   = $this->getStockItemsByQuote($quote_id);
 			$data['selects'] = Quotes::model()->getAllSelects();
 			$data['model']   = $this->loadModel($quote_id);
 			$data['sources'] = Sources::model()->findAll( array('order' => 'name') );
 			$data['status']  = Status::model()->findAll();
 
-			// if ( isset($_GET['bto']) && $data['model']->quote_type_id == QuoteTypes::TBD ) {
-			// 	$data['model']->quote_type_id = QuoteTypes::MANUFACTURING;
-			// 	$data['model']->save();  // TODO: check for errors
-			// }
+			$criteria =  new CDbCriteria();
+			$criteria->addCondition("quote_id = $quote_id");
+			$data['BtoItems_model'] = BtoItems::model()->find( $criteria );
 
 			$this->render('update',array(
 				'data'=>$data,
@@ -837,14 +997,30 @@ class QuotesController extends Controller
 
 
 
+
+
+
+
 	// -----------------------------------------------------------------------------
-	private function getItemsByQuote( $quote_id ) {
+	private function getBtoItemsByQuote( $quote_id ) {
+		$sql = "SELECT * FROM bto_items WHERE  quote_id = $quote_id";
+		$command = Yii::app()->db->createCommand($sql);
+		$items = $command->queryAll();
+
+		pDebug("Quotes::getStockItemsByQuote() - items:", $items );
+		return $items;
+	}
+
+
+
+	// -----------------------------------------------------------------------------
+	private function getStockItemsByQuote( $quote_id ) {
 		$sql = "SELECT * FROM stock_items WHERE  quote_id = $quote_id";
 		$command = Yii::app()->db->createCommand($sql);
 		$results = $command->queryAll();
 
 		foreach( $results as $i ) {
-			// pDebug('Quotes:getItemsByQuote() - results from stock_items:', $i );
+			// pDebug('Quotes:getStockItemsByQuote() - results from stock_items:', $i );
 			foreach( array('1_24', '25_99', '100_499', '500_999', '1000_Plus', 'Base', 'Custom') as $v ) {
 				if ( fq($i['qty_'.$v]) != '0' ) {
 
@@ -875,7 +1051,7 @@ class QuotesController extends Controller
 			}
 		}
 
-		pDebug('Quotes::getItemsByQuote() - final items:', $items );
+		pDebug('Quotes::getStockItemsByQuote() - final items:', $items );
 		return $items;
 	}
 
@@ -892,12 +1068,19 @@ class QuotesController extends Controller
 		pDebug("QuotesController::actionDelete() - _POST=", $_POST);
 
 		if ( $_POST['data'][0] == $id ) {
-			if ( $this->loadModel($id)->delete() ) {
-				pDebug("Quotes:actionDelete() - quote id $id deleted...");
-				echo Status::SUCCESS;
+
+			try {
+				if ( $this->loadModel($id)->delete() ) {
+					pDebug("Quotes:actionDelete() - quote id $id deleted...");
+					echo Status::SUCCESS;
+				}
+				else {
+					pDebug("Quotes:actionDelete() - ERROR: can't delete quote id $id; error=", $model->errors  );
+					echo Status::FAILURE;
+				}
 			}
-			else {
-				pDebug("Quotes:actionDelete() - ERROR: can't delete quote id $id; error=", $model->errors  );
+			catch (Exception $ex) {
+				pDebug("Quotes:actionDelete() - Exception caught: ",  $ex->errorInfo  );
 				echo Status::FAILURE;
 			}
 		}
@@ -927,26 +1110,140 @@ class QuotesController extends Controller
 		}
 	}
 
+
+	private function findMyMfgQuotes($pending_only=null) {
+		$my_id        = Yii::app()->user->id;
+		$my_quotes    = array();
+		
+		$coordinator_ids = array();
+
+		$criteria = new CDbCriteria();
+		$criteria->addCondition("quote_type_id = " . QuoteTypes::MANUFACTURING);
+		if ( $pending_only ) {
+			$criteria->addCondition("status_id = " . Status::PENDING);
+		}
+		$quoteModel = Quotes::model()->findAll( $criteria );
+
+		// ***************************  $quoteModel->btoItems->btoItemStatuses->coordinator_id ***************************
+
+		foreach( $quoteModel as $quote ) {
+			foreach( $quote->btoItems as $item ) {
+				foreach( $item->btoItemStatuses as $stat ) {
+					pDebug( $quote->id . ": stat->coordinator_id: [" . $stat->coordinator_id . "], myID=[$my_id]");
+
+					if ( $my_id == $stat->coordinator_id ) {
+						$my_quotes[] = $quote->id;
+					}
+				}
+			}
+			// if ( in_array($my_id, $coordinator_ids[ $quote->id ]) ) {
+			// 	$my_quotes[] = $quote->id;
+			// }
+		}
+
+		pDebug("Quote ids: ", $my_quotes);
+		return $my_quotes;
+	}
+
+
+
+	public function actionMyPending() 	{
+		pTrace( __METHOD__ );
+		pDebug('actionIndex() - _GET=', $_GET);
+
+		$quote_type = QuoteTypes::MANUFACTURING;
+		$page_title = "My Pending Manufacturing Quotes";
+
+		$my_quotes = $this->findMyMfgQuotes();
+		if ( count($my_quotes) > 0 ) {
+
+			$criteria = new CDbCriteria();
+			$criteria->addCondition("quote_type_id = " . $quote_type ); 
+			$criteria->addCondition("id IN (" .  implode(",", $my_quotes)  . ")" ); 
+
+			$criteria->order = 'id DESC';
+			$model = Quotes::model()->findAll( $criteria );
+			$this->render( 'index', array(
+				'quote_type' => $quote_type,
+				'model'      => $model,
+				'page_title' => $page_title,
+			));
+
+		}
+		else {
+			$this->render( 'no_pending' );
+		}
+		
+
+
+
+		
+
+		
+		
+
+		
+	}
+
+
+
+
 	public function actionIndex() 	{
 		pTrace( __METHOD__ );
 		pDebug('actionIndex() - _GET=', $_GET);
 
-		$quote_type = QuoteTypes::STOCK;
-
 		$criteria = new CDbCriteria();
-		if ( !Yii::app()->user->isAdmin ) {
-			$criteria->addCondition("owner_id = " . Yii::app()->user->id);
-		}
-
-		$criteria->order = 'id DESC';
 		
+		if ( !Yii::app()->user->isAdmin ) {
+			if (Yii::app()->user->isProposalManager || Yii::app()->user->isCoordinator) {
+
+				$quote_type = QuoteTypes::MANUFACTURING;
+				$page_title = "Manufacturing Quotes";
+
+				if ( isset($_GET['my']) ) {
+					$my_quotes = $this->findMyMfgQuotes();
+					if ( count($my_quotes) > 0 ) {
+						$criteria->addCondition("id IN (" .  implode(",", $my_quotes)  . ")" ); 
+					}
+				}
+				
+				$criteria->addCondition("quote_type_id = " . $quote_type ); 
+			}
+			else {
+				$page_title = "My Quotes";
+				$criteria->addCondition("owner_id = " . Yii::app()->user->id);
+			}
+		}
+		
+		$criteria->order = 'id DESC';
 		$model = Quotes::model()->findAll( $criteria );
 
 		$this->render( 'index', array(
 			'quote_type' => $quote_type,
-			'model' => $model,
-			'page_title' => "My Quotes",
+			'model'      => $model,
+			'page_title' => $page_title,
 		));
+
+
+
+		// $criteria = new CDbCriteria();
+		// if ( !Yii::app()->user->isAdmin ) {
+		// 	$criteria->addCondition("owner_id = " . Yii::app()->user->id);
+		// }
+
+		// $page_title = "My Quotes";
+		// if (Yii::app()->user->isProposalManager || Yii::app()->user->isCoordinator) {
+		// 	$page_title = "Manufacturing Quotes";
+		// }
+
+		// $criteria->order = 'id DESC';
+		// $model = Quotes::model()->findAll( $criteria );
+
+		// $this->render( 'index', array(
+		// 	'quote_type' => $quote_type,
+		// 	'model'      => $model,
+		// 	'page_title' => $page_title,
+		// ));
 	}
 
 	public function actionManufacturing() {
@@ -954,12 +1251,12 @@ class QuotesController extends Controller
 		pDebug('actionIndexApproval() - _GET=', $_GET);
 
 		$quote_type = QuoteTypes::MANUFACTURING;
-		$status     = Status::BTO_PENDING;
+		$status     = Status::PENDING;
 
 		$criteria = new CDbCriteria();
 
 		if ( Yii::app()->user->isProposalManager || Yii::app()->user->isAdmin ) {
-			$page_title = "Manufacturing Quotes";
+			$page_title = "Mfg Quotes Needing Approval";
 			$criteria->addCondition("quote_type_id = $quote_type");
 			$criteria->addCondition("status_id = $status");
 
@@ -968,7 +1265,7 @@ class QuotesController extends Controller
 
 			$this->render( 'index', array(
 				'quote_type' => $quote_type,
-				'model' => $model,
+				'model'      => $model,
 				'page_title' => $page_title,
 			));
 		}
@@ -977,6 +1274,211 @@ class QuotesController extends Controller
 		}
 
 	}
+
+
+	// isCoordinator
+	public function actionCoordinator() {
+		pTrace( __METHOD__ );
+		pDebug('actionCoordinator() - _GET=', $_GET);
+
+		if ( Yii::app()->user->isCoordinator || Yii::app()->user->isAdmin ) { 
+			$quote_type = QuoteTypes::MANUFACTURING;
+			$status     = Status::PENDING;
+			$page_title = "Manufacturing Quotes";
+
+			$my_id = Yii::app()->user->id;
+			$sql = <<<EOT
+
+SELECT 
+		q.id, 
+		q.quote_no,      
+		qt.name as quote_type, 
+		s.name as status,
+		l.name as level, 
+		concat(u.first_name, ' ', u.last_name) as owner_name,  
+		cu.name as customer_name, 
+		concat(con.first_name, ' ', con.last_name) as contact_name
+  FROM
+  		quotes AS q
+  			JOIN bto_messages  m ON m.quote_id  = q.id 
+  			JOIN coordinators  a ON a.user_id   = m.to_user_id
+  			JOIN users u  		 ON u.id        = m.to_user_id
+  			JOIN levels l 		 ON l.id        = q.level_id
+  			JOIN quote_types qt  ON qt.id       = q.quote_type_id
+  			JOIN customers cu    ON cu.id  = q.customer_id
+  			JOIN contacts con    ON con.id = q.contact_id
+  			JOIN status s        ON s.id   = q.status_id
+ WHERE
+ 		m.to_user_id = $my_id
+
+EOT;
+
+			$command = Yii::app()->db->createCommand($sql);
+			$results = $command->queryAll();
+			pDebug("results=", $results);
+
+			$this->render( 'index_coordinator', array(
+				'quote_type' => $quote_type,
+				'model'      => $results,
+				'page_title' => $page_title,
+			));
+		}
+
+
+
+		// $criteria = new CDbCriteria();
+
+		// if ( Yii::app()->user->isCoordinator || Yii::app()->user->isAdmin ) {
+		// 	$page_title = "Manufacturing Quotes";
+		// 	$criteria->addCondition("quote_type_id = $quote_type");
+		// 	$criteria->addCondition("status_id = $status");
+
+		// 	$criteria->order = 'id DESC';
+		// 	$model = Quotes::model()->findAll( $criteria );
+
+		// 	$this->render( 'index', array(
+		// 		'quote_type' => $quote_type,
+		// 		'model' => $model,
+		// 		'page_title' => $page_title,
+		// 	));
+		// }
+		// else {
+
+		// }
+
+
+
+
+	}
+
+
+	public function actionAddMessage() {
+		pDebug("Quotes::actionAddMessage() - _POST=", $_POST); 
+	
+		if ( $_POST['quoteID'] === '' || $_POST['text_Subject'] === '' || $_POST['text_Message'] === '' ) {
+			pDebug("Quotes::actionAddMessage() - missing _POST variables...");
+			echo Status::FAILURE;
+		}
+
+		try {
+			$criteria = new CDbCriteria();
+			$criteria->addCondition("quote_id = " . $_POST['quoteID'] );
+			
+			$modelItems =  BtoItems::model()->find($criteria);
+			$modelItems->save();
+			pDebug("Quotes::actionAddMessage() - modelItems->save()");
+
+			// save comment
+			$modelMessages = new BtoMessages;
+			$modelMessages->quote_id     = $_POST['quoteID'];
+			$modelMessages->bto_item_id  = $modelItems->id;
+			$modelMessages->from_user_id = Yii::app()->user->id;
+			$modelMessages->to_user_id   = Yii::app()->user->id;  // TODO: required field; adding a message for all
+			$modelMessages->subject      = $_POST['text_Subject'];
+			$modelMessages->message      = $_POST['text_Message'];
+			$modelMessages->save();
+			pDebug("Quotes::actionAddMessage() - modelMessages->save()");
+
+		}
+		catch( Exception $ex ) {
+			pDebug("Quotes::actionAddMessage() - Exception: ", $ex );
+			echo Status::FAILURE;
+		}
+		echo Status::SUCCESS;
+	}
+
+
+
+
+
+	public function actionNotifyCoordinators() {
+		pDebug("Quotes::actionNotifyCoordinators() - _POST=", $_POST); 
+		
+		$toBeNotified = array();
+		foreach( array( $_POST['coordinator_Assembly'],$_POST['coordinator_Test'],$_POST['coordinator_Quality'] ) as $id ) {
+			if ( $id ) {
+				$toBeNotified[] = $id;
+			}
+		}
+		pDebug("Quotes::actionNotifyCoordinators() - to be notified:", $toBeNotified);
+
+		if ( $_POST['quoteID'] === '' || $_POST['text_Subject'] === '' || $_POST['text_Message'] === '' || count($toBeNotified) === 0 ) {
+			pDebug("Quotes::actionNotifyCoordinators() - missing _POST variables...");
+			echo Status::FAILURE;
+		}
+
+		try {
+			$criteria = new CDbCriteria();
+			$criteria->addCondition("quote_id = " . $_POST['quoteID'] );
+			
+			$modelItems =  BtoItems::model()->find($criteria);
+			$modelItems->coordinators_notified = true;
+			$modelItems->save();
+
+			$item_id = $modelItems->id;
+			$group_coordinators['item_id']           = $item_id;
+			$group_coordinators[Groups::ASSEMBLY] = $_POST['coordinator_Assembly'];
+			$group_coordinators[Groups::TEST]     = $_POST['coordinator_Test'];
+			$group_coordinators[Groups::QUALITY]  = $_POST['coordinator_Quality'];
+			$this->updateBtoItemStatus($group_coordinators);
+
+			// save comment
+			foreach( $toBeNotified as $user_id ) {
+				$modelMessages = new BtoMessages;
+				$modelMessages->quote_id     = $_POST['quoteID'];
+				$modelMessages->bto_item_id  = $item_id;
+				$modelMessages->from_user_id = Yii::app()->user->id;
+				$modelMessages->to_user_id   = $user_id;
+				$modelMessages->subject      = $_POST['text_Subject'];
+				$modelMessages->message      = $_POST['text_Message'];
+				$modelMessages->save();
+			}
+
+			// notify coordinators
+			if ( !notifyCoordinators( $modelMessages ) ) {
+				throw new Exception("Couldn't notify coordinators.");
+			}
+		}
+		catch( Exception $ex ) {
+			pDebug("Quotes::actionNotifyCoordinators() - Exception: ", $ex );
+			echo Status::FAILURE;
+		}
+		echo Status::SUCCESS;
+	}
+
+
+	// -------------------------------------------------
+	private function updateBtoItemStatus( $g ) {
+		foreach( array(Groups::ASSEMBLY, Groups::TEST, Groups::QUALITY) as $g_id ) {
+		
+			$model = new BtoItemStatus;
+			$model->bto_item_id		= $g['item_id'];
+			$model->status_id 		= Status::PENDING; 
+			$model->group_id 		= $g_id;
+			$model->coordinator_id 	= $g[$g_id];
+			$model->save();
+
+			pDebug('updateBtoItemStatus() - model->attributes saved: ', $model->attributes );
+		}
+	}
+
+
+
+
+			/*
+				$criteria = new CDbCriteria();
+				$criteria->addCondition("bto_item_id = " . $g['item_id']);
+				$criteria->addCondition("group_id = "    . $g_id );
+				$criteria->addCondition("status_id = "    . Status::PENDING );
+				
+				$model =  BtoItemStatus::model()->find($criteria);  
+				$model->coordinator_id = $g[$g_id];
+				$model->save();
+			*/
+
+
+
+
 
 
 	

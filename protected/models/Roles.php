@@ -17,8 +17,7 @@ class Roles extends CActiveRecord  {
 			MGR          = 3,
 			APPROVER     = 4,
 			PROPOSAL_MGR = 5,
-			BTO_APPROVER = 6;
-
+			COORDINATOR  = 6;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -96,16 +95,17 @@ class Roles extends CActiveRecord  {
 	}
 
 
-	public function getListByUser( $user_id ) {
+	public function getRoleListByUser( $user_id ) {
 		$roles = array();
 		$sql = "SELECT role_id FROM user_roles WHERE user_id = $user_id";
+		//pDebug("getRoleListByUser() - sql=[$sql]");
 		$command = Yii::app()->db->createCommand($sql);
 		$results = $command->queryAll();
 
 		foreach( $results as $r ) {
 			$roles[] = $r['role_id'];
 		}
-		//pDebug("Roles::getListByUser() - roles=", $roles);
+		//pDebug("Roles::getRoleListByUser() - roles=", $roles);
 		return $roles;
 	}
 

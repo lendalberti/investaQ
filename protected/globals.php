@@ -1,21 +1,32 @@
 <?php
 
 
+    function setQuoteStatus($id, $s) {
+
+    }
+
+    function displayMfgQuoteStatus( $status_id ) {
+        //pDebug("displayMfgQuoteStatus() - getting image for status_id=[$status_id]");
+        
+        $s[Status::PENDING ]  = 'pending';  // 2
+        $s[Status::APPROVED ] = 'approved'; // 8 
+        $s[Status::REJECTED ] = 'rejected'; // 9
+
+        $src = Yii::app()->request->baseUrl . "/images/New/".$s[$status_id].".png";
+
+        return  "<img src='$src' width='20' height='20' style='vertical-align:middle' >";
+    }
+
+
+
 
     function getMfgID( $short_name ) {
         $sql = "SELECT * FROM die_manufacturers WHERE short_name = '$short_name'";
         $results = Yii::app()->db->createCommand($sql)->queryAll();
+        $id = $results[0]['id'];
 
-        pDebug("getMfgID() - results count: ". count($results) );  //->attributes );
-        pDebug("getMfgID() - results: ",  $results );
-
-        return $results[0]['id'];
-
-
-
-        // pDebug("getMfgID() - short_name=[$short_name], id=[".$results['id']."]");
-
-        // return $results['id'];
+        pDebug("getMfgID() - [$short_name] = [$id]");
+        return $id;
     }
 
 
@@ -49,7 +60,13 @@
 
 
     // ------------------------------------------------ TODO: rename this since we're just getting a count
-    function getQuotePartNumbers( $quote_id ) {     //        - use SELECT COUNT(*)
+    function getQuotePartNumbers( $quote_id=null ) {     //        - use SELECT COUNT(*)
+        if ( $quote_id === null ) {
+            return 0;
+        }
+
+
+        
         $part_no = ''; 
 
         $sql = "SELECT part_no FROM stock_items WHERE quote_id = $quote_id";
@@ -96,7 +113,7 @@
         $pending =  Status::PENDING;
         
         $sql = "SELECT COUNT(*) FROM stock_items WHERE quote_id = $quote_id AND status_id = $pending";
-        pDebug("sql=[$sql]");
+       // pDebug("sql=[$sql]");
 
         $count = Yii::app()->db->createCommand($sql)->queryScalar();
         return $count;
@@ -106,7 +123,7 @@
         $rejected =  Status::REJECTED;
         
         $sql = "SELECT COUNT(*) FROM stock_items WHERE quote_id = $quote_id AND status_id = $rejected";
-        pDebug("sql=[$sql]");
+        //pDebug("sql=[$sql]");
 
         $count = Yii::app()->db->createCommand($sql)->queryScalar();
         return $count;
@@ -274,6 +291,32 @@
     }
 
 
+    // -----------------------------------------------------------------------------------
+    function notifyCoordinators( $modelComments) {
+
+        if ( Yii::app()->params['DEBUG'] ) {   // no emails when working from home
+            pDebug("notifyCoordinators() - user(s) notified...");
+            return true;
+        }
+
+
+        // TODO...
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // -----------------------------------------------------------------------------------
     function notifyApprovers( $model_StockItem) {
@@ -334,7 +377,7 @@
 
         }
         catch( Exception $e ) {
-            pDebug( "notifyApprovers() - ERROR: couldn't send email notifying approvers - ", $e->errorInfo );
+            pDebug( "notifyApprovers() - ERROR: couldn't send email notifying coordinators - ", $e->errorInfo );
             $transaction->rollback();
             return false;
         }
@@ -470,8 +513,8 @@
     }
     
     function pDebug( $msg, $what='' ) {
-
-        $msg =  print_r($msg, true) . " (".Yii::app()->user->fullname .")";
+        $user = "logged by: ".Yii::app()->user->fullname;
+        $msg =  print_r($user . "\n" . $msg, true) ;
         if ( $what ) {
           $what = "\n" . print_r($what, true);
         }

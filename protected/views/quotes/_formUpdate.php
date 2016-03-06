@@ -4,15 +4,16 @@
 	$quoteType    = $data['model']->quoteType->name;
 ?>
 
-<input type='hidden' id='return_URL' name='return_URL' value='<?php echo $_SERVER['REQUEST_URI'];  ?>'>
-<input type='hidden' id='quoteTypeID' name='quoteTypeID' value='<?php echo $data['model']->quote_type_id ?>'>
-
 
 <div style='height: 100px; border: 0px solid gray;'>
 	
 	<div style='color: #2C6371;  font-size: 2em; border: 0px solid green; float: left; padding-right: 10px;' id='header_PageTitle'>Updating Quote No.</div>
 	<div style='color: #a31128;  font-size: 1.5em; border: 0px solid red; font-family: courier.;padding-top:  5px; font-family: courier.;padding-top:  5px;' id='header_QuoteNo'><?php echo $data['model']->quote_no; ?> 
-		<span style='color: #2C6371;  font-size: .7em; border: 0px solid red; '> [ <?php echo $quoteType . ', ' . $status; ?> ]</span>
+		<?php 
+			if ( Yii::app()->user->isAdmin ) {
+				echo "<span style='color: #2C6371;  font-size: .7em; border: 0px solid red; '> [ $quoteType,$status ] [ " . $data['model']->owner->fullname . " ]</span>";
+			}
+		?>
 	</div>
 
 	
@@ -48,8 +49,12 @@
 
 <form id='quoteUpdateForm' name='quoteUpdateForm' method='post'>
 
+	<input type='hidden' id='return_URL' name='return_URL' value='<?php echo $_SERVER['REQUEST_URI'];  ?>'>
+	<input type='hidden' id='quoteTypeID' name='quoteTypeID' value='<?php echo $data['model']->quote_type_id ?>'>
+
 	<input type='hidden' id='Quotes_id'  name='Quotes[id]' value='<?php echo $quote_id; ?>'>
 	<input type='hidden' id='form_QuoteID' name='form_QuoteID' value='<?php echo $quote_id; ?>'>
+	<input type='hidden' id='item_id' name='item_id' value=''>
 	<input type='hidden' id='item_id' name='item_id' value=''>
 
 	<div id="QuoteView_Tabs">
@@ -380,6 +385,8 @@
 
 
 <div class='print' id="form_PartPricing" style='display: none'> pricing details content goes here </div>
+<div class='print' id="form_SalesHistory" style='display: none'> sales history goes here </div>
+
 
 <div id="dialog_status_form" title="Change Quote Status">
 	<form id='new_status_form' name='new_status_form' >
