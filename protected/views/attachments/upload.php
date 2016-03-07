@@ -70,7 +70,7 @@ Yii::app()->clientScript->registerScript('search', "
                 
                 <div style='margin-top: 10px;'>
                     <span id='spanAttachFile' > <input type="submit"  name="submit" value='Attach this file' style='font-size: 1.4em; '/> 
-                        <a class='cancel_link' href='<?php echo CController::createUrl('quotes/'. $quote_id);?>'><span style="margin-left:10px;">Done</span></a>
+                        <a class='cancel_link' href='<?php echo CController::createUrl('quotes/view?id='. $quote_id);?>'><span style="margin-left:10px;">Done</span></a>
                     </span>
                 </div>
 

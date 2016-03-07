@@ -29,7 +29,7 @@ class QuotesController extends Controller
 		return array(
 			array('allow', 
 				'actions'=>array(	'index', 'indexApproval', 'view','create','update', 'search', 'partsUpdate', 
-									'delete', 'select', 'history', 'sales', 'DisplayInvoice_FB'),
+									'delete', 'select', 'history', 'sales', 'DisplayInvoice_FB', 'updateMfg'),
 				'expression' => '$user->isLoggedIn'
 			),
 		
@@ -59,6 +59,49 @@ class QuotesController extends Controller
 			),
 		);
 	}
+
+
+
+
+	//-------------------------------------------------------
+	public function actionUpdateMfg() {
+
+		if ( isset($_POST['Assembly']) ) {
+			pDebug("QuotesController::actionUpdateMfg() - _POST=", $_POST);
+
+
+
+
+
+			echo Status::SUCCESS;  
+		}
+		else if ( isset($_POST['Test']) ) {
+			pDebug("QuotesController::actionUpdateMfg() - _POST=", $_POST);
+
+
+
+
+
+
+			echo Status::SUCCESS;  
+		}
+		else if ( isset($_POST['Quality']) ) {
+			pDebug("QuotesController::actionUpdateMfg() - _POST=", $_POST);
+
+
+
+
+
+
+			echo Status::SUCCESS;  
+		}
+		else {
+			echo Status::FAILURE;
+		}
+
+
+	}
+
 
 
 

@@ -1,3 +1,106 @@
+
+.flex_container {
+	display: flex;
+	border: 0px solid black;
+	/*width: 700px;*/
+	height: 32em;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	flex-direction: column;
+}
+
+.flex_item1 {
+	width: 350px;
+	height: 100px;
+	border-bottom: 0px solid lightgray;
+	/*color: gray;*/
+}
+
+.flex_item3 {
+	width: 350px;
+	height: 280px;
+	padding-bottom: 30px;
+	/*color: gray;*/
+}
+
+.flex_item4 {
+	width: 450px;
+	height: 380px;
+	padding-bottom: 30px;
+	/*color: gray;*/
+}
+
+.flex_item {
+	/*font-size: 1.2em;*/
+	margin: 5px;
+	padding: 5px;
+	/*color: gray;*/
+	border: 0px solid lightgray;
+	overflow: hidden;
+}
+
+.flex_item:first-child {
+	width: 350px;
+	height: 100px;
+	border-bottom: 2px solid lightgray;
+}
+
+.flex_item:nth-child(2) {
+	width: 350px;
+	height: 150px;
+	border-bottom: 2px solid lightgray;
+}
+
+.flex_item:nth-child(3) {
+	width: 350px;
+	height: 120px;
+	padding-bottom: 30px;
+}
+
+.flex_item:nth-child(4) {
+	width: 450px;
+	height: 380px;
+	padding-bottom: 30px;
+}
+
+
+.proposal_notes,
+.proposal_notes_internal {
+    height: 100%;
+    width: 100%;
+   -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;         /* Opera/IE 8+ */
+    font-size: .8em;
+}
+
+.proposal_notes_internal {
+	background-color: lightyellow;
+}
+
+table.charges_leads > tbody > tr > th {
+	background-color: white; 
+	font-size: .7em;
+	text-align: center;
+}
+
+
+table.charges_leads > tbody > tr > td:nth-child(1) {
+	font-size: .8em; 
+	text-align: right;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 #sales_table {
 	table-layout: auto;
     border-collapse: collapse;

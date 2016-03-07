@@ -323,6 +323,42 @@ $(document).ready(function() {
     // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+    $('[id^=saveItemChanges_]').on('click', function() {
+        var tmp     =  $(this).attr('id');
+        var match   = /^\w+_(\d+)_(\d+)_(\d+)$/.exec(tmp);
+        var owner = RegExp.$1;
+        var item  = RegExp.$2;
+        var group = RegExp.$3;
+
+        var postData = $('#form_'+owner+'_'+item+'_'+group).serialize();
+        console.log( 'Form data: ' +  postData ); 
+
+        $.ajax({
+            type: "POST",
+            url: myURL + 'quotes/updateMfg',
+            data: postData,
+            success: function(results)  {
+                if ( results == SUCCESS ) {
+                    console.log('Mfg Quote updated.' ); 
+
+                    // Cookies.set('current_tab', TAB_Approvals-1);  // 0-indexed 
+                    // location.reload();
+                }
+                else {
+                    alert('Could not update mfg quote - See Admin.');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown)  {
+                alert("Could not update mfg quote; error=\n\n" + errorThrown + ", jqXHR="+jqXHR);
+            }
+        });
+
+
+    });
+
+
+
+
     $('#select_UpdateQuoteStatus').on('change', function() {
        // var quoteID  = $('#Quotes_id').val(); 
         var new_id   = $('#select_UpdateQuoteStatus option:selected').val();
