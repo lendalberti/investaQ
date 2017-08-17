@@ -16,8 +16,8 @@
 
 
 <form id='quoteAddForm' name='quoteAddForm' method='post'> 
-
 	<div id="QuoteView_Tabs">
+
 
 		<ul>
 			<li><a href="#section_CustomerContact">Customer &amp; Contact Information</a></li>

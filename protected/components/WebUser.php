@@ -1,4 +1,4 @@
-<?php
+<?php 
 
    // this file must be stored in:
    // protected/components/WebUser.php

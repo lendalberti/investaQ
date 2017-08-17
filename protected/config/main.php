@@ -76,7 +76,10 @@ return array(
 	'params'=>array(
 		'host'=>$_SERVER['HTTP_HOST'],  
 		'adminEmail'=>'ldalberti@rocelec.com',
-		'email_host' => '192.168.1.15',
+    
+    // 'email_host' => '192.168.1.15',
+		'email_host' => 'localhost',
+
 		'ldap_domain' => 'rei',
 		'ldap_server' => '192.168.1.4',  
 		'ldap_port' => '389',

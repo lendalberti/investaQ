@@ -2564,7 +2564,7 @@ $(document).ready(function() {
     }
 
     function display_Customer(data) {
- 		var o = JSON.parse(data);    
+      var o = JSON.parse(data);    
         $.each( o, function( k, v ) {
         	//console.log("display_Customers_: k=["+k+"], v=["+v+"]");
            	$('#Customers_'+k).html( v );
